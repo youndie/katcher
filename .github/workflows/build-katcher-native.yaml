@@ -4,23 +4,40 @@ on:
   workflow_dispatch:
 
 jobs:
-  linux-kexe:
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact: katcher-linux-x86
+            output-path: server/build/bin/native/releaseExecutable/server.kexe
+
+          - os: macos-latest
+            artifact: katcher-macos-arm64
+            output-path: server/build/bin/native/releaseExecutable/server.kexe
+
+    runs-on: ${{ matrix.os }}
+
     steps:
-      - name: Checkout sources
+      - name: Checkout
         uses: actions/checkout@v5
+
       - name: Setup Java
         uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: 21
           cache: 'gradle'
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
-      - name: Publish
-        run: |
-          ./gradlew :server:linkReleaseExecutableNative --no-daemon
-      - uses: actions/upload-artifact@v4
+
+      - name: Build
+        run: ./gradlew :server:linkReleaseExecutableNative --no-daemon
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: katcher
-          path: server/build/bin/native/releaseExecutable/server.kexe
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.output-path }}
