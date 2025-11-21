@@ -9,8 +9,11 @@ import kotlinx.html.TR
 import kotlinx.html.body
 import kotlinx.html.div
 import kotlinx.html.h1
+import kotlinx.html.h2
 import kotlinx.html.head
 import kotlinx.html.id
+import kotlinx.html.p
+import kotlinx.html.pre
 import kotlinx.html.table
 import kotlinx.html.tbody
 import kotlinx.html.td
@@ -25,6 +28,7 @@ import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
 import ru.workinprogress.katcher.ui.ButtonSize
 import ru.workinprogress.katcher.ui.ButtonVariant
+import ru.workinprogress.katcher.ui.Icons.bug
 import ru.workinprogress.katcher.ui.Icons.check
 import ru.workinprogress.katcher.ui.commonHead
 import ru.workinprogress.katcher.ui.uiButton
@@ -82,59 +86,94 @@ fun HTML.errorsTableFragment(
     data: ErrorGroupsPaginated,
 ) {
     body {
-        table(classes = "w-full min-w-max") {
-            thead(classes = "bg-muted text-muted-foreground border-b border-border") {
-                tr {
-                    th(classes = "p-2 w-8") { }
+        if (data.items.isEmpty()) {
+            div(classes = "flex flex-col items-center justify-center py-16 text-center space-y-4") {
+                id = "empty-view"
 
-                    headerCell(appId, ErrorGroupSort.title, "Message", data)
-                    headerCell(appId, ErrorGroupSort.occurrences, "Count", data)
-                    headerCell(
-                        appId,
-                        ErrorGroupSort.lastSeen,
-                        "Last seen",
-                        data,
-                        extraClasses = "w-[130px] min-w-[130px] whitespace-nowrap",
-                    )
+                div(
+                    classes = "w-16 h-16 p-4 rounded-full bg-muted flex items-center justify-center",
+                ) {
+                    bug()
+                }
+
+                h2(classes = "text-xl font-semibold") {
+                    +"No errors yet"
+                }
+
+                p(classes = "text-muted-foreground max-w-sm") {
+                    +"Init Katcher in your application and start sending errors to see them here."
+                }
+
+                pre(
+                    classes = "font-mono text-sm bg-muted p-4 rounded-lg text-left whitespace-pre-wrap leading-relaxed max-w-sm",
+                ) {
+                    +
+                        """
+                        try {
+                            riskyCode()
+                        } catch (t: Throwable) {
+                            Katcher.catch(t)
+                        }
+                        """.trimIndent()
                 }
             }
+        }
 
-            tbody {
-                data.items.forEach { group ->
+        if (data.items.isNotEmpty()) {
+            table(classes = "w-full min-w-max") {
+                thead(classes = "bg-muted text-muted-foreground border-b border-border") {
+                    tr {
+                        th(classes = "p-2 w-8") { }
 
-                    tr(
-                        classes =
-                            "${if (group.viewed) "text-foreground/60" else ""} " +
-                                "border-b border-border cursor-pointer " +
-                                "hover:bg-accent hover:text-accent-foreground transition",
-                    ) {
-                        attributes.hx {
-                            get =
-                                call.application.href(
-                                    AppsResource.AppId.Errors.GroupId(
-                                        parent = AppsResource.AppId.Errors(parent = AppsResource.AppId(appId = appId)),
-                                        groupId = group.errorGroup.id,
-                                    ),
-                                )
-                            pushUrl = "true"
-                            target = "body"
-                            swap = HxSwap.outerHtml
-                        }
+                        headerCell(appId, ErrorGroupSort.title, "Message", data)
+                        headerCell(appId, ErrorGroupSort.occurrences, "Count", data)
+                        headerCell(
+                            appId,
+                            ErrorGroupSort.lastSeen,
+                            "Last seen",
+                            data,
+                            extraClasses = "w-[130px] min-w-[130px] whitespace-nowrap",
+                        )
+                    }
+                }
 
-                        td(classes = "px-2 pb-6 w-8") {
-                            if (group.errorGroup.resolved) {
-                                div("w-6 h-6 text-muted-foreground") {
-                                    check()
+                tbody {
+                    data.items.forEach { group ->
+
+                        tr(
+                            classes =
+                                "${if (group.viewed) "text-foreground/60" else ""} " +
+                                    "border-b border-border cursor-pointer " +
+                                    "hover:bg-accent hover:text-accent-foreground transition",
+                        ) {
+                            attributes.hx {
+                                get =
+                                    call.application.href(
+                                        AppsResource.AppId.Errors.GroupId(
+                                            parent = AppsResource.AppId.Errors(parent = AppsResource.AppId(appId = appId)),
+                                            groupId = group.errorGroup.id,
+                                        ),
+                                    )
+                                pushUrl = "true"
+                                target = "body"
+                                swap = HxSwap.outerHtml
+                            }
+
+                            td(classes = "px-2 pb-6 w-8") {
+                                if (group.errorGroup.resolved) {
+                                    div("w-6 h-6 text-muted-foreground") {
+                                        check()
+                                    }
                                 }
                             }
-                        }
 
-                        td(classes = "p-2 whitespace-normal break-words max-w-[300px]") {
-                            +group.errorGroup.title
-                        }
-                        td(classes = "p-2") { text(group.errorGroup.occurrences) }
-                        td(classes = "p-2 w-[130px] min-w-[130px] whitespace-nowrap") {
-                            +group.errorGroup.lastSeen.human()
+                            td(classes = "p-2 whitespace-normal break-words max-w-[300px]") {
+                                +group.errorGroup.title
+                            }
+                            td(classes = "p-2") { text(group.errorGroup.occurrences) }
+                            td(classes = "p-2 w-[130px] min-w-[130px] whitespace-nowrap") {
+                                +group.errorGroup.lastSeen.human()
+                            }
                         }
                     }
                 }
