@@ -28,4 +28,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/youndie/katcher:0.1.${{github.run_number}}
+            ghcr.io/youndie/katcher:0.1.${{github.run_number}}, ghcr.io/youndie/katcher:latest
