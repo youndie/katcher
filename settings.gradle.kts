@@ -20,6 +20,9 @@ dependencyResolutionManagement {
         create("kotlinCrypto") {
             from("org.kotlincrypto:version-catalog:0.8.0")
         }
+        create("jvmLibs") {
+            from(files("gradle/jvmLibs.versions.toml"))
+        }
     }
 }
 
@@ -27,3 +30,4 @@ include(":core")
 include(":server")
 include(":shared")
 include(":client")
+include(":dev:server-jvm-keycloak")

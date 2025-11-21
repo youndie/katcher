@@ -1,0 +1,30 @@
+[versions]
+kotlin = "2.2.21"
+exposed = "1.0.0-rc-2"
+logback = "1.5.12"
+koinBom = "4.1.0"
+slf4jApi = "2.0.17"
+sqliteJdbc = "3.50.1.0"
+jib = "3.4.5"
+
+[libraries]
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-migrations = { module = "org.jetbrains.exposed:exposed-migration-core", version.ref = "exposed" }
+
+
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koinBom" }
+koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koinBom" }
+koin-logger-slf4j = { module = "io.insert-koin:koin-logger-slf4j", version.ref = "koinBom" }
+
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqliteJdbc" }
+
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+
+[plugins]
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+jib = { id = "com.google.cloud.tools.jib", version.ref = "jib" }
