@@ -42,17 +42,17 @@ object Katcher {
 
     suspend fun catch(throwable: Throwable) {
         if (appKey.isEmpty()) {
-            println("""$logo App Key is empty""")
+            println("""$LOGO App Key is empty""")
 
             return
         }
 
         if (remoteHost.isEmpty()) {
-            println("""$logo Remote host is not set, skipping error sending""")
+            println("""$LOGO Remote host is not set, skipping error sending""")
             return
         }
 
-        println("""$logo KATCHED ${throwable.stackTraceToString()}""")
+        println("""$LOGO KATCHED ${throwable.stackTraceToString()}""")
 
         try {
             val response: HttpResponse =
@@ -68,14 +68,14 @@ object Katcher {
                     )
                 }
             if (response.status.isSuccess()) {
-                println(""""$logo Error sent successfully""")
+                println(""""$LOGO Error sent successfully""")
             } else {
-                println(""""$logo Failed to send error: ${response.status}""")
+                println(""""$LOGO Failed to send error: ${response.status}""")
             }
         } catch (e: Exception) {
-            println(""""$logo Exception while sending error: ${e.message}""")
+            println(""""$LOGO Exception while sending error: ${e.message}""")
         }
     }
 
-    private const val logo = """🚫"""
+    private const val LOGO = """🚫"""
 }

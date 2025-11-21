@@ -51,6 +51,10 @@ tasks.withType<KotlinCompilationTask<*>> {
     dependsOn("kspCommonMainKotlinMetadata")
 }
 
+tasks.named("runKtlintFormatOverCommonMainSourceSet") {
+    mustRunAfter(tasks.named("kspCommonMainKotlinMetadata"))
+}
+
 dependencies {
     add("kspCommonMainMetadata", libs.sqlx4k.codegen)
 

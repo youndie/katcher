@@ -4,6 +4,7 @@ kotlinxDatetime = "0.7.1"
 kotlinxSerializationJson = "1.8.0"
 sqlx4k = "1.4.1"
 ksp = "2.3.2"
+ktlint = "14.0.1"
 
 [libraries]
 
@@ -14,6 +15,7 @@ sqlx4k-sqlite = { module = "io.github.smyrgeorge:sqlx4k-sqlite", version.ref = "
 sqlx4k-codegen = { module = "io.github.smyrgeorge:sqlx4k-codegen", version.ref = "sqlx4k" }
 
 [plugins]
+ktlintPlugin = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 pluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kspPlugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
