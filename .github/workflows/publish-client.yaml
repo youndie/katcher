@@ -25,5 +25,6 @@ jobs:
         run: |
           ./gradlew publishMavenPublicationToGitHubPackagesRepository --no-daemon
         env:
+          ORG_GRADLE_PROJECT_BUILD_NUMBER: ${{ github.run_number }}
           ORG_GRADLE_PROJECT_PKG_USER: github
           ORG_GRADLE_PROJECT_PKG_SECRET: ${{ secrets.GITHUB_TOKEN }}
