@@ -14,7 +14,6 @@ sqlx4k-sqlite = { module = "io.github.smyrgeorge:sqlx4k-sqlite", version.ref = "
 sqlx4k-codegen = { module = "io.github.smyrgeorge:sqlx4k-codegen", version.ref = "sqlx4k" }
 
 [plugins]
-kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 pluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kspPlugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
