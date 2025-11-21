@@ -1,0 +1,26 @@
+name: Build server native
+
+on:
+  workflow_dispatch:
+
+jobs:
+  linux-kexe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          cache: 'gradle'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Publish
+        run: |
+          ./gradlew :server:linkReleaseExecutableNative --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: katcher
+          path: /server/build/bin/native/releaseExecutable/server.kexe
