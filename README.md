@@ -28,7 +28,7 @@ Katcher provides:
 - Ktor (native server engine)
 - Kotlin/Native
 - SQLite (sqlx4k)
-- Kotlinx.serialization, kotlinx.datetime
+- kotlinx.serialization, kotlinx.datetime
 
 ### Frontend
 
@@ -50,7 +50,7 @@ Instead, it trusts upstream authentication headers provided by middleware such a
 Katcher reads the following headers:
 
 - `X-Auth-Request-User` — unique user identifier
-- `X-Auth-Request-Email` — user email (optional, used for display)
+- `X-Auth-Request-Email` — user email 
 
 If these headers are missing, Katcher returns 401 Unauthorized.
 
@@ -85,8 +85,7 @@ authResponseHeaders:
 
 ## Sending Errors From Your Application (Kotlin Client)
 
-Katcher includes a tiny built-in client you can embed directly into your Kotlin project
-It uses standard Ktor Client
+Katcher includes a tiny built‑in client you can embed directly into your Kotlin project. It uses the standard Ktor Client.
 
 ### Add dependencies
 
@@ -101,7 +100,7 @@ repositories {
 }
 
 dependencies {
-    implementation("ru.workinprogress.katcher:$katcher_version")
+    implementation("ru.workinprogress.katcher:client:$katcher_version")
     //any ktor engine
     implementation("io.ktor:ktor-client-cio:$ktor_version")}
 ```
