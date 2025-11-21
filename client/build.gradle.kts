@@ -1,9 +1,29 @@
 plugins {
     alias(libs.plugins.pluginSerialization)
+    `maven-publish`
     kotlin("multiplatform")
 }
 
+group = "ru.workinprogress.katcher"
+version = libVersion()
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/youndie/katcher")
+            credentials {
+                username = project.findProperty("PKG_USER") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("PKG_SECRET") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+}
+
 kotlin {
+    withSourcesJar()
+    jvmToolchain(21)
+
     jvm()
 
     val hostOs = System.getProperty("os.name")
@@ -29,3 +49,5 @@ dependencies {
     commonMainImplementation(ktorLibs.serialization.kotlinx.json)
     commonMainImplementation(libs.kotlinx.serialization.json)
 }
+
+fun Project.libVersion(): String = findProperty("VERSION")?.toString() ?: ("0.0." + (findProperty("BUILD_NUMBER") ?: "snapshot"))

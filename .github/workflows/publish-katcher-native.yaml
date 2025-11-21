@@ -1,4 +1,4 @@
-name: Deploy native
+name: Publish server native
 
 on:
   workflow_dispatch:
