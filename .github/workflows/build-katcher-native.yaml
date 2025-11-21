@@ -23,4 +23,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: katcher
-          path: /server/build/bin/native/releaseExecutable/server.kexe
+          path: server/build/bin/native/releaseExecutable/server.kexe
