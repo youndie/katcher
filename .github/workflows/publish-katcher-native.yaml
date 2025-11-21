@@ -1,0 +1,31 @@
+name: Deploy native
+
+on:
+  workflow_dispatch:
+
+jobs:
+  dokka:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Dockerize and push 🏗️
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./server/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/youndie/katcher:0.1.${{github.run_number}}
