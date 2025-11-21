@@ -35,7 +35,7 @@ Unlike the production Kotlin/Native server in the `server` module, this variant 
 Set the following environment variables (or system properties) before starting the server:
 
 - `HTTP_PORT` — Port to bind the HTTP server (default: `8080`).
-- `DB_PATH` — Path to SQLite file (default: `/data/local.db`).
+- `DB_PATH` — Path to SQLite file (default: `./data/local.db`).
 - `KC_URL` — Your Keycloak server URL, e.g., `https://localhost:8081`.
 - `KC_REALM` — Name of your Keycloak realm.
 - `KC_CLIENT_ID` — Client ID configured in Keycloak.
@@ -45,7 +45,7 @@ Set the following environment variables (or system properties) before starting t
 ## Database
 - Storage: SQLite
 - Access: Exposed ORM
-- Location: controlled by `DATABASE_FILE` (default `/data/local.db`)
+- Location: controlled by `DATABASE_FILE` (default `./data/local.db`)
 
 The server will create the DB file and apply the basic schema on the first run. You can inspect the DB using any SQLite browser.
 

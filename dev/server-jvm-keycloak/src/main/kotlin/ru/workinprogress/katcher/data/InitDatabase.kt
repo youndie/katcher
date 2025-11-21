@@ -12,7 +12,7 @@ import ru.workinprogress.feature.user.data.Users
 import java.io.File
 
 fun initDatabase() {
-    val dbPath = runCatching { System.getenv("DB_PATH") }.getOrNull() ?: "/data/local.db"
+    val dbPath = runCatching { System.getenv("DB_PATH") }.getOrNull() ?: "./data/local.db"
     val file = File(dbPath)
 
     if (!file.exists()) {
