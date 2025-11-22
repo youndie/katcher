@@ -50,4 +50,4 @@ dependencies {
     commonMainImplementation(libs.kotlinx.serialization.json)
 }
 
-fun Project.libVersion(): String = findProperty("VERSION")?.toString() ?: ("0.0." + (findProperty("BUILD_NUMBER") ?: "snapshot"))
+fun Project.libVersion(): String = findProperty("VERSION")?.toString() ?: ("0.1." + (findProperty("BUILD_NUMBER") ?: "snapshot"))
