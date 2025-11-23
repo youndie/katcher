@@ -4,9 +4,6 @@ plugins {
     kotlin("multiplatform")
 }
 
-group = "ru.workinprogress.katcher"
-version = libVersion()
-
 publishing {
     repositories {
         maven {
@@ -49,5 +46,3 @@ dependencies {
     commonMainImplementation(ktorLibs.serialization.kotlinx.json)
     commonMainImplementation(libs.kotlinx.serialization.json)
 }
-
-fun Project.libVersion(): String = findProperty("VERSION")?.toString() ?: ("0.1." + (findProperty("BUILD_NUMBER") ?: "snapshot"))

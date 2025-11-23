@@ -9,7 +9,6 @@ plugins {
     application
 }
 
-group = "ru.workinprogress.katcher"
 version = "0.1.0"
 
 application {

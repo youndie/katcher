@@ -12,6 +12,9 @@ plugins {
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
+    version = libVersion()
+    group = "ru.workinprogress.katcher"
+
     repositories {
         mavenCentral()
     }
@@ -21,3 +24,5 @@ subprojects {
         version = "1.8.0"
     }
 }
+
+fun Project.libVersion(): String = findProperty("VERSION")?.toString() ?: ("0.1." + (findProperty("BUILD_NUMBER") ?: "snapshot"))
