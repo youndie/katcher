@@ -4,6 +4,8 @@
 [![kotlin](https://img.shields.io/badge/Kotlin-2.2.21-blue?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![native](https://img.shields.io/badge/Native-blue?logoColor=white)](https://kotlinlang.org)
 [![jvm](https://img.shields.io/badge/JVM-orange?logoColor=white)](https://kotlinlang.org)
+[![katcher client](https://reposilite.kotlin.website/api/badge/latest/snapshots/ru/workinprogress/katcher/client?name=client&color=40c14a&prefix=v)](https://reposilite.kotlin.website/#/snapshots/ru/workinprogress/katcher/client)
+![Docker Image Version](https://img.shields.io/badge/server-latest-blue?logo=docker)
 
 Lightweight, privacy-friendly error tracking service written in Kotlin with a focus on portability and
 extremely low overhead.
@@ -55,7 +57,7 @@ Instead, it trusts upstream authentication headers provided by middleware such a
 Katcher reads the following headers:
 
 - `X-Auth-Request-User` — unique user identifier
-- `X-Auth-Request-Email` — user email 
+- `X-Auth-Request-Email` — user email
 
 If these headers are missing, Katcher returns 401 Unauthorized.
 
@@ -84,30 +86,31 @@ must be forwarded to Ktor.
 
 ```yaml 
 authResponseHeaders:
-- X-Auth-Request-User
-- X-Auth-Request-Email
+  - X-Auth-Request-User
+  - X-Auth-Request-Email
 ```
 
 ## Sending Errors From Your Application (Kotlin Client)
 
-Katcher includes a tiny built‑in client you can embed directly into your Kotlin project. It uses the standard Ktor Client.
+Katcher includes a tiny built‑in client you can embed directly into your Kotlin project. It uses the standard Ktor
+Client.
 
 ### Add dependencies
-
 
 ```kotlin
 repositories {
     mavenCentral()
     maven {
         name = "WipSnapshots"
-        url =  uri("https://reposilite.kotlin.website/snapshots")
+        url = uri("https://reposilite.kotlin.website/snapshots")
     }
 }
 
 dependencies {
     implementation("ru.workinprogress.katcher:client:$katcher_version")
     //any ktor engine
-    implementation("io.ktor:ktor-client-cio:$ktor_version")}
+    implementation("io.ktor:ktor-client-cio:$ktor_version")
+}
 ```
 
 ### Configuration
@@ -136,6 +139,7 @@ try {
 ```
 
 Katcher automatically captures:
+
 * message
 * full stacktrace
 * release
