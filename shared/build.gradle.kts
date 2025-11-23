@@ -1,6 +1,20 @@
 plugins {
     alias(libs.plugins.pluginSerialization)
+    `maven-publish`
     kotlin("multiplatform")
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "wip"
+            url = uri("https://reposilite.kotlin.website/snapshots")
+            credentials {
+                username = findProperty("REPOSILITE_USER")?.toString()
+                password = findProperty("REPOSILITE_SECRET")?.toString()
+            }
+        }
+    }
 }
 
 kotlin {
