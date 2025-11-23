@@ -99,8 +99,8 @@ Katcher includes a tiny built‑in client you can embed directly into your Kotli
 repositories {
     mavenCentral()
     maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/youndie/katcher")
+        name = "WipSnapshots"
+        url =  uri("https://reposilite.kotlin.website/snapshots")
     }
 }
 

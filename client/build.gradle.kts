@@ -10,11 +10,11 @@ version = libVersion()
 publishing {
     repositories {
         maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/youndie/katcher")
+            name = "wip"
+            url = uri("https://reposilite.kotlin.website/snapshots")
             credentials {
-                username = project.findProperty("PKG_USER") as String? ?: System.getenv("USERNAME")
-                password = project.findProperty("PKG_SECRET") as String? ?: System.getenv("TOKEN")
+                username = findProperty("REPOSILITE_USER")?.toString()
+                password = findProperty("REPOSILITE_SECRET")?.toString()
             }
         }
     }
