@@ -12,6 +12,7 @@ import ru.workinprogress.feature.report.CreateReportParams
 import ru.workinprogress.feature.report.Report
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.ReportsPaginated
+import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -32,6 +33,7 @@ object ReportRowMapper : RowMapper<Report> {
         )
 }
 
+@OptIn(ExperimentalTime::class)
 class ReportRepositoryImpl(
     private val db: ISQLite,
 ) : ReportRepository {
@@ -46,15 +48,15 @@ class ReportRepositoryImpl(
                     Statement
                         .create(
                             """
-    INSERT INTO reports (app_id, group_id, app_key, message, stacktrace, context, release, environment)
-    VALUES (:appId, :groupId, :appKey, :message, :stacktrace, :context, :release, :environment)
+    INSERT INTO reports (app_id, group_id, message, stacktrace, timestamp, context, release, environment)
+    VALUES (:appId, :groupId, :message, :stacktrace, :timestamp, :context, :release, :environment)
     """,
                         ).apply {
                             bind("appId", appId)
                             bind("groupId", groupId)
-                            bind("appKey", report.appKey)
                             bind("message", report.message)
                             bind("stacktrace", report.stacktrace)
+                            bind("timestamp", Clock.System.now().toEpochMilliseconds())
                             bind("context", report.context)
                             bind("release", report.release)
                             bind("environment", report.environment)
