@@ -84,7 +84,7 @@ interface AppsCrudRepository : CrudRepository<AppDb> {
         id: Int,
     ): Result<AppDb?>
 
-    @Query("SELECT * FROM apps WHERE apiKey = :apiKey")
+    @Query("SELECT * FROM apps WHERE api_key = :apiKey")
     suspend fun findOneByApiKey(
         context: QueryExecutor,
         apiKey: String,
