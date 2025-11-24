@@ -252,7 +252,7 @@ interface ErrorGroupCrudRepository : CrudRepository<ErrorGroupDb> {
         id: Long,
     ): Result<ErrorGroupDb?>
 
-    @Query("SELECT * FROM error_groups WHERE appId = :appId AND fingerprint = :fingerprint LIMIT 1")
+    @Query("SELECT * FROM error_groups WHERE app_id = :appId AND fingerprint = :fingerprint LIMIT 1")
     suspend fun findOneByFingerprint(
         context: QueryExecutor,
         appId: Int,
