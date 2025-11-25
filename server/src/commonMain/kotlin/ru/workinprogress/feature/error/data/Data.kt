@@ -79,7 +79,7 @@ class ErrorGroupRepositoryImpl(
             db.execute(
                 Statement
                     .create(
-                        "UPDATE error_groups SET last_seen = :lastSeen WHERE id = :id",
+                        "UPDATE error_groups SET last_seen = :last_seen WHERE id = :id",
                     ).apply {
                         bind("id", id)
                     },
