@@ -5,7 +5,7 @@ interface ReportRepository {
         appId: Int,
         groupId: Long,
         report: CreateReportParams,
-    ): Report
+    )
 
     suspend fun findByApp(
         appId: Int,

@@ -41,30 +41,29 @@ class ReportRepositoryImpl(
         appId: Int,
         groupId: Long,
         report: CreateReportParams,
-    ): Report =
-        db.transaction {
-            db
-                .fetchAll(
-                    Statement
-                        .create(
-                            """
+    ) = db.transaction {
+        db
+            .execute(
+                Statement
+                    .create(
+                        """
     INSERT INTO reports (app_id, group_id, message, stacktrace, timestamp, context, release, environment)
     VALUES (:appId, :groupId, :message, :stacktrace, :timestamp, :context, :release, :environment)
     """,
-                        ).apply {
-                            bind("appId", appId)
-                            bind("groupId", groupId)
-                            bind("message", report.message)
-                            bind("stacktrace", report.stacktrace)
-                            bind("timestamp", Clock.System.now().toEpochMilliseconds())
-                            bind("context", report.context)
-                            bind("release", report.release)
-                            bind("environment", report.environment)
-                        },
-                    ReportRowMapper,
-                ).getOrThrow()
-                .first()
-        }
+                    ).apply {
+                        bind("appId", appId)
+                        bind("groupId", groupId)
+                        bind("message", report.message)
+                        bind("stacktrace", report.stacktrace)
+                        bind("timestamp", Clock.System.now().toEpochMilliseconds())
+                        bind("context", report.context)
+                        bind("release", report.release)
+                        bind("environment", report.environment)
+                    },
+            )
+
+        return@transaction
+    }
 
     override suspend fun findByApp(
         appId: Int,

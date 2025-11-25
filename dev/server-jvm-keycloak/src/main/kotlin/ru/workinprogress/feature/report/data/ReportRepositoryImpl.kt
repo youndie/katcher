@@ -8,6 +8,7 @@ import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -25,28 +26,22 @@ class ReportRepositoryImpl : ReportRepository {
         appId: Int,
         groupId: Long,
         report: CreateReportParams,
-    ): Report =
-        withContext(Dispatchers.IO) {
-            transaction {
-                val id =
-                    Reports.insertAndGetId {
-                        it[Reports.appId] = appId
-                        it[Reports.groupId] = groupId
-                        it[message] = report.message
-                        it[stacktrace] = report.stacktrace
-                        it[timestamp] = Clock.System.now().toEpochMilliseconds()
-                        it[context] = Json.encodeToString(report.context)
-                        it[release] = report.release
-                        it[environment] = report.environment
-                    }
-
-                Reports
-                    .selectAll()
-                    .where { Reports.id eq id }
-                    .single()
-                    .let { rowToReport(it) }
+    ) = withContext(Dispatchers.IO) {
+        transaction {
+            Reports.insert {
+                it[Reports.appId] = appId
+                it[Reports.groupId] = groupId
+                it[message] = report.message
+                it[stacktrace] = report.stacktrace
+                it[timestamp] = Clock.System.now().toEpochMilliseconds()
+                it[context] = Json.encodeToString(report.context)
+                it[release] = report.release
+                it[environment] = report.environment
             }
+
+            return@transaction
         }
+    }
 
     override suspend fun findByApp(
         appId: Int,
