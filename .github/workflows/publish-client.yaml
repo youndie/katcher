@@ -2,6 +2,11 @@ name: Publish client
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "/client/**"
 
 jobs:
   build:
