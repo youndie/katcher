@@ -6,6 +6,41 @@ import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
 
 object Icons {
+    fun HTMLTag.logo() =
+        unsafe {
+            +"""<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="katcher_grad" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#7F52FF"/> <stop offset="100%" stop-color="#00C2FF"/> </linearGradient>
+        <filter id="soft_shadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
+            <feOffset in="blur" dx="0" dy="1" result="offsetBlur"/>
+            <feFlood flood-color="#000000" flood-opacity="0.2" result="offsetColor"/>
+            <feComposite in="offsetColor" in2="offsetBlur" operator="in" result="offsetBlur"/>
+            <feMerge>
+                <feMergeNode in="offsetBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+    
+    <g filter="url(#soft_shadow)">
+        <path d="M14 12C14 9.79086 15.7909 8 18 8H30L42 26L32 26L14 12Z" fill="url(#katcher_grad)"/>
+        
+        <path d="M14 24L30 36H44L52 48C53.1046 49.6569 51.9176 52 49.9282 52H18C15.7909 52 14 50.2091 14 48V24Z" fill="url(#katcher_grad)"/>
+    </g>
+</svg>"""
+        }
+
+    fun HTMLTag.logoMonochrome() =
+        unsafe {
+            +"""<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M14 12C14 9.79086 15.7909 8 18 8H30L42 26L32 26L14 12Z" fill="currentColor"/>
+    
+    <path d="M14 24L30 36H44L52 48C53.1046 49.6569 51.9176 52 49.9282 52H18C15.7909 52 14 50.2091 14 48V24Z" fill="currentColor"/>
+</svg>"""
+        }
+
     fun HTMLTag.copy() =
         unsafe {
             +

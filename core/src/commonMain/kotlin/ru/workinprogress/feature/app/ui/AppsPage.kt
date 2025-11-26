@@ -19,6 +19,7 @@ import ru.workinprogress.feature.app.App
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.katcher.ui.ButtonVariant
 import ru.workinprogress.katcher.ui.Icons.cloud
+import ru.workinprogress.katcher.ui.Icons.logo
 import ru.workinprogress.katcher.ui.commonHead
 import ru.workinprogress.katcher.ui.uiButton
 
@@ -33,8 +34,11 @@ fun HTML.appsPage(apps: List<App>) {
         div { id = "modal-root" }
 
         div(classes = "max-w-5xl mx-auto p-6 space-y-4 lg:pt-16") {
-            div(classes = "flex justify-between mb-8") {
-                h1(classes = "text-2xl lg:text-3xl font-semibold") { +"katcher" }
+            div(classes = "flex justify-between mb-8 items-center") {
+                div(classes = "flex items-center space-x-4 lg:space-x-6") {
+                    logo()
+                    h1(classes = "text-2xl lg:text-3xl font-semibold") { +"katcher" }
+                }
 
                 uiButton(variant = ButtonVariant.Outline) {
                     attributes.hx {
