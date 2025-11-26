@@ -6,7 +6,8 @@ on:
     branches:
       - main
     paths:
-      - "/client/**"
+      - "client/**"
+      - publish-client.yaml
 
 jobs:
   build:
