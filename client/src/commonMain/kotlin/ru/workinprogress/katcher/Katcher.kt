@@ -24,7 +24,6 @@ internal expect fun setupPlatformHandler()
 object Katcher {
     private var config: KatcherConfig = KatcherConfig()
     private const val LOGO = """📡"""
-
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val uploadSignal = Channel<Unit>(Channel.CONFLATED)

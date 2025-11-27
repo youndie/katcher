@@ -1,4 +1,6 @@
+import kotlinx.coroutines.runBlocking
 import ru.workinprogress.katcher.Katcher
+import java.lang.Thread.sleep
 
 fun main() {
     Katcher.start {
@@ -10,4 +12,5 @@ fun main() {
     }
 
     Katcher.catch(RuntimeException("Test sad"))
+    runBlocking { sleep(1000) }
 }

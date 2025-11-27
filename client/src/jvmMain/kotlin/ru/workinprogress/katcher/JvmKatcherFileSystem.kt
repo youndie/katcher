@@ -21,7 +21,7 @@ class JvmKatcherFileSystem : KatcherFileSystem {
                 try {
                     val content = file.readText()
                     val params = Katcher.json.decodeFromString<CreateReportParams>(content)
-                    StoredReport(file.name, params)
+                    StoredReport(file.name, params.copy(context = getSystemAttributes() + params.context.orEmpty()))
                 } catch (e: Exception) {
                     file.delete()
                     null

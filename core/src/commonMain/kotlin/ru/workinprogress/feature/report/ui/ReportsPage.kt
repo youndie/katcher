@@ -8,12 +8,16 @@ import kotlinx.html.DIV
 import kotlinx.html.HTML
 import kotlinx.html.body
 import kotlinx.html.code
+import kotlinx.html.details
 import kotlinx.html.div
 import kotlinx.html.h1
+import kotlinx.html.h4
 import kotlinx.html.head
 import kotlinx.html.id
 import kotlinx.html.p
 import kotlinx.html.pre
+import kotlinx.html.span
+import kotlinx.html.summary
 import kotlinx.html.table
 import kotlinx.html.tbody
 import kotlinx.html.td
@@ -21,12 +25,16 @@ import kotlinx.html.th
 import kotlinx.html.thead
 import kotlinx.html.title
 import kotlinx.html.tr
+import kotlinx.html.unsafe
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.feature.error.ErrorGroup
 import ru.workinprogress.feature.report.ReportsPaginated
 import ru.workinprogress.katcher.ui.ButtonSize
 import ru.workinprogress.katcher.ui.ButtonVariant
+import ru.workinprogress.katcher.ui.Icons
 import ru.workinprogress.katcher.ui.Icons.check
+import ru.workinprogress.katcher.ui.Icons.close
+import ru.workinprogress.katcher.ui.Icons.info
 import ru.workinprogress.katcher.ui.commonHead
 import ru.workinprogress.katcher.ui.infoRow
 import ru.workinprogress.katcher.ui.uiButton
@@ -192,7 +200,7 @@ fun HTML.reportsTableFragment(
     body {
         table(
             classes =
-                "w-full border border-border rounded-xl overflow-hidden text-sm " +
+                "w-full border border-border rounded-xl text-sm " +
                     "bg-card text-card-foreground",
         ) {
             thead(
@@ -215,8 +223,44 @@ fun HTML.reportsTableFragment(
                     ) {
                         td(classes = "p-2") { +report.timestamp.human() }
 
-                        td(classes = "p-2 truncate max-w-xs") {
-                            +report.message
+                        td(classes = "p-2 max-w-xs") {
+                            val context = report.context
+
+                            if (context.isNullOrEmpty()) {
+                                div(classes = "truncate") { +report.message }
+                            } else {
+                                details(classes = "group relative") {
+                                    summary(classes = "list-none cursor-pointer flex items-center gap-2 truncate") {
+                                        span(classes = "truncate") { +report.message }
+                                        span(classes = "h-4 w-4") { info() }
+                                    }
+
+                                    div(
+                                        classes =
+                                            """absolute left-0 bottom-full w-96 p-4 rounded-md border bg-card text-card-foreground shadow-xl z-50""",
+                                    ) {
+                                        div(classes = "flex justify-between items-center mb-2") {
+                                            h4(classes = "text-sm font-semibold") { +"Context Data" }
+                                            span(classes = "h-4 w-4 cursor-pointer hover:bg-muted rounded") {
+                                                attributes["onclick"] =
+                                                    "event.preventDefault(); this.closest('details').removeAttribute('open')"
+                                                close()
+                                            }
+                                        }
+
+                                        table(classes = "w-full text-xs") {
+                                            tbody {
+                                                context.forEach { (k, v) ->
+                                                    tr(classes = "border-b border-border/50 last:border-0") {
+                                                        td(classes = "py-1 font-medium text-muted-foreground w-1/3 pr-4") { +k }
+                                                        td(classes = "py-1 font-mono text-foreground break-all") { +v }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         td(classes = "p-2") {
