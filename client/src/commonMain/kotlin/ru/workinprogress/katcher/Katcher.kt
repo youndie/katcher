@@ -7,9 +7,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
-import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
-import io.ktor.http.encodedPath
 import io.ktor.http.isSuccess
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
@@ -51,8 +49,6 @@ object Katcher {
                 contentType(ContentType.Application.Json)
                 url {
                     takeFrom(config.remoteHost)
-                    if (!encodedPath.endsWith("/")) appendPathSegments("")
-                    appendPathSegments("api")
                 }
             }
         }
@@ -88,9 +84,7 @@ object Katcher {
     private suspend fun sendReport(throwable: Throwable) {
         try {
             val response: HttpResponse =
-                httpClient.post {
-                    url { appendPathSegments("reports") }
-
+                httpClient.post("api/reports") {
                     setBody(
                         CreateReportParams(
                             appKey = config.appKey,

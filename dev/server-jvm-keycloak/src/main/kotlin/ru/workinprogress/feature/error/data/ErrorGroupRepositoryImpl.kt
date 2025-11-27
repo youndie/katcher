@@ -134,7 +134,7 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
                         .leftJoin(UserErrorGroupViewed, { ErrorGroups.id }, { UserErrorGroupViewed.groupId })
                         .select(ErrorGroups.columns + listOf(UserErrorGroupViewed.viewedAt))
                         .where {
-                            (ErrorGroups.appId eq appId) and (UserErrorGroupViewed.userId eq userId)
+                            (ErrorGroups.appId eq appId)
                         }.orderBy(
                             when (sortBy) {
                                 ErrorGroupSort.id -> ErrorGroups.id
