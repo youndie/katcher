@@ -14,9 +14,21 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import ru.workinprogress.feature.report.CreateReportParams
 
+internal expect fun init()
+
 object Katcher {
     var remoteHost = ""
     var appKey = ""
+        set(value) {
+            if (field.isNotEmpty()) {
+                throw IllegalStateException("App Key can be set only once")
+            }
+            field = value
+            if (field.isNotEmpty()) {
+                init()
+            }
+        }
+
     var release = "Unspecified"
     var environment = "Dev"
 

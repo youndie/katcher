@@ -9,10 +9,6 @@ import kotlin.coroutines.CoroutineContext
 class KatcherCoroutineExceptionHandler :
     AbstractCoroutineContextElement(CoroutineExceptionHandler.Key),
     CoroutineExceptionHandler {
-    init {
-        println("KatcherCoroutineExceptionHandler init")
-    }
-
     override fun handleException(
         context: CoroutineContext,
         exception: Throwable,
