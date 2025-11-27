@@ -7,32 +7,36 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
-import io.ktor.http.URLProtocol
+import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
+import io.ktor.http.encodedPath
 import io.ktor.http.isSuccess
+import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import ru.workinprogress.feature.report.CreateReportParams
 
-internal expect fun init()
+internal expect fun setupPlatformHandler()
+
+data class KatcherConfig(
+    var appKey: String = "",
+    var remoteHost: String = "",
+    var release: String = "Unspecified",
+    var environment: String = "Dev",
+    var isDebug: Boolean = false,
+)
 
 object Katcher {
-    var remoteHost = ""
-    var appKey = ""
-        set(value) {
-            if (field.isNotEmpty()) {
-                throw IllegalStateException("App Key can be set only once")
-            }
-            field = value
-            if (field.isNotEmpty()) {
-                init()
-            }
-        }
+    private var config: KatcherConfig = KatcherConfig()
+    private const val LOGO = """📡"""
 
-    var release = "Unspecified"
-    var environment = "Dev"
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val httpClient =
+    private val httpClient by lazy {
         HttpClient {
             install(ContentNegotiation) {
                 json(
@@ -46,48 +50,67 @@ object Katcher {
             defaultRequest {
                 contentType(ContentType.Application.Json)
                 url {
-                    protocol = URLProtocol.HTTPS
-                    host = "$remoteHost/api"
+                    takeFrom(config.remoteHost)
+                    if (!encodedPath.endsWith("/")) appendPathSegments("")
+                    appendPathSegments("api")
                 }
             }
-        }
-
-    suspend fun catch(throwable: Throwable) {
-        if (appKey.isEmpty()) {
-            println("""$LOGO App Key is empty""")
-
-            return
-        }
-
-        if (remoteHost.isEmpty()) {
-            println("""$LOGO Remote host is not set, skipping error sending""")
-            return
-        }
-
-        println("""$LOGO KATCHED ${throwable.stackTraceToString()}""")
-
-        try {
-            val response: HttpResponse =
-                httpClient.post("/reports") {
-                    setBody(
-                        CreateReportParams(
-                            appKey = appKey,
-                            message = throwable.message.toString(),
-                            stacktrace = throwable.stackTraceToString(),
-                            release = release,
-                            environment = environment,
-                        ),
-                    )
-                }
-            if (response.status.isSuccess()) {
-                println(""""$LOGO Error sent successfully""")
-            } else {
-                println(""""$LOGO Failed to send error: ${response.status}""")
-            }
-        } catch (e: Exception) {
-            println(""""$LOGO Exception while sending error: ${e.message}""")
         }
     }
 
-    private const val LOGO = """🚫"""
+    fun start(configure: KatcherConfig.() -> Unit) {
+        val newConfig = KatcherConfig().apply(configure)
+
+        if (newConfig.appKey.isEmpty() || newConfig.remoteHost.isEmpty()) {
+            println("$LOGO Configuration error: appKey and remoteHost are required.")
+            return
+        }
+
+        config = newConfig
+
+        setupPlatformHandler()
+
+        if (config.isDebug) println("$LOGO Katcher initialized for ${config.environment}")
+    }
+
+    fun catch(throwable: Throwable) {
+        if (config.appKey.isEmpty()) return
+
+        if (config.isDebug) {
+            println("$LOGO Caught: ${throwable.message}")
+        }
+
+        scope.launch {
+            sendReport(throwable)
+        }
+    }
+
+    private suspend fun sendReport(throwable: Throwable) {
+        try {
+            val response: HttpResponse =
+                httpClient.post {
+                    url { appendPathSegments("reports") }
+
+                    setBody(
+                        CreateReportParams(
+                            appKey = config.appKey,
+                            message = throwable.message.toString(),
+                            stacktrace = throwable.stackTraceToString(),
+                            release = config.release,
+                            environment = config.environment,
+                        ),
+                    )
+                }
+
+            if (config.isDebug) {
+                if (response.status.isSuccess()) {
+                    println("$LOGO Report sent successfully")
+                } else {
+                    println("$LOGO Failed to send: ${response.status}")
+                }
+            }
+        } catch (e: Exception) {
+            if (config.isDebug) println("$LOGO Transmission failed: ${e.message}")
+        }
+    }
 }

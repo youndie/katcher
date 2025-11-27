@@ -115,26 +115,41 @@ dependencies {
 
 ### Configuration
 
-Before sending any errors, configure the client once:
+Configuration
+Initialize the client once at the start of your application (e.g., in `main()` or your `Application` class). This sets up the configuration and automatically registers global exception handlers.
 
 ```kotlin
-with(Katcher) {
-    remoteHost = "katcher.example.com"   // your server hostname
-    appKey = "<YOUR_APP_KEY>"            // key from the Dashboard
-    release = "1.0.0"                    // optional
-    environment = "Prod"                 // optional
+import ru.workinprogress.katcher.Katcher
+
+fun main() {
+    Katcher.start {
+        // Full URL to your Katcher instance
+        remoteHost = "https://katcher.example.com"
+
+        // Project key from the Dashboard
+        appKey = "<YOUR_APP_KEY>"
+
+        // Optional metadata
+        release = "1.0.0"
+        environment = "Production"
+
+        // Enable detailed logs in console (useful for debugging integration)
+        isDebug = true
+    }
+
+    // Your app logic...
 }
 ```
 
-### Sending an Error
+### Manual Error Capture
 
-To report an exception:
-
+You can manually report caught exceptions. The `catch` method is **non-blocking** (fire-and-forget), so it can be safely called from anywhere without `runBlocking` or coroutine scopes.
 ```kotlin
 try {
-    riskyCode()
-} catch (t: Throwable) {
-    Katcher.catch(t)
+    riskyOperation()
+} catch (e: Exception) {
+    // Captures the exception, stacktrace, and current context
+    Katcher.catch(e)
 }
 ```
 
