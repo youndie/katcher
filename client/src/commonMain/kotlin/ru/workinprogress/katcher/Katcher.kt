@@ -14,19 +14,12 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import ru.workinprogress.feature.report.CreateReportParams
 
 internal expect fun setupPlatformHandler()
-
-data class KatcherConfig(
-    var appKey: String = "",
-    var remoteHost: String = "",
-    var release: String = "Unspecified",
-    var environment: String = "Dev",
-    var isDebug: Boolean = false,
-)
 
 object Katcher {
     private var config: KatcherConfig = KatcherConfig()
@@ -34,22 +27,23 @@ object Katcher {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
+    private val uploadSignal = Channel<Unit>(Channel.CONFLATED)
+
+    internal val json =
+        Json {
+            prettyPrint = true
+            ignoreUnknownKeys = true
+            isLenient = true
+        }
+
     private val httpClient by lazy {
         HttpClient {
             install(ContentNegotiation) {
-                json(
-                    Json {
-                        prettyPrint = true
-                        ignoreUnknownKeys = true
-                        isLenient = true
-                    },
-                )
+                json(json)
             }
             defaultRequest {
                 contentType(ContentType.Application.Json)
-                url {
-                    takeFrom(config.remoteHost)
-                }
+                url { takeFrom(config.remoteHost) }
             }
         }
     }
@@ -61,50 +55,75 @@ object Katcher {
             println("$LOGO Configuration error: appKey and remoteHost are required.")
             return
         }
-
         config = newConfig
-
         setupPlatformHandler()
 
-        if (config.isDebug) println("$LOGO Katcher initialized for ${config.environment}")
+        scope.launch {
+            processQueue()
+        }
+
+        uploadSignal.trySend(Unit)
+
+        if (config.isDebug) println("$LOGO Katcher initialized. Storage ready.")
     }
 
     fun catch(throwable: Throwable) {
         if (config.appKey.isEmpty()) return
 
-        if (config.isDebug) {
-            println("$LOGO Caught: ${throwable.message}")
-        }
+        try {
+            val params =
+                CreateReportParams(
+                    appKey = config.appKey,
+                    message = throwable.message.toString(),
+                    stacktrace = throwable.stackTraceToString(),
+                    release = config.release,
+                    environment = config.environment,
+                )
 
-        scope.launch {
-            sendReport(throwable)
+            fileSystem.saveReport(params)
+
+            if (config.isDebug) println("$LOGO Report saved to disk. Signal sent.")
+
+            uploadSignal.trySend(Unit)
+        } catch (e: Exception) {
+            println("$LOGO Failed to save crash report: ${e.message}")
         }
     }
 
-    private suspend fun sendReport(throwable: Throwable) {
+    private suspend fun processQueue() {
+        for (signal in uploadSignal) {
+            if (config.isDebug) println("$LOGO Worker woke up. Checking disk...")
+
+            val reports = fileSystem.getReports()
+
+            for (report in reports) {
+                val success = sendReport(report.params)
+
+                if (success) {
+                    fileSystem.deleteReport(report.fileName)
+                } else {
+                    if (config.isDebug) println("$LOGO Network error. Retrying later.")
+                    break
+                }
+            }
+        }
+    }
+
+    private suspend fun sendReport(params: CreateReportParams): Boolean =
         try {
             val response: HttpResponse =
                 httpClient.post("api/reports") {
-                    setBody(
-                        CreateReportParams(
-                            appKey = config.appKey,
-                            message = throwable.message.toString(),
-                            stacktrace = throwable.stackTraceToString(),
-                            release = config.release,
-                            environment = config.environment,
-                        ),
-                    )
+                    setBody(params)
                 }
-
-            if (config.isDebug) {
-                if (response.status.isSuccess()) {
-                    println("$LOGO Report sent successfully")
-                } else {
-                    println("$LOGO Failed to send: ${response.status}")
-                }
+            if (response.status.isSuccess()) {
+                if (config.isDebug) println("$LOGO Sent: ${params.message.take(20)}...")
+                true
+            } else {
+                if (config.isDebug) println("$LOGO Server rejected: ${response.status}")
+                false
             }
         } catch (e: Exception) {
             if (config.isDebug) println("$LOGO Transmission failed: ${e.message}")
+            false
         }
-    }
 }
