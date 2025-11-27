@@ -56,7 +56,7 @@ class ReportRepositoryImpl(
                         bind("message", report.message)
                         bind("stacktrace", report.stacktrace)
                         bind("timestamp", Clock.System.now().toEpochMilliseconds())
-                        bind("context", report.context)
+                        bind("context", report.context?.let { Json.encodeToString(it) })
                         bind("release", report.release)
                         bind("environment", report.environment)
                     },
