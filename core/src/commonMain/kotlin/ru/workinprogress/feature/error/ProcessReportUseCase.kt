@@ -1,6 +1,5 @@
 package ru.workinprogress.feature.error
 
-import io.ktor.utils.io.core.toByteArray
 import org.kotlincrypto.hash.sha2.SHA256
 import ru.workinprogress.feature.report.CreateReportParams
 import ru.workinprogress.feature.report.ReportRepository
@@ -83,7 +82,7 @@ class ProcessReportUseCase(
         }
 
         private val hexRegex = Regex("""\b0x[0-9a-f]+\b""")
-        private val numberRegex = Regex("""\b\d+(\.\d+)?([eE][-+]?\d+)?\b""")
+
         private val pathRegex = Regex("""(?:[a-zA-Z]:\\|/)(?:[^<>:"/\\|?*\n]*[/\\])*[^<>:"/\\|?*\n]*""")
         private val ipRegex = Regex("""\b(?:\d{1,3}\.){3}\d{1,3}\b""")
         private val urlRegex = Regex("""(?:https?://)?(?:[\w-]+\.)+[\w-]+(?:/[^/\s]*)*""")
@@ -95,7 +94,6 @@ class ProcessReportUseCase(
             text
                 .lowercase()
                 .replace(hexRegex, "<HEX>")
-                .replace(numberRegex, "<NUM>")
                 .replace(pathRegex, "<PATH>")
                 .replace(ipRegex, "<IP>")
                 .replace(urlRegex, "<URL>")
