@@ -119,7 +119,7 @@ class ErrorGroupRepositoryImpl(
                     ErrorGroupSort.id -> "id"
                     ErrorGroupSort.title -> "title"
                     ErrorGroupSort.occurrences -> "occurrences"
-                    ErrorGroupSort.lastSeen -> "lastSeen"
+                    ErrorGroupSort.lastSeen -> "last_seen"
                 }
 
             val order =
