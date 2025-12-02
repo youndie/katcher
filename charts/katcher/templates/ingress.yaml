@@ -49,7 +49,6 @@ spec:
       kind: Rule
       middlewares:
         - name: {{ .Values.traefik.authMiddleware.name }}
-          namespace: {{ .Values.traefik.authMiddleware.namespace }}
       services:
         - name: katcher-backend
           port: 8080

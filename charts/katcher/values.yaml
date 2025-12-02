@@ -25,4 +25,3 @@ traefik:
   certResolver: cloudflare
   authMiddleware:
     name: ""
-    namespace: ""
