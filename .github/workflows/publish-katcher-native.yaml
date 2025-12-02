@@ -20,6 +20,10 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      - name: Extract version
+        id: extract_version
+        run: echo "VERSION=$(grep '^VERSION=' gradle.properties | cut -d'=' -f2)" >> $GITHUB_ENV
+
       - name: Dockerize and push 🏗️
         uses: docker/build-push-action@v3
         with:
@@ -28,4 +32,4 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ghcr.io/youndie/katcher:0.1.${{github.run_number}}, ghcr.io/youndie/katcher:latest
+            ghcr.io/youndie/katcher:${{ env.VERSION }}, ghcr.io/youndie/katcher:latest
