@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: katcher-backend
+  namespace: {{.Release.Namespace}}
+  labels:
+    app: katcher-backend
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: katcher-backend

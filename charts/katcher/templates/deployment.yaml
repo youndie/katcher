@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: katcher-backend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: katcher-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: katcher-backend
+  template:
+    metadata:
+      labels:
+        app: katcher-backend
+    spec:
+      containers:
+        - name: katcher-backend
+          image: "{{ .Values.registry.server }}/{{ .Values.registry.org }}/{{ .Values.server.image }}:{{ .Values.server.version }}"
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: DB_PATH
+              value: {{ .Values.dbPath | quote }}
+          resources:
+            requests:
+              cpu: {{ .Values.server.resources.requests.cpu | quote }}
+              memory: {{ .Values.server.resources.requests.memory | quote }}
+            limits:
+              cpu: {{ .Values.server.resources.limits.cpu | quote }}
+              memory: {{ .Values.server.resources.limits.memory | quote }}
+          volumeMounts:
+            - name: sqlite-data
+              mountPath: /data
+      volumes:
+        - name: sqlite-data
+          persistentVolumeClaim:
+            claimName: sqlite-pvc

@@ -1,0 +1,28 @@
+registry:
+  server: ghcr.io
+  org: youndie
+
+hostname: ""
+
+server:
+  image: katcher
+  version: 0.1.14
+  resources:
+    requests:
+      cpu: "30m"
+      memory: "32Mi"
+    limits:
+      cpu: "1"
+      memory: "64Mi"
+
+dbPath: /data/local.db
+
+storage:
+  size: 512Mi
+  class: "local-path"
+
+traefik:
+  certResolver: cloudflare
+  authMiddleware:
+    name: ""
+    namespace: ""

@@ -1,0 +1,58 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-to-https
+  namespace: {{ .Release.Namespace }}
+spec:
+  redirectScheme:
+    scheme: https
+    permanent: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: katcher-reports-bypass
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`{{ .Values.hostname }}`) && Path(`/api/reports`) && Method(`POST`)
+      kind: Rule
+      services:
+        - name: katcher-backend
+          port: 8080
+      priority: 200
+  tls:
+    certResolver: {{ .Values.traefik.certResolver | quote }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: katcher-main
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`{{ .Values.hostname }}`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-https
+      services:
+        - name: katcher-backend
+          port: 8080
+      priority: 1
+
+    - match: Host(`{{ .Values.hostname }}`)
+      kind: Rule
+      middlewares:
+        - name: {{ .Values.traefik.authMiddleware.name }}
+          namespace: {{ .Values.traefik.authMiddleware.namespace }}
+      services:
+        - name: katcher-backend
+          port: 8080
+      priority: 10
+  tls:
+    certResolver: {{ .Values.traefik.certResolver | quote }}
