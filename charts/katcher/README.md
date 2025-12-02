@@ -67,9 +67,8 @@ traefik:
    certResolver: cloudflare
 
    # The middleware defined in Step 1 that protects the UI
-   authMiddleware:
-      name: auth-auth-mw
-      namespace: auth
+   middlewares:
+      - auth-auth-mw
 ```
 ### 3. Installation
 Install or upgrade the chart using Helm. Point it to your values file:
@@ -83,7 +82,7 @@ Alternatively, you can set values via CLI arguments:
 helm upgrade --install katcher ./charts/katcher \
   -n katcher --create-namespace \
   --set hostname=katcher.example.com \
-  --set traefik.authMiddleware.name=auth-auth-mw \
+  --set traefik.middleware.name=auth-auth-mw \
   --set traefik.authMiddleware.namespace=auth
 ```
 **How it works**

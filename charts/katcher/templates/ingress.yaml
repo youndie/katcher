@@ -44,11 +44,13 @@ spec:
         - name: katcher-backend
           port: 8080
       priority: 1
-
     - match: Host(`{{ .Values.hostname }}`)
       kind: Rule
       middlewares:
         - name: {{ .Values.traefik.authMiddleware.name }}
+      {{- range .Values.traefik.middlewares }}
+        - name: {{ .name }}
+      {{- end }}
       services:
         - name: katcher-backend
           port: 8080
