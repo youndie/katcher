@@ -1,4 +1,5 @@
 [versions]
+atomicfu = "0.30.0-beta"
 kotlin = "2.2.21"
 kotlinxDatetime = "0.7.1"
 kotlinxSerializationJson = "1.8.0"
@@ -19,3 +20,4 @@ ktlintPlugin = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 pluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kspPlugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "atomicfu" }

@@ -6,17 +6,20 @@ import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import ru.workinprogress.feature.app.AppRepository
-import ru.workinprogress.feature.error.ProcessReportUseCase
+import ru.workinprogress.feature.error.ReportsQueueService
 
 fun Route.reportRoute(
     appRepository: AppRepository,
-    processReportUseCase: ProcessReportUseCase,
+    processReportUseCase: ReportsQueueService,
 ) {
     post<ReportResource> {
         val params = call.receive<CreateReportParams>()
-        appRepository.findByApiKey(params.appKey)?.let { app ->
-            processReportUseCase.process(params, app.id)
-            call.respond(HttpStatusCode.Created)
+        val app = appRepository.findByApiKey(params.appKey) ?: return@post call.respond(HttpStatusCode.Unauthorized)
+
+        if (!processReportUseCase.enqueueReport(params, app.id)) {
+            call.respond(HttpStatusCode.ServiceUnavailable)
+        } else {
+            call.respond(HttpStatusCode.Accepted)
         }
     }
 }

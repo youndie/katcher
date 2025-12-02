@@ -71,7 +71,9 @@ class ReportRepositoryImpl(
         pageSize: Int,
     ): ReportsPaginated =
         db.transaction {
-            val offset = (page - 1) * pageSize
+            val safePageSize = pageSize.coerceIn(1, 100)
+            val safePage = page.coerceAtLeast(1)
+            val offset = (safePage - 1) * safePageSize
 
             val selectSql =
                 """
@@ -79,7 +81,7 @@ class ReportRepositoryImpl(
                 FROM reports
                 WHERE app_id = :appId
                 ORDER BY timestamp DESC
-                LIMIT $pageSize OFFSET $offset
+                LIMIT $safePageSize OFFSET $offset
                 """.trimIndent()
 
             val reports =
@@ -112,7 +114,7 @@ class ReportRepositoryImpl(
             ReportsPaginated(
                 items = reports,
                 page = page,
-                totalPages = ((total + pageSize - 1) / pageSize).toInt(),
+                totalPages = ((total + safePageSize - 1) / safePageSize).toInt(),
             )
         }
 
@@ -122,7 +124,9 @@ class ReportRepositoryImpl(
         pageSize: Int,
     ): ReportsPaginated =
         db.transaction {
-            val offset = (page - 1) * pageSize
+            val safePageSize = pageSize.coerceIn(1, 100)
+            val safePage = page.coerceAtLeast(1)
+            val offset = (safePage - 1) * safePageSize
 
             val selectSql =
                 """
@@ -130,7 +134,7 @@ class ReportRepositoryImpl(
                 FROM reports
                 WHERE group_id = :groupId
                 ORDER BY timestamp DESC
-                LIMIT $pageSize OFFSET $offset
+                LIMIT $safePageSize OFFSET $offset
                 """.trimIndent()
 
             val reports =
@@ -163,7 +167,7 @@ class ReportRepositoryImpl(
             ReportsPaginated(
                 items = reports,
                 page = page,
-                totalPages = ((total + pageSize - 1) / pageSize).toInt(),
+                totalPages = ((total + safePageSize - 1) / safePageSize).toInt(),
             )
         }
 }

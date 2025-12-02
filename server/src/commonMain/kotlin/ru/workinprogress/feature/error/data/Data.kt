@@ -112,7 +112,9 @@ class ErrorGroupRepositoryImpl(
         sortOrder: ErrorGroupSortOrder,
     ): ErrorGroupsPaginated =
         db.transaction {
-            val offset = (page - 1) * pageSize
+            val safePageSize = pageSize.coerceIn(1, 100)
+            val safePage = page.coerceAtLeast(1)
+            val offset = (safePage - 1) * safePageSize
 
             val sortField =
                 when (sortBy) {

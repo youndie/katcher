@@ -8,6 +8,7 @@ import ru.workinprogress.feature.error.data.ErrorGroupViewedRepositoryImpl
 
 val errorGroupModule =
     module {
+        singleOf(::ReportsQueueService)
         singleOf(::ProcessReportUseCase)
         singleOf(::ErrorGroupRepositoryImpl).bind<ErrorGroupRepository>()
         singleOf(::ErrorGroupViewedRepositoryImpl).bind<ErrorGroupViewedRepository>()

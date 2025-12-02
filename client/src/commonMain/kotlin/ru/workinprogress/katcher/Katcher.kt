@@ -1,6 +1,8 @@
 package ru.workinprogress.katcher
 
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.post
@@ -11,6 +13,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -22,6 +25,7 @@ import ru.workinprogress.feature.report.CreateReportParams
 internal expect fun setupPlatformHandler()
 
 object Katcher {
+    private val isCrashing = atomic(false)
     private var config: KatcherConfig = KatcherConfig()
     private const val LOGO = """📡"""
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -39,6 +43,17 @@ object Katcher {
         HttpClient {
             install(ContentNegotiation) {
                 json(json)
+            }
+            install(HttpTimeout) {
+                requestTimeoutMillis = 7_000
+                connectTimeoutMillis = 3_000
+                socketTimeoutMillis = 5_000
+            }
+            install(HttpRequestRetry) {
+                maxRetries = 2
+                retryIf { _, response -> !response.status.isSuccess() }
+                retryOnExceptionIf { _, _ -> true }
+                exponentialDelay(maxDelayMs = 3_000)
             }
             defaultRequest {
                 contentType(ContentType.Application.Json)
@@ -69,6 +84,9 @@ object Katcher {
     fun catch(throwable: Throwable) {
         if (config.appKey.isEmpty()) return
 
+        val first = isCrashing.compareAndSet(expect = false, update = true)
+        if (!first) return
+
         try {
             val params =
                 CreateReportParams(
@@ -86,6 +104,8 @@ object Katcher {
             uploadSignal.trySend(Unit)
         } catch (e: Exception) {
             println("$LOGO Failed to save crash report: ${e.message}")
+        } finally {
+            isCrashing.value = false
         }
     }
 
