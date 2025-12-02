@@ -90,6 +90,12 @@ authResponseHeaders:
   - X-Auth-Request-Email
 ```
 
+## 🚀 Deployment
+
+Katcher is designed to run on Kubernetes. We provide an official Helm chart.
+
+👉 **[Read the Deployment Guide](charts/katcher/README.md)** to learn how to install Katcher with Helm, configure Traefik Ingress, and set up SSO integration.
+
 ## Sending Errors From Your Application (Kotlin Client)
 
 Katcher includes a tiny built‑in client you can embed directly into your Kotlin project. It uses the standard Ktor
