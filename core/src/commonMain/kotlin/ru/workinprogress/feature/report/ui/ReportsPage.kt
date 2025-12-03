@@ -92,9 +92,12 @@ fun HTML.errorGroupPage(
                             attributes.hx {
                                 post =
                                     call.application.href(
-                                        AppsResource.AppId.Errors.GroupId(
-                                            appId = appId,
-                                            groupId = group.id,
+                                        AppsResource.AppId.Errors.GroupId.Resolve(
+                                            parent =
+                                                AppsResource.AppId.Errors.GroupId(
+                                                    appId = appId,
+                                                    groupId = group.id,
+                                                ),
                                         ),
                                     )
                                 target = "#resolved-container"
