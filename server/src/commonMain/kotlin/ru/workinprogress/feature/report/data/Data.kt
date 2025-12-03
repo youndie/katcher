@@ -113,7 +113,7 @@ class ReportRepositoryImpl(
 
             ReportsPaginated(
                 items = reports,
-                page = page,
+                page = safePage,
                 totalPages = ((total + safePageSize - 1) / safePageSize).toInt(),
             )
         }
@@ -166,7 +166,7 @@ class ReportRepositoryImpl(
 
             ReportsPaginated(
                 items = reports,
-                page = page,
+                page = safePage,
                 totalPages = ((total + safePageSize - 1) / safePageSize).toInt(),
             )
         }

@@ -81,7 +81,10 @@ object Katcher {
         if (config.isDebug) println("$LOGO Katcher initialized. Storage ready.")
     }
 
-    fun catch(throwable: Throwable) {
+    fun catch(
+        throwable: Throwable,
+        context: Map<String, String> = emptyMap(),
+    ) {
         if (config.appKey.isEmpty()) return
 
         val first = isCrashing.compareAndSet(expect = false, update = true)
@@ -95,6 +98,7 @@ object Katcher {
                     stacktrace = throwable.stackTraceToString(),
                     release = config.release,
                     environment = config.environment,
+                    context = context,
                 )
 
             fileSystem.saveReport(params)

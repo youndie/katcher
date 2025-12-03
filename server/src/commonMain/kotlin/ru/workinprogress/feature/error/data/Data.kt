@@ -140,7 +140,7 @@ class ErrorGroupRepositoryImpl(
                     ON v.group_id = g.id AND v.user_id = :userId
                 WHERE g.app_id = :appId
                 ORDER BY $sortField $order
-                LIMIT $pageSize OFFSET $offset
+                LIMIT $safePageSize OFFSET $offset
                 """.trimIndent()
 
             val items =
@@ -157,8 +157,8 @@ class ErrorGroupRepositoryImpl(
 
             ErrorGroupsPaginated(
                 items = items,
-                page = page,
-                totalPages = ((total + pageSize - 1) / pageSize).toInt(),
+                page = safePage,
+                totalPages = ((total + safePageSize - 1) / safePageSize).toInt(),
                 sortBy = sortBy,
                 sortOrder = sortOrder,
             )

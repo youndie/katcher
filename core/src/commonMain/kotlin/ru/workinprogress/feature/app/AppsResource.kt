@@ -45,6 +45,13 @@ class AppsResource {
                 class Resolve(
                     val parent: GroupId,
                 )
+
+                companion object {
+                    operator fun invoke(
+                        appId: Int,
+                        groupId: Long,
+                    ) = GroupId(Errors(AppId(appId)), groupId)
+                }
             }
         }
     }
