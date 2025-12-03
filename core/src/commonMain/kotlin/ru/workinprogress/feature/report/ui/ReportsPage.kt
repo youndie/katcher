@@ -187,8 +187,7 @@ fun HTML.reportsTableFragment(
                     "bg-card text-card-foreground",
         ) {
             thead(
-                classes =
-                    "bg-muted text-muted-foreground border-b border-border",
+                classes = "bg-muted text-muted-foreground border-b border-border",
             ) {
                 tr {
                     th(classes = "p-2 text-left w-40 whitespace-nowrap") { +"Timestamp" }
@@ -204,11 +203,11 @@ fun HTML.reportsTableFragment(
                             "border-b border-border hover:bg-accent " +
                                 "hover:text-accent-foreground transition",
                     ) {
-                        td(classes = "p-2 w-40 whitespace-nowrap align-top") {
+                        td(classes = "p-2 w-40 whitespace-nowrap") {
                             +report.timestamp.human()
                         }
 
-                        td(classes = "p-2 max-w-xs align-top") {
+                        td(classes = "p-2 max-w-xs") {
                             val context = report.context
 
                             if (context.isNullOrEmpty()) {
@@ -216,17 +215,16 @@ fun HTML.reportsTableFragment(
                             } else {
                                 details(classes = "group relative") {
                                     summary(
-                                        classes =
-                                            "list-none cursor-pointer flex items-center gap-2",
+                                        classes = "list-none cursor-pointer flex items-center gap-2 truncate",
                                     ) {
                                         span(classes = "h-4 w-4 shrink-0") { info() }
-                                        span(classes = "truncate flex-1") { +report.message }
+                                        span(classes = "truncate") { +report.message }
                                     }
 
                                     div(
                                         classes =
-                                            """absolute left-0 bottom-full w-96 p-4 rounded-md border bg-card 
-                                   text-card-foreground shadow-xl z-50""",
+                                            """absolute left-0 bottom-full w-96 p-4 rounded-md border 
+                                               bg-card text-card-foreground shadow-xl z-50""",
                                     ) {
                                         div(classes = "flex justify-between items-center mb-2") {
                                             h4(classes = "text-sm font-semibold") { +"Context Data" }
