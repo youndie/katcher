@@ -3,4 +3,4 @@ name: katcher
 description: Katcher - tiny self-hosted crash tracker
 type: application
 version: 0.1.0
-appVersion: "0.1.19"
+appVersion: "0.1.21"
