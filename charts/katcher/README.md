@@ -82,7 +82,7 @@ Alternatively, you can set values via CLI arguments:
 helm upgrade --install katcher ./charts/katcher \
   -n katcher --create-namespace \
   --set hostname=katcher.example.com \
-  --set traefik.middleware.name=auth-auth-mw \
+  --set traefik.authMiddleware.name=auth-auth-mw \
   --set traefik.authMiddleware.namespace=auth
 ```
 **How it works**
