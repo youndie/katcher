@@ -6,7 +6,7 @@ hostname: ""
 
 server:
   image: katcher
-  version: 0.1.18
+  version: 0.1.19
   resources:
     requests:
       cpu: "30m"
