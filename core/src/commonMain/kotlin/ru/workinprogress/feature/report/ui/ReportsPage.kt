@@ -152,20 +152,8 @@ fun HTML.errorGroupPage(
                             get =
                                 call.application.href(
                                     AppsResource.AppId.Errors.GroupId.Reports.Paginated(
-                                        parent =
-                                            AppsResource.AppId.Errors.GroupId.Reports(
-                                                parent =
-                                                    AppsResource.AppId.Errors.GroupId(
-                                                        groupId = group.id,
-                                                        parent =
-                                                            AppsResource.AppId.Errors(
-                                                                parent =
-                                                                    AppsResource.AppId(
-                                                                        appId = appId,
-                                                                    ),
-                                                            ),
-                                                    ),
-                                            ),
+                                        groupId = group.id,
+                                        appId = appId,
                                     ),
                                 )
                             trigger = "load"
@@ -275,14 +263,8 @@ fun HTML.reportsTableFragment(
                         get =
                             call.application.href(
                                 AppsResource.AppId.Errors.GroupId.Reports.Paginated(
-                                    parent =
-                                        AppsResource.AppId.Errors.GroupId.Reports(
-                                            parent =
-                                                AppsResource.AppId.Errors.GroupId(
-                                                    groupId = groupId,
-                                                    parent = AppsResource.AppId.Errors(parent = AppsResource.AppId(appId = appId)),
-                                                ),
-                                        ),
+                                    groupId = groupId,
+                                    appId = appId,
                                     page = data.page - 1,
                                 ),
                             )
@@ -302,14 +284,8 @@ fun HTML.reportsTableFragment(
                         get =
                             call.application.href(
                                 AppsResource.AppId.Errors.GroupId.Reports.Paginated(
-                                    parent =
-                                        AppsResource.AppId.Errors.GroupId.Reports(
-                                            parent =
-                                                AppsResource.AppId.Errors.GroupId(
-                                                    groupId = groupId,
-                                                    parent = AppsResource.AppId.Errors(parent = AppsResource.AppId(appId = appId)),
-                                                ),
-                                        ),
+                                    groupId = groupId,
+                                    appId = appId,
                                     page = data.page + 1,
                                 ),
                             )

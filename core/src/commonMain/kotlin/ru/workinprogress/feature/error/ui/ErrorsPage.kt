@@ -69,7 +69,7 @@ fun HTML.appErrorsPage(app: App) {
                     get =
                         call.application.href(
                             AppsResource.AppId.Errors(
-                                parent = AppsResource.AppId(appId = app.id),
+                                appId = app.id,
                             ),
                         )
                     trigger = "load"
@@ -150,7 +150,7 @@ fun HTML.errorsTableFragment(
                                 get =
                                     call.application.href(
                                         AppsResource.AppId.Errors.GroupId(
-                                            parent = AppsResource.AppId.Errors(parent = AppsResource.AppId(appId = appId)),
+                                            parent = AppsResource.AppId.Errors(appId = appId),
                                             groupId = group.errorGroup.id,
                                         ),
                                     )
@@ -187,7 +187,7 @@ fun HTML.errorsTableFragment(
                         get =
                             call.application.href(
                                 AppsResource.AppId.Errors.Paginated(
-                                    parent = AppsResource.AppId.Errors(parent = AppsResource.AppId(appId = appId)),
+                                    parent = AppsResource.AppId.Errors(appId = appId),
                                     sortBy = data.sortBy,
                                     sortOrder = data.sortOrder,
                                     page = data.page - 1,
@@ -206,7 +206,7 @@ fun HTML.errorsTableFragment(
                         get =
                             call.application.href(
                                 AppsResource.AppId.Errors.Paginated(
-                                    parent = AppsResource.AppId.Errors(parent = AppsResource.AppId(appId = appId)),
+                                    parent = AppsResource.AppId.Errors(appId = appId),
                                     sortBy = data.sortBy,
                                     sortOrder = data.sortOrder,
                                     page = data.page + 1,
@@ -240,7 +240,7 @@ fun TR.headerCell(
             get =
                 call.application.href(
                     AppsResource.AppId.Errors.Paginated(
-                        parent = AppsResource.AppId.Errors(parent = AppsResource.AppId(appId = appId)),
+                        parent = AppsResource.AppId.Errors(appId = appId),
                         sortBy = field,
                         sortOrder =
                             if (data.sortBy == field &&

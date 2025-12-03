@@ -15,6 +15,10 @@ class AppsResource {
         class Errors(
             val parent: AppId,
         ) {
+            companion object {
+                operator fun invoke(appId: Int) = Errors(AppId(appId))
+            }
+
             @Resource("")
             class Paginated(
                 val parent: Errors,
@@ -29,6 +33,13 @@ class AppsResource {
                 val parent: Errors,
                 val groupId: Long,
             ) {
+                companion object {
+                    operator fun invoke(
+                        appId: Int,
+                        groupId: Long,
+                    ) = GroupId(Errors(AppId(appId)), groupId)
+                }
+
                 @Resource("reports")
                 class Reports(
                     val parent: GroupId,
@@ -38,20 +49,26 @@ class AppsResource {
                         val page: Int = 1,
                         val pageSize: Int = 15,
                         val parent: Reports,
-                    )
+                    ) {
+                        companion object {
+                            operator fun invoke(
+                                appId: Int,
+                                groupId: Long,
+                                page: Int = 1,
+                                pageSize: Int = 15,
+                            ) = Paginated(
+                                page = page,
+                                pageSize = pageSize,
+                                parent = Reports(GroupId(appId, groupId)),
+                            )
+                        }
+                    }
                 }
 
                 @Resource("resolve")
                 class Resolve(
                     val parent: GroupId,
                 )
-
-                companion object {
-                    operator fun invoke(
-                        appId: Int,
-                        groupId: Long,
-                    ) = GroupId(Errors(AppId(appId)), groupId)
-                }
             }
         }
     }
