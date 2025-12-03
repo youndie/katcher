@@ -25,13 +25,11 @@ import kotlinx.html.th
 import kotlinx.html.thead
 import kotlinx.html.title
 import kotlinx.html.tr
-import kotlinx.html.unsafe
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.feature.error.ErrorGroup
 import ru.workinprogress.feature.report.ReportsPaginated
 import ru.workinprogress.katcher.ui.ButtonSize
 import ru.workinprogress.katcher.ui.ButtonVariant
-import ru.workinprogress.katcher.ui.Icons
 import ru.workinprogress.katcher.ui.Icons.check
 import ru.workinprogress.katcher.ui.Icons.close
 import ru.workinprogress.katcher.ui.Icons.info
@@ -185,7 +183,7 @@ fun HTML.reportsTableFragment(
     body {
         table(
             classes =
-                "w-full border border-border rounded-xl text-sm " +
+                "w-full border table-fixed border-border rounded-xl text-sm " +
                     "bg-card text-card-foreground",
         ) {
             thead(
