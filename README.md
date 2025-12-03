@@ -5,7 +5,7 @@
 [![native](https://img.shields.io/badge/Native-blue?logoColor=white)](https://kotlinlang.org)
 [![jvm](https://img.shields.io/badge/JVM-orange?logoColor=white)](https://kotlinlang.org)
 [![katcher client](https://reposilite.kotlin.website/api/badge/latest/snapshots/ru/workinprogress/katcher/client?name=client&color=40c14a&prefix=v)](https://reposilite.kotlin.website/#/snapshots/ru/workinprogress/katcher/client)
-![Docker Image Version](https://img.shields.io/badge/server-latest-blue?logo=docker)
+[![Docker Image Version](https://img.shields.io/badge/server-latest-blue?logo=docker)](https://github.com/youndie/katcher/pkgs/container/katcher)
 
 Lightweight, privacy-friendly error tracking service written in Kotlin with a focus on portability and
 extremely low overhead.
