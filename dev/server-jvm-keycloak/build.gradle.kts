@@ -30,7 +30,6 @@ dependencies {
     implementation(ktorLibs.server.cio)
     implementation(ktorLibs.server.auth)
     implementation(ktorLibs.server.auth.jwt)
-    implementation(ktorLibs.server.cors)
     implementation(ktorLibs.server.resources)
     implementation(ktorLibs.server.contentNegotiation)
     implementation(ktorLibs.serialization.kotlinx.json)

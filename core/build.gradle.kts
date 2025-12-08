@@ -34,7 +34,6 @@ dependencies {
     commonMainImplementation(ktorLibs.serialization.kotlinx.json)
     commonMainImplementation(ktorLibs.server.contentNegotiation)
     commonMainImplementation(ktorLibs.server.statusPages)
-    commonMainImplementation(ktorLibs.server.cors)
     commonMainImplementation(ktorLibs.server.auth)
     commonMainImplementation(kotlinCrypto.hash.sha2)
 
