@@ -65,7 +65,6 @@ dependencies {
     commonMainImplementation(libs.kotlinx.datetime)
 
     commonMainImplementation(libs.kotlinx.serialization.json)
-    commonMainImplementation(ktorLibs.server.core)
     commonMainImplementation(ktorLibs.server.di)
     commonMainImplementation(ktorLibs.server.auth)
     commonMainImplementation(ktorLibs.server.cio)

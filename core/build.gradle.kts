@@ -30,7 +30,6 @@ dependencies {
     commonMainImplementation(libs.kotlinx.datetime)
 
     commonMainImplementation(libs.kotlinx.serialization.json)
-    commonMainImplementation(ktorLibs.server.core)
     commonMainImplementation(ktorLibs.server.resources)
     commonMainImplementation(ktorLibs.serialization.kotlinx.json)
     commonMainImplementation(ktorLibs.server.contentNegotiation)

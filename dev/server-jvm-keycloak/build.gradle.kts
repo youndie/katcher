@@ -27,7 +27,6 @@ dependencies {
     implementation(projects.shared)
 
     implementation(jvmLibs.logback)
-    implementation(ktorLibs.server.core)
     implementation(ktorLibs.server.cio)
     implementation(ktorLibs.server.auth)
     implementation(ktorLibs.server.auth.jwt)
