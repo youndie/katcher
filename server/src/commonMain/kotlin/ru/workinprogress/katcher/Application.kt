@@ -7,8 +7,6 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.plugins.di.dependencies
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ru.workinprogress.feature.app.AppRepository
 import ru.workinprogress.feature.app.data.AppRepositoryImpl
@@ -19,6 +17,7 @@ import ru.workinprogress.feature.error.ProcessReportUseCase
 import ru.workinprogress.feature.error.ReportsQueueService
 import ru.workinprogress.feature.error.data.ErrorGroupRepositoryImpl
 import ru.workinprogress.feature.error.data.ErrorGroupViewedRepositoryImpl
+import ru.workinprogress.feature.error.launchReportQueueService
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.data.ReportRepositoryImpl
 import ru.workinprogress.feature.user.UserRepository
@@ -28,14 +27,14 @@ import ru.workinprogress.katcher.db.ErrorGroupCrudRepositoryImpl
 import ru.workinprogress.katcher.db.UsersCrudRepositoryImpl
 import ru.workinprogress.katcher.db.commands
 
-fun Application.module() {
+suspend fun Application.module() {
     val config = getServerConfig()
     val db = initDb(config)
     common()
     initDi(db)
     initAuth()
     configureRouting()
-    launchReportQueueService()
+    launchReportQueueService(dependencies.resolve())
 }
 
 fun initDb(config: ServerConfig): ISQLite {
@@ -97,9 +96,3 @@ fun Application.initDi(db: ISQLite) {
     }
 }
 
-fun Application.launchReportQueueService() {
-    launch(Dispatchers.Default) {
-        val reportsQueueService = dependencies.resolve<ReportsQueueService>()
-        reportsQueueService.work()
-    }
-}

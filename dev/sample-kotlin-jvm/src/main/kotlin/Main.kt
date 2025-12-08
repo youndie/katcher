@@ -1,8 +1,9 @@
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
 import ru.workinprogress.katcher.Katcher
 import java.lang.Thread.sleep
 
-fun main() {
+suspend fun main() = coroutineScope {
     Katcher.start {
         appKey = "d67fbe515e9f4063914722e412cd2da1"
         isDebug = true
@@ -12,5 +13,5 @@ fun main() {
     }
 
     Katcher.catch(RuntimeException("Test sad"))
-    runBlocking { sleep(1000) }
+    sleep(1000)
 }

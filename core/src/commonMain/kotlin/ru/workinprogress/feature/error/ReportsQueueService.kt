@@ -1,6 +1,13 @@
 package ru.workinprogress.feature.error
 
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationStopping
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.launch
 import ru.workinprogress.feature.report.CreateReportParams
 
 class ReportsQueueService(
@@ -17,5 +24,17 @@ class ReportsQueueService(
         for ((params, appId) in queue) {
             runCatching { processReportUseCase.process(params, appId) }
         }
+    }
+}
+
+fun Application.launchReportQueueService(service: ReportsQueueService) {
+    val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    monitor.subscribe(ApplicationStopping) {
+        appScope.cancel()
+    }
+
+    appScope.launch {
+        service.work()
     }
 }

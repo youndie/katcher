@@ -17,18 +17,9 @@ class ProcessReportUseCase(
         appId: Int,
     ) {
         val fingerprint = generateFingerprint(createReportParams.stacktrace)
-
-        println(
-            "M: ${createReportParams.message}\n" +
-                "ST: ${createReportParams.stacktrace}\n" +
-                "Processing report with fingerprint: $fingerprint",
-        )
-
         var group = errorGroupRepository.findByFingerprint(appId, fingerprint)
 
         if (group == null) {
-            println("Creating new error group for fingerprint: $fingerprint")
-
             group =
                 try {
                     errorGroupRepository.insert(
@@ -44,15 +35,11 @@ class ProcessReportUseCase(
                         ),
                     )
                 } catch (e: DuplicateErrorGroupException) {
-                    println("Race detected — existing error group was just created by another thread")
                     errorGroupRepository.findByFingerprint(appId, fingerprint)
                 }
-        } else {
-            println("Found existing error group with id: ${group.id}")
         }
 
         if (group == null) {
-            println("⚠️ Failed to create or find error group for fingerprint: $fingerprint")
             return
         }
 
