@@ -48,31 +48,31 @@ class AppRepositoryImpl(
         name: String,
         type: AppType,
     ): App =
-        TransactionContext.new(db) {
+        TransactionContext.withCurrent(db) {
             val apiKey = Uuid.random().toString().replace("-", "")
 
             crudRepository
-                .insert(db, AppDb(id = 0, name = name, apiKey = apiKey, type = type.name))
+                .insert(this, AppDb(id = 0, name = name, apiKey = apiKey, type = type.name))
                 .getOrThrow()
                 .toDomain()
         }
 
     override suspend fun findByApiKey(apiKey: String): App? =
-        TransactionContext.new(db) {
+        TransactionContext.withCurrent(db) {
             crudRepository
-                .findOneByApiKey(db, apiKey)
+                .findOneByApiKey(this, apiKey)
                 .getOrNull()
                 ?.toDomain()
         }
 
     override suspend fun findAll(): List<App> =
-        TransactionContext.new(db) {
-            crudRepository.findAll(db).getOrThrow().map { it.toDomain() }
+        TransactionContext.withCurrent(db) {
+            crudRepository.findAll(this).getOrThrow().map { it.toDomain() }
         }
 
     override suspend fun findById(id: Int): App? =
-        TransactionContext.new(db) {
-            crudRepository.findOneById(db, id).getOrNull()?.toDomain()
+        TransactionContext.withCurrent(db) {
+            crudRepository.findOneById(this, id).getOrNull()?.toDomain()
         }
 }
 

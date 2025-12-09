@@ -3,6 +3,7 @@ package ru.workinprogress.feature.report.data
 import io.github.smyrgeorge.sqlx4k.ResultSet
 import io.github.smyrgeorge.sqlx4k.RowMapper
 import io.github.smyrgeorge.sqlx4k.Statement
+import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
@@ -41,28 +42,26 @@ class ReportRepositoryImpl(
         appId: Int,
         groupId: Long,
         report: CreateReportParams,
-    ) = db.transaction {
-        db
-            .execute(
-                Statement
-                    .create(
-                        """
+    ) = TransactionContext.withCurrent(db) {
+        execute(
+            Statement
+                .create(
+                    """
     INSERT INTO reports (app_id, group_id, message, stacktrace, timestamp, context, release, environment)
     VALUES (:appId, :groupId, :message, :stacktrace, :timestamp, :context, :release, :environment)
     """,
-                    ).apply {
-                        bind("appId", appId)
-                        bind("groupId", groupId)
-                        bind("message", report.message)
-                        bind("stacktrace", report.stacktrace)
-                        bind("timestamp", Clock.System.now().toEpochMilliseconds())
-                        bind("context", report.context?.let { Json.encodeToString(it) })
-                        bind("release", report.release)
-                        bind("environment", report.environment)
-                    },
-            )
-
-        return@transaction
+                ).apply {
+                    bind("appId", appId)
+                    bind("groupId", groupId)
+                    bind("message", report.message)
+                    bind("stacktrace", report.stacktrace)
+                    bind("timestamp", Clock.System.now().toEpochMilliseconds())
+                    bind("context", report.context?.let { Json.encodeToString(it) })
+                    bind("release", report.release)
+                    bind("environment", report.environment)
+                },
+        )
+        return@withCurrent
     }
 
     override suspend fun findByApp(
@@ -70,7 +69,7 @@ class ReportRepositoryImpl(
         page: Int,
         pageSize: Int,
     ): ReportsPaginated =
-        db.transaction {
+        TransactionContext.withCurrent(db) {
             val safePageSize = pageSize.coerceIn(1, 100)
             val safePage = page.coerceAtLeast(1)
             val offset = (safePage - 1) * safePageSize
@@ -85,13 +84,12 @@ class ReportRepositoryImpl(
                 """.trimIndent()
 
             val reports =
-                db
-                    .fetchAll(
-                        Statement.create(selectSql).apply {
-                            bind("appId", appId)
-                        },
-                        ReportRowMapper,
-                    ).getOrNull()
+                fetchAll(
+                    Statement.create(selectSql).apply {
+                        bind("appId", appId)
+                    },
+                    ReportRowMapper,
+                ).getOrNull()
                     .orEmpty()
 
             val countSql =
@@ -102,13 +100,12 @@ class ReportRepositoryImpl(
                 """.trimIndent()
 
             val total =
-                db
-                    .fetchAll(
-                        Statement.create(countSql).apply {
-                            bind("appId", appId)
-                        },
-                        CountMapper,
-                    ).getOrThrow()
+                fetchAll(
+                    Statement.create(countSql).apply {
+                        bind("appId", appId)
+                    },
+                    CountMapper,
+                ).getOrThrow()
                     .first()
 
             ReportsPaginated(
@@ -123,7 +120,7 @@ class ReportRepositoryImpl(
         page: Int,
         pageSize: Int,
     ): ReportsPaginated =
-        db.transaction {
+        TransactionContext.withCurrent(db) {
             val safePageSize = pageSize.coerceIn(1, 100)
             val safePage = page.coerceAtLeast(1)
             val offset = (safePage - 1) * safePageSize
@@ -138,13 +135,12 @@ class ReportRepositoryImpl(
                 """.trimIndent()
 
             val reports =
-                db
-                    .fetchAll(
-                        Statement.create(selectSql).apply {
-                            bind("groupId", groupId)
-                        },
-                        ReportRowMapper,
-                    ).getOrNull()
+                fetchAll(
+                    Statement.create(selectSql).apply {
+                        bind("groupId", groupId)
+                    },
+                    ReportRowMapper,
+                ).getOrNull()
                     .orEmpty()
 
             val countSql =
@@ -155,13 +151,12 @@ class ReportRepositoryImpl(
                 """.trimIndent()
 
             val total =
-                db
-                    .fetchAll(
-                        Statement.create(countSql).apply {
-                            bind("groupId", groupId)
-                        },
-                        CountMapper,
-                    ).getOrThrow()
+                fetchAll(
+                    Statement.create(countSql).apply {
+                        bind("groupId", groupId)
+                    },
+                    CountMapper,
+                ).getOrThrow()
                     .first()
 
             ReportsPaginated(

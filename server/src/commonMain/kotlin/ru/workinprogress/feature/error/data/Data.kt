@@ -12,6 +12,7 @@ import io.github.smyrgeorge.sqlx4k.annotation.Id
 import io.github.smyrgeorge.sqlx4k.annotation.Query
 import io.github.smyrgeorge.sqlx4k.annotation.Repository
 import io.github.smyrgeorge.sqlx4k.annotation.Table
+import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asBoolean
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
@@ -38,15 +39,15 @@ class ErrorGroupRepositoryImpl(
         appId: Int,
         fingerprint: String,
     ): ErrorGroup? =
-        db.transaction {
-            crudRepository.findOneByFingerprint(db, appId, fingerprint).getOrNull()?.toDomain()
+        TransactionContext.withCurrent(db) {
+            crudRepository.findOneByFingerprint(this, appId, fingerprint).getOrNull()?.toDomain()
         }
 
     override suspend fun insert(newGroup: CreateErrorGroupParams): ErrorGroup =
-        db.transaction {
+        TransactionContext.withCurrent(db) {
             crudRepository
                 .insert(
-                    db,
+                    this,
                     ErrorGroupDb(
                         id = 0,
                         appId = newGroup.appId,
@@ -62,13 +63,13 @@ class ErrorGroupRepositoryImpl(
         }
 
     override suspend fun findById(groupId: Long): ErrorGroup? =
-        db.transaction {
-            crudRepository.findOneById(db, groupId).getOrNull()?.toDomain()
+        TransactionContext.withCurrent(db) {
+            crudRepository.findOneById(this, groupId).getOrNull()?.toDomain()
         }
 
     override suspend fun updateOccurrences(id: Long) {
-        db.transaction {
-            db.execute(
+        TransactionContext.withCurrent(db) {
+            execute(
                 Statement
                     .create(
                         "UPDATE error_groups SET occurrences = occurrences + 1 WHERE id = :id",
@@ -76,22 +77,21 @@ class ErrorGroupRepositoryImpl(
                         bind("id", id)
                     },
             )
-            db.execute(
+            execute(
                 Statement
                     .create(
                         "UPDATE error_groups SET last_seen = :lastSeen WHERE id = :id",
                     ).apply {
                         bind("id", id)
                         bind("lastSeen", Clock.System.now().toEpochMilliseconds())
-                        bind("id", id)
                     },
             )
         }
     }
 
     override suspend fun resolve(groupId: Long) {
-        db.transaction {
-            db.execute(
+        TransactionContext.withCurrent(db) {
+            execute(
                 Statement
                     .create(
                         "UPDATE error_groups SET resolved = :resolved WHERE id = :id",
@@ -111,7 +111,7 @@ class ErrorGroupRepositoryImpl(
         sortBy: ErrorGroupSort,
         sortOrder: ErrorGroupSortOrder,
     ): ErrorGroupsPaginated =
-        db.transaction {
+        TransactionContext.withCurrent(db) {
             val safePageSize = pageSize.coerceIn(1, 100)
             val safePage = page.coerceAtLeast(1)
             val offset = (safePage - 1) * safePageSize
@@ -144,16 +144,15 @@ class ErrorGroupRepositoryImpl(
                 """.trimIndent()
 
             val items =
-                db
-                    .fetchAll(
-                        Statement.create(selectSql).apply {
-                            bind("appId", appId)
-                            bind("userId", userId)
-                        },
-                        ErrorGroupWithViewedRowMapper,
-                    ).getOrThrow()
+                fetchAll(
+                    Statement.create(selectSql).apply {
+                        bind("appId", appId)
+                        bind("userId", userId)
+                    },
+                    ErrorGroupWithViewedRowMapper,
+                ).getOrThrow()
 
-            val total = crudRepository.countByAppId(db, appId).getOrThrow()
+            val total = crudRepository.countByAppId(this, appId).getOrThrow()
 
             ErrorGroupsPaginated(
                 items = items,
@@ -173,8 +172,8 @@ class ErrorGroupViewedRepositoryImpl(
         errorGroupId: Long,
         forUserId: Int,
     ) {
-        db.transaction {
-            db.execute(
+        TransactionContext.withCurrent(db) {
+            execute(
                 Statement
                     .create(
                         """INSERT INTO user_error_group_viewed(group_id, user_id, viewed_at) VALUES (:groupId, :userId, :viewedAt)""",

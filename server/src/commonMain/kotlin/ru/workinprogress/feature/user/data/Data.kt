@@ -22,7 +22,8 @@ data class UserDb(
 )
 
 object UserRowMapper : RowMapper<UserDb> {
-    override fun map(row: ResultSet.Row): UserDb = UserDb(row.get("id").asInt(), row.get("email").asString(), row.get("name").asString())
+    override fun map(row: ResultSet.Row): UserDb =
+        UserDb(row.get("id").asInt(), row.get("email").asString(), row.get("name").asString())
 }
 
 fun UserDb.toDomain() = User(id = id, email = email, name = name)
@@ -52,18 +53,18 @@ class UserRepositoryImpl(
     ): User =
         db
             .transaction {
-                crudRepository.insert(db, UserDb(0, email, name))
+                crudRepository.insert(this, UserDb(0, email, name))
             }.getOrThrow()
             .toDomain()
 
     override suspend fun findById(id: Int): User? =
         db
             .transaction {
-                crudRepository.findOneById(db, id).getOrNull()?.toDomain()
+                crudRepository.findOneById(this, id).getOrNull()?.toDomain()
             }
 
     override suspend fun findByEmail(email: String): User? =
         db.transaction {
-            crudRepository.findOneByEmail(db, email).getOrNull()?.toDomain()
+            crudRepository.findOneByEmail(this, email).getOrNull()?.toDomain()
         }
 }
