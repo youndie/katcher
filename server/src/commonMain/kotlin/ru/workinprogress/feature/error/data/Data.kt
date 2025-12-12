@@ -185,6 +185,19 @@ class ErrorGroupViewedRepositoryImpl(
             )
         }
     }
+
+    override suspend fun removeVisits(errorGroupId: Long) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        "DELETE FROM user_error_group_viewed WHERE group_id = :groupId",
+                    ).apply {
+                        bind("groupId", errorGroupId)
+                    },
+            )
+        }
+    }
 }
 
 @Table("error_groups")

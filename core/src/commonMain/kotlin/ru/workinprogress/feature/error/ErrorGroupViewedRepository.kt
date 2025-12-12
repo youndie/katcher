@@ -5,4 +5,6 @@ interface ErrorGroupViewedRepository {
         errorGroupId: Long,
         forUserId: Int,
     )
+
+    suspend fun removeVisits(errorGroupId: Long)
 }

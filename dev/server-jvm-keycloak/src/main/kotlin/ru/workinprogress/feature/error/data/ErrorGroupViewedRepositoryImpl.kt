@@ -3,6 +3,8 @@ package ru.workinprogress.feature.error.data
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.upsert
 import ru.workinprogress.feature.error.ErrorGroupViewedRepository
@@ -23,6 +25,14 @@ class ErrorGroupViewedRepositoryImpl : ErrorGroupViewedRepository {
                     it[userId] = EntityID(forUserId, Users)
                     it[viewedAt] = Clock.System.now().toEpochMilliseconds()
                 }
+            }
+        }
+    }
+
+    override suspend fun removeVisits(errorGroupId: Long) {
+        withContext(Dispatchers.IO) {
+            transaction {
+                UserErrorGroupViewed.deleteWhere { UserErrorGroupViewed.groupId eq errorGroupId }
             }
         }
     }

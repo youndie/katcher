@@ -11,6 +11,7 @@ class DuplicateErrorGroupException(
 class ProcessReportUseCase(
     private val errorGroupRepository: ErrorGroupRepository,
     private val reportRepository: ReportRepository,
+    private val visitedRepository: ErrorGroupViewedRepository,
 ) {
     suspend fun process(
         createReportParams: CreateReportParams,
@@ -45,6 +46,7 @@ class ProcessReportUseCase(
 
         reportRepository.insert(appId, group.id, createReportParams)
         errorGroupRepository.updateOccurrences(group.id)
+        visitedRepository.removeVisits(group.id)
     }
 
     companion object {
