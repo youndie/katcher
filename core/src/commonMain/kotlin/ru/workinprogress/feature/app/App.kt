@@ -13,5 +13,6 @@ data class App(
 enum class AppType {
     JVM,
     COMPOSE_MULTIPLATFORM,
+    ANDROID,
     OTHER,
 }
