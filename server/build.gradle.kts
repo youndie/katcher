@@ -63,6 +63,7 @@ dependencies {
     commonMainImplementation(projects.core)
     commonMainImplementation(projects.shared)
     commonMainImplementation(libs.kotlinx.datetime)
+    commonMainImplementation(libs.okio)
 
     commonMainImplementation(libs.kotlinx.serialization.json)
     commonMainImplementation(ktorLibs.server.di)

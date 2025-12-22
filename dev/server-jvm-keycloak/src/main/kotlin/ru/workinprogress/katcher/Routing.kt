@@ -7,6 +7,7 @@ import io.ktor.server.routing.routing
 import org.koin.ktor.ext.get
 import ru.workinprogress.feature.auth.authRoute
 import ru.workinprogress.feature.report.reportRoute
+import ru.workinprogress.feature.symbolication.symbolMapRouting
 
 fun Application.configureRouting() =
     routing {
@@ -15,7 +16,8 @@ fun Application.configureRouting() =
         pagesRoute()
         authRoute()
 
-        route("/api") {
+        route("api") {
             reportRoute(get(), get())
+            symbolMapRouting(get(), get(), get())
         }
     }

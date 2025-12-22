@@ -27,6 +27,7 @@ kotlin {
 
 dependencies {
     commonMainImplementation(projects.shared)
+    commonMainImplementation(projects.dev.retrace)
     commonMainImplementation(libs.kotlinx.datetime)
 
     commonMainImplementation(libs.kotlinx.serialization.json)

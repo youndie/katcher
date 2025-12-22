@@ -1,4 +1,5 @@
 [versions]
+androidGradlePlugin = "8.13.2"
 atomicfu = "0.30.0-beta"
 kotlin = "2.2.21"
 kotlinxDatetime = "0.7.1"
@@ -6,6 +7,7 @@ kotlinxSerializationJson = "1.8.0"
 sqlx4k = "1.4.1"
 ksp = "2.3.2"
 ktlint = "14.0.1"
+okio = "3.16.2"
 
 [libraries]
 
@@ -15,9 +17,12 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 sqlx4k-sqlite = { module = "io.github.smyrgeorge:sqlx4k-sqlite", version.ref = "sqlx4k" }
 sqlx4k-codegen = { module = "io.github.smyrgeorge:sqlx4k-codegen", version.ref = "sqlx4k" }
 
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
+
 [plugins]
 ktlintPlugin = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 pluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kspPlugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "atomicfu" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "androidGradlePlugin" }

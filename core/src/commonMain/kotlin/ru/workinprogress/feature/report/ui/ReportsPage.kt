@@ -109,7 +109,7 @@ fun HTML.errorGroupPage(
                 }
             }
 
-            h1(classes = "text-2xl font-bold tracking-tight") { +group.title }
+            h1(classes = "text-2xl font-bold tracking-tight break-words") { +group.title }
             p(classes = "text-muted-foreground text-sm") { +"Group #${group.id}" }
 
             uiCard {

@@ -3,6 +3,10 @@ package ru.workinprogress.retrace
 class Retracer(
     private val mappingStore: MappingStore,
 ) {
+    companion object {
+        operator fun invoke(mappingFileContent: String) = Retracer(MappingParser().parse(mappingFileContent.splitToSequence("\n")))
+    }
+
     private val stackTraceRegex = Regex("""^\s*at\s+(.+)\.([^\.]+)\((.*)\)\s*$""")
     private val potentialClassNameRegex = Regex("""([a-zA-Z0-9_$]+(?:\.[a-zA-Z0-9_$]+)*)""")
 
@@ -31,8 +35,6 @@ class Retracer(
                 0
             }
 
-        val fileName = if (sourceInfo.contains(':')) sourceInfo.substringBeforeLast(':') else sourceInfo
-
         val classMapping = mappingStore.classes[fullClassName] ?: return originalLine
 
         val candidates = classMapping.methods[methodName]
@@ -45,8 +47,14 @@ class Retracer(
                 null
             }
 
-        val newClassName = classMapping.originalName
-        val newMethodName = bestMatch?.originalName ?: methodName
+        var finalClassName = classMapping.originalName
+        var finalMethodName = bestMatch?.originalName ?: methodName
+
+        if (finalMethodName.contains('.')) {
+            val lastDotIndex = finalMethodName.lastIndexOf('.')
+            finalClassName = finalMethodName.substring(0, lastDotIndex)
+            finalMethodName = finalMethodName.substring(lastDotIndex + 1)
+        }
 
         val newLine =
             if (bestMatch?.obfuscatedRange != null && bestMatch.originalRange != null) {
@@ -55,13 +63,14 @@ class Retracer(
                 lineNumber
             }
 
-        val simpleName = newClassName.substringAfterLast('.').substringBefore('$')
+        val simpleName = finalClassName.substringAfterLast('.').substringBefore('$')
         val newSource = "$simpleName.kt"
 
         val sourceStr = if (newLine > 0) "$newSource:$newLine" else newSource
 
         val prefix = originalLine.takeWhile { it.isWhitespace() }
-        return "${prefix}at $newClassName.$newMethodName($sourceStr)"
+
+        return "${prefix}at $finalClassName.$finalMethodName($sourceStr)"
     }
 
     private fun retracePlainLine(line: String): String =

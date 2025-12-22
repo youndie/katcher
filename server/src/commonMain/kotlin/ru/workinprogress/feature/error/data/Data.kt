@@ -53,7 +53,7 @@ class ErrorGroupRepositoryImpl(
                         appId = newGroup.appId,
                         fingerprint = newGroup.fingerprint,
                         title = newGroup.title,
-                        occurrences = 1,
+                        occurrences = 0,
                         firstSeen = Clock.System.now().toEpochMilliseconds(),
                         lastSeen = Clock.System.now().toEpochMilliseconds(),
                         resolved = false,

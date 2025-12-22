@@ -8,6 +8,7 @@ import ru.workinprogress.feature.app.data.Apps
 import ru.workinprogress.feature.error.data.ErrorGroups
 import ru.workinprogress.feature.error.data.UserErrorGroupViewed
 import ru.workinprogress.feature.report.data.Reports
+import ru.workinprogress.feature.symbolication.data.SymbolMaps
 import ru.workinprogress.feature.user.data.Users
 import java.io.File
 
@@ -29,6 +30,6 @@ fun initDatabase() {
 
     transaction {
         addLogger(StdOutSqlLogger)
-        SchemaUtils.createMissingTablesAndColumns(Users, Apps, Reports, ErrorGroups, UserErrorGroupViewed)
+        SchemaUtils.createMissingTablesAndColumns(Users, Apps, Reports, ErrorGroups, UserErrorGroupViewed, SymbolMaps)
     }
 }

@@ -7,6 +7,7 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
 import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.plugins.di.resolve
 import kotlinx.coroutines.runBlocking
 import ru.workinprogress.feature.app.AppRepository
 import ru.workinprogress.feature.app.data.AppRepositoryImpl
@@ -20,10 +21,19 @@ import ru.workinprogress.feature.error.data.ErrorGroupViewedRepositoryImpl
 import ru.workinprogress.feature.error.launchReportQueueService
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.data.ReportRepositoryImpl
+import ru.workinprogress.feature.symbolication.AndroidR8Symbolicator
+import ru.workinprogress.feature.symbolication.FileStorage
+import ru.workinprogress.feature.symbolication.MappingType
+import ru.workinprogress.feature.symbolication.SymbolMapRepository
+import ru.workinprogress.feature.symbolication.SymbolicationService
+import ru.workinprogress.feature.symbolication.data.FileStorageOkio
+import ru.workinprogress.feature.symbolication.data.SymbolMapCrudRepository
+import ru.workinprogress.feature.symbolication.data.SymbolMapRepositoryImpl
 import ru.workinprogress.feature.user.UserRepository
 import ru.workinprogress.feature.user.data.UserRepositoryImpl
 import ru.workinprogress.katcher.db.AppsCrudRepositoryImpl
 import ru.workinprogress.katcher.db.ErrorGroupCrudRepositoryImpl
+import ru.workinprogress.katcher.db.SymbolMapCrudRepositoryImpl
 import ru.workinprogress.katcher.db.UsersCrudRepositoryImpl
 import ru.workinprogress.katcher.db.commands
 
@@ -85,7 +95,12 @@ fun Application.initDi(db: ISQLite) {
             ReportRepositoryImpl(db)
         }
         provide<ProcessReportUseCase> {
-            ProcessReportUseCase(resolve(), resolve())
+            ProcessReportUseCase(
+                resolve(),
+                resolve(),
+                resolve(),
+                resolve(),
+            )
         }
         provide<UserRepository> {
             UserRepositoryImpl(db, UsersCrudRepositoryImpl)
@@ -93,6 +108,21 @@ fun Application.initDi(db: ISQLite) {
         provide<ReportsQueueService> {
             ReportsQueueService(resolve())
         }
+        provide<SymbolMapRepository> {
+            SymbolMapRepositoryImpl(resolve(), SymbolMapCrudRepositoryImpl)
+        }
+        provide<FileStorage> {
+            FileStorageOkio
+        }
+        provide<SymbolicationService> {
+            SymbolicationService(
+                symbolMapRepository = resolve(),
+                fileStorage = resolve(),
+                strategies =
+                    mapOf(
+                        MappingType.ANDROID_PROGUARD to AndroidR8Symbolicator(),
+                    ),
+            )
+        }
     }
 }
-

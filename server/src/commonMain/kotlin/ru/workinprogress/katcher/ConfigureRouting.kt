@@ -17,6 +17,8 @@ import ru.workinprogress.feature.auth.HEADER_USER_AUTH
 import ru.workinprogress.feature.error.errorGroupPagesRoute
 import ru.workinprogress.feature.report.reportRoute
 import ru.workinprogress.feature.report.reportsPagesRoute
+import ru.workinprogress.feature.settings.settingsRoute
+import ru.workinprogress.feature.symbolication.symbolMapRouting
 import ru.workinprogress.katcher.static.CSS
 
 fun Application.configureRouting() =
@@ -34,7 +36,15 @@ fun Application.configureRouting() =
 
         route("/api") {
             runBlocking {
-                reportRoute(dependencies.resolve(), dependencies.resolve())
+                reportRoute(
+                    dependencies.resolve(),
+                    dependencies.resolve(),
+                )
+                symbolMapRouting(
+                    dependencies.resolve(),
+                    dependencies.resolve(),
+                    dependencies.resolve(),,
+                )
             }
         }
     }
@@ -46,9 +56,17 @@ fun Route.pagesRoute() {
             call.respondRedirect("/apps")
         }
         runBlocking {
+            settingsRoute()
             appPagesRoute(dependencies.resolve())
-            errorGroupPagesRoute(dependencies.resolve(), dependencies.resolve(), dependencies.resolve())
-            reportsPagesRoute(dependencies.resolve(), dependencies.resolve())
+            errorGroupPagesRoute(
+                dependencies.resolve(),
+                dependencies.resolve(),
+                dependencies.resolve(),
+            )
+            reportsPagesRoute(
+                dependencies.resolve(),
+                dependencies.resolve(),
+            )
         }
     }
 }

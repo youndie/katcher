@@ -9,6 +9,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import ru.workinprogress.feature.report.CreateReportParams
+import kotlin.coroutines.cancellation.CancellationException
 
 class ReportsQueueService(
     private val processReportUseCase: ProcessReportUseCase,
@@ -23,6 +24,7 @@ class ReportsQueueService(
     suspend fun work() {
         for ((params, appId) in queue) {
             runCatching { processReportUseCase.process(params, appId) }
+                .onFailure { if (it is CancellationException) throw it }
         }
     }
 }

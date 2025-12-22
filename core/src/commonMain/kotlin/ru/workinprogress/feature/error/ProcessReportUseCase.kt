@@ -3,12 +3,14 @@ package ru.workinprogress.feature.error
 import org.kotlincrypto.hash.sha2.SHA256
 import ru.workinprogress.feature.report.CreateReportParams
 import ru.workinprogress.feature.report.ReportRepository
+import ru.workinprogress.feature.symbolication.SymbolicationService
 
 class DuplicateErrorGroupException(
     message: String,
 ) : Exception(message)
 
 class ProcessReportUseCase(
+    private val symbolicationService: SymbolicationService,
     private val errorGroupRepository: ErrorGroupRepository,
     private val reportRepository: ReportRepository,
     private val visitedRepository: ErrorGroupViewedRepository,
@@ -17,7 +19,17 @@ class ProcessReportUseCase(
         createReportParams: CreateReportParams,
         appId: Int,
     ) {
-        val fingerprint = generateFingerprint(createReportParams.stacktrace)
+        val retraced =
+            createReportParams.copy(
+                stacktrace =
+                    symbolicationService.processCrash(
+                        appId = appId,
+                        buildUuid = createReportParams.context?.get("build_uuid"),
+                        rawStacktrace = createReportParams.stacktrace,
+                    ),
+            )
+
+        val fingerprint = generateFingerprint(retraced.stacktrace)
         var group = errorGroupRepository.findByFingerprint(appId, fingerprint)
 
         if (group == null) {
@@ -28,7 +40,7 @@ class ProcessReportUseCase(
                             appId = appId,
                             fingerprint = fingerprint,
                             title =
-                                createReportParams.stacktrace
+                                retraced.stacktrace
                                     .lineSequence()
                                     .take(2)
                                     .joinToString("\n")
@@ -44,7 +56,7 @@ class ProcessReportUseCase(
             return
         }
 
-        reportRepository.insert(appId, group.id, createReportParams)
+        reportRepository.insert(appId, group.id, retraced)
         errorGroupRepository.updateOccurrences(group.id)
         visitedRepository.removeVisits(group.id)
     }

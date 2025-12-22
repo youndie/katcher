@@ -3,6 +3,7 @@ package ru.workinprogress.katcher
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.cio.EngineMain
+import io.ktor.server.plugins.calllogging.CallLogging
 import org.koin.ktor.ext.get
 import org.koin.ktor.plugin.Koin
 import org.koin.logger.slf4jLogger
@@ -24,6 +25,7 @@ fun Application.module() {
         slf4jLogger()
         modules(appModules())
     }
+    install(CallLogging)
 
     configureAuth()
     configureSessions()

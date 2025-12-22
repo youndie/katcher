@@ -92,7 +92,7 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
                             it[appId] = newGroup.appId
                             it[fingerprint] = newGroup.fingerprint
                             it[title] = newGroup.title
-                            it[occurrences] = 1
+                            it[occurrences] = 0
                             it[lastSeen] = Clock.System.now().toEpochMilliseconds()
                             it[firstSeen] = Clock.System.now().toEpochMilliseconds()
                         }

@@ -53,4 +53,15 @@ PRIMARY KEY (group_id, user_id),
 FOREIGN KEY (group_id) REFERENCES error_groups(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 );""",
+        """CREATE TABLE IF NOT EXISTS symbol_maps (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+app_id INTEGER NOT NULL,
+build_uuid TEXT NOT NULL,
+map_type TEXT NOT NULL,
+file_path TEXT NOT NULL,
+version_name TEXT,
+created_at INTEGER NOT NULL,
+FOREIGN KEY(app_id) REFERENCES apps(id) ON DELETE CASCADE
+);""",
+        """CREATE INDEX IF NOT EXISTS idx_symbol_maps_lookup ON symbol_maps(app_id, build_uuid);""",
     )

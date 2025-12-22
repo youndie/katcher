@@ -34,7 +34,7 @@ dependencies {
     implementation(ktorLibs.server.contentNegotiation)
     implementation(ktorLibs.serialization.kotlinx.json)
     implementation(ktorLibs.server.statusPages)
-
+    implementation(ktorLibs.server.callLogging)
     implementation(jvmLibs.slf4j.api)
 
     implementation(libs.kotlinx.datetime)

@@ -6,6 +6,7 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        google()
     }
 }
 
@@ -31,5 +32,7 @@ include(":server")
 include(":shared")
 include(":client")
 include(":dev:sample-kotlin-jvm")
+include(":dev:client-android")
+include(":dev:android-gradle-plugin")
 include(":dev:server-jvm-keycloak")
 include(":dev:retrace")
