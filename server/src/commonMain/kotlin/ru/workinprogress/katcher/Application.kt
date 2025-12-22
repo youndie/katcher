@@ -109,7 +109,7 @@ fun Application.initDi(db: ISQLite) {
             ReportsQueueService(resolve())
         }
         provide<SymbolMapRepository> {
-            SymbolMapRepositoryImpl(resolve(), SymbolMapCrudRepositoryImpl)
+            SymbolMapRepositoryImpl(db, SymbolMapCrudRepositoryImpl)
         }
         provide<FileStorage> {
             FileStorageOkio
