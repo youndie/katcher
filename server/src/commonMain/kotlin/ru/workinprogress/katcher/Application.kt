@@ -41,7 +41,7 @@ suspend fun Application.module() {
     val config = getServerConfig()
     val db = initDb(config)
     common()
-    initDi(db)
+    initDi(db, config)
     initAuth()
     configureRouting()
     launchReportQueueService(dependencies.resolve())
@@ -80,8 +80,12 @@ fun Application.initAuth() {
     }
 }
 
-fun Application.initDi(db: ISQLite) {
+fun Application.initDi(
+    db: ISQLite,
+    serverConfig: ServerConfig,
+) {
     dependencies {
+        provide { serverConfig }
         provide<AppRepository> {
             AppRepositoryImpl(db, AppsCrudRepositoryImpl)
         }

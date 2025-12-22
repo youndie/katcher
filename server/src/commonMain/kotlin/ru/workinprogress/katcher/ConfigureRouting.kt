@@ -44,9 +44,10 @@ fun Application.configureRouting() =
                 )
 
                 symbolMapRouting(
-                    dependencies.resolve<AppRepository>(),
-                    dependencies.resolve<FileStorage>(),
-                    dependencies.resolve<SymbolMapRepository>(),
+                    dependencies.resolve(),
+                    dependencies.resolve(),
+                    dependencies.resolve(),
+                    dependencies.resolve(),
                 )
             }
         }

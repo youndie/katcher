@@ -121,6 +121,7 @@ fun Route.symbolMapRouting(
     appRepository: AppRepository,
     fileStorage: FileStorage,
     symbolMapRepository: SymbolMapRepository,
+    serverConfig: ru.workinprogress.katcher.ServerConfig,
 ) {
     post<MappingsResource.Upload> {
         val multipart = call.receiveMultipart()
@@ -152,7 +153,7 @@ fun Route.symbolMapRouting(
         }
 
         val app = appRepository.findByApiKey(appKey) ?: return@post call.respond(HttpStatusCode.Unauthorized)
-        val path = "data/mappings/${app.id}/$buildUuid.txt"
+        val path = "${serverConfig.sourceMapPath}/${app.id}/$buildUuid.txt"
         fileStorage.write(path, fileBytes)
 
         symbolMapRepository.save(

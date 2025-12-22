@@ -114,7 +114,10 @@ object FileStorageOkio : FileStorage {
         path: String,
         fileBytes: ByteArray,
     ) {
-        FileSystem.SYSTEM.write(path.toPath()) {
+        val path = path.toPath()
+        path.parent?.let { FileSystem.SYSTEM.createDirectories(it) }
+
+        FileSystem.SYSTEM.write(path) {
             write(fileBytes)
         }
     }
