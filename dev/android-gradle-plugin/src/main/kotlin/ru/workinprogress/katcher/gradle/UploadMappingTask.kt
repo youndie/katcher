@@ -7,10 +7,10 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
-import java.io.FileInputStream
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
 import java.net.HttpURLConnection
+import java.net.URI
 import java.net.URL
 
 abstract class UploadMappingTask : DefaultTask() {
@@ -44,7 +44,7 @@ abstract class UploadMappingTask : DefaultTask() {
         logger.lifecycle("  Target: $targetUrl")
 
         try {
-            uploadMultipart(targetUrl, file, uuid, key)
+            uploadMultipart(URI.create(targetUrl).toURL(), file, uuid, key)
             logger.lifecycle("✅ Mapping uploaded successfully!")
         } catch (e: Exception) {
             logger.error("❌ Failed to upload mapping: ${e.message}")
@@ -53,52 +53,76 @@ abstract class UploadMappingTask : DefaultTask() {
     }
 
     private fun uploadMultipart(
-        targetUrl: String,
+        url: URL,
         file: File,
-        uuid: String,
-        key: String,
+        buildUuid: String,
+        appKey: String,
     ) {
-        val boundary = "---KatcherBoundary${System.currentTimeMillis()}"
+        val boundary = "KatcherBoundary${System.currentTimeMillis().toString(16)}"
         val lineFeed = "\r\n"
 
-        val connection = URL(targetUrl).openConnection() as HttpURLConnection
-        connection.useCaches = false
+        val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "POST"
         connection.doOutput = true
-        connection.doInput = true
+        connection.useCaches = false
+        connection.instanceFollowRedirects = false
+
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
         connection.setRequestProperty("User-Agent", "Katcher-Gradle-Plugin")
+        connection.setRequestProperty("Accept", "*/*")
+        connection.setRequestProperty("Connection", "close") // Избегаем проблем с keep-alive на CIO
 
-        val outputStream = connection.outputStream
-        val writer = PrintWriter(OutputStreamWriter(outputStream, "UTF-8"), true)
+        try {
+            val outputStream = connection.outputStream
+            val writer = PrintWriter(OutputStreamWriter(outputStream, "UTF-8"), true)
 
-        addFormField(writer, "appKey", key, boundary, lineFeed)
-        addFormField(writer, "buildUuid", uuid, boundary, lineFeed)
-        addFormField(writer, "type", "ANDROID_PROGUARD", boundary, lineFeed)
+            addFormField(writer, "appKey", appKey, boundary, lineFeed)
+            addFormField(writer, "buildUuid", buildUuid, boundary, lineFeed)
+            addFormField(writer, "type", "ANDROID_PROGUARD", boundary, lineFeed)
 
-        writer.append("--$boundary").append(lineFeed)
-        writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"${file.name}\"").append(lineFeed)
-        writer.append("Content-Type: text/plain").append(lineFeed)
-        writer.append(lineFeed)
-        writer.flush()
+            val mimeType =
+                when (file.extension.lowercase()) {
+                    "txt" -> "text/plain"
+                    else -> "application/octet-stream"
+                }
 
-        FileInputStream(file).use { inputStream ->
-            val buffer = ByteArray(4096)
-            var bytesRead: Int
-            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                outputStream.write(buffer, 0, bytesRead)
+            writer.append("--$boundary").append(lineFeed)
+            writer.append("Content-Disposition: form-data; name=\"mappingFile\"; filename=\"${file.name}\"").append(lineFeed)
+            writer.append("Content-Type: $mimeType").append(lineFeed)
+            writer.append(lineFeed)
+            writer.flush()
+
+            file.inputStream().use { inputStream ->
+                val buffer = ByteArray(8192)
+                var bytesRead: Int
+                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                    outputStream.write(buffer, 0, bytesRead)
+                }
             }
             outputStream.flush()
-        }
 
-        writer.append(lineFeed)
-        writer.flush()
+            writer.append(lineFeed)
+            writer.flush()
 
-        writer.append("--$boundary--").append(lineFeed)
-        writer.close()
+            writer.append("--$boundary--").append(lineFeed)
+            writer.close()
 
-        val status = connection.responseCode
-        if (status !in 200..299) {
-            throw RuntimeException("Server returned HTTP $status: ${connection.responseMessage}")
+            val responseCode = connection.responseCode
+            if (responseCode !in 200..299) {
+                val errorBody =
+                    try {
+                        connection.errorStream?.bufferedReader()?.use { it.readText() }
+                    } catch (e: Exception) {
+                        try {
+                            connection.inputStream.bufferedReader().use { it.readText() }
+                        } catch (e2: Exception) {
+                            null
+                        }
+                    }
+                throw RuntimeException("Server returned HTTP $responseCode: ${connection.responseMessage}. Details: $errorBody")
+            }
+        } catch (e: Exception) {
+            throw RuntimeException("Failed to upload mapping file: ${e.message}", e)
         }
     }
 
@@ -111,7 +135,7 @@ abstract class UploadMappingTask : DefaultTask() {
     ) {
         writer.append("--$boundary").append(lineFeed)
         writer.append("Content-Disposition: form-data; name=\"$name\"").append(lineFeed)
-        writer.append("Content-Type: text/plain; charset=UTF-8").append(lineFeed)
+        writer.append("Content-Type: text/plain").append(lineFeed)
         writer.append(lineFeed)
         writer.append(value).append(lineFeed)
         writer.flush()

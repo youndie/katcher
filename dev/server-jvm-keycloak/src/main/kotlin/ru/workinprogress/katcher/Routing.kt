@@ -18,6 +18,13 @@ fun Application.configureRouting() =
 
         route("api") {
             reportRoute(get(), get())
-            symbolMapRouting(get(), get(), get())
+            symbolMapRouting(
+                get(),
+                get(),
+                get(),
+                ServerConfig(
+                    sourceMapPath = "data/mappings",
+                ),
+            )
         }
     }

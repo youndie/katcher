@@ -36,7 +36,7 @@ fun Application.configureRouting() =
             pagesRoute()
         }
 
-        route("/api") {
+        route("api") {
             runBlocking {
                 reportRoute(
                     dependencies.resolve(),

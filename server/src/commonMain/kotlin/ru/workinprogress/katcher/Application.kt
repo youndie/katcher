@@ -27,7 +27,6 @@ import ru.workinprogress.feature.symbolication.MappingType
 import ru.workinprogress.feature.symbolication.SymbolMapRepository
 import ru.workinprogress.feature.symbolication.SymbolicationService
 import ru.workinprogress.feature.symbolication.data.FileStorageOkio
-import ru.workinprogress.feature.symbolication.data.SymbolMapCrudRepository
 import ru.workinprogress.feature.symbolication.data.SymbolMapRepositoryImpl
 import ru.workinprogress.feature.user.UserRepository
 import ru.workinprogress.feature.user.data.UserRepositoryImpl
