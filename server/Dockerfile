@@ -1,5 +1,5 @@
 # ---------- Stage 1 : Build ----------
-FROM --platform=linux/amd64 gradle:9.2.0-jdk21-jammy AS build
+FROM --platform=linux/amd64 gradle:9.2.1-jdk21-jammy AS build
 
 WORKDIR /app
 COPY . .
