@@ -41,8 +41,11 @@ fun Route.symbolMapRouting(
         }
 
         val app = appRepository.findByApiKey(appKey) ?: return@post call.respond(HttpStatusCode.Unauthorized)
+        println("Found app: ${app.id} for appKey: $appKey")
         val path = "${serverConfig.sourceMapPath}/${app.id}/$buildUuid.txt"
+        println("Writing symbol map to path: $path, buildUuid: $buildUuid")
         fileStorage.write(path, fileBytes)
+        println("Symbol map written successfully")
 
         symbolMapRepository.save(
             SymbolMap(
@@ -53,7 +56,7 @@ fun Route.symbolMapRouting(
                 createdAt = Clock.System.now().toEpochMilliseconds(),
             ),
         )
-
+        println("Symbol map saved to repository for buildUuid: $buildUuid")
         call.respond(HttpStatusCode.Created)
     }
 }
