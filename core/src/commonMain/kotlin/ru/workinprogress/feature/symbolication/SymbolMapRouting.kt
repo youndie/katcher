@@ -12,12 +12,13 @@ import io.ktor.server.routing.Route
 import io.ktor.utils.io.readRemaining
 import kotlinx.io.readByteArray
 import ru.workinprogress.feature.app.AppRepository
+import ru.workinprogress.retrace.MappingFileStorage
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 fun Route.symbolMapRouting(
     appRepository: AppRepository,
-    fileStorage: FileStorage,
+    fileStorage: MappingFileStorage,
     symbolMapRepository: SymbolMapRepository,
     serverConfig: ru.workinprogress.katcher.ServerConfig,
 ) {

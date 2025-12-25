@@ -22,11 +22,9 @@ import ru.workinprogress.feature.error.launchReportQueueService
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.data.ReportRepositoryImpl
 import ru.workinprogress.feature.symbolication.AndroidR8Symbolicator
-import ru.workinprogress.feature.symbolication.FileStorage
 import ru.workinprogress.feature.symbolication.MappingType
 import ru.workinprogress.feature.symbolication.SymbolMapRepository
 import ru.workinprogress.feature.symbolication.SymbolicationService
-import ru.workinprogress.feature.symbolication.data.FileStorageOkio
 import ru.workinprogress.feature.symbolication.data.SymbolMapRepositoryImpl
 import ru.workinprogress.feature.user.UserRepository
 import ru.workinprogress.feature.user.data.UserRepositoryImpl
@@ -35,6 +33,8 @@ import ru.workinprogress.katcher.db.ErrorGroupCrudRepositoryImpl
 import ru.workinprogress.katcher.db.SymbolMapCrudRepositoryImpl
 import ru.workinprogress.katcher.db.UsersCrudRepositoryImpl
 import ru.workinprogress.katcher.db.commands
+import ru.workinprogress.retrace.MappingFileStorage
+import ru.workinprogress.retrace.MappingFileStorageOkio
 
 suspend fun Application.module() {
     val config = getServerConfig()
@@ -114,8 +114,8 @@ fun Application.initDi(
         provide<SymbolMapRepository> {
             SymbolMapRepositoryImpl(db, SymbolMapCrudRepositoryImpl)
         }
-        provide<FileStorage> {
-            FileStorageOkio
+        provide<MappingFileStorage> {
+            MappingFileStorageOkio
         }
         provide<SymbolicationService> {
             SymbolicationService(

@@ -12,14 +12,11 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.runBlocking
-import ru.workinprogress.feature.app.AppRepository
 import ru.workinprogress.feature.app.appPagesRoute
 import ru.workinprogress.feature.auth.HEADER_USER_AUTH
 import ru.workinprogress.feature.error.errorGroupPagesRoute
 import ru.workinprogress.feature.report.reportRoute
 import ru.workinprogress.feature.report.reportsPagesRoute
-import ru.workinprogress.feature.symbolication.FileStorage
-import ru.workinprogress.feature.symbolication.SymbolMapRepository
 import ru.workinprogress.feature.symbolication.symbolMapRouting
 import ru.workinprogress.katcher.static.CSS
 

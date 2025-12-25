@@ -25,6 +25,7 @@ kotlin {
 dependencies {
     implementation(projects.core)
     implementation(projects.shared)
+    implementation(projects.dev.retrace)
 
     implementation(jvmLibs.logback)
     implementation(ktorLibs.server.cio)

@@ -62,6 +62,8 @@ dependencies {
 
     commonMainImplementation(projects.core)
     commonMainImplementation(projects.shared)
+    commonMainImplementation(projects.dev.retrace)
+
     commonMainImplementation(libs.kotlinx.datetime)
     commonMainImplementation(libs.okio)
 

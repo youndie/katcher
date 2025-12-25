@@ -12,14 +12,6 @@ import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.withContext
-import okio.FileNotFoundException
-import okio.FileSystem
-import okio.Path.Companion.toPath
-import okio.SYSTEM
-import ru.workinprogress.feature.symbolication.FileStorage
 import ru.workinprogress.feature.symbolication.MappingType
 import ru.workinprogress.feature.symbolication.SymbolMap
 import ru.workinprogress.feature.symbolication.SymbolMapRepository
@@ -110,39 +102,4 @@ class SymbolMapRepositoryImpl(
                 .getOrNull()
                 ?.id ?: 0L
         }
-}
-
-object FileStorageOkio : FileStorage {
-    override suspend fun readText(filePath: String): String =
-        withContext(Dispatchers.IO) {
-            val fileSystem = FileSystem.SYSTEM
-            val okioPath = filePath.toPath()
-
-            if (!fileSystem.exists(okioPath)) throw FileNotFoundException("File not found: $filePath")
-
-            fileSystem
-                .read(okioPath) {
-                    readByteArray()
-                }.decodeToString()
-        }
-
-    override suspend fun write(
-        path: String,
-        fileBytes: ByteArray,
-    ) {
-        withContext(Dispatchers.IO) {
-            val fileSystem = FileSystem.SYSTEM
-            val okioPath = path.toPath()
-
-            okioPath.parent?.let { parent ->
-                if (!fileSystem.exists(parent)) {
-                    fileSystem.createDirectories(parent)
-                }
-            }
-
-            fileSystem.write(okioPath) {
-                write(fileBytes)
-            }
-        }
-    }
 }

@@ -4,7 +4,15 @@ class Retracer(
     private val mappingStore: MappingStore,
 ) {
     companion object {
-        operator fun invoke(mappingFileContent: String) = Retracer(MappingParser().parse(mappingFileContent.splitToSequence("\n")))
+        private val CLASS_NAME_EXTRACTOR = Regex("""\s+at\s+([a-zA-Z0-9_$.]+)\.""")
+
+        fun extractClassesFromStacktrace(stacktrace: String): Set<String> {
+            val classes = HashSet<String>()
+            CLASS_NAME_EXTRACTOR.findAll(stacktrace).forEach { match ->
+                classes.add(match.groupValues[1])
+            }
+            return classes
+        }
     }
 
     private val stackTraceRegex = Regex("""^\s*at\s+(.+)\.([^\.]+)\((.*)\)\s*$""")
@@ -12,11 +20,9 @@ class Retracer(
 
     fun retrace(logLine: String): String {
         val frameMatch = stackTraceRegex.find(logLine)
-
         if (frameMatch != null) {
             return retraceStackFrame(logLine, frameMatch)
         }
-
         return retracePlainLine(logLine)
     }
 

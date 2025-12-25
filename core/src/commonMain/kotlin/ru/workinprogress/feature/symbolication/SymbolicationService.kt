@@ -1,8 +1,10 @@
 package ru.workinprogress.feature.symbolication
 
+import ru.workinprogress.retrace.MappingFileStorage
+
 class SymbolicationService(
     private val symbolMapRepository: SymbolMapRepository,
-    private val fileStorage: FileStorage,
+    private val fileStorage: MappingFileStorage,
     private val strategies: Map<MappingType, Symbolicator>,
 ) {
     suspend fun processCrash(
@@ -33,12 +35,8 @@ class SymbolicationService(
                     return rawStacktrace
                 }
 
-        println("SymbolicationService.processCrash - Reading mapping file from ${mapMetadata.filePath}")
-        val content = fileStorage.readText(mapMetadata.filePath)
-        println("SymbolicationService.processCrash - Mapping file read, size=${content.length} chars")
-
         println("SymbolicationService.processCrash - Starting symbolication with strategy=${strategy::class.simpleName}")
-        val result = strategy.symbolicate(rawStacktrace, content)
+        val result = strategy.symbolicate(rawStacktrace, mapMetadata.filePath, fileStorage)
         println("SymbolicationService.processCrash - Symbolication completed successfully")
         println("SymbolicationService.processCrash - Result: $result")
         return result

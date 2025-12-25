@@ -37,6 +37,7 @@ dependencies {
     commonMainImplementation(ktorLibs.server.statusPages)
     commonMainImplementation(ktorLibs.server.auth)
     commonMainImplementation(kotlinCrypto.hash.sha2)
+    commonMainImplementation(libs.okio)
 
     commonMainImplementation(ktorLibs.server.htmx)
     commonMainImplementation(ktorLibs.htmx)

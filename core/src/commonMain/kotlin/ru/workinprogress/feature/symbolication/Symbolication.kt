@@ -2,7 +2,9 @@
 
 package ru.workinprogress.feature.symbolication
 
+import ru.workinprogress.retrace.MappingFileStorage
 import ru.workinprogress.retrace.Retracer
+import ru.workinprogress.retrace.create
 import kotlin.time.ExperimentalTime
 
 interface Symbolicator {
@@ -10,7 +12,8 @@ interface Symbolicator {
 
     suspend fun symbolicate(
         rawStacktrace: String,
-        mappingFileContent: String,
+        mappingFilePath: String,
+        fileStorage: MappingFileStorage,
     ): String
 }
 
@@ -25,10 +28,14 @@ class AndroidR8Symbolicator : Symbolicator {
 
     override suspend fun symbolicate(
         rawStacktrace: String,
-        mappingFileContent: String,
+        mappingFilePath: String,
+        fileStorage: MappingFileStorage,
     ): String {
-        val retracer = Retracer(mappingFileContent)
-        return rawStacktrace.lines().joinToString("\n") { retracer.retrace(it) }
+        val retracer = Retracer.create(rawStacktrace, mappingFilePath, fileStorage)
+
+        return rawStacktrace.lines().joinToString("\n") { line ->
+            retracer.retrace(line)
+        }
     }
 }
 
@@ -39,15 +46,6 @@ interface SymbolMapRepository {
     ): SymbolMap?
 
     suspend fun save(symbolMap: SymbolMap): Long
-}
-
-interface FileStorage {
-    suspend fun readText(filePath: String): String
-
-    suspend fun write(
-        path: String,
-        fileBytes: ByteArray,
-    )
 }
 
 data class SymbolMap(

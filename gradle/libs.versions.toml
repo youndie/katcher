@@ -2,6 +2,7 @@
 androidGradlePlugin = "8.13.2"
 atomicfu = "0.30.0-beta"
 kotlin = "2.2.21"
+kotlinxCoroutinesCore = "1.10.2"
 kotlinxDatetime = "0.7.1"
 kotlinxSerializationJson = "1.8.0"
 sqlx4k = "1.4.1"
@@ -11,6 +12,7 @@ okio = "3.16.2"
 
 [libraries]
 
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
