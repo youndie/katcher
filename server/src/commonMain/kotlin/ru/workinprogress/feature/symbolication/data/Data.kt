@@ -100,7 +100,11 @@ class SymbolMapRepositoryImpl(
 
     override suspend fun save(symbolMap: SymbolMap): Long =
         TransactionContext.withCurrent(db) {
-            crudRepository.insert(this, symbolMap.toDb()).getOrNull()?.id ?: 0L
+            crudRepository
+                .insert(this, symbolMap.toDb())
+                .onFailure { println(it.message.orEmpty()) }
+                .getOrNull()
+                ?.id ?: 0L
         }
 }
 
