@@ -25,7 +25,7 @@ object SymbolMapRowMapper : RowMapper<SymbolMapDb> {
         val id: ResultSet.Row.Column = row.get("id")
         val appId: ResultSet.Row.Column = row.get("app_id")
         val buildUuid: ResultSet.Row.Column = row.get("build_uuid")
-        val type: ResultSet.Row.Column = row.get("type")
+        val type: ResultSet.Row.Column = row.get("map_type")
         val filePath: ResultSet.Row.Column = row.get("file_path")
         val versionName: ResultSet.Row.Column = row.get("version_name")
         val createdAt: ResultSet.Row.Column = row.get("created_at")
@@ -34,7 +34,7 @@ object SymbolMapRowMapper : RowMapper<SymbolMapDb> {
             id = id.asLong(),
             appId = appId.asInt(),
             buildUuid = buildUuid.asString(),
-            type = type.asString(),
+            mapType = type.asString(),
             filePath = filePath.asString(),
             versionName = versionName.asString(),
             createdAt = createdAt.asLong(),
@@ -48,7 +48,7 @@ data class SymbolMapDb(
     val id: Long,
     val appId: Int,
     val buildUuid: String,
-    val type: String,
+    val mapType: String,
     val filePath: String,
     val versionName: String,
     val createdAt: Long,
@@ -59,7 +59,7 @@ fun SymbolMapDb.toDomain() =
         id = id,
         appId = appId,
         buildUuid = buildUuid,
-        type = MappingType.valueOf(type),
+        type = MappingType.valueOf(mapType),
         filePath = filePath,
         versionName = versionName,
         createdAt = createdAt,
@@ -70,7 +70,7 @@ fun SymbolMap.toDb() =
         id = id,
         appId = appId,
         buildUuid = buildUuid,
-        type = type.name,
+        mapType = type.name,
         filePath = filePath,
         versionName = versionName.orEmpty(),
         createdAt = createdAt,
