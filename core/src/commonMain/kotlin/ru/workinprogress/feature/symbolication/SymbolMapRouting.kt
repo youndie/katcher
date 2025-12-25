@@ -47,16 +47,17 @@ fun Route.symbolMapRouting(
         fileStorage.write(path, fileBytes)
         println("Symbol map written successfully")
 
-        symbolMapRepository.save(
-            SymbolMap(
-                appId = app.id,
-                buildUuid = buildUuid,
-                type = MappingType.ANDROID_PROGUARD,
-                filePath = path,
-                createdAt = Clock.System.now().toEpochMilliseconds(),
-            ),
-        )
-        println("Symbol map saved to repository for buildUuid: $buildUuid")
+        val id =
+            symbolMapRepository.save(
+                SymbolMap(
+                    appId = app.id,
+                    buildUuid = buildUuid,
+                    type = MappingType.ANDROID_PROGUARD,
+                    filePath = path,
+                    createdAt = Clock.System.now().toEpochMilliseconds(),
+                ),
+            )
+        println("Symbol map saved to repository for buildUuid: $buildUuid, id: $id")
         call.respond(HttpStatusCode.Created)
     }
 }
