@@ -40,6 +40,7 @@ class SymbolicationService(
         println("SymbolicationService.processCrash - Starting symbolication with strategy=${strategy::class.simpleName}")
         val result = strategy.symbolicate(rawStacktrace, content)
         println("SymbolicationService.processCrash - Symbolication completed successfully")
+        println("SymbolicationService.processCrash - Result: $result")
         return result
     }
 }
