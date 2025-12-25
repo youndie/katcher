@@ -16,6 +16,7 @@ server:
       memory: "64Mi"
 
 dbPath: /data/local.db
+sourceMapsPath: /data/source-maps
 
 storage:
   size: 512Mi

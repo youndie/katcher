@@ -25,6 +25,8 @@ spec:
           env:
             - name: DB_PATH
               value: {{ .Values.dbPath | quote }}
+            - name: SOURCE_MAPS_PATH
+              value: {{ .Values.sourceMapsPath | quote }}
           resources:
             requests:
               cpu: {{ .Values.server.resources.requests.cpu | quote }}
