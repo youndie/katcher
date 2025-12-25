@@ -28,7 +28,7 @@ class AndroidR8Symbolicator : Symbolicator {
         mappingFileContent: String,
     ): String {
         val retracer = Retracer(mappingFileContent)
-        return retracer.retrace(rawStacktrace)
+        return rawStacktrace.lines().joinToString("\n") { retracer.retrace(it) }
     }
 }
 
