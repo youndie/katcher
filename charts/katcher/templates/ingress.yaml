@@ -29,6 +29,24 @@ spec:
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
+  name: katcher-mappings-bypass
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`{{ .Values.hostname }}`) && Path(`/api/mappings/upload`) && Method(`POST`)
+      kind: Rule
+      services:
+        - name: katcher-backend
+          port: 8080
+      priority: 200
+  tls:
+    certResolver: {{ .Values.traefik.certResolver | quote }}
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
   name: katcher-main
   namespace: {{ .Release.Namespace }}
 spec:
