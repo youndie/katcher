@@ -7,7 +7,7 @@ COPY . .
 RUN gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace
 
 # ---------- Stage 2 : Runtime ----------
-FROM gcr.io/distroless/cc-debian12:debug-nonroot
+FROM gcr.io/distroless/cc-debian12
 WORKDIR /app
 
 COPY --from=build /app/server/build/bin/native/releaseExecutable/server.kexe /app/server
