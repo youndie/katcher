@@ -6,9 +6,24 @@ metadata:
   labels:
     app: katcher-backend
 spec:
-  storageClassName: {{ .Values.storage.class | quote }}
+  storageClassName: {{ .Values.db.class | quote }}
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.storage.size | quote }}
+      storage: {{ .Values.db.size | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mappings-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: katcher-backend
+spec:
+  storageClassName: {{ .Values.sourceMaps.class | quote }}
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.sourceMaps.size | quote }}

@@ -24,9 +24,9 @@ spec:
               containerPort: 8080
           env:
             - name: DB_PATH
-              value: {{ .Values.dbPath | quote }}
+              value: {{ .Values.db.path }}/{{ .Values.db.name }}
             - name: SOURCE_MAPS_PATH
-              value: {{ .Values.sourceMapsPath | quote }}
+              value: {{ .Values.sourceMaps.path }}
           resources:
             requests:
               cpu: {{ .Values.server.resources.requests.cpu | quote }}
@@ -36,8 +36,13 @@ spec:
               memory: {{ .Values.server.resources.limits.memory | quote }}
           volumeMounts:
             - name: sqlite-data
-              mountPath: /data
+              mountPath: {{ .Values.db.path }}
+            - name: mappings-data
+              mountPath: {{ .Values.sourceMaps.path }}
       volumes:
         - name: sqlite-data
           persistentVolumeClaim:
             claimName: sqlite-pvc
+        - name: mappings-data
+          persistentVolumeClaim:
+            claimName: mappings-pvc

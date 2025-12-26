@@ -6,7 +6,7 @@ hostname: ""
 
 server:
   image: katcher
-  version: 0.2.2
+  version: 0.2.2.993
   resources:
     requests:
       cpu: "30m"
@@ -15,12 +15,16 @@ server:
       cpu: "1"
       memory: "64Mi"
 
-dbPath: /data/local.db
-sourceMapsPath: /data/source-maps
-
-storage:
+db:
   size: 512Mi
   class: "local-path"
+  path: /data
+  name: local.db
+
+sourceMaps:
+  size: 2Gi
+  class: "local-path"
+  path: /source-maps
 
 traefik:
   certResolver: cloudflare
