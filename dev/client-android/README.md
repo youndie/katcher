@@ -19,7 +19,7 @@ If you publish the artifact to your repository, use:
 
 ```kotlin
 dependencies {
-    implementation("ru.workinprogress.katcher:katcher-android-client:<version>")
+    implementation("ru.workinprogress.katcher:client-android:<version>")
 }
 ```
 
