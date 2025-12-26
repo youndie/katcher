@@ -1,12 +1,12 @@
 [versions]
 androidGradlePlugin = "8.13.2"
 atomicfu = "0.30.0-beta"
-kotlin = "2.2.21"
+kotlin = "2.3.0"
 kotlinxCoroutinesCore = "1.10.2"
 kotlinxDatetime = "0.7.1"
-kotlinxSerializationJson = "1.8.0"
-sqlx4k = "1.4.1"
-ksp = "2.3.2"
+kotlinxSerializationJson = "1.9.0"
+sqlx4k = "1.5.2"
+ksp = "2.3.4"
 ktlint = "14.0.1"
 okio = "3.16.2"
 

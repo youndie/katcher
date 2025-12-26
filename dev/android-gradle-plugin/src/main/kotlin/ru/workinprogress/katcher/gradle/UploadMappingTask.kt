@@ -70,7 +70,7 @@ abstract class UploadMappingTask : DefaultTask() {
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
         connection.setRequestProperty("User-Agent", "Katcher-Gradle-Plugin")
         connection.setRequestProperty("Accept", "*/*")
-        connection.setRequestProperty("Connection", "close") // Избегаем проблем с keep-alive на CIO
+        connection.setRequestProperty("Connection", "close")
 
         try {
             val outputStream = connection.outputStream
