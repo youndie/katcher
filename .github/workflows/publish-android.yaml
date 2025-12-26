@@ -1,0 +1,26 @@
+name: Publish android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v5
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          cache: 'gradle'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Publish
+        run: |
+          ./gradlew :dev:client-android:publishAndroidPublicationToWipRepository :dev:android-gradle-plugin:publishAllPublicationsToWipRepository --no-daemon
+        env:
+          ORG_GRADLE_PROJECT_BUILD_NUMBER: ${{ github.run_number }}
+          ORG_GRADLE_PROJECT_REPOSILITE_USER: ${{ secrets.REPOSILITE_USER }}
+          ORG_GRADLE_PROJECT_REPOSILITE_SECRET: ${{ secrets.REPOSILITE_SECRET }}

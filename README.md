@@ -4,6 +4,7 @@
 [![kotlin](https://img.shields.io/badge/Kotlin-2.3.0-blue?logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![native](https://img.shields.io/badge/Native-blue?logoColor=white)](https://kotlinlang.org)
 [![jvm](https://img.shields.io/badge/JVM-orange?logoColor=white)](https://kotlinlang.org)
+[![android](https://img.shields.io/badge/Android-green?logoColor=white)](https://android.com)
 [![katcher client](https://reposilite.kotlin.website/api/badge/latest/snapshots/ru/workinprogress/katcher/client?name=client&color=40c14a&prefix=v)](https://reposilite.kotlin.website/#/snapshots/ru/workinprogress/katcher/client)
 [![Docker Image Version](https://img.shields.io/badge/server-latest-blue?logo=docker)](https://github.com/youndie/katcher/pkgs/container/katcher)
 
@@ -96,6 +97,15 @@ Katcher is designed to run on Kubernetes. We provide an official Helm chart.
 
 👉 **[Read the Deployment Guide](charts/katcher/README.md)** to learn how to install Katcher with Helm, configure Traefik Ingress, and set up SSO integration.
 
+## Android integration
+
+Building an Android app? Use these components:
+
+- Android client: [dev/client-android/README.md](dev/client-android/README.md)
+- Android Gradle plugin: [dev/android-gradle-plugin/README.md](dev/android-gradle-plugin/README.md)
+
+The Gradle plugin generates required BuildConfig fields (`KATCHER_BUILD_UUID`, `KATCHER_SERVER_URL`, `KATCHER_APP_KEY`) and uploads your ProGuard/R8 mapping file after builds. The Android client reads those fields automatically and reports crashes to `{serverUrl}/api/reports` with offline persistence.
+
 ## Sending Errors From Your Application (Kotlin Client)
 
 Katcher includes a tiny built‑in client you can embed directly into your Kotlin project. It uses the standard Ktor
@@ -125,8 +135,6 @@ Configuration
 Initialize the client once at the start of your application (e.g., in `main()` or your `Application` class). This sets up the configuration and automatically registers global exception handlers.
 
 ```kotlin
-import ru.workinprogress.katcher.Katcher
-
 fun main() {
     Katcher.start {
         // Full URL to your Katcher instance

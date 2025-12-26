@@ -20,6 +20,17 @@ publishing {
             version = project.version.toString()
         }
     }
+
+    repositories {
+        maven {
+            name = "wip"
+            url = uri("https://reposilite.kotlin.website/snapshots")
+            credentials {
+                username = findProperty("REPOSILITE_USER")?.toString()
+                password = findProperty("REPOSILITE_SECRET")?.toString()
+            }
+        }
+    }
 }
 
 kotlin {

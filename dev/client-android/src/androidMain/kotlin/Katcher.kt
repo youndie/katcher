@@ -31,6 +31,57 @@ object Katcher {
         var isDebug: Boolean = false,
     )
 
+    class BuildConfigDynamically(
+        context: Context,
+    ) {
+        private val clazz: Class<*>? by lazy {
+            try {
+                Class.forName("${context.packageName}.BuildConfig")
+            } catch (e: ClassNotFoundException) {
+                null
+            }
+        }
+
+        val buildUuid: String?
+            get() = getStringField("KATCHER_BUILD_UUID")
+
+        val serverUrl: String?
+            get() = getStringField("KATCHER_SERVER_URL")
+
+        val appKey: String?
+            get() = getStringField("KATCHER_APP_KEY")
+
+        private fun getStringField(fieldName: String): String? {
+            val cls = clazz ?: return null
+            return try {
+                cls.getField(fieldName).get(null) as? String
+            } catch (e: Exception) {
+                null
+            }
+        }
+    }
+
+    fun start(context: Context) {
+        val config = BuildConfigDynamically(context)
+
+        val uuid = config.buildUuid
+        val url = config.serverUrl
+        val key = config.appKey
+
+        if (uuid != null && url != null && key != null) {
+            start(context, uuid) {
+                apiUrl = url
+                appKey = key
+            }
+        } else {
+            Log.e(
+                "Katcher",
+                "Could not find BuildConfig fields. " +
+                    "Check if buildConfigField is set correctly and ProGuard rules are applied.",
+            )
+        }
+    }
+
     fun start(
         context: Context,
         buildUuid: String,
