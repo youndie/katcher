@@ -4,7 +4,7 @@ class Retracer(
     private val mappingStore: MappingStore,
 ) {
     companion object {
-        private val CLASS_NAME_EXTRACTOR = Regex("""\s+at\s+([a-zA-Z0-9_$.]+)\.""")
+        private val CLASS_NAME_EXTRACTOR = Regex("""([a-zA-Z0-9_$]+(?:\.[a-zA-Z0-9_$]+)+)""")
 
         fun extractClassesFromStacktrace(stacktrace: String): Set<String> {
             val classes = HashSet<String>()
