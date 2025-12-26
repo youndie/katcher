@@ -9,9 +9,11 @@ import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.core.String
 import io.ktor.utils.io.readAvailable
+import okio.Buffer
 import okio.Sink
+import okio.blackholeSink
+import okio.use
 import ru.workinprogress.feature.app.AppRepository
 import ru.workinprogress.retrace.MappingFileStorage
 import kotlin.time.Clock
@@ -25,73 +27,101 @@ fun Route.symbolMapRouting(
 ) {
     post<MappingsResource.Upload> {
         try {
+            println("SymbolMapRouting - Received upload request")
             val boundary =
                 call.request.contentType().parameter("boundary")
-                    ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing boundary")
+                    ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing boundary").also {
+                        println("SymbolMapRouting - Missing boundary in request")
+                    }
 
+            println("SymbolMapRouting - Boundary: $boundary")
             val parser = MultipartStreamParser(call.receiveChannel(), boundary)
 
             var buildUuid: String? = null
             var appKey: String? = null
             var fileProcessed = false
+            var type: MappingType? = null
 
             while (true) {
                 val headers = parser.nextPartHeader() ?: break
 
                 val contentDisposition = headers["Content-Disposition"] ?: ""
                 val name = extractHeaderValue(contentDisposition, "name")
+                println("SymbolMapRouting - Processing part: $name")
 
                 when (name) {
                     "appKey" -> {
                         appKey = parser.readPartBodyString().trim()
+                        println("SymbolMapRouting - Received appKey: $appKey")
                     }
 
                     "buildUuid" -> {
                         buildUuid = parser.readPartBodyString().trim()
+                        println("SymbolMapRouting - Received buildUuid: $buildUuid")
+                    }
+
+                    "type" -> {
+                        type = MappingType.valueOf(parser.readPartBodyString().trim())
+                        println("SymbolMapRouting - Received type: $type")
                     }
 
                     "mappingFile", "file" -> {
-                        if (appKey == null || buildUuid == null) {
+                        println("SymbolMapRouting - Processing mapping file")
+                        if (appKey == null || buildUuid == null || type == null) {
+                            println("SymbolMapRouting - Missing appKey or buildUuid or type before file")
                             return@post call.respond(
                                 HttpStatusCode.BadRequest,
-                                "Fields 'appKey' and 'buildUuid' must be sent before the file",
+                                "Fields 'appKey', 'buildUuid', and 'type' must be sent before the file",
                             )
                         }
 
+                        println("SymbolMapRouting - Looking up app with apiKey: $appKey")
                         val app =
                             appRepository.findByApiKey(appKey)
-                                ?: return@post call.respond(HttpStatusCode.Unauthorized)
+                                ?: return@post call.respond(HttpStatusCode.Unauthorized).also {
+                                    println("SymbolMapRouting - App not found or unauthorized")
+                                }
 
+                        println("SymbolMapRouting - Found app with id: ${app.id}")
                         val path = "${serverConfig.sourceMapPath}/${app.id}/$buildUuid.txt"
+                        println("SymbolMapRouting - Writing mapping file to: $path")
 
                         fileStorage.write(path) { fileSink ->
                             parser.streamPartBody(fileSink)
                         }
+                        println("SymbolMapRouting - Mapping file written successfully")
 
-                        symbolMapRepository.save(
-                            SymbolMap(
-                                appId = app.id,
-                                buildUuid = buildUuid,
-                                type = MappingType.ANDROID_PROGUARD,
-                                filePath = path,
-                                createdAt = Clock.System.now().toEpochMilliseconds(),
-                            ),
-                        )
+                        println("SymbolMapRouting - Saving symbol map to repository")
+                        val id =
+                            symbolMapRepository.save(
+                                SymbolMap(
+                                    appId = app.id,
+                                    buildUuid = buildUuid,
+                                    type = type,
+                                    filePath = path,
+                                    createdAt = Clock.System.now().toEpochMilliseconds(),
+                                ),
+                            )
+                        println("SymbolMapRouting - Symbol map saved successfully, id: $id")
                         fileProcessed = true
                     }
 
                     else -> {
+                        println("SymbolMapRouting - Skipping unknown part: $name")
                         parser.skipPartBody()
                     }
                 }
             }
 
             if (!fileProcessed) {
+                println("SymbolMapRouting - No file was processed")
                 return@post call.respond(HttpStatusCode.BadRequest, "No file uploaded")
             }
 
+            println("SymbolMapRouting - Upload completed successfully")
             call.respond(HttpStatusCode.Created)
         } catch (e: Exception) {
+            println("SymbolMapRouting - Upload failed with exception: ${e.message}")
             e.printStackTrace()
             call.respond(HttpStatusCode.InternalServerError, "Upload failed: ${e.message}")
         }
@@ -144,11 +174,11 @@ class MultipartStreamParser(
         return headers
     }
 
-    suspend fun readPartBodyString(): String {
-        val memBuffer = okio.Buffer()
-        streamPartBody(memBuffer)
-        return memBuffer.readUtf8()
-    }
+    suspend fun readPartBodyString(): String =
+        Buffer().use {
+            streamPartBody(it)
+            it.readUtf8()
+        }
 
     suspend fun streamPartBody(sink: Sink) {
         val transferBuffer = ByteArray(8192)
@@ -172,7 +202,14 @@ class MultipartStreamParser(
 
             if (index >= 0) {
                 if (index > 0) {
-                    sink.write(okio.Buffer().write(chunk, 0, index), index.toLong())
+                    sink.write(
+                        Buffer().write(
+                            chunk,
+                            0,
+                            index,
+                        ),
+                        index.toLong(),
+                    )
                 }
 
                 buffer = chunk.copyOfRange(index, chunk.size)
@@ -180,7 +217,14 @@ class MultipartStreamParser(
             } else {
                 val safeLength = chunk.size - delimiter.size
                 if (safeLength > 0) {
-                    sink.write(okio.Buffer().write(chunk, 0, safeLength), safeLength.toLong())
+                    sink.write(
+                        Buffer().write(
+                            chunk,
+                            0,
+                            safeLength,
+                        ),
+                        safeLength.toLong(),
+                    )
                     buffer = chunk.copyOfRange(safeLength, chunk.size)
                 } else {
                     buffer = chunk
@@ -188,16 +232,16 @@ class MultipartStreamParser(
             }
         }
         if (buffer.isNotEmpty()) {
-            val s = String(buffer)
-            if (!s.contains(String(boundaryBytes))) {
-                sink.write(okio.Buffer().write(buffer), buffer.size.toLong())
+            val s = buffer.decodeToString(0, 0 + buffer.size)
+            if (!s.contains(boundaryBytes.decodeToString(0, 0 + boundaryBytes.size))) {
+                sink.write(Buffer().write(buffer), buffer.size.toLong())
             }
             buffer = ByteArray(0)
         }
     }
 
     suspend fun skipPartBody() {
-        streamPartBody(okio.blackholeSink())
+        streamPartBody(blackholeSink())
     }
 
     private suspend fun readLine(): String? {
@@ -205,15 +249,16 @@ class MultipartStreamParser(
 
         var i = 0
         while (i < buffer.size) {
-            if (buffer[i] == 10.toByte()) { // \n
-                val line = String(buffer, 0, if (i > 0 && buffer[i - 1] == 13.toByte()) i - 1 else i)
+            if (buffer[i] == 10.toByte()) {
+                val line = buffer.decodeToString(0, 0 + if (i > 0 && buffer[i - 1] == 13.toByte()) i - 1 else i)
                 buffer = buffer.copyOfRange(i + 1, buffer.size)
                 return line
             }
             i++
         }
+
         if (buffer.isNotEmpty()) {
-            sb.append(String(buffer))
+            sb.append(buffer.decodeToString(0, 0 + buffer.size))
             buffer = ByteArray(0)
         }
 

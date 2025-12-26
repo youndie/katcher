@@ -6,13 +6,19 @@ class Retracer(
     companion object {
         private val CLASS_NAME_EXTRACTOR = Regex("""([a-zA-Z0-9_$]+(?:\.[a-zA-Z0-9_$]+)+)""")
 
-        fun extractClassesFromStacktrace(stacktrace: String): Set<String> {
-            val classes = HashSet<String>()
-            CLASS_NAME_EXTRACTOR.findAll(stacktrace).forEach { match ->
-                classes.add(match.groupValues[1])
+        fun extractClassesFromStacktrace(stacktrace: String): Set<String> =
+            buildSet {
+                CLASS_NAME_EXTRACTOR.findAll(stacktrace).forEach { match ->
+                    val fqn = match.value
+
+                    add(fqn)
+
+                    val lastDotIndex = fqn.lastIndexOf('.')
+                    if (lastDotIndex > 0) {
+                        add(fqn.substring(0, lastDotIndex))
+                    }
+                }
             }
-            return classes
-        }
     }
 
     private val stackTraceRegex = Regex("""^\s*at\s+(.+)\.([^\.]+)\((.*)\)\s*$""")
