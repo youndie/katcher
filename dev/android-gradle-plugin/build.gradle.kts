@@ -3,6 +3,8 @@ plugins {
     `maven-publish`
 }
 
+group = "ru.workinprogress.katcher"
+
 repositories {
     mavenCentral()
     google()
@@ -17,17 +19,7 @@ gradlePlugin {
     }
 }
 
-group = "ru.workinprogress.katcher"
 publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-
-            groupId = group.toString()
-            artifactId = "katcher-gradle-plugin"
-            version = project.version.toString()
-        }
-    }
     repositories {
         maven {
             name = "wip"
