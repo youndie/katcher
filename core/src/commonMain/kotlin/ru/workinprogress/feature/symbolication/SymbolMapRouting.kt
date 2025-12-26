@@ -3,14 +3,15 @@
 package ru.workinprogress.feature.symbolication
 
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.request.contentType
 import io.ktor.server.request.receiveChannel
 import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
-import io.ktor.utils.io.readRemaining
-import kotlinx.io.readByteArray
+import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.core.String
+import io.ktor.utils.io.readAvailable
+import okio.Sink
 import ru.workinprogress.feature.app.AppRepository
 import ru.workinprogress.retrace.MappingFileStorage
 import kotlin.time.Clock
@@ -23,148 +24,83 @@ fun Route.symbolMapRouting(
     serverConfig: ru.workinprogress.katcher.ServerConfig,
 ) {
     post<MappingsResource.Upload> {
-        val parts = call.receiveMultipartManual()
+        try {
+            val boundary =
+                call.request.contentType().parameter("boundary")
+                    ?: return@post call.respond(HttpStatusCode.BadRequest, "Missing boundary")
 
-        var fileBytes: ByteArray? = null
-        var buildUuid: String? = null
-        var appKey: String? = null
+            val parser = MultipartStreamParser(call.receiveChannel(), boundary)
 
-        parts.forEach { part ->
-            when (part.name) {
-                "appKey" -> appKey = part.utf8Value
-                "buildUuid" -> buildUuid = part.utf8Value
-                "mappingFile", "file" -> fileBytes = part.bytes
+            var buildUuid: String? = null
+            var appKey: String? = null
+            var fileProcessed = false
+
+            while (true) {
+                val headers = parser.nextPartHeader() ?: break
+
+                val contentDisposition = headers["Content-Disposition"] ?: ""
+                val name = extractHeaderValue(contentDisposition, "name")
+
+                when (name) {
+                    "appKey" -> {
+                        appKey = parser.readPartBodyString().trim()
+                    }
+
+                    "buildUuid" -> {
+                        buildUuid = parser.readPartBodyString().trim()
+                    }
+
+                    "mappingFile", "file" -> {
+                        if (appKey == null || buildUuid == null) {
+                            return@post call.respond(
+                                HttpStatusCode.BadRequest,
+                                "Fields 'appKey' and 'buildUuid' must be sent before the file",
+                            )
+                        }
+
+                        val app =
+                            appRepository.findByApiKey(appKey)
+                                ?: return@post call.respond(HttpStatusCode.Unauthorized)
+
+                        val path = "${serverConfig.sourceMapPath}/${app.id}/$buildUuid.txt"
+
+                        println("Streaming upload to: $path")
+
+                        fileStorage.write(path) { fileSink ->
+                            parser.streamPartBody(fileSink)
+                        }
+
+                        symbolMapRepository.save(
+                            SymbolMap(
+                                appId = app.id,
+                                buildUuid = buildUuid,
+                                type = MappingType.ANDROID_PROGUARD,
+                                filePath = path,
+                                createdAt = Clock.System.now().toEpochMilliseconds(),
+                            ),
+                        )
+                        fileProcessed = true
+                    }
+
+                    else -> {
+                        parser.skipPartBody()
+                    }
+                }
             }
+
+            if (!fileProcessed) {
+                return@post call.respond(HttpStatusCode.BadRequest, "No file uploaded")
+            }
+
+            call.respond(HttpStatusCode.Created)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            call.respond(HttpStatusCode.InternalServerError, "Upload failed: ${e.message}")
         }
-
-        if (appKey == null || buildUuid == null || fileBytes == null) {
-            return@post call.respond(HttpStatusCode.BadRequest)
-        }
-
-        val app = appRepository.findByApiKey(appKey) ?: return@post call.respond(HttpStatusCode.Unauthorized)
-        println("Found app: ${app.id} for appKey: $appKey")
-        val path = "${serverConfig.sourceMapPath}/${app.id}/$buildUuid.txt"
-        println("Writing symbol map to path: $path, buildUuid: $buildUuid")
-        fileStorage.write(path, fileBytes)
-        println("Symbol map written successfully")
-
-        val id =
-            symbolMapRepository.save(
-                SymbolMap(
-                    appId = app.id,
-                    buildUuid = buildUuid,
-                    type = MappingType.ANDROID_PROGUARD,
-                    filePath = path,
-                    createdAt = Clock.System.now().toEpochMilliseconds(),
-                ),
-            )
-        println("Symbol map saved to repository for buildUuid: $buildUuid, id: $id")
-        call.respond(HttpStatusCode.Created)
     }
 }
 
 // Workaround https://youtrack.jetbrains.com/issue/KTOR-7361/CIO-native-receiveMultipart-throw-CannotTransformContentToTypeException
-private class SimplePart(
-    val name: String?,
-    val filename: String?,
-    val bytes: ByteArray,
-) {
-    val utf8Value: String get() = bytes.decodeToString()
-}
-
-private suspend fun ApplicationCall.receiveMultipartManual(): List<SimplePart> {
-    val boundary =
-        request.contentType().parameter("boundary")
-            ?: throw IllegalArgumentException("Missing boundary")
-
-    val channel = receiveChannel()
-    val allBytes = channel.readRemaining().readByteArray()
-
-    val parts = mutableListOf<SimplePart>()
-    val boundaryBytes = "--$boundary".encodeToByteArray()
-    val endBoundaryBytes = "--$boundary--".encodeToByteArray()
-
-    val indices = findAllOccurrences(allBytes, boundaryBytes)
-
-    for (i in 0 until indices.size - 1) {
-        val start = indices[i] + boundaryBytes.size
-        val end = indices[i + 1]
-
-        var contentStart = start
-        while (contentStart < end && (allBytes[contentStart] == 13.toByte() || allBytes[contentStart] == 10.toByte())) {
-            contentStart++
-        }
-
-        val headerEndIndex = findHeaderEnd(allBytes, contentStart, end)
-
-        if (headerEndIndex != -1) {
-            val headerBytes = allBytes.copyOfRange(contentStart, headerEndIndex)
-            val headerString = headerBytes.decodeToString()
-
-            val name = extractHeaderValue(headerString, "name")
-            val filename = extractHeaderValue(headerString, "filename")
-
-            var bodyStart = headerEndIndex
-            if (bodyStart + 4 <= end && allBytes[bodyStart] == 13.toByte() && allBytes[bodyStart + 2] == 13.toByte()) {
-                bodyStart += 4
-            } else if (bodyStart + 2 <= end && allBytes[bodyStart] == 10.toByte()) {
-                bodyStart += 2
-            }
-
-            var bodyEnd = end
-            while (bodyEnd > bodyStart && (allBytes[bodyEnd - 1] == 13.toByte() || allBytes[bodyEnd - 1] == 10.toByte())) {
-                bodyEnd--
-            }
-
-            val bodyBytes = allBytes.copyOfRange(bodyStart, bodyEnd)
-            parts.add(SimplePart(name, filename, bodyBytes))
-        }
-    }
-
-    return parts
-}
-
-private fun findAllOccurrences(
-    data: ByteArray,
-    pattern: ByteArray,
-): List<Int> {
-    val indices = mutableListOf<Int>()
-    var i = 0
-    while (i <= data.size - pattern.size) {
-        var match = true
-        for (j in pattern.indices) {
-            if (data[i + j] != pattern[j]) {
-                match = false
-                break
-            }
-        }
-        if (match) {
-            indices.add(i)
-            i += pattern.size
-        } else {
-            i++
-        }
-    }
-    return indices
-}
-
-private fun findHeaderEnd(
-    data: ByteArray,
-    start: Int,
-    end: Int,
-): Int {
-    for (i in start until end - 3) {
-        if (data[i] == 13.toByte() && data[i + 1] == 10.toByte() &&
-            data[i + 2] == 13.toByte() && data[i + 3] == 10.toByte()
-        ) {
-            return i
-        }
-        if (data[i] == 10.toByte() && data[i + 1] == 10.toByte()) {
-            return i
-        }
-    }
-    return -1
-}
 
 private fun extractHeaderValue(
     headers: String,
@@ -172,4 +108,151 @@ private fun extractHeaderValue(
 ): String? {
     val regex = Regex("$key=\"([^\"]*)\"")
     return regex.find(headers)?.groupValues?.get(1)
+}
+
+class MultipartStreamParser(
+    private val channel: ByteReadChannel,
+    boundary: String,
+) {
+    private val boundaryBytes = "--$boundary".encodeToByteArray()
+
+    private val partDelimiter = "\r\n--$boundary".encodeToByteArray()
+
+    private var buffer = ByteArray(0)
+
+    private var isFinished = false
+
+    suspend fun nextPartHeader(): Map<String, String>? {
+        if (channel.isClosedForRead && buffer.isEmpty()) return null
+        if (isFinished) return null
+
+        val headers = mutableMapOf<String, String>()
+
+        while (true) {
+            val line = readLine() ?: break
+            if (line.isBlank()) break
+
+            if (line.contains(String(boundaryBytes)) && !line.contains(":")) continue
+
+            if (line.contains(String(boundaryBytes) + "--")) {
+                isFinished = true
+                return null
+            }
+
+            val parts = line.split(":", limit = 2)
+            if (parts.size == 2) {
+                headers[parts[0].trim()] = parts[1].trim()
+            }
+        }
+
+        if (headers.isEmpty()) {
+            if (channel.isClosedForRead) return null
+        }
+
+        return headers.ifEmpty { null }
+    }
+
+    suspend fun readPartBodyString(): String {
+        val memBuffer = okio.Buffer()
+        streamPartBody(memBuffer)
+        return memBuffer.readUtf8()
+    }
+
+    suspend fun streamPartBody(sink: Sink) {
+        val transferBuffer = ByteArray(8192) // 8KB
+        val delimiter = partDelimiter
+
+        while (!channel.isClosedForRead) {
+            val read = channel.readAvailable(transferBuffer)
+            if (read <= 0) break
+
+            val chunk =
+                if (buffer.isNotEmpty()) {
+                    buffer + transferBuffer.copyOfRange(0, read)
+                } else {
+                    transferBuffer.copyOfRange(
+                        0,
+                        read,
+                    )
+                }
+
+            val index = findBytesIndex(chunk, delimiter)
+
+            if (index >= 0) {
+                if (index > 0) {
+                    sink.write(okio.Buffer().write(chunk, 0, index), index.toLong())
+                }
+
+                buffer = chunk.copyOfRange(index, chunk.size)
+                return
+            } else {
+                val safeLength = chunk.size - delimiter.size
+                if (safeLength > 0) {
+                    sink.write(okio.Buffer().write(chunk, 0, safeLength), safeLength.toLong())
+                    buffer = chunk.copyOfRange(safeLength, chunk.size)
+                } else {
+                    buffer = chunk
+                }
+            }
+        }
+        if (buffer.isNotEmpty()) {
+            val s = String(buffer)
+            if (!s.contains(String(boundaryBytes))) {
+                sink.write(okio.Buffer().write(buffer), buffer.size.toLong())
+            }
+            buffer = ByteArray(0)
+        }
+    }
+
+    suspend fun skipPartBody() {
+        streamPartBody(okio.blackholeSink())
+    }
+
+    private suspend fun readLine(): String? {
+        val sb = StringBuilder()
+
+        var i = 0
+        while (i < buffer.size) {
+            if (buffer[i] == 10.toByte()) { // \n
+                val line = String(buffer, 0, if (i > 0 && buffer[i - 1] == 13.toByte()) i - 1 else i)
+                buffer = buffer.copyOfRange(i + 1, buffer.size)
+                return line
+            }
+            i++
+        }
+        if (buffer.isNotEmpty()) {
+            sb.append(String(buffer))
+            buffer = ByteArray(0)
+        }
+
+        val oneByte = ByteArray(1)
+        while (channel.readAvailable(oneByte) > 0) {
+            val b = oneByte[0]
+            if (b == 10.toByte()) {
+                return sb.toString().trimEnd('\r')
+            }
+            sb.append(b.toInt().toChar())
+        }
+
+        if (sb.isEmpty()) return null
+        return sb.toString()
+    }
+
+    private fun findBytesIndex(
+        source: ByteArray,
+        match: ByteArray,
+    ): Int {
+        if (match.isEmpty()) return -1
+        for (i in 0..source.size - match.size) {
+            var found = true
+            for (j in match.indices) {
+                if (source[i + j] != match[j]) {
+                    found = false
+                    break
+                }
+            }
+            if (found) return i
+        }
+        return -1
+    }
 }

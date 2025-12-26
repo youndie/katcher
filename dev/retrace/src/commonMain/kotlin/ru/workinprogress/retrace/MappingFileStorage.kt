@@ -8,6 +8,9 @@ import okio.FileNotFoundException
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import okio.SYSTEM
+import okio.Sink
+import okio.buffer
+import okio.use
 
 interface MappingFileStorage {
     suspend fun read(
@@ -17,7 +20,7 @@ interface MappingFileStorage {
 
     suspend fun write(
         path: String,
-        fileBytes: ByteArray,
+        block: suspend (Sink) -> Unit,
     )
 }
 
@@ -52,7 +55,7 @@ object MappingFileStorageOkio : MappingFileStorage {
 
     override suspend fun write(
         path: String,
-        fileBytes: ByteArray,
+        block: suspend (Sink) -> Unit,
     ) {
         withContext(Dispatchers.IO) {
             val fileSystem = FileSystem.SYSTEM
@@ -64,8 +67,9 @@ object MappingFileStorageOkio : MappingFileStorage {
                 }
             }
 
-            fileSystem.write(okioPath) {
-                write(fileBytes)
+            fileSystem.sink(okioPath).buffer().use { bufferedSink ->
+                block(bufferedSink)
+                bufferedSink.flush()
             }
         }
     }
