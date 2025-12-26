@@ -50,7 +50,7 @@ Quick example (in your app module `build.gradle.kts`):
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("ru.workinprogress.katcher.gradle")
+    id("ru.workinprogress.katcher.gradle.plugin")
 }
 
 katcher {
@@ -122,23 +122,7 @@ What is sent:
 
 ---
 
-### 4) ProGuard/R8 rules
-
-The client uses reflection to read your `BuildConfig` fields (whether provided by the plugin or manually). Ensure R8 keeps these fields:
-
-```
--keep class **.BuildConfig { 
-    public static final java.lang.String KATCHER_BUILD_UUID;
-    public static final java.lang.String KATCHER_SERVER_URL;
-    public static final java.lang.String KATCHER_APP_KEY;
-}
-```
-
-Adjust the package prefix if you want to be more specific to your app’s package (recommended).
-
----
-
-### 5) Testing your setup
+### 4) Testing your setup
 
 Force a crash to verify delivery and offline persistence:
 
@@ -158,7 +142,7 @@ Enable debug logs by setting `isDebug = true` in `start { ... }` to see detailed
 
 ---
 
-### 6) Network endpoint
+### 5) Network endpoint
 
 The client posts JSON to:
 ```
@@ -173,7 +157,7 @@ Ensure your Katcher server is reachable from the device/emulator, and that it ac
 
 ---
 
-### 7) Notes and limitations
+### 6) Notes and limitations
 
 - Minimum SDK: 24 (as configured in this module)
 - Uses a single-thread executor to flush stored crashes on startup

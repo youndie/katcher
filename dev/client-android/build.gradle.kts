@@ -12,12 +12,10 @@ repositories {
 
 publishing {
     publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["kotlin"])
-            artifact(tasks.named("sourcesJar"))
-            groupId = group.toString()
-            artifactId = "katcher-android-client"
-            version = project.version.toString()
+        withType<MavenPublication> {
+            if ("android" in name) {
+                artifactId = "client-android"
+            }
         }
     }
 
@@ -40,6 +38,11 @@ kotlin {
         namespace = "ru.workinprogress.katcher.client.android"
         compileSdk = 36
         minSdk = 24
+
+        optimization {
+            consumerKeepRules.publish = true
+            consumerKeepRules.files.add(project.file("consumer-rules.pro"))
+        }
 
         compilerOptions.jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
     }
