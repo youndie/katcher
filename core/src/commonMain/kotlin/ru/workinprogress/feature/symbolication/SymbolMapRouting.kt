@@ -64,8 +64,6 @@ fun Route.symbolMapRouting(
 
                         val path = "${serverConfig.sourceMapPath}/${app.id}/$buildUuid.txt"
 
-                        println("Streaming upload to: $path")
-
                         fileStorage.write(path) { fileSink ->
                             parser.streamPartBody(fileSink)
                         }
@@ -101,25 +99,13 @@ fun Route.symbolMapRouting(
 }
 
 // Workaround https://youtrack.jetbrains.com/issue/KTOR-7361/CIO-native-receiveMultipart-throw-CannotTransformContentToTypeException
-
-private fun extractHeaderValue(
-    headers: String,
-    key: String,
-): String? {
-    val regex = Regex("$key=\"([^\"]*)\"")
-    return regex.find(headers)?.groupValues?.get(1)
-}
-
 class MultipartStreamParser(
     private val channel: ByteReadChannel,
-    boundary: String,
+    private val boundary: String,
 ) {
     private val boundaryBytes = "--$boundary".encodeToByteArray()
-
     private val partDelimiter = "\r\n--$boundary".encodeToByteArray()
-
     private var buffer = ByteArray(0)
-
     private var isFinished = false
 
     suspend fun nextPartHeader(): Map<String, String>? {
@@ -127,17 +113,26 @@ class MultipartStreamParser(
         if (isFinished) return null
 
         val headers = mutableMapOf<String, String>()
+        var foundBoundary = false
 
         while (true) {
             val line = readLine() ?: break
-            if (line.isBlank()) break
 
-            if (line.contains(String(boundaryBytes)) && !line.contains(":")) continue
+            if (!foundBoundary) {
+                if (line.isBlank()) continue
 
-            if (line.contains(String(boundaryBytes) + "--")) {
-                isFinished = true
-                return null
+                if (line.contains("--$boundary")) {
+                    if (line.contains("--$boundary--")) {
+                        isFinished = true
+                        return null
+                    }
+                    foundBoundary = true
+                    continue
+                }
+                continue
             }
+
+            if (line.isBlank()) break
 
             val parts = line.split(":", limit = 2)
             if (parts.size == 2) {
@@ -145,11 +140,8 @@ class MultipartStreamParser(
             }
         }
 
-        if (headers.isEmpty()) {
-            if (channel.isClosedForRead) return null
-        }
-
-        return headers.ifEmpty { null }
+        if (!foundBoundary) return null
+        return headers
     }
 
     suspend fun readPartBodyString(): String {
@@ -159,7 +151,7 @@ class MultipartStreamParser(
     }
 
     suspend fun streamPartBody(sink: Sink) {
-        val transferBuffer = ByteArray(8192) // 8KB
+        val transferBuffer = ByteArray(8192)
         val delimiter = partDelimiter
 
         while (!channel.isClosedForRead) {
@@ -255,4 +247,12 @@ class MultipartStreamParser(
         }
         return -1
     }
+}
+
+private fun extractHeaderValue(
+    headers: String,
+    key: String,
+): String? {
+    val regex = Regex("$key=\"([^\"]*)\"")
+    return regex.find(headers)?.groupValues?.get(1)
 }

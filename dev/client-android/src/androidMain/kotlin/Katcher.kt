@@ -20,23 +20,23 @@ object Katcher {
 
     private val executor = Executors.newSingleThreadExecutor()
 
-    private var config: Config? = null
+    private var config: KatcherConfig? = null
     private var buildUuid: String? = null
     private var appVersion: String = "unknown"
 
-    data class Config(
+    data class KatcherConfig(
         var apiUrl: String,
         var appKey: String,
         var environment: String = "production",
         var isDebug: Boolean = false,
     )
 
-    fun init(
+    fun start(
         context: Context,
         buildUuid: String,
-        configBuilder: Config.() -> Unit,
+        configBuilder: KatcherConfig.() -> Unit,
     ) {
-        val cfg = Config("", "").apply(configBuilder)
+        val cfg = KatcherConfig("", "").apply(configBuilder)
         val validUrl = if (cfg.apiUrl.endsWith("/")) cfg.apiUrl.dropLast(1) else cfg.apiUrl
 
         this.config = cfg.copy(apiUrl = validUrl)
