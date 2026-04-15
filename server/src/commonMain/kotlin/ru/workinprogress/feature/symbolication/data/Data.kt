@@ -2,41 +2,16 @@ package ru.workinprogress.feature.symbolication.data
 
 import io.github.smyrgeorge.sqlx4k.CrudRepository
 import io.github.smyrgeorge.sqlx4k.QueryExecutor
-import io.github.smyrgeorge.sqlx4k.ResultSet
-import io.github.smyrgeorge.sqlx4k.RowMapper
 import io.github.smyrgeorge.sqlx4k.annotation.Id
 import io.github.smyrgeorge.sqlx4k.annotation.Query
 import io.github.smyrgeorge.sqlx4k.annotation.Repository
 import io.github.smyrgeorge.sqlx4k.annotation.Table
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
-import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
-import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 import ru.workinprogress.feature.symbolication.MappingType
 import ru.workinprogress.feature.symbolication.SymbolMap
 import ru.workinprogress.feature.symbolication.SymbolMapRepository
-
-object SymbolMapRowMapper : RowMapper<SymbolMapDb> {
-    override fun map(row: ResultSet.Row): SymbolMapDb {
-        val id: ResultSet.Row.Column = row.get("id")
-        val appId: ResultSet.Row.Column = row.get("app_id")
-        val buildUuid: ResultSet.Row.Column = row.get("build_uuid")
-        val type: ResultSet.Row.Column = row.get("map_type")
-        val filePath: ResultSet.Row.Column = row.get("file_path")
-        val versionName: ResultSet.Row.Column = row.get("version_name")
-        val createdAt: ResultSet.Row.Column = row.get("created_at")
-
-        return SymbolMapDb(
-            id = id.asLong(),
-            appId = appId.asInt(),
-            buildUuid = buildUuid.asString(),
-            mapType = type.asString(),
-            filePath = filePath.asString(),
-            versionName = versionName.asString(),
-            createdAt = createdAt.asLong(),
-        )
-    }
-}
+import ru.workinprogress.katcher.db.SymbolMapDbAutoRowMapper
 
 @Table("symbol_maps")
 data class SymbolMapDb(
@@ -72,7 +47,7 @@ fun SymbolMap.toDb() =
         createdAt = createdAt,
     )
 
-@Repository(SymbolMapRowMapper::class)
+@Repository(SymbolMapDbAutoRowMapper::class)
 interface SymbolMapCrudRepository : CrudRepository<SymbolMapDb> {
     @Query("SELECT * FROM symbol_maps WHERE app_id = :appId AND build_uuid = :buildUuid LIMIT 1")
     suspend fun findOneByAppIdAndBuildUuid(

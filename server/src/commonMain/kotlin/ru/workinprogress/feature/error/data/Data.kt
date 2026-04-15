@@ -5,17 +5,15 @@ package ru.workinprogress.feature.error.data
 import io.github.smyrgeorge.sqlx4k.CrudRepository
 import io.github.smyrgeorge.sqlx4k.QueryExecutor
 import io.github.smyrgeorge.sqlx4k.ResultSet.Row
-import io.github.smyrgeorge.sqlx4k.ResultSet.Row.Column
 import io.github.smyrgeorge.sqlx4k.RowMapper
 import io.github.smyrgeorge.sqlx4k.Statement
+import io.github.smyrgeorge.sqlx4k.ValueEncoderRegistry
 import io.github.smyrgeorge.sqlx4k.annotation.Id
 import io.github.smyrgeorge.sqlx4k.annotation.Query
 import io.github.smyrgeorge.sqlx4k.annotation.Repository
 import io.github.smyrgeorge.sqlx4k.annotation.Table
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
-import io.github.smyrgeorge.sqlx4k.impl.extensions.asBoolean
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
-import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -27,6 +25,7 @@ import ru.workinprogress.feature.error.ErrorGroupWithViewed
 import ru.workinprogress.feature.error.ErrorGroupsPaginated
 import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
+import ru.workinprogress.katcher.db.ErrorGroupDbAutoRowMapper
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -176,7 +175,12 @@ class ErrorGroupViewedRepositoryImpl(
             execute(
                 Statement
                     .create(
-                        """INSERT INTO user_error_group_viewed(group_id, user_id, viewed_at) VALUES (:groupId, :userId, :viewedAt)""",
+                        """
+                        INSERT INTO user_error_group_viewed(group_id, user_id, viewed_at) 
+                        VALUES (:groupId, :userId, :viewedAt)
+                        ON CONFLICT(group_id, user_id) DO UPDATE SET 
+                            viewed_at = excluded.viewed_at
+                        """.trimIndent(),
                     ).apply {
                         bind("groupId", errorGroupId)
                         bind("userId", forUserId)
@@ -225,33 +229,12 @@ fun ErrorGroupDb.toDomain() =
         resolved,
     )
 
-object ErrorGroupRowMapper : RowMapper<ErrorGroupDb> {
-    override fun map(row: Row): ErrorGroupDb {
-        val id: Column = row.get("id")
-        val appId: Column = row.get("app_id")
-        val fingerprint: Column = row.get("fingerprint")
-        val title: Column = row.get("title")
-        val occurrences: Column = row.get("occurrences")
-        val firstSeen: Column = row.get("first_seen")
-        val lastSeen: Column = row.get("last_seen")
-        val resolved: Column = row.get("resolved")
-
-        return ErrorGroupDb(
-            id = id.asLong(),
-            appId = appId.asInt(),
-            fingerprint = fingerprint.asString(),
-            title = title.asString(),
-            occurrences = occurrences.asInt(),
-            firstSeen = firstSeen.asLong(),
-            lastSeen = lastSeen.asLong(),
-            resolved = resolved.asBoolean(),
-        )
-    }
-}
-
 object ErrorGroupWithViewedRowMapper : RowMapper<ErrorGroupWithViewed> {
-    override fun map(row: Row): ErrorGroupWithViewed {
-        val group = ErrorGroupRowMapper.map(row).toDomain()
+    override fun map(
+        row: Row,
+        converters: ValueEncoderRegistry,
+    ): ErrorGroupWithViewed {
+        val group = ErrorGroupDbAutoRowMapper.map(row, converters).toDomain()
         val viewed = row.get("viewed").asInt() == 1
         return ErrorGroupWithViewed(
             errorGroup = group,
@@ -260,7 +243,7 @@ object ErrorGroupWithViewedRowMapper : RowMapper<ErrorGroupWithViewed> {
     }
 }
 
-@Repository(mapper = ErrorGroupRowMapper::class)
+@Repository(mapper = ErrorGroupDbAutoRowMapper::class)
 interface ErrorGroupCrudRepository : CrudRepository<ErrorGroupDb> {
     @Query("SELECT * FROM error_groups WHERE id = :id LIMIT 1")
     suspend fun findOneById(

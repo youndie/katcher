@@ -2,16 +2,14 @@ package ru.workinprogress.feature.user.data
 
 import io.github.smyrgeorge.sqlx4k.CrudRepository
 import io.github.smyrgeorge.sqlx4k.QueryExecutor
-import io.github.smyrgeorge.sqlx4k.ResultSet
-import io.github.smyrgeorge.sqlx4k.RowMapper
 import io.github.smyrgeorge.sqlx4k.annotation.Id
 import io.github.smyrgeorge.sqlx4k.annotation.Query
 import io.github.smyrgeorge.sqlx4k.annotation.Repository
 import io.github.smyrgeorge.sqlx4k.annotation.Table
-import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 import ru.workinprogress.feature.user.User
 import ru.workinprogress.feature.user.UserRepository
+import ru.workinprogress.katcher.db.UserDbAutoRowMapper
 
 @Table("users")
 data class UserDb(
@@ -21,14 +19,9 @@ data class UserDb(
     val name: String,
 )
 
-object UserRowMapper : RowMapper<UserDb> {
-    override fun map(row: ResultSet.Row): UserDb =
-        UserDb(row.get("id").asInt(), row.get("email").asString(), row.get("name").asString())
-}
-
 fun UserDb.toDomain() = User(id = id, email = email, name = name)
 
-@Repository(mapper = UserRowMapper::class)
+@Repository(mapper = UserDbAutoRowMapper::class)
 interface UsersCrudRepository : CrudRepository<UserDb> {
     @Query("SELECT * FROM users WHERE id = :id")
     suspend fun findOneById(
