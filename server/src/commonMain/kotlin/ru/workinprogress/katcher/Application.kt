@@ -9,6 +9,9 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.plugins.di.resolve
 import kotlinx.coroutines.runBlocking
+import okio.FileSystem
+import okio.Path.Companion.toPath
+import okio.SYSTEM
 import ru.workinprogress.feature.app.AppRepository
 import ru.workinprogress.feature.app.data.AppRepositoryImpl
 import ru.workinprogress.feature.auth.headerUserIdAuth
@@ -52,6 +55,18 @@ fun initDb(config: ServerConfig): ISQLite {
             .builder()
             .maxConnections(10)
             .build()
+
+    val dbPath = config.sqlitePath.toPath()
+    val fileSystem = FileSystem.SYSTEM
+    if (!fileSystem.exists(dbPath)) {
+        val parent = dbPath.parent
+        if (parent != null && !fileSystem.exists(parent)) {
+            fileSystem.createDirectories(parent)
+        }
+        fileSystem.write(dbPath) {
+            // Create empty file
+        }
+    }
 
     val db =
         sqlite(
