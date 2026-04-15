@@ -3,6 +3,7 @@ package ru.workinprogress.feature.report.data
 import io.github.smyrgeorge.sqlx4k.ResultSet
 import io.github.smyrgeorge.sqlx4k.RowMapper
 import io.github.smyrgeorge.sqlx4k.Statement
+import io.github.smyrgeorge.sqlx4k.ValueEncoderRegistry
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
@@ -19,7 +20,10 @@ import kotlin.time.Instant
 
 object ReportRowMapper : RowMapper<Report> {
     @OptIn(ExperimentalTime::class)
-    override fun map(row: ResultSet.Row): Report =
+    override fun map(
+        row: ResultSet.Row,
+        converters: ValueEncoderRegistry,
+    ): Report =
         Report(
             id = row.get("id").asLong(),
             message = row.get("message").asString(),
@@ -168,5 +172,8 @@ class ReportRepositoryImpl(
 }
 
 private object CountMapper : RowMapper<Long> {
-    override fun map(row: ResultSet.Row): Long = row.get("c").asLong()
+    override fun map(
+        row: ResultSet.Row,
+        converters: ValueEncoderRegistry,
+    ): Long = row.get("c").asLong()
 }

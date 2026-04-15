@@ -4,6 +4,7 @@ import io.github.smyrgeorge.sqlx4k.CrudRepository
 import io.github.smyrgeorge.sqlx4k.QueryExecutor
 import io.github.smyrgeorge.sqlx4k.ResultSet
 import io.github.smyrgeorge.sqlx4k.RowMapper
+import io.github.smyrgeorge.sqlx4k.ValueEncoderRegistry
 import io.github.smyrgeorge.sqlx4k.annotation.Id
 import io.github.smyrgeorge.sqlx4k.annotation.Query
 import io.github.smyrgeorge.sqlx4k.annotation.Repository
@@ -27,7 +28,10 @@ data class AppDb(
 )
 
 object AppRowMapper : RowMapper<AppDb> {
-    override fun map(row: ResultSet.Row): AppDb {
+    override fun map(
+        row: ResultSet.Row,
+        converters: ValueEncoderRegistry,
+    ): AppDb {
         val id: ResultSet.Row.Column = row.get("id")
         val name: ResultSet.Row.Column = row.get("name")
         val apiKey: ResultSet.Row.Column = row.get("api_key")
