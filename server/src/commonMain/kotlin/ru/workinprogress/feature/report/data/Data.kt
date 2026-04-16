@@ -33,6 +33,7 @@ object ReportRowMapper : RowMapper<Report> {
                     .fromEpochMilliseconds(row.get("timestamp").asLong())
                     .toLocalDateTime(currentSystemDefault()),
             context = row.get("context").asStringOrNull()?.let { Json.decodeFromString(it) },
+            breadcrumbs = row.get("breadcrumbs").asStringOrNull()?.let { Json.decodeFromString(it) },
             release = row.get("release").asStringOrNull(),
             environment = row.get("environment").asStringOrNull(),
         )
@@ -51,8 +52,8 @@ class ReportRepositoryImpl(
             Statement
                 .create(
                     """
-    INSERT INTO reports (app_id, group_id, message, stacktrace, timestamp, context, release, environment)
-    VALUES (:appId, :groupId, :message, :stacktrace, :timestamp, :context, :release, :environment)
+    INSERT INTO reports (app_id, group_id, message, stacktrace, timestamp, context, breadcrumbs, release, environment)
+    VALUES (:appId, :groupId, :message, :stacktrace, :timestamp, :context, :breadcrumbs, :release, :environment)
     """,
                 ).apply {
                     bind("appId", appId)
@@ -61,6 +62,7 @@ class ReportRepositoryImpl(
                     bind("stacktrace", report.stacktrace)
                     bind("timestamp", Clock.System.now().toEpochMilliseconds())
                     bind("context", report.context?.let { Json.encodeToString(it) })
+                    bind("breadcrumbs", report.breadcrumbs?.let { Json.encodeToString(it) })
                     bind("release", report.release)
                     bind("environment", report.environment)
                 },

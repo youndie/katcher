@@ -1,6 +1,9 @@
 package ru.workinprogress.katcher.db
 
-val commands =
+import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
+import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
+
+private val initial =
     listOf(
         """CREATE TABLE users (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -65,3 +68,45 @@ FOREIGN KEY(app_id) REFERENCES apps(id) ON DELETE CASCADE
 );""",
         """CREATE INDEX IF NOT EXISTS idx_symbol_maps_lookup ON symbol_maps(app_id, build_uuid);""",
     )
+
+private val migrationV1 = initial
+
+private val migrationV2 = listOf(
+    """ALTER TABLE reports ADD COLUMN breadcrumbs TEXT NULL;"""
+)
+
+val allMigrations = listOf(
+    migrationV1,
+    migrationV2
+)
+
+suspend fun ISQLite.migrateDb() {
+    this.transaction {
+        var currentVersion =
+            fetchAll("PRAGMA user_version = 0;").getOrNull()?.rows?.getOrNull(0)?.get(0)?.asLong()?.toInt() ?: 0
+
+        if (currentVersion == 0) {
+            val tablesExist = fetchAll("SELECT name FROM sqlite_master WHERE type='table' AND name='users';")
+                .getOrNull()?.rows?.getOrNull(0)?.get(0) != null
+
+            if (tablesExist) {
+                execute("PRAGMA user_version = 1;")
+                currentVersion = 1
+                println("Detected legacy database. Version set to 1.")
+            }
+        }
+
+        val targetVersion = allMigrations.size
+
+        if (currentVersion < targetVersion) {
+            for (v in (currentVersion + 1)..targetVersion) {
+                val migration = allMigrations[v - 1]
+                migration.forEach { sql ->
+                    this.execute(sql)
+                }
+                this.execute("PRAGMA user_version = $v;")
+                println("Migrated to version $v")
+            }
+        }
+    }
+}
