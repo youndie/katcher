@@ -14,13 +14,18 @@ import io.ktor.http.isSuccess
 import io.ktor.http.takeFrom
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.update
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
+import ru.workinprogress.feature.report.Breadcrumb
 import ru.workinprogress.feature.report.CreateReportParams
+import kotlin.time.Clock
 
 internal expect fun setupPlatformHandler()
 
@@ -28,7 +33,12 @@ object Katcher {
     private val isCrashing = atomic(false)
     private var config: KatcherConfig = KatcherConfig()
     private const val LOGO = """📡"""
+    private const val MAX_BREADCRUMBS = 50
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val _breadcrumbs = atomic(emptyList<Breadcrumb>())
+
+    val breadcrumbs: List<Breadcrumb>
+        get() = _breadcrumbs.value
 
     private val uploadSignal = Channel<Unit>(Channel.CONFLATED)
 
@@ -71,6 +81,7 @@ object Katcher {
         }
         config = newConfig
         setupPlatformHandler()
+        clearBreadcrumbs()
 
         scope.launch {
             processQueue()
@@ -99,6 +110,7 @@ object Katcher {
                     release = config.release,
                     environment = config.environment,
                     context = context,
+                    breadcrumbs = breadcrumbs,
                 )
 
             fileSystem.saveReport(params)
@@ -111,6 +123,28 @@ object Katcher {
         } finally {
             isCrashing.value = false
         }
+    }
+
+    fun addBreadcrumb(
+        message: String,
+        type: String = "info",
+        data: Map<String, String>? = null,
+    ) {
+        val newBreadcrumb = Breadcrumb(
+            timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+            type = type,
+            message = message,
+            data = data,
+        )
+
+        _breadcrumbs.update { current ->
+            val next = current + newBreadcrumb
+            if (next.size > MAX_BREADCRUMBS) next.drop(1) else next
+        }
+    }
+
+    fun clearBreadcrumbs() {
+        _breadcrumbs.value = emptyList()
     }
 
     private suspend fun processQueue() {

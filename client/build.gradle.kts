@@ -31,4 +31,5 @@ dependencies {
     commonMainImplementation(ktorLibs.client.contentNegotiation)
     commonMainImplementation(ktorLibs.serialization.kotlinx.json)
     commonMainImplementation(libs.kotlinx.serialization.json)
+    commonMainImplementation(libs.kotlinx.datetime)
 }
