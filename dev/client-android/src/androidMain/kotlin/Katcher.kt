@@ -3,18 +3,24 @@ package ru.workinprogress.katcher
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.BufferedWriter
 import java.io.File
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 object Katcher {
     private const val TAG = "Katcher"
     private const val CRASH_DIR = "katcher_crashes"
+    private const val MAX_BREADCRUMBS = 50
 
     private val isCrashing = AtomicBoolean(false)
 
@@ -23,6 +29,15 @@ object Katcher {
     private var config: KatcherConfig? = null
     private var buildUuid: String? = null
     private var appVersion: String = "unknown"
+
+    private val breadcrumbs = mutableListOf<Breadcrumb>()
+
+    private data class Breadcrumb(
+        val timestamp: String,
+        val type: String,
+        val message: String,
+        val data: Map<String, String>?,
+    )
 
     data class KatcherConfig(
         var apiUrl: String,
@@ -92,6 +107,7 @@ object Katcher {
 
         this.config = cfg.copy(apiUrl = validUrl)
         this.buildUuid = buildUuid
+        clearBreadcrumbs()
 
         try {
             val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
@@ -142,6 +158,23 @@ object Katcher {
                         }
 
                     put("context", contextData)
+
+                    val breadcrumbsArray = JSONArray()
+                    synchronized(breadcrumbs) {
+                        breadcrumbs.forEach { breadcrumb ->
+                            val bJson =
+                                JSONObject().apply {
+                                    put("timestamp", breadcrumb.timestamp)
+                                    put("type", breadcrumb.type)
+                                    put("message", breadcrumb.message)
+                                    if (breadcrumb.data != null) {
+                                        put("data", JSONObject(breadcrumb.data))
+                                    }
+                                }
+                            breadcrumbsArray.put(bJson)
+                        }
+                    }
+                    put("breadcrumbs", breadcrumbsArray)
                 }
 
             if (config.isDebug) {
@@ -161,6 +194,36 @@ object Katcher {
             if (config?.isDebug == true) Log.e(TAG, "Failed to handle crash", e)
         } finally {
             isCrashing.set(false)
+        }
+    }
+
+    fun addBreadcrumb(
+        message: String,
+        type: String = "info",
+        data: Map<String, String>? = null,
+    ) {
+        val sdf = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.US)
+        sdf.timeZone = TimeZone.getTimeZone("UTC")
+        val timestamp = sdf.format(Date())
+
+        synchronized(breadcrumbs) {
+            if (breadcrumbs.size >= MAX_BREADCRUMBS) {
+                breadcrumbs.removeAt(0)
+            }
+            breadcrumbs.add(
+                Breadcrumb(
+                    timestamp = timestamp,
+                    type = type,
+                    message = message,
+                    data = data,
+                )
+            )
+        }
+    }
+
+    fun clearBreadcrumbs() {
+        synchronized(breadcrumbs) {
+            breadcrumbs.clear()
         }
     }
 
