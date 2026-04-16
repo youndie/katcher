@@ -7,6 +7,7 @@ plugins {
     alias(jvmLibs.plugins.jib) apply false
     alias(jvmLibs.plugins.kotlinJvm) apply false
     alias(libs.plugins.ktlintPlugin)
+    // id("ru.workinprogress.katcher.gradle.plugin") apply false
 }
 
 subprojects {
