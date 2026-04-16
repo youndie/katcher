@@ -34,7 +34,7 @@ publishing {
 kotlin {
     withSourcesJar()
 
-    androidLibrary {
+    android {
         namespace = "ru.workinprogress.katcher.client.android"
         compileSdk = 36
         minSdk = 24

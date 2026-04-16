@@ -17,6 +17,7 @@ import java.util.TimeZone
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
+@Suppress("unused")
 object Katcher {
     private const val TAG = "Katcher"
     private const val CRASH_DIR = "katcher_crashes"
@@ -216,7 +217,7 @@ object Katcher {
                     type = type,
                     message = message,
                     data = data,
-                )
+                ),
             )
         }
     }
