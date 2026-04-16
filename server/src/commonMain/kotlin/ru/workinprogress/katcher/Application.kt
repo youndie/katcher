@@ -35,7 +35,7 @@ import ru.workinprogress.katcher.db.AppsCrudRepositoryImpl
 import ru.workinprogress.katcher.db.ErrorGroupCrudRepositoryImpl
 import ru.workinprogress.katcher.db.SymbolMapCrudRepositoryImpl
 import ru.workinprogress.katcher.db.UsersCrudRepositoryImpl
-import ru.workinprogress.katcher.db.commands
+import ru.workinprogress.katcher.db.migrateDb
 import ru.workinprogress.retrace.MappingFileStorage
 import ru.workinprogress.retrace.MappingFileStorageOkio
 
@@ -75,11 +75,7 @@ fun initDb(config: ServerConfig): ISQLite {
         )
 
     runBlocking {
-        db.transaction {
-            commands.forEach { command ->
-                db.execute(command)
-            }
-        }
+        db.migrateDb()
     }
 
     return db

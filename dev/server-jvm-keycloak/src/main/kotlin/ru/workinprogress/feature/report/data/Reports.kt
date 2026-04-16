@@ -11,6 +11,7 @@ object Reports : LongIdTable("reports") {
     val stacktrace = text("stacktrace")
     val timestamp = long("timestamp")
     val context = text("context").nullable()
+    val breadcrumbs = text("breadcrumbs").nullable()
     val release = varchar("release", 64).nullable()
     val environment = varchar("environment", 64).nullable()
 }

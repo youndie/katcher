@@ -8,6 +8,7 @@ data class CreateReportParams(
     val message: String,
     val stacktrace: String,
     val context: Map<String, String>? = null,
+    val breadcrumbs: List<Breadcrumb>? = null,
     val release: String? = null,
     val environment: String? = null,
 )

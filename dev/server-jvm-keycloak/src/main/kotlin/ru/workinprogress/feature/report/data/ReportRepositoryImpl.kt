@@ -35,6 +35,7 @@ class ReportRepositoryImpl : ReportRepository {
                 it[stacktrace] = report.stacktrace
                 it[timestamp] = Clock.System.now().toEpochMilliseconds()
                 it[context] = Json.encodeToString(report.context)
+                it[breadcrumbs] = Json.encodeToString(report.breadcrumbs)
                 it[release] = report.release
                 it[environment] = report.environment
             }
@@ -101,6 +102,7 @@ class ReportRepositoryImpl : ReportRepository {
             row[Reports.stacktrace],
             Instant.fromEpochMilliseconds(row[Reports.timestamp]).toLocalDateTime(TimeZone.currentSystemDefault()),
             row[Reports.context]?.let { Json.decodeFromString(it) },
+            row[Reports.breadcrumbs]?.let { Json.decodeFromString(it) },
             row[Reports.release],
             row[Reports.environment],
         )
