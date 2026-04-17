@@ -171,6 +171,18 @@ class ReportRepositoryImpl(
                 totalPages = ((total + safePageSize - 1) / safePageSize).toInt(),
             )
         }
+
+    override suspend fun getReportById(reportId: Long) =
+        TransactionContext.withCurrent(db) {
+            val selectSql = """SELECT * FROM reports WHERE id = :reportId"""
+
+            fetchAll(
+                Statement.create(selectSql).apply {
+                    bind("reportId", reportId)
+                },
+                ReportRowMapper,
+            ).map { it.firstOrNull() }.getOrNull()
+        }
 }
 
 private object CountMapper : RowMapper<Long> {

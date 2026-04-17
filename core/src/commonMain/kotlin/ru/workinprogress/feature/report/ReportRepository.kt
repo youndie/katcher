@@ -18,4 +18,6 @@ interface ReportRepository {
         page: Int,
         pageSize: Int,
     ): ReportsPaginated
+
+    suspend fun getReportById(reportId: Long): Report?
 }

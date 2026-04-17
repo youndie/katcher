@@ -18,9 +18,11 @@ fun Route.appPagesRoute(appRepository: AppRepository) {
         val apps = appRepository.findAll()
         call.respondHtml { context(call) { appsPage(apps) } }
     }
+
     get<AppsResource.Form> {
         call.respondHtml { body { context(call) { appCreateModal() } } }
     }
+
     post<AppsResource> {
         val params = call.receiveParameters()
         val name = params["name"] ?: error("name missing")
@@ -29,6 +31,7 @@ fun Route.appPagesRoute(appRepository: AppRepository) {
         val created = appRepository.create(name, AppType.valueOf(type))
         call.respondHtml { body { context(call) { onAppCreated(created) } } }
     }
+
     get<AppsResource.AppId> { resource ->
         val app = appRepository.findById(resource.appId) ?: return@get call.respond(HttpStatusCode.NotFound)
 
