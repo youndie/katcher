@@ -95,6 +95,17 @@ class ReportRepositoryImpl : ReportRepository {
             }
         }
 
+    override suspend fun getReportById(reportId: Long): Report? =
+        withContext(Dispatchers.IO) {
+            transaction {
+                Reports
+                    .selectAll()
+                    .where { Reports.id eq reportId }
+                    .map { rowToReport(it) }
+                    .singleOrNull()
+            }
+        }
+
     private fun rowToReport(row: ResultRow): Report =
         Report(
             row[Reports.id].value,

@@ -1,14 +1,17 @@
 package ru.workinprogress.feature.report
 
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.html.respondHtml
 import io.ktor.server.resources.get
 import io.ktor.server.resources.post
+import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import kotlinx.html.body
 import kotlinx.html.div
 import kotlinx.html.id
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.feature.error.ErrorGroupRepository
+import ru.workinprogress.feature.report.ui.reportDetailsPage
 import ru.workinprogress.feature.report.ui.reportsTableFragment
 import ru.workinprogress.feature.report.ui.resolvedFragment
 
@@ -30,6 +33,22 @@ fun Route.reportsPagesRoute(
                     appId = resource.parent.parent.parent.parent.appId,
                     groupId = resource.parent.parent.groupId,
                     data = data,
+                )
+            }
+        }
+    }
+
+    get<AppsResource.AppId.Errors.GroupId.Reports.ReportId> { params ->
+        val report =
+            reportRepository.getReportById(params.reportId)
+                ?: return@get call.respond(HttpStatusCode.NotFound)
+
+        call.respondHtml {
+            context(call) {
+                reportDetailsPage(
+                    appId = params.parent.parent.parent.parent.appId,
+                    groupId = params.parent.parent.groupId,
+                    report = report,
                 )
             }
         }

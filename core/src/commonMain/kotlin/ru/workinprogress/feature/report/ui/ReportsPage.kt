@@ -6,6 +6,7 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.resources.href
 import kotlinx.html.DIV
 import kotlinx.html.HTML
+import kotlinx.html.a
 import kotlinx.html.body
 import kotlinx.html.code
 import kotlinx.html.details
@@ -252,6 +253,45 @@ fun HTML.reportsTableFragment(
 
                         td(classes = "p-2") {
                             text(report.environment.orEmpty())
+                        }
+
+                        td("px-6 py-4 whitespace-nowrap text-right text-sm font-medium") {
+                            a(
+                                href =
+                                    call.application.href(
+                                        AppsResource.AppId.Errors.GroupId.Reports.ReportId(
+                                            parent =
+                                                AppsResource.AppId.Errors.GroupId.Reports(
+                                                    parent =
+                                                        AppsResource.AppId.Errors.GroupId(
+                                                            parent =
+                                                                AppsResource.AppId.Errors(
+                                                                    parent = AppsResource.AppId(appId),
+                                                                ),
+                                                            groupId = groupId,
+                                                        ),
+                                                ),
+                                            reportId = report.id,
+                                        ),
+                                    ),
+                            ) {
+                                val reportUrl =
+                                    call.application.href(
+                                        AppsResource.AppId.Errors.GroupId.Reports.ReportId(
+                                            appId,
+                                            groupId,
+                                            report.id,
+                                        ),
+                                    )
+
+                                attributes.hx {
+                                    get = reportUrl
+                                    pushUrl = "true"
+                                    target = "body"
+                                    swap = HxSwap.outerHtml
+                                }
+                                +"Details"
+                            }
                         }
                     }
                 }

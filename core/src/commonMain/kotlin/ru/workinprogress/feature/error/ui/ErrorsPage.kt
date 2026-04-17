@@ -159,14 +159,13 @@ fun HTML.errorsTableFragment(
                                 swap = HxSwap.outerHtml
                             }
 
-                            td(classes = "px-2 pb-6 w-8") {
+                            td(classes = "w-8 h-8 align-middle text-center") {
                                 if (group.errorGroup.resolved) {
-                                    div("w-6 h-6 text-muted-foreground") {
+                                    div("inline-flex items-center justify-center w-6 h-6 text-muted-foreground") {
                                         check()
                                     }
                                 }
                             }
-
                             td(classes = "p-2 whitespace-normal break-words max-w-[300px]") {
                                 +group.errorGroup.title
                             }
