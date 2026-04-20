@@ -5,7 +5,11 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
+import org.gradle.work.DisableCachingByDefault
 import java.io.File
 import java.io.OutputStreamWriter
 import java.io.PrintWriter
@@ -13,6 +17,7 @@ import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
 
+@DisableCachingByDefault(because = "Network upload tasks should not be cached")
 abstract class UploadMappingTask : DefaultTask() {
     @get:Input
     abstract val serverUrl: Property<String>
@@ -24,10 +29,17 @@ abstract class UploadMappingTask : DefaultTask() {
     abstract val buildUuid: Property<String>
 
     @get:InputFile
+    @get:Optional
+    @get:PathSensitive(PathSensitivity.NONE)
     abstract val mappingFile: RegularFileProperty
 
     @TaskAction
     fun upload() {
+        if (!mappingFile.isPresent) {
+            logger.info("Minification is disabled for this variant. No mapping file to upload.")
+            return
+        }
+
         val file = mappingFile.get().asFile
         if (!file.exists()) {
             logger.warn("Mapping file not found at ${file.absolutePath}. Skipping upload.")
