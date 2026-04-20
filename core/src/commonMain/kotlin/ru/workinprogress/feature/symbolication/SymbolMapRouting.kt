@@ -9,6 +9,7 @@ import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.discard
 import io.ktor.utils.io.readAvailable
 import okio.Buffer
 import okio.Sink
@@ -26,6 +27,8 @@ fun Route.symbolMapRouting(
     serverConfig: ru.workinprogress.katcher.ServerConfig,
 ) {
     post<MappingsResource.Upload> {
+        val channel = call.receiveChannel()
+
         try {
             println("SymbolMapRouting - Received upload request")
             val boundary =
@@ -35,7 +38,7 @@ fun Route.symbolMapRouting(
                     }
 
             println("SymbolMapRouting - Boundary: $boundary")
-            val parser = MultipartStreamParser(call.receiveChannel(), boundary)
+            val parser = MultipartStreamParser(channel, boundary)
 
             var buildUuid: String? = null
             var appKey: String? = null
@@ -115,14 +118,20 @@ fun Route.symbolMapRouting(
 
             if (!fileProcessed) {
                 println("SymbolMapRouting - No file was processed")
+                channel.discard()
                 return@post call.respond(HttpStatusCode.BadRequest, "No file uploaded")
             }
 
             println("SymbolMapRouting - Upload completed successfully")
+            channel.discard()
             call.respond(HttpStatusCode.Created)
         } catch (e: Exception) {
             println("SymbolMapRouting - Upload failed with exception: ${e.message}")
             e.printStackTrace()
+            try {
+                channel.discard()
+            } catch (ignore: Exception) {
+            }
             call.respond(HttpStatusCode.InternalServerError, "Upload failed: ${e.message}")
         }
     }

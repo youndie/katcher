@@ -6,6 +6,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
@@ -17,7 +18,7 @@ import java.net.HttpURLConnection
 import java.net.URI
 import java.net.URL
 
-@DisableCachingByDefault(because = "Network upload tasks should not be cached")
+@DisableCachingByDefault(because = "Network upload tasks should not be cached remotely, but can be UP-TO-DATE locally")
 abstract class UploadMappingTask : DefaultTask() {
     @get:Input
     abstract val serverUrl: Property<String>
@@ -32,6 +33,9 @@ abstract class UploadMappingTask : DefaultTask() {
     @get:Optional
     @get:PathSensitive(PathSensitivity.NONE)
     abstract val mappingFile: RegularFileProperty
+
+    @get:OutputFile
+    abstract val outputMarker: RegularFileProperty
 
     @TaskAction
     fun upload() {
@@ -53,11 +57,15 @@ abstract class UploadMappingTask : DefaultTask() {
         logger.lifecycle("Uploading mapping file to Katcher...")
         logger.lifecycle("  File: ${file.name} (${file.length() / 1024} KB)")
         logger.lifecycle("  Build UUID: $uuid")
-        logger.lifecycle("  Target: $targetUrl")
 
         try {
             uploadMultipart(URI.create(targetUrl).toURL(), file, uuid, key)
             logger.lifecycle("✅ Mapping uploaded successfully!")
+
+            outputMarker.get().asFile.apply {
+                parentFile.mkdirs()
+                writeText("Uploaded mapping for UUID: $uuid\nTimestamp: ${System.currentTimeMillis()}")
+            }
         } catch (e: Exception) {
             logger.error("❌ Failed to upload mapping: ${e.message}")
             throw e
@@ -79,10 +87,14 @@ abstract class UploadMappingTask : DefaultTask() {
         connection.useCaches = false
         connection.instanceFollowRedirects = false
 
+        connection.setChunkedStreamingMode(0)
+
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
         connection.setRequestProperty("User-Agent", "Katcher-Gradle-Plugin")
         connection.setRequestProperty("Accept", "*/*")
         connection.setRequestProperty("Connection", "close")
+
+        var writeException: Exception? = null
 
         try {
             val outputStream = connection.outputStream
@@ -92,11 +104,7 @@ abstract class UploadMappingTask : DefaultTask() {
             addFormField(writer, "buildUuid", buildUuid, boundary, lineFeed)
             addFormField(writer, "type", "ANDROID_PROGUARD", boundary, lineFeed)
 
-            val mimeType =
-                when (file.extension.lowercase()) {
-                    "txt" -> "text/plain"
-                    else -> "application/octet-stream"
-                }
+            val mimeType = if (file.extension.lowercase() == "txt") "text/plain" else "application/octet-stream"
 
             writer.append("--$boundary").append(lineFeed)
             writer.append("Content-Disposition: form-data; name=\"mappingFile\"; filename=\"${file.name}\"").append(lineFeed)
@@ -118,24 +126,30 @@ abstract class UploadMappingTask : DefaultTask() {
 
             writer.append("--$boundary--").append(lineFeed)
             writer.close()
-
-            val responseCode = connection.responseCode
-            if (responseCode !in 200..299) {
-                val errorBody =
-                    try {
-                        connection.errorStream?.bufferedReader()?.use { it.readText() }
-                    } catch (e: Exception) {
-                        try {
-                            connection.inputStream.bufferedReader().use { it.readText() }
-                        } catch (e2: Exception) {
-                            null
-                        }
-                    }
-                throw RuntimeException("Server returned HTTP $responseCode: ${connection.responseMessage}. Details: $errorBody")
-            }
         } catch (e: Exception) {
-            throw RuntimeException("Failed to upload mapping file: ${e.message}", e)
+            writeException = e
         }
+
+        val responseCode =
+            try {
+                connection.responseCode
+            } catch (e: Exception) {
+                throw RuntimeException("Connection failed: ${writeException?.message ?: e.message}", writeException ?: e)
+            }
+
+        if (responseCode in 200..299) {
+            return
+        }
+
+        val errorBody =
+            try {
+                connection.errorStream?.bufferedReader()?.use { it.readText() }
+                    ?: connection.inputStream.bufferedReader().use { it.readText() }
+            } catch (e: Exception) {
+                "No response body"
+            }
+
+        throw RuntimeException("Server returned HTTP $responseCode: ${connection.responseMessage}. Details: $errorBody")
     }
 
     private fun addFormField(
