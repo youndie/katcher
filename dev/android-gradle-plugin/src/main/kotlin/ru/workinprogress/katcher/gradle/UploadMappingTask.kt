@@ -62,14 +62,17 @@ abstract class UploadMappingTask : DefaultTask() {
             uploadMultipart(URI.create(targetUrl).toURL(), file, uuid, key)
             logger.lifecycle("✅ Mapping uploaded successfully!")
 
-            outputMarker.get().asFile.apply {
-                parentFile.mkdirs()
-                writeText("Uploaded mapping for UUID: $uuid\nTimestamp: ${System.currentTimeMillis()}")
-            }
+            writeMarker("Uploaded mapping for UUID: $uuid\nTimestamp: ${System.currentTimeMillis()}")
         } catch (e: Exception) {
             logger.error("❌ Failed to upload mapping: ${e.message}")
             throw e
         }
+    }
+
+    private fun writeMarker(content: String) {
+        val markerFile = outputMarker.get().asFile
+        markerFile.parentFile.mkdirs()
+        markerFile.writeText(content)
     }
 
     private fun uploadMultipart(
@@ -87,7 +90,7 @@ abstract class UploadMappingTask : DefaultTask() {
         connection.useCaches = false
         connection.instanceFollowRedirects = false
 
-        connection.setChunkedStreamingMode(0)
+        connection.setChunkedStreamingMode(8192)
 
         connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=$boundary")
         connection.setRequestProperty("User-Agent", "Katcher-Gradle-Plugin")
@@ -97,35 +100,39 @@ abstract class UploadMappingTask : DefaultTask() {
         var writeException: Exception? = null
 
         try {
-            val outputStream = connection.outputStream
-            val writer = PrintWriter(OutputStreamWriter(outputStream, "UTF-8"), true)
+            connection.outputStream.use { outputStream ->
+                val writer = outputStream.bufferedWriter(Charsets.UTF_8)
 
-            addFormField(writer, "appKey", appKey, boundary, lineFeed)
-            addFormField(writer, "buildUuid", buildUuid, boundary, lineFeed)
-            addFormField(writer, "type", "ANDROID_PROGUARD", boundary, lineFeed)
-
-            val mimeType = if (file.extension.lowercase() == "txt") "text/plain" else "application/octet-stream"
-
-            writer.append("--$boundary").append(lineFeed)
-            writer.append("Content-Disposition: form-data; name=\"mappingFile\"; filename=\"${file.name}\"").append(lineFeed)
-            writer.append("Content-Type: $mimeType").append(lineFeed)
-            writer.append(lineFeed)
-            writer.flush()
-
-            file.inputStream().use { inputStream ->
-                val buffer = ByteArray(8192)
-                var bytesRead: Int
-                while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                    outputStream.write(buffer, 0, bytesRead)
+                fun addField(
+                    name: String,
+                    value: String,
+                ) {
+                    writer.write("--$boundary$lineFeed")
+                    writer.write("Content-Disposition: form-data; name=\"$name\"$lineFeed")
+                    writer.write("Content-Type: text/plain; charset=utf-8$lineFeed$lineFeed")
+                    writer.write("$value$lineFeed")
                 }
+
+                addField("appKey", appKey)
+                addField("buildUuid", buildUuid)
+                addField("type", "ANDROID_PROGUARD")
+
+                // Начинаем секцию файла
+                writer.write("--$boundary$lineFeed")
+                writer.write("Content-Disposition: form-data; name=\"mappingFile\"; filename=\"${file.name}\"$lineFeed")
+                writer.write("Content-Type: application/octet-stream$lineFeed$lineFeed")
+
+                writer.flush()
+
+                file.inputStream().use { inputStream ->
+                    inputStream.copyTo(outputStream, 8192)
+                }
+
+                outputStream.flush()
+
+                writer.write("$lineFeed--$boundary--$lineFeed")
+                writer.flush()
             }
-            outputStream.flush()
-
-            writer.append(lineFeed)
-            writer.flush()
-
-            writer.append("--$boundary--").append(lineFeed)
-            writer.close()
         } catch (e: Exception) {
             writeException = e
         }
@@ -134,22 +141,24 @@ abstract class UploadMappingTask : DefaultTask() {
             try {
                 connection.responseCode
             } catch (e: Exception) {
-                throw RuntimeException("Connection failed: ${writeException?.message ?: e.message}", writeException ?: e)
+                throw RuntimeException(
+                    "Connection closed completely: ${writeException?.message ?: e.message}",
+                    writeException ?: e,
+                )
             }
 
         if (responseCode in 200..299) {
             return
+        } else {
+            val errorBody =
+                try {
+                    connection.errorStream?.bufferedReader()?.use { it.readText() }
+                        ?: connection.inputStream?.bufferedReader()?.use { it.readText() }
+                } catch (e: Exception) {
+                    null
+                }
+            throw RuntimeException("Server returned HTTP $responseCode: ${connection.responseMessage}. Details: $errorBody")
         }
-
-        val errorBody =
-            try {
-                connection.errorStream?.bufferedReader()?.use { it.readText() }
-                    ?: connection.inputStream.bufferedReader().use { it.readText() }
-            } catch (e: Exception) {
-                "No response body"
-            }
-
-        throw RuntimeException("Server returned HTTP $responseCode: ${connection.responseMessage}. Details: $errorBody")
     }
 
     private fun addFormField(

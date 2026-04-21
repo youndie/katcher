@@ -60,6 +60,9 @@ class KatcherGradlePlugin : Plugin<Project> {
                         appKey.set(extension.appKey)
                         this.buildUuid.set(buildUuid)
                         mappingFile.set(variant.artifacts.get(SingleArtifact.OBFUSCATION_MAPPING_FILE))
+                        outputMarker.set(
+                            project.layout.buildDirectory.file("intermediates/katcher/upload_marker_$variantName.txt"),
+                        )
                     }
                 project.afterEvaluate {
                     try {
