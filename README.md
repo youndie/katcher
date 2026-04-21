@@ -155,6 +155,24 @@ fun main() {
 }
 ```
 
+### Breadcrumbs (Activity Tracking)
+
+Katcher allows you to track user actions leading up to a crash using "Breadcrumbs". These are stored in memory (up to 50 items) and automatically attached to any error report.
+
+```kotlin
+// Simple info event
+Katcher.addBreadcrumb("User opened Settings")
+
+// Detailed event with type and metadata
+Katcher.addBreadcrumb(
+    message = "Network request failed",
+    type = "http",
+    data = mapOf("url" to "/api/login", "code" to "401")
+)
+```
+
+Breadcrumbs are cleared automatically when `Katcher.start()` is called to ensure each session starts fresh.
+
 ### Manual Error Capture
 
 You can manually report caught exceptions. The `catch` method is **non-blocking** (fire-and-forget), so it can be safely called from anywhere without `runBlocking` or coroutine scopes.
@@ -174,6 +192,7 @@ Katcher automatically captures:
 * release
 * environment
 * appKey
+* breadcrumbs (activity timeline)
 
 and sends a POST request to:
 ```https://<remoteHost>/api/reports```
