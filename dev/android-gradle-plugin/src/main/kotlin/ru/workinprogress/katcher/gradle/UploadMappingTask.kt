@@ -89,6 +89,8 @@ abstract class UploadMappingTask : DefaultTask() {
         connection.doOutput = true
         connection.useCaches = false
         connection.instanceFollowRedirects = false
+        connection.connectTimeout = 120_000
+        connection.readTimeout = 120_000
 
         connection.setChunkedStreamingMode(8192)
 
@@ -117,7 +119,6 @@ abstract class UploadMappingTask : DefaultTask() {
                 addField("buildUuid", buildUuid)
                 addField("type", "ANDROID_PROGUARD")
 
-                // Начинаем секцию файла
                 writer.write("--$boundary$lineFeed")
                 writer.write("Content-Disposition: form-data; name=\"mappingFile\"; filename=\"${file.name}\"$lineFeed")
                 writer.write("Content-Type: application/octet-stream$lineFeed$lineFeed")
@@ -157,22 +158,7 @@ abstract class UploadMappingTask : DefaultTask() {
                 } catch (e: Exception) {
                     null
                 }
-            throw RuntimeException("Server returned HTTP $responseCode: ${connection.responseMessage}. Details: $errorBody")
+            logger.warn("Server returned HTTP $responseCode: ${connection.responseMessage}. Details: $errorBody")
         }
-    }
-
-    private fun addFormField(
-        writer: PrintWriter,
-        name: String,
-        value: String,
-        boundary: String,
-        lineFeed: String,
-    ) {
-        writer.append("--$boundary").append(lineFeed)
-        writer.append("Content-Disposition: form-data; name=\"$name\"").append(lineFeed)
-        writer.append("Content-Type: text/plain").append(lineFeed)
-        writer.append(lineFeed)
-        writer.append(value).append(lineFeed)
-        writer.flush()
     }
 }
