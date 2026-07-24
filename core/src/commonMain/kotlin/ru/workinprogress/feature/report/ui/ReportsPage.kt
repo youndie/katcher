@@ -42,6 +42,7 @@ import ru.workinprogress.katcher.ui.uiCardContent
 import ru.workinprogress.katcher.ui.uiCardDescription
 import ru.workinprogress.katcher.ui.uiCardHeader
 import ru.workinprogress.katcher.ui.uiCardTitle
+import ru.workinprogress.katcher.ui.uiLinkButton
 import ru.workinprogress.katcher.utils.human
 
 fun DIV.resolvedFragment() {
@@ -83,29 +84,50 @@ fun HTML.errorGroupPage(
                     +"← Back"
                 }
 
-                div {
-                    id = "resolved-container"
-
-                    if (!group.resolved) {
-                        uiButton(variant = ButtonVariant.Default) {
-                            attributes.hx {
-                                post =
-                                    call.application.href(
-                                        AppsResource.AppId.Errors.GroupId.Resolve(
-                                            parent =
-                                                AppsResource.AppId.Errors.GroupId(
-                                                    appId = appId,
-                                                    groupId = group.id,
-                                                ),
+                div(classes = "flex items-center gap-2") {
+                    uiLinkButton(
+                        href =
+                            call.application.href(
+                                AppsResource.AppId.Errors.GroupId.CrashJson(
+                                    parent =
+                                        AppsResource.AppId.Errors.GroupId(
+                                            appId = appId,
+                                            groupId = group.id,
                                         ),
-                                    )
-                                target = "#resolved-container"
-                                swap = HxSwap.outerHtml
+                                ),
+                            ),
+                        variant = ButtonVariant.Outline,
+                        size = ButtonSize.Sm,
+                        download = true,
+                    ) {
+                        title = "Download this crash as JSON to hand to an AI fixer"
+                        +"AI Fix"
+                    }
+
+                    div {
+                        id = "resolved-container"
+
+                        if (!group.resolved) {
+                            uiButton(variant = ButtonVariant.Default) {
+                                attributes.hx {
+                                    post =
+                                        call.application.href(
+                                            AppsResource.AppId.Errors.GroupId.Resolve(
+                                                parent =
+                                                    AppsResource.AppId.Errors.GroupId(
+                                                        appId = appId,
+                                                        groupId = group.id,
+                                                    ),
+                                            ),
+                                        )
+                                    target = "#resolved-container"
+                                    swap = HxSwap.outerHtml
+                                }
+                                +"Resolve"
                             }
-                            +"Resolve"
+                        } else {
+                            resolvedFragment()
                         }
-                    } else {
-                        resolvedFragment()
                     }
                 }
             }

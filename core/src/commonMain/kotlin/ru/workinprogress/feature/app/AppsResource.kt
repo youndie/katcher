@@ -81,6 +81,12 @@ class AppsResource {
                 class Resolve(
                     val parent: GroupId,
                 )
+
+                /** Downloads the crash as JSON for an external AI fixer. */
+                @Resource("crash.json")
+                class CrashJson(
+                    val parent: GroupId,
+                )
             }
         }
     }
