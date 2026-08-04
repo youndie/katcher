@@ -1,14 +1,14 @@
 [versions]
-androidGradlePlugin = "9.1.1"
-atomicfu = "0.32.1"
-kotlin = "2.3.20"
-kotlinxCoroutinesCore = "1.10.2"
-kotlinxDatetime = "0.7.1"
+androidGradlePlugin = "9.2.1"
+atomicfu = "0.33.0"
+kotlin = "2.4.10"
+kotlinxCoroutinesCore = "1.11.0"
+kotlinxDatetime = "0.8.0"
 kotlinxSerializationJson = "1.11.0"
-sqlx4k = "1.7.3"
-ksp = "2.3.6"
-ktlint = "14.0.1"
-okio = "3.16.2"
+sqlx4k = "1.13.0"
+ksp = "2.3.11"
+ktlint = "14.2.0"
+okio = "3.18.1"
 
 [libraries]
 

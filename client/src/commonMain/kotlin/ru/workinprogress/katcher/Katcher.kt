@@ -17,6 +17,7 @@ import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -130,12 +131,13 @@ object Katcher {
         type: String = "info",
         data: Map<String, String>? = null,
     ) {
-        val newBreadcrumb = Breadcrumb(
-            timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
-            type = type,
-            message = message,
-            data = data,
-        )
+        val newBreadcrumb =
+            Breadcrumb(
+                timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+                type = type,
+                message = message,
+                data = data,
+            )
 
         _breadcrumbs.update { current ->
             val next = current + newBreadcrumb

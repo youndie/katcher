@@ -33,7 +33,7 @@ publishing {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.3.20")
-    implementation("com.android.tools.build:gradle:9.1.1")
-    implementation("org.jetbrains.kotlin:kotlin-serialization:2.3.20")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10")
+    implementation("com.android.tools.build:gradle:9.2.1")
+    implementation("org.jetbrains.kotlin:kotlin-serialization:2.4.10")
 }
