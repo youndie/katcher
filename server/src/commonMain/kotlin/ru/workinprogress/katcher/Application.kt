@@ -48,7 +48,7 @@ suspend fun Application.module() {
     initDi(db, config)
     initAuth()
     configureRouting()
-    installMcp(config, KatcherMcpServer(dependencies.resolve(), dependencies.resolve()))
+    installMcp(config, KatcherMcpServer(dependencies.resolve(), dependencies.resolve(), dependencies.resolve()))
     launchReportQueueService(dependencies.resolve())
 }
 
