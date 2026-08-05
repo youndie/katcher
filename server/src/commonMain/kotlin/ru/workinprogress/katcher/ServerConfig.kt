@@ -10,4 +10,10 @@ const val SOURCE_MAPS_PATH = "SOURCE_MAPS_PATH"
  */
 const val MCP_TOKEN = "MCP_TOKEN"
 
+/**
+ * Comma-separated hostnames the MCP endpoint may be reached on. Required in a deployment:
+ * the transport's DNS-rebinding protection otherwise accepts localhost only.
+ */
+const val MCP_ALLOWED_HOSTS = "MCP_ALLOWED_HOSTS"
+
 expect fun getServerConfig(): ServerConfig

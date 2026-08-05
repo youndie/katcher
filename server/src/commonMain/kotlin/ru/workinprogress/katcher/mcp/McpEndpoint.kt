@@ -52,11 +52,17 @@ fun Application.installMcp(
 
     // Stateless: these tools are read-only lookups with no session to resume, so the
     // simpler transport avoids carrying session and event-store machinery for nothing.
-    // DNS rebinding protection stays on (the SDK default) — it stops a browser page on
-    // another origin from driving this endpoint via the developer's own machine.
-    mcpStatelessStreamableHttp(path = MCP_PATH) {
+    //
+    // DNS rebinding protection stays on — it stops a page on another origin from driving
+    // this endpoint through the developer's own machine. It validates the Host header
+    // against allowedHosts, which defaults to localhost only; a deployment therefore has
+    // to declare its own hostname or every request is refused with "Invalid Host". Left
+    // null when unset so local runs keep the safe default.
+    val allowedHosts = config.mcpAllowedHosts.takeIf { it.isNotEmpty() }
+    mcpStatelessStreamableHttp(path = MCP_PATH, allowedHosts = allowedHosts) {
         mcpServer.build()
     }
+    log.info("MCP allowed hosts: ${allowedHosts?.joinToString() ?: "default (localhost)"}")
 
     log.info("MCP endpoint enabled at $MCP_PATH")
 }

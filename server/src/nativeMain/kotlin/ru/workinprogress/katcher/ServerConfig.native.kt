@@ -12,7 +12,18 @@ actual fun getServerConfig(): ServerConfig =
         getDBPath ?: "./data/local.db",
         getSourceMapsPath ?: "./data/mappings",
         getMcpToken,
+        getMcpAllowedHosts,
     )
+
+val getMcpAllowedHosts: List<String>
+    get() =
+        runCatching {
+            getenv(MCP_ALLOWED_HOSTS)?.toKString().orEmpty()
+        }.getOrNull()
+            .orEmpty()
+            .split(',')
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
 
 val getMcpToken
     get() =

@@ -35,6 +35,11 @@ spec:
                 secretKeyRef:
                   name: katcher-mcp
                   key: token
+            # The transport rejects any Host it was not told about, defaulting to
+            # localhost, so the public hostname has to be declared or every request
+            # is refused.
+            - name: MCP_ALLOWED_HOSTS
+              value: {{ .Values.hostname | quote }}
             {{- end }}
           resources:
             requests:
