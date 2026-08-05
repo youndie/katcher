@@ -43,6 +43,33 @@ spec:
       priority: 200
   tls:
     certResolver: {{ .Values.traefik.certResolver | quote }}
+{{- if .Values.mcp.token }}
+---
+# MCP clients are machines: they hold no browser session, so the forward-auth
+# middleware would reject them before Katcher ever saw the request. This route
+# bypasses it for /mcp only, exactly as the ingest routes above do, and the
+# endpoint authenticates itself with the bearer token instead.
+#
+# Rendered only when a token is configured, so the bypass cannot exist without
+# the authentication that replaces it.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: katcher-mcp-bypass
+  namespace: {{ .Release.Namespace }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`{{ .Values.hostname }}`) && PathPrefix(`/mcp`)
+      kind: Rule
+      services:
+        - name: katcher-backend
+          port: 8080
+      priority: 200
+  tls:
+    certResolver: {{ .Values.traefik.certResolver | quote }}
+{{- end }}
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
