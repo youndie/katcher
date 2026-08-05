@@ -1,0 +1,7 @@
+.git
+.idea
+**/build
+.gradle
+.kotlin
+**/.katcher_cache
+local.properties

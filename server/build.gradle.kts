@@ -54,6 +54,12 @@ project.tasks.getByName("compileKotlinJvm") {
     dependsOn("kspCommonMainKotlinMetadata")
 }
 
+tasks
+    .matching { it.name.startsWith("ksp") && it.name != "kspCommonMainKotlinMetadata" }
+    .configureEach {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+
 tasks.withType<KotlinCompilationTask<*>> {
     dependsOn("kspCommonMainKotlinMetadata")
 }
