@@ -11,7 +11,14 @@ actual fun getServerConfig(): ServerConfig =
     ServerConfig(
         getDBPath ?: "./data/local.db",
         getSourceMapsPath ?: "./data/mappings",
+        getMcpToken,
     )
+
+val getMcpToken
+    get() =
+        runCatching {
+            getenv(MCP_TOKEN)?.toKString()?.takeIf { it.isNotBlank() }
+        }.getOrNull()
 
 val getDBPath
     get() =

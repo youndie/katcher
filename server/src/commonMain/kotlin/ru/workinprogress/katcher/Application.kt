@@ -36,6 +36,8 @@ import ru.workinprogress.katcher.db.ErrorGroupCrudRepositoryImpl
 import ru.workinprogress.katcher.db.SymbolMapCrudRepositoryImpl
 import ru.workinprogress.katcher.db.UsersCrudRepositoryImpl
 import ru.workinprogress.katcher.db.migrateDb
+import ru.workinprogress.katcher.mcp.KatcherMcpServer
+import ru.workinprogress.katcher.mcp.installMcp
 import ru.workinprogress.retrace.MappingFileStorage
 import ru.workinprogress.retrace.MappingFileStorageOkio
 
@@ -46,6 +48,7 @@ suspend fun Application.module() {
     initDi(db, config)
     initAuth()
     configureRouting()
+    installMcp(config, KatcherMcpServer(dependencies.resolve(), dependencies.resolve()))
     launchReportQueueService(dependencies.resolve())
 }
 
