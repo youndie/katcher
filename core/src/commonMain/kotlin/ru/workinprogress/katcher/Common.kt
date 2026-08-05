@@ -19,8 +19,7 @@ const val DEFAULT_SECURITY_SCHEME = "auth-session"
  * Whether the caller is a browser navigating to a page, as opposed to a machine client.
  * Browsers ask for `text/html`; API and MCP clients ask for JSON or an event stream.
  */
-private fun ApplicationCall.wantsHtml(): Boolean =
-    request.headers["Accept"]?.contains("text/html", ignoreCase = true) == true
+private fun ApplicationCall.wantsHtml(): Boolean = request.headers["Accept"]?.contains("text/html", true) == true
 
 fun Application.common() {
     install(Resources)
@@ -42,11 +41,17 @@ fun Application.common() {
                     call.response.headers.append("HX-Redirect", "/login")
                     call.respondText("")
                 }
+
                 // Sending a browser to the login page only makes sense for a browser.
                 // API and MCP clients need the status code itself: turning 401 into a
                 // redirect makes them follow it and parse a login page as a response.
-                call.wantsHtml() -> call.respondRedirect("/login")
-                else -> call.respond(HttpStatusCode.Unauthorized)
+                call.wantsHtml() -> {
+                    call.respondRedirect("/login")
+                }
+
+                else -> {
+                    call.respond(HttpStatusCode.Unauthorized)
+                }
             }
         }
     }

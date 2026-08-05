@@ -1,10 +1,8 @@
 package ru.workinprogress.katcher.ui
 
-import kotlinx.html.A
 import kotlinx.html.BUTTON
 import kotlinx.html.ButtonType
 import kotlinx.html.FlowContent
-import kotlinx.html.a
 import kotlinx.html.button
 
 fun FlowContent.uiButton(
@@ -18,28 +16,6 @@ fun FlowContent.uiButton(
 
     button(classes = classes) {
         this.type = type
-        block()
-    }
-}
-
-/**
- * A link that looks like a button. Use this instead of [uiButton] for anything the
- * browser must handle natively — notably file downloads, which htmx cannot do: an
- * `hx-get` would swap the response body into the DOM rather than save it.
- */
-fun FlowContent.uiLinkButton(
-    href: String,
-    variant: ButtonVariant = ButtonVariant.Default,
-    size: ButtonSize = ButtonSize.Default,
-    extraClasses: String? = null,
-    download: Boolean = false,
-    block: A.() -> Unit,
-) {
-    a(href = href, classes = buttonClasses(variant, size, extraClasses)) {
-        if (download) {
-            // Empty value = "use the filename the server sends in Content-Disposition".
-            attributes["download"] = ""
-        }
         block()
     }
 }
