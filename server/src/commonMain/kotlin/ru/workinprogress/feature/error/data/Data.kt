@@ -102,6 +102,25 @@ class ErrorGroupRepositoryImpl(
         }
     }
 
+    override suspend fun linkFix(
+        groupId: Long,
+        fixUrl: String,
+        linkedAt: Long,
+    ) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        "UPDATE error_groups SET fix_url = :fixUrl, fix_linked_at = :linkedAt WHERE id = :id",
+                    ).apply {
+                        bind("id", groupId)
+                        bind("fixUrl", fixUrl)
+                        bind("linkedAt", linkedAt)
+                    },
+            )
+        }
+    }
+
     override suspend fun findByAppId(
         appId: Int,
         userId: Int,
@@ -215,6 +234,8 @@ data class ErrorGroupDb(
     val firstSeen: Long,
     val lastSeen: Long,
     val resolved: Boolean,
+    val fixUrl: String? = null,
+    val fixLinkedAt: Long? = null,
 )
 
 fun ErrorGroupDb.toDomain() =
@@ -227,6 +248,7 @@ fun ErrorGroupDb.toDomain() =
         Instant.fromEpochMilliseconds(lastSeen).toLocalDateTime(TimeZone.currentSystemDefault()),
         occurrences,
         resolved,
+        fixUrl,
     )
 
 object ErrorGroupWithViewedRowMapper : RowMapper<ErrorGroupWithViewed> {

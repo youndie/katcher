@@ -125,6 +125,24 @@ fun HTML.errorGroupPage(
                         infoRow("Last seen", group.lastSeen.human())
                         infoRow("Fingerprint", group.fingerprint.take(18))
                     }
+
+                    group.fixUrl?.let { fixUrl ->
+                        div(classes = "flex justify-between mt-4 pt-4 border-t text-sm gap-4") {
+                            div(classes = "text-muted-foreground whitespace-nowrap") { +"Reported fix" }
+                            // The full URL is the link text on purpose. This value was written
+                            // by an agent, and Katcher holds no repository configuration to
+                            // check the host against — so the only defence left is letting a
+                            // person see where the link actually goes before clicking it.
+                            a(
+                                href = fixUrl,
+                                classes = "font-medium text-primary underline underline-offset-4 break-all text-right",
+                            ) {
+                                rel = "noopener noreferrer nofollow"
+                                target = "_blank"
+                                +fixUrl
+                            }
+                        }
+                    }
                 }
             }
 

@@ -24,6 +24,8 @@ data class ErrorGroup(
     val lastSeen: LocalDateTime,
     val occurrences: Int,
     val resolved: Boolean,
+    /** Pull request an agent reported as fixing this group, if any. */
+    val fixUrl: String? = null,
 )
 
 @Serializable

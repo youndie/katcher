@@ -75,9 +75,15 @@ private val migrationV2 = listOf(
     """ALTER TABLE reports ADD COLUMN breadcrumbs TEXT NULL;"""
 )
 
+private val migrationV3 = listOf(
+    """ALTER TABLE error_groups ADD COLUMN fix_url TEXT NULL;""",
+    """ALTER TABLE error_groups ADD COLUMN fix_linked_at BIGINT NULL;"""
+)
+
 val allMigrations = listOf(
     migrationV1,
-    migrationV2
+    migrationV2,
+    migrationV3
 )
 
 suspend fun ISQLite.migrateDb() {

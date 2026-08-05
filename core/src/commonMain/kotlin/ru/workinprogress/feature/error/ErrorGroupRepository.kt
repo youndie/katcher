@@ -25,4 +25,11 @@ interface ErrorGroupRepository {
     suspend fun findById(groupId: Long): ErrorGroup?
 
     suspend fun resolve(groupId: Long)
+
+    /** Records the pull request an agent reported as fixing this group. */
+    suspend fun linkFix(
+        groupId: Long,
+        fixUrl: String,
+        linkedAt: Long,
+    )
 }

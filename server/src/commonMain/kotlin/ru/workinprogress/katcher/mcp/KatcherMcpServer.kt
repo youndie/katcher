@@ -27,6 +27,8 @@ import ru.workinprogress.feature.report.ErrorGroupSortOrder
 import ru.workinprogress.feature.report.Report
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.katcher.utils.human
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Exposes Katcher's crashes to coding agents over MCP, behind two independent gates.
@@ -216,7 +218,68 @@ class KatcherMcpServer(
             )
         }
 
+        server.addTool(
+            name = "link_fix",
+            description =
+                "Record the pull request that fixes a crash group. Call this only after you " +
+                    "have actually opened a PR and only with its real URL. This does not mark " +
+                    "the group resolved — a person does that once the fix ships.",
+            inputSchema =
+                ToolSchema(
+                    properties =
+                        buildJsonObject {
+                            put("groupId", intSchema("Error group id"))
+                            put(
+                                "pullRequestUrl",
+                                buildJsonObject {
+                                    put("type", "string")
+                                    put("description", "Full https:// URL of the pull request.")
+                                },
+                            )
+                        },
+                    required = listOf("groupId", "pullRequestUrl"),
+                ),
+            // The only tool here that changes anything. Marked destructive so clients that
+            // honour annotations ask before running it: it writes a link into a dashboard
+            // that people read and trust. Overwriting a previously recorded link is not
+            // reversible from here either.
+            toolAnnotations = ToolAnnotations(readOnlyHint = false, destructiveHint = true),
+        ) { request ->
+            val groupId = request.longArg("groupId") ?: return@addTool errorResult("groupId is required")
+            val url = request.stringArg("pullRequestUrl") ?: return@addTool errorResult("pullRequestUrl is required")
+            linkFix(groupId, url)
+        }
+
         return server
+    }
+
+    @OptIn(ExperimentalTime::class)
+    private suspend fun linkFix(
+        groupId: Long,
+        rawUrl: String,
+    ): CallToolResult {
+        val group = errorGroupRepository.findById(groupId) ?: return errorResult("No error group with id $groupId")
+
+        val url =
+            when (val result = FixLinkValidator.validate(rawUrl)) {
+                is FixLinkResult.Rejected -> return errorResult("Rejected: ${result.reason}")
+                is FixLinkResult.Valid -> result.url
+            }
+
+        errorGroupRepository.linkFix(groupId, url, Clock.System.now().toEpochMilliseconds())
+
+        val payload =
+            FixLinkedPayload(
+                groupId = group.id,
+                fixUrl = url,
+                // Said plainly so the agent does not report the crash as closed: recording a
+                // PR is not the same as the fix being reviewed, merged or shipped.
+                note =
+                    "Recorded. The group is NOT marked resolved — that stays a human decision " +
+                        "once the fix ships.",
+                previousFixUrl = group.fixUrl,
+            )
+        return CallToolResult(content = listOf(TextContent(json.encodeToString(payload))))
     }
 
     private suspend fun listApps(): CallToolResult {
@@ -499,6 +562,9 @@ private fun CallToolRequest.longArg(name: String): Long? =
         ?.content
         ?.toLongOrNull()
 
+private fun CallToolRequest.stringArg(name: String): String? =
+    runCatching { (arguments as? JsonObject)?.get(name)?.jsonPrimitive?.content }.getOrNull()
+
 private fun CallToolRequest.boolArg(name: String): Boolean? =
     runCatching { (arguments as? JsonObject)?.get(name)?.jsonPrimitive?.boolean }.getOrNull()
 
@@ -514,6 +580,14 @@ private fun CallToolRequest.frameVerifications(): List<FrameVerification> {
         )
     }
 }
+
+@Serializable
+private data class FixLinkedPayload(
+    val groupId: Long,
+    val fixUrl: String,
+    val note: String,
+    val previousFixUrl: String?,
+)
 
 @Serializable
 private data class AppsPayload(
