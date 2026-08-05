@@ -110,7 +110,7 @@ class CrashAssessmentTest {
     }
 
     @Test
-    fun `refuses when a frame does not exist in the repository`() {
+    fun `refuses when nothing resolves to this repository`() {
         // The core "не сходится" case: a crash naming files this codebase does not have.
         val outcome =
             CrashAssessment.evaluate(
@@ -119,7 +119,43 @@ class CrashAssessmentTest {
                 verifications = listOf(FrameVerification("Alpha.kt", false, null)),
             )
         val refused = assertIs<AssessmentOutcome.Refused>(outcome)
-        assertTrue("do not resolve" in refused.reason)
+        assertTrue("None of the frames" in refused.reason)
+    }
+
+    @Test
+    fun `accepts a report that honestly marks library frames as foreign`() {
+        // Regression from the first real bug this was pointed at. Any genuine stacktrace is
+        // mostly framework frames; requiring all of them to resolve blocked the agent that
+        // reported HttpClientCall.kt honestly, while one mentioning only application frames
+        // would have passed. That rewarded the sloppier report.
+        val outcome =
+            CrashAssessment.evaluate(
+                metadata,
+                coherent = true,
+                verifications =
+                    listOf(
+                        FrameVerification("Alpha.kt", true, "src/main/kotlin/Alpha.kt"),
+                        FrameVerification("Beta.kt", false, null),
+                    ),
+            )
+        assertIs<AssessmentOutcome.Accepted>(outcome)
+    }
+
+    @Test
+    fun `a library frame without a path is not treated as an unsupported claim`() {
+        // The path requirement exists to make a claim of existence falsifiable. A frame
+        // reported as absent claims nothing, so it needs no path.
+        val outcome =
+            CrashAssessment.evaluate(
+                metadata,
+                coherent = true,
+                verifications =
+                    listOf(
+                        FrameVerification("Alpha.kt", true, "src/Alpha.kt"),
+                        FrameVerification("Beta.kt", false, ""),
+                    ),
+            )
+        assertIs<AssessmentOutcome.Accepted>(outcome)
     }
 
     @Test

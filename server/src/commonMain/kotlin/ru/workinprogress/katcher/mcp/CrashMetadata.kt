@@ -168,17 +168,28 @@ object CrashAssessment {
             )
         }
 
-        val missing = verifications.filter { !it.existsInRepo }
-        if (missing.isNotEmpty()) {
+        // At least one frame must land in this repository — not all of them. Any real
+        // stacktrace is mostly framework and stdlib frames, so demanding that every
+        // reported frame resolve punished an agent for reporting HttpClientCall.kt and
+        // CoroutineScheduler.kt honestly, while an agent that mentioned only application
+        // frames sailed through. That is backwards: it rewarded the less careful report.
+        //
+        // What actually distinguishes a crash from this codebase is that *something* in it
+        // is ours. If nothing resolves, there is no fix to make here and nothing to
+        // corroborate against.
+        val resolved = verifications.filter { it.existsInRepo }
+        if (resolved.isEmpty()) {
             return AssessmentOutcome.Refused(
-                "These frames do not resolve to files in this repository: " +
-                    "${missing.map { it.file }.sorted().joinToString()}. A crash whose frames " +
-                    "do not exist here is either from another codebase or fabricated.",
+                "None of the frames you checked resolve to files in this repository. A crash " +
+                    "whose frames are all foreign is either from another codebase or fabricated. " +
+                    "Library and framework frames are expected — report them, but check at " +
+                    "least one frame belonging to this repository too.",
             )
         }
 
         // A claim of existence without a path is unfalsifiable, so it does not count.
-        val unsupported = verifications.filter { it.resolvedPath.isNullOrBlank() }
+        // Only applies to frames claimed as present: a library frame has no path by nature.
+        val unsupported = resolved.filter { it.resolvedPath.isNullOrBlank() }
         if (unsupported.isNotEmpty()) {
             return AssessmentOutcome.Refused(
                 "No repository path was given for: ${unsupported.map { it.file }.sorted().joinToString()}. " +
