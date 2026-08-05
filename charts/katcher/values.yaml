@@ -6,7 +6,7 @@ hostname: ""
 
 server:
   image: katcher
-  version: 0.4.4
+  version: 0.4.93
   resources:
     requests:
       cpu: "30m"
@@ -14,6 +14,12 @@ server:
     limits:
       cpu: "1"
       memory: "64Mi"
+
+# Bearer token for the MCP endpoint, which coding agents use to read crashes.
+# Empty means the endpoint is not mounted at all — the feature is off, not open.
+# Supply it at deploy time (--set mcp.token=...) from a CI secret; never commit a value here.
+mcp:
+  token: ""
 
 db:
   size: 512Mi

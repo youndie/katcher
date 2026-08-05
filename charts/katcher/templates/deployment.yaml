@@ -27,6 +27,15 @@ spec:
               value: {{ .Values.db.path }}/{{ .Values.db.name }}
             - name: SOURCE_MAPS_PATH
               value: {{ .Values.sourceMaps.path }}
+            {{- if .Values.mcp.token }}
+            # Read from the Secret rather than inlined, so the token does not show up
+            # in `kubectl get deployment -o yaml` or in Helm release history.
+            - name: MCP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: katcher-mcp
+                  key: token
+            {{- end }}
           resources:
             requests:
               cpu: {{ .Values.server.resources.requests.cpu | quote }}
