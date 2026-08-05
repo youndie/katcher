@@ -5,10 +5,15 @@ import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.ApplicationCallPipeline
 import io.ktor.server.application.call
+import io.ktor.server.application.createApplicationPlugin
+import io.ktor.server.application.install
 import io.ktor.server.application.log
 import io.ktor.server.request.path
 import io.ktor.server.response.respond
+import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.readRemaining
 import io.modelcontextprotocol.kotlin.sdk.server.mcpStatelessStreamableHttp
+import kotlinx.io.readString
 import ru.workinprogress.katcher.ServerConfig
 
 const val MCP_PATH = "/mcp"
@@ -49,6 +54,22 @@ fun Application.installMcp(
             finish()
         }
     }
+
+    // Clamps the protocol version an initialize request asks for, working around an SDK
+    // serialisation bug that otherwise drops protocolVersion from the response and stops
+    // any up-to-date client connecting. See McpProtocolCompat.
+    install(
+        createApplicationPlugin("McpProtocolCompat") {
+            onCallReceive { call, _ ->
+                if (call.request.path().startsWith(MCP_PATH)) {
+                    transformBody { body: ByteReadChannel ->
+                        val raw = body.readRemaining().readString()
+                        ByteReadChannel(McpProtocolCompat.normalizeRequest(raw))
+                    }
+                }
+            }
+        },
+    )
 
     // Stateless: these tools are read-only lookups with no session to resume, so the
     // simpler transport avoids carrying session and event-store machinery for nothing.
