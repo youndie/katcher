@@ -61,7 +61,14 @@ storage:
    class: "local-path" # Change to your cluster's storage class (e.g., standard, gp2)
    size: 512Mi
 
-# 4. Traefik & Auth Integration
+# 4. AI agents over MCP (optional, off unless a token is set)
+mcp:
+   # Bearer token MCP clients must present. Do NOT commit a real value:
+   # pass it at install time with --set mcp.token=... from your CI secret store.
+   # Empty means the endpoint is not created at all.
+   token: ""
+
+# 5. Traefik & Auth Integration
 traefik:
    # The certResolver defined in your Traefik static config (e.g., 'letsencrypt' or 'cloudflare')
    certResolver: cloudflare
@@ -86,6 +93,25 @@ helm upgrade --install katcher ./charts/katcher \
   --set traefik.authMiddleware.namespace=auth
 ```
 **How it works**
-The Helm chart creates two distinct **IngressRoutes**:
+The Helm chart creates distinct **IngressRoutes**:
 1. **The UI Route** (`/`): Protected by the authMiddleware. Humans accessing the dashboard must log in via your SSO. Katcher reads the injected headers to identify the user.
 2. **The API Route** (`/api/reports`): **Publicly accessible** (bypasses the auth middleware). This allows your applications and SDKs to send crash reports without needing an interactive login session.
+3. **The MCP Route** (`/mcp`): created **only when `mcp.token` is set**. Also bypasses the auth middleware, because an MCP client is a machine with no browser session and would otherwise be rejected before reaching Katcher. It authenticates with the bearer token instead.
+
+### MCP
+Setting `mcp.token` turns on the endpoint coding agents use to read crashes, and creates
+three things at once: a `Secret` holding the token, the `MCP_TOKEN` environment variable
+read from it, and the ingress route above. Leave it empty and none of them exist.
+
+`MCP_ALLOWED_HOSTS` is filled from `hostname` automatically. It has to match the host
+clients actually use — the transport rejects any other with `Invalid Host`.
+
+```shell
+helm upgrade --install katcher ./charts/katcher \
+  -n katcher --create-namespace \
+  --set hostname=katcher.example.com \
+  --set mcp.token="$MCP_TOKEN"
+```
+
+See the [MCP section of the main README](../../README.md#ai-agents-mcp) for connecting a
+client and for what the server screens before returning crash content.

@@ -91,6 +91,83 @@ authResponseHeaders:
   - X-Auth-Request-Email
 ```
 
+## AI agents (MCP)
+
+Katcher can expose crashes to coding agents over the
+[Model Context Protocol](https://modelcontextprotocol.io), so you can point an agent at a
+repository and ask it to look into a crash. It reads the group, its events, breadcrumbs and
+context, and can record the pull request that fixes it.
+
+**Off by default.** Without `MCP_TOKEN` the endpoint is not mounted at all — no route, no
+secret, nothing to reach.
+
+### Enabling it
+
+| Variable | Purpose |
+|---|---|
+| `MCP_TOKEN` | Bearer token clients must present. Setting it is what turns the feature on. |
+| `MCP_ALLOWED_HOSTS` | Comma-separated hostnames the endpoint may be reached on. **Required when deployed**: the transport's DNS-rebinding protection accepts `localhost` only by default and refuses everything else with `Invalid Host`. |
+
+```shell
+docker run -p 8080:8080 -v ./data:/data \
+  -e MCP_TOKEN="$(openssl rand -hex 32)" \
+  -e MCP_ALLOWED_HOSTS="katcher.example.com" \
+  ghcr.io/youndie/katcher:latest
+```
+
+With the Helm chart, pass the token at deploy time rather than committing it:
+
+```shell
+helm upgrade --install katcher ./charts/katcher --set mcp.token="$MCP_TOKEN"
+```
+
+The chart wires it through a `Secret` and fills `MCP_ALLOWED_HOSTS` from `hostname`.
+
+### Behind a reverse proxy
+
+An MCP client is a machine and carries no browser session, so the forward-auth middleware
+described above will reject it before Katcher ever sees the request. `/mcp` needs to bypass
+that middleware — it authenticates itself with the bearer token instead. The Helm chart
+creates this bypass automatically, but only when `mcp.token` is set.
+
+### Connecting a client
+
+```shell
+claude mcp add --transport http katcher https://katcher.example.com/mcp \
+  --header "Authorization: Bearer $MCP_TOKEN"
+```
+
+Use the `local` or `user` scope. Avoid `project` scope — it writes the configuration into
+the repository, token included.
+
+### Tools
+
+| Tool | |
+|---|---|
+| `list_apps` | Applications reporting to this Katcher |
+| `list_error_groups` | Crash groups for an application |
+| `get_crash_metadata` | Exception type, stack frames, context keys — no free-form text |
+| `get_crash_content` | Full stacktrace, context and breadcrumbs |
+| `link_fix` | Record the pull request that fixes a group |
+
+### Why the server sometimes refuses
+
+Crash reports are written by whoever holds an app key, and app keys ship inside client
+applications. Someone who extracts one can post text designed to give instructions to an
+agent rather than describe a failure — the attack demonstrated against another crash
+reporter in 2026, which drove coding agents into running attacker-supplied commands.
+
+Katcher therefore screens crash content before returning it, and holds back anything that
+reads as an instruction. It also splits reading a crash into two steps: `get_crash_metadata`
+returns only structured, identifier-shaped facts, and `get_crash_content` releases the free
+text after the agent reports which stack frames it could locate in the repository. Frames
+from libraries and frameworks are expected and cause no problem; at least one frame must
+belong to your repository.
+
+Neither of these makes untrusted text safe — no server-side check can, because the
+limitation is in the models. They narrow the easy path. Run agents with the sandboxing and
+approval settings you would use for any tool that reads outside input.
+
 ## 🚀 Deployment
 
 Katcher is designed to run on Kubernetes. We provide an official Helm chart.
