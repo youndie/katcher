@@ -22,6 +22,7 @@ subprojects {
 
     configure<KtlintExtension> {
         debug.set(true)
+        // renovate: datasource=maven depName=com.pinterest.ktlint:ktlint-cli
         version = "1.8.0"
     }
 }

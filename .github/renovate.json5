@@ -25,6 +25,19 @@
 
   ignorePaths: ["**/build/**", "**/.gradle/**", "**/node_modules/**"],
 
+  // The ktlint CLI version is pinned in the root build.gradle.kts, not in a catalog, so
+  // the gradle manager never sees it. Note this is the tool, not the ktlintPlugin entry
+  // in libs.versions.toml — those are two different versions.
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^build\\.gradle\\.kts$/"],
+      matchStrings: [
+        "// renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+version\\s*=\\s*\"(?<currentValue>.*?)\"",
+      ],
+    },
+  ],
+
   packageRules: [
     {
       description: "Kotlin: the compiler and its plugins move as one version, and that is never a routine bump",
