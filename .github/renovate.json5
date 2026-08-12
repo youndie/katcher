@@ -1,0 +1,72 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+
+  extends: ["config:recommended"],
+
+  // Once a week, in UTC. Updates arrive as one Monday-morning batch rather than a
+  // trickle of a PR a day — every PR runs the full build, and that build is not cheap.
+  timezone: "Etc/UTC",
+  schedule: ["before 6am on monday"],
+
+  // The history here is prefixed (add:/fix:/bump:/docs:), so keep the prefixes.
+  // config:recommended maps dependency bumps to `fix:` and everything else to `chore:`.
+  semanticCommits: "enabled",
+
+  labels: ["dependencies"],
+
+  prConcurrentLimit: 3,
+  prHourlyLimit: 0,
+
+  // Vulnerabilities are the one thing that ignores the schedule.
+  vulnerabilityAlerts: {
+    schedule: ["at any time"],
+    labels: ["dependencies", "security"],
+  },
+
+  ignorePaths: ["**/build/**", "**/.gradle/**", "**/node_modules/**"],
+
+  packageRules: [
+    {
+      description: "Kotlin: the compiler and its plugins move as one version, and that is never a routine bump",
+      matchPackageNames: ["/^org\\.jetbrains\\.kotlin[:.]/"],
+      groupName: "kotlin",
+    },
+    {
+      description: "kotlinx ships as one release train — one PR",
+      matchPackageNames: ["/^org\\.jetbrains\\.kotlinx[:.]/"],
+      groupName: "kotlinx",
+    },
+    {
+      description: "AGP and KSP are pinned to the Kotlin version — look at them together with it",
+      matchPackageNames: ["/^com\\.android[:.]/", "/^com\\.google\\.devtools\\.ksp[:.]/"],
+      groupName: "android build tooling",
+    },
+    {
+      description: "tailwind/ is the only npm corner of the repository — one PR is enough for it",
+      matchManagers: ["npm"],
+      groupName: "tailwind",
+    },
+    {
+      description: "Actions and the Gradle wrapper merge themselves: ci.yml on pull_request is check enough",
+      matchManagers: ["github-actions", "gradle-wrapper"],
+      automerge: true,
+    },
+    {
+      description: "ktlint is build tooling, not a runtime dependency",
+      matchPackageNames: ["/^org\\.jlleitschuh\\.gradle\\.ktlint[:.]/"],
+      matchUpdateTypes: ["minor", "patch"],
+      automerge: true,
+    },
+    {
+      description: "Base images: changing the JDK or the distro is a decision, not a bump",
+      matchManagers: ["dockerfile"],
+      automerge: false,
+    },
+    {
+      description: "Majors always get a human",
+      matchUpdateTypes: ["major"],
+      automerge: false,
+      labels: ["dependencies", "major"],
+    },
+  ],
+}

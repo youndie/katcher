@@ -1,0 +1,47 @@
+name: CI
+
+# The other workflows here publish; none of them check. Until this one existed a pull
+# request could be merged without anything ever compiling it — which is also why
+# Renovate had no signal to automerge on.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Kotlin/Native cache: LLVM and the sysroots weigh hundreds of megabytes and are
+      # downloaded once. Without it every run spends minutes on that alone.
+      - uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: konan-${{ runner.os }}-${{ hashFiles('gradle/*.versions.toml') }}
+          restore-keys: konan-${{ runner.os }}-
+
+      # build covers ktlintCheck (through check) and the tests of every module. The native
+      # target is picked by host, so on this runner it resolves to linuxX64.
+      - run: ./gradlew build --stacktrace
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            **/build/reports/**
+          retention-days: 7
