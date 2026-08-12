@@ -8,14 +8,23 @@
   timezone: "Etc/UTC",
   schedule: ["before 6am on monday"],
 
-  // The history here is prefixed (add:/fix:/bump:/docs:), so keep the prefixes.
-  // config:recommended maps dependency bumps to `fix:` and everything else to `chore:`.
-  semanticCommits: "enabled",
+  // Commits here are prose, not conventional commits.
+  semanticCommits: "disabled",
 
   labels: ["dependencies"],
 
-  prConcurrentLimit: 3,
+  // With the build harness merging itself these numbers stop being a throttle on human attention
+  // and become one on runner time, so they can be higher.
+  prConcurrentLimit: 5,
   prHourlyLimit: 0,
+
+  // Renovate merges the pull request itself rather than arming GitHub's auto-merge. Measured,
+  // not chosen: `enablePullRequestAutoMerge` is refused here with "Protected branch rules not
+  // configured for this branch" and "Pull request is in clean status" — GitHub will not arm
+  // auto-merge on a branch with no required checks, because there is nothing for it to wait for.
+  // Turning that on would mean branch protection on `main`, and direct pushes to `main` are the
+  // established way of working in these repositories.
+  platformAutomerge: false,
 
   // Vulnerabilities are the one thing that ignores the schedule.
   vulnerabilityAlerts: {
@@ -23,20 +32,7 @@
     labels: ["dependencies", "security"],
   },
 
-  ignorePaths: ["**/build/**", "**/.gradle/**", "**/node_modules/**"],
-
-  // The ktlint CLI version is pinned in the root build.gradle.kts, not in a catalog, so
-  // the gradle manager never sees it. Note this is the tool, not the ktlintPlugin entry
-  // in libs.versions.toml — those are two different versions.
-  customManagers: [
-    {
-      customType: "regex",
-      managerFilePatterns: ["/^build\\.gradle\\.kts$/"],
-      matchStrings: [
-        "// renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+version\\s*=\\s*\"(?<currentValue>.*?)\"",
-      ],
-    },
-  ],
+  ignorePaths: ["**/build/**", "**/.gradle/**"],
 
   packageRules: [
     {
@@ -50,23 +46,16 @@
       groupName: "kotlinx",
     },
     {
-      description: "AGP and KSP are pinned to the Kotlin version — look at them together with it",
-      matchPackageNames: ["/^com\\.android[:.]/", "/^com\\.google\\.devtools\\.ksp[:.]/"],
-      groupName: "android build tooling",
-    },
-    {
-      description: "tailwind/ is the only npm corner of the repository — one PR is enough for it",
-      matchManagers: ["npm"],
-      groupName: "tailwind",
-    },
-    {
-      description: "Actions and the Gradle wrapper merge themselves: ci.yml on pull_request is check enough",
-      matchManagers: ["github-actions", "gradle-wrapper"],
-      automerge: true,
+      description: "The build harness arrives as one PR, not one per action",
+      matchManagers: ["github-actions"],
+      groupName: "ci actions",
     },
     {
       description: "ktlint is build tooling, not a runtime dependency",
-      matchPackageNames: ["/^org\\.jlleitschuh\\.gradle\\.ktlint[:.]/"],
+      matchPackageNames: [
+        "/^org\\.jlleitschuh\\.gradle\\.ktlint[:.]/",
+        "/^com\\.pinterest\\.ktlint[:.]/",
+      ],
       matchUpdateTypes: ["minor", "patch"],
       automerge: true,
     },
@@ -76,10 +65,21 @@
       automerge: false,
     },
     {
-      description: "Majors always get a human",
+      description: "Majors of anything that ships get a human",
       matchUpdateTypes: ["major"],
       automerge: false,
       labels: ["dependencies", "major"],
+    },
+    // Last, so it wins over the major rule above. This ordering is the whole point: a major of
+    // `actions/checkout` is not the same kind of event as a major of Ktor. The build harness is
+    // not shipped to anyone, and the check that would catch a bad bump is the build itself —
+    // which already ran on the PR. Requiring a human there buys nothing and costs a merge queue
+    // that nobody drains.
+    {
+      description: "The build harness merges itself, majors included: CI on pull_request is the review",
+      matchManagers: ["github-actions", "gradle-wrapper"],
+      automerge: true,
+      automergeType: "pr",
     },
   ],
 }

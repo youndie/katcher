@@ -20,7 +20,7 @@ publishing {
 
 kotlin {
     withSourcesJar()
-    jvmToolchain(21)
+    jvmToolchain(25)
 
     jvm()
 

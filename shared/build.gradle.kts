@@ -19,7 +19,7 @@ publishing {
 
 kotlin {
     jvm()
-    jvmToolchain(21)
+    jvmToolchain(25)
 
     val hostOs = System.getProperty("os.name")
     val arch = System.getProperty("os.arch")
