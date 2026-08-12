@@ -12,7 +12,7 @@
 # Jammy ships tar 1.34, which works under emulation.
 #
 # ---------- Stage 1 : Build (linuxX64 via the host-based target selection) ----------
-FROM --platform=linux/amd64 eclipse-temurin:21-jdk-jammy AS build
+FROM --platform=linux/amd64 eclipse-temurin:25-jdk-jammy AS build
 
 WORKDIR /src
 COPY . .
