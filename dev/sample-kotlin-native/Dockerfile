@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.26
 # Builds the Kotlin/Native client sample for linuxX64 and runs it against a Katcher server.
 #
 #   docker build --platform=linux/amd64 -f dev/sample-kotlin-native/Dockerfile -t katcher-native-sample .
