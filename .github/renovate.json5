@@ -46,6 +46,11 @@
       groupName: "kotlinx",
     },
     {
+      description: "kotlinx-datetime publishes `-compat` builds for consumers pinned to an older line. They sort as newer and are not upgrades",
+      matchPackageNames: ["org.jetbrains.kotlinx:kotlinx-datetime"],
+      allowedVersions: "!/-compat$/",
+    },
+    {
       description: "The build harness arrives as one PR, not one per action",
       matchManagers: ["github-actions"],
       groupName: "ci actions",
@@ -63,6 +68,11 @@
       description: "Base images: changing the JDK or the distro is a decision, not a bump",
       matchManagers: ["dockerfile"],
       automerge: false,
+      // Own branch, so the image never rides along with the wrapper. Both are called `gradle`
+      // and move to the same version, so Renovate puts them in one PR — and one dep that may
+      // not automerge holds back the whole PR. They are not the same risk: the wrapper is what
+      // CI just ran, while no check on a pull request ever builds the Dockerfile.
+      additionalBranchPrefix: "docker-",
     },
     {
       description: "Majors of anything that ships get a human",
