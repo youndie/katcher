@@ -8,8 +8,9 @@
   timezone: "Etc/UTC",
   schedule: ["before 6am on monday"],
 
-  // Commits here are prose, not conventional commits.
-  semanticCommits: "disabled",
+  // Unlike tracy, the history here is prefixed (add:/fix:/bump:/docs:), so keep the prefixes.
+  // config:recommended maps dependency bumps to `fix:` and everything else to `chore:`.
+  semanticCommits: "enabled",
 
   labels: ["dependencies"],
 
@@ -32,7 +33,21 @@
     labels: ["dependencies", "security"],
   },
 
-  ignorePaths: ["**/build/**", "**/.gradle/**"],
+  ignorePaths: ["**/build/**", "**/.gradle/**", "**/node_modules/**"],
+
+  // Unlike tracy and metrik, this repository does not keep the ktlint CLI version in a catalog —
+  // it is pinned in the root build.gradle.kts, next to the marker comment this reads. Without
+  // this the pin is invisible to Renovate and the marker means nothing. Not to be confused with
+  // the `ktlintPlugin` catalog entry: the plugin and the CLI are two different versions.
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: ["/^build\\.gradle\\.kts$/"],
+      matchStrings: [
+        "// renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+version\\s*=\\s*\"(?<currentValue>.*?)\"",
+      ],
+    },
+  ],
 
   packageRules: [
     {
@@ -49,6 +64,16 @@
       description: "kotlinx-datetime publishes `-compat` builds for consumers pinned to an older line. They sort as newer and are not upgrades",
       matchPackageNames: ["org.jetbrains.kotlinx:kotlinx-datetime"],
       allowedVersions: "!/-compat$/",
+    },
+    {
+      description: "AGP and KSP are pinned to the Kotlin version — look at them together, not as two PRs for one number",
+      matchPackageNames: ["/^com\\.android[:.]/", "/^com\\.google\\.devtools\\.ksp[:.]/"],
+      groupName: "android build tooling",
+    },
+    {
+      description: "tailwind/ is the only npm corner of the repository — one PR is enough for it",
+      matchManagers: ["npm"],
+      groupName: "tailwind",
     },
     {
       description: "The build harness arrives as one PR, not one per action",
