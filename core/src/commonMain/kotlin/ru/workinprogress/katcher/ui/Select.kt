@@ -42,7 +42,7 @@ fun FlowContent.uiSelect(
 
         div(classes = "pointer-events-none absolute right-3 text-gray-500") {
             unsafe {
-                +
+                val chevronSvg =
                     """
                     <svg xmlns="http://www.w3.org/2000/svg" 
                          width="16" height="16"
@@ -52,6 +52,7 @@ fun FlowContent.uiSelect(
                             d="M19 9l-7 7-7-7" />
                     </svg>
                     """.trimIndent()
+                +chevronSvg
             }
         }
     }

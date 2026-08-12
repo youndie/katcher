@@ -42,7 +42,7 @@ fun HEAD.tailwind() {
 fun HEAD.darkTheme() {
     script {
         unsafe {
-            +
+            val themeScript =
                 """
                 (function() {
                   document.documentElement.style.visibility = 'hidden';
@@ -77,6 +77,7 @@ fun HEAD.darkTheme() {
                   });
                 })();
                 """.trimIndent()
+            +themeScript
         }
     }
 }

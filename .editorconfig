@@ -3,6 +3,11 @@ root = true
 [*]
 insert_final_newline = true
 
+#  KSP output lands on :server's commonMain srcDirs, so ktlint sees it. Generated code is
+#  not ours to style, and the plugin's own `filter` does not reach KMP source sets.
+[**/build/generated/**.{kt,kts}]
+ktlint = disabled
+
 [{*.kt,*.kts}]
 ktlint_function_naming_ignore_when_annotated_with = Composable
 

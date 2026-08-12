@@ -107,7 +107,7 @@ fun HTML.errorsTableFragment(
                 pre(
                     classes = "font-mono text-sm bg-muted p-4 rounded-lg text-left whitespace-pre-wrap leading-relaxed max-w-sm",
                 ) {
-                    +
+                    val snippet =
                         """
                         try {
                             riskyCode()
@@ -115,6 +115,7 @@ fun HTML.errorsTableFragment(
                             Katcher.catch(t)
                         }
                         """.trimIndent()
+                    +snippet
                 }
             }
         }

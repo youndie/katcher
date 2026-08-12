@@ -45,7 +45,10 @@ class AppsResource {
                     val parent: GroupId,
                 ) {
                     @Resource("{reportId}")
-                    class ReportId(val parent: Reports, val reportId: Long) {
+                    class ReportId(
+                        val parent: Reports,
+                        val reportId: Long,
+                    ) {
                         companion object {
                             operator fun invoke(
                                 appId: Int,
@@ -54,7 +57,6 @@ class AppsResource {
                             ) = ReportId(Reports(GroupId(appId, groupId)), reportId)
                         }
                     }
-
 
                     @Resource("")
                     class Paginated(

@@ -71,29 +71,42 @@ FOREIGN KEY(app_id) REFERENCES apps(id) ON DELETE CASCADE
 
 private val migrationV1 = initial
 
-private val migrationV2 = listOf(
-    """ALTER TABLE reports ADD COLUMN breadcrumbs TEXT NULL;"""
-)
+private val migrationV2 =
+    listOf(
+        """ALTER TABLE reports ADD COLUMN breadcrumbs TEXT NULL;""",
+    )
 
-private val migrationV3 = listOf(
-    """ALTER TABLE error_groups ADD COLUMN fix_url TEXT NULL;""",
-    """ALTER TABLE error_groups ADD COLUMN fix_linked_at BIGINT NULL;"""
-)
+private val migrationV3 =
+    listOf(
+        """ALTER TABLE error_groups ADD COLUMN fix_url TEXT NULL;""",
+        """ALTER TABLE error_groups ADD COLUMN fix_linked_at BIGINT NULL;""",
+    )
 
-val allMigrations = listOf(
-    migrationV1,
-    migrationV2,
-    migrationV3
-)
+val allMigrations =
+    listOf(
+        migrationV1,
+        migrationV2,
+        migrationV3,
+    )
 
 suspend fun ISQLite.migrateDb() {
     this.transaction {
         var currentVersion =
-            fetchAll("PRAGMA user_version = 0;").getOrNull()?.rows?.getOrNull(0)?.get(0)?.asLong()?.toInt() ?: 0
+            fetchAll("PRAGMA user_version = 0;")
+                .getOrNull()
+                ?.rows
+                ?.getOrNull(0)
+                ?.get(0)
+                ?.asLong()
+                ?.toInt() ?: 0
 
         if (currentVersion == 0) {
-            val tablesExist = fetchAll("SELECT name FROM sqlite_master WHERE type='table' AND name='users';")
-                .getOrNull()?.rows?.getOrNull(0)?.get(0) != null
+            val tablesExist =
+                fetchAll("SELECT name FROM sqlite_master WHERE type='table' AND name='users';")
+                    .getOrNull()
+                    ?.rows
+                    ?.getOrNull(0)
+                    ?.get(0) != null
 
             if (tablesExist) {
                 execute("PRAGMA user_version = 1;")

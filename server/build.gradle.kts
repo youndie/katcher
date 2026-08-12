@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
+import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
 
 plugins {
     kotlin("multiplatform")
@@ -64,7 +65,11 @@ tasks.withType<KotlinCompilationTask<*>> {
     dependsOn("kspCommonMainKotlinMetadata")
 }
 
-tasks.named("runKtlintFormatOverCommonMainSourceSet") {
+// commonMain carries build/generated/ksp on its srcDirs, so every ktlint task reads the KSP
+// output — and reading it before it is written is a race Gradle fails the build over. The
+// format task already said this; the check task needs it just as much. What ktlint should
+// make of those files is decided in .editorconfig, not here.
+tasks.withType<BaseKtLintCheckTask>().configureEach {
     mustRunAfter(tasks.named("kspCommonMainKotlinMetadata"))
 }
 

@@ -21,7 +21,7 @@ fun DIV.uiDialogContent(block: DIV.() -> Unit) {
 fun HEAD.dialogScript() {
     script {
         unsafe {
-            +
+            val closeScript =
                 """
                 function closeDialogWithAnimation() {
     const modal = document.getElementById('modal-root');
@@ -47,6 +47,7 @@ fun HEAD.dialogScript() {
     });
 }
                 """.trimIndent()
+            +closeScript
         }
     }
 }
