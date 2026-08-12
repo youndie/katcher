@@ -12,6 +12,11 @@ object ErrorGroups : LongIdTable("error_groups") {
     val lastSeen = long("last_seen")
     val resolved = bool("resolved").default(false)
 
+    // Mirrors migration V3 of the native server: the pull request an agent reported as
+    // fixing this group, and when it said so.
+    val fixUrl = text("fix_url").nullable()
+    val fixLinkedAt = long("fix_linked_at").nullable()
+
     init {
         index(isUnique = true, appId, fingerprint)
         index(false, lastSeen)

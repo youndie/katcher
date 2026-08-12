@@ -83,6 +83,21 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
         }
     }
 
+    override suspend fun linkFix(
+        groupId: Long,
+        fixUrl: String,
+        linkedAt: Long,
+    ) {
+        withContext(Dispatchers.IO) {
+            transaction {
+                ErrorGroups.update({ ErrorGroups.id eq groupId }) {
+                    it[ErrorGroups.fixUrl] = fixUrl
+                    it[fixLinkedAt] = linkedAt
+                }
+            }
+        }
+    }
+
     override suspend fun insert(newGroup: CreateErrorGroupParams): ErrorGroup =
         runCatching {
             withContext(Dispatchers.IO) {
@@ -173,6 +188,7 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
                     .fromEpochMilliseconds(row[ErrorGroups.lastSeen])
                     .toLocalDateTime(TimeZone.currentSystemDefault()),
             resolved = row[ErrorGroups.resolved],
+            fixUrl = row[ErrorGroups.fixUrl],
         )
 
     private fun rowToErrorGroupViewed(row: ResultRow) =
