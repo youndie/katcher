@@ -10,4 +10,16 @@ class ServerConfig(
      * of localhost only, so a deployment must declare its public hostname explicitly.
      */
     val mcpAllowedHosts: List<String> = emptyList(),
+    /**
+     * Куда агент metrik шлёт метрики, `host:port`. `null` — плагин не ставится вовсе: ничего не
+     * меряется и никуда не отправляется.
+     *
+     * Мониторинг опционален намеренно. katcher должен подниматься и без metrik — иначе появляется
+     * зависимость сервиса от наблюдателя, то есть ровно та связь, которой у наблюдателя быть не
+     * должно.
+     */
+    val metrikEndpoint: String? = null,
+    val metrikKey: String? = null,
+    val metrikService: String = "katcher",
+    val metrikRelease: String? = null,
 )

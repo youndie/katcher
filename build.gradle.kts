@@ -18,6 +18,9 @@ subprojects {
 
     repositories {
         mavenCentral()
+        // Агент metrik публикуется сюда, в Central его нет. Объявлять надо именно здесь:
+        // repositories у подпроектов перекрывают то, что задано в settings.gradle.kts.
+        maven("https://reposilite.kotlin.website/snapshots") { name = "WipSnapshots" }
     }
 
     configure<KtlintExtension> {

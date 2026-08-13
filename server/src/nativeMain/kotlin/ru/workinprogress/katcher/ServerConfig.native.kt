@@ -13,7 +13,16 @@ actual fun getServerConfig(): ServerConfig =
         getSourceMapsPath ?: "./data/mappings",
         getMcpToken,
         getMcpAllowedHosts,
+        metrikEndpoint = env(METRIK_ENDPOINT),
+        metrikKey = env(METRIK_KEY),
+        metrikService = env(METRIK_SERVICE) ?: "katcher",
+        metrikRelease = env(METRIK_RELEASE),
     )
+
+private fun env(name: String): String? =
+    runCatching {
+        getenv(name)?.toKString()?.takeIf { it.isNotBlank() }
+    }.getOrNull()
 
 val getMcpAllowedHosts: List<String>
     get() =

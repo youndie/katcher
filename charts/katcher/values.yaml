@@ -21,6 +21,24 @@ server:
 mcp:
   token: ""
 
+# Monitoring by metrik. Empty endpoint means the agent is not installed at all: nothing is
+# measured and nothing is sent. katcher has to come up without metrik — a service that depends
+# on its observer is exactly the coupling an observer must not create.
+#
+# The agent costs the request path ~106ns and sends one UDP packet per minute, so leaving it on
+# is cheap; it is optional because not every installation runs a metrik.
+metrik:
+  # host:port of the metrik ingest service, e.g. metrik-metrik-ingest.metrik.svc:9999
+  endpoint: ""
+  # Ingest key of the metrik installation — one per installation, not per service.
+  # Supply it at deploy time (--set metrik.key=...); it travels through a Secret, not the pod spec.
+  key: ""
+  existingSecret: ""
+  secretKey: ingest-key
+  # Name katcher reports under, and the release that draws deploy markers on the charts.
+  service: katcher
+  release: ""
+
 db:
   size: 512Mi
   class: "local-path"

@@ -16,4 +16,19 @@ const val MCP_TOKEN = "MCP_TOKEN"
  */
 const val MCP_ALLOWED_HOSTS = "MCP_ALLOWED_HOSTS"
 
+/**
+ * Where the metrik agent sends its packets, as `host:port`. Unset means no monitoring at all:
+ * the plugin is not installed, and nothing is measured or sent.
+ */
+const val METRIK_ENDPOINT = "METRIK_ENDPOINT"
+
+/** Ingest key of the metrik installation. One per installation, not per service. */
+const val METRIK_KEY = "METRIK_KEY"
+
+/** Name katcher reports under. Defaults to `katcher`. */
+const val METRIK_SERVICE = "METRIK_SERVICE"
+
+/** Release, so metrik can draw deploy markers on the charts. Optional. */
+const val METRIK_RELEASE = "METRIK_RELEASE"
+
 expect fun getServerConfig(): ServerConfig

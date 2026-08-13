@@ -41,6 +41,27 @@ spec:
             - name: MCP_ALLOWED_HOSTS
               value: {{ .Values.hostname | quote }}
             {{- end }}
+            {{- if .Values.metrik.endpoint }}
+            # Мониторинг ставится только вместе с endpoint'ом: пустое значение означает, что
+            # плагин не устанавливается вовсе и ничего никуда не отправляется.
+            - name: METRIK_ENDPOINT
+              value: {{ .Values.metrik.endpoint | quote }}
+            - name: METRIK_SERVICE
+              value: {{ .Values.metrik.service | quote }}
+            {{- with .Values.metrik.release }}
+            - name: METRIK_RELEASE
+              value: {{ . | quote }}
+            {{- end }}
+            {{- if or .Values.metrik.key .Values.metrik.existingSecret }}
+            # Ingest-key — через Secret: он один на всю инсталляцию metrik, и попадать в спеку
+            # пода ему незачем.
+            - name: METRIK_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.metrik.existingSecret | default "katcher-metrik" }}
+                  key: {{ .Values.metrik.secretKey }}
+            {{- end }}
+            {{- end }}
           resources:
             requests:
               cpu: {{ .Values.server.resources.requests.cpu | quote }}

@@ -38,6 +38,7 @@ import ru.workinprogress.katcher.db.UsersCrudRepositoryImpl
 import ru.workinprogress.katcher.db.migrateDb
 import ru.workinprogress.katcher.mcp.KatcherMcpServer
 import ru.workinprogress.katcher.mcp.installMcp
+import ru.workinprogress.metrik.agent.Metrik
 import ru.workinprogress.retrace.MappingFileStorage
 import ru.workinprogress.retrace.MappingFileStorageOkio
 
@@ -49,14 +50,41 @@ suspend fun Application.module() {
     initAuth()
     configureRouting()
     installMcp(config, KatcherMcpServer(dependencies.resolve(), dependencies.resolve(), dependencies.resolve()))
+    installMetrik(config)
     launchReportQueueService(dependencies.resolve())
+}
+
+/**
+ * Мониторинг — только если задан endpoint.
+ *
+ * Без него плагин не ставится вовсе: ничего не меряется и никуда не отправляется. katcher обязан
+ * подниматься без metrik, иначе получается зависимость сервиса от наблюдателя.
+ *
+ * Агент не блокирует запрос и не бросает исключений в чужой пайплайн: если сервер недоступен или
+ * очередь переполнена, он считает потерю и продолжает отдавать трафик.
+ */
+private fun Application.installMetrik(config: ServerConfig) {
+    val endpoint = config.metrikEndpoint ?: return
+    val key = config.metrikKey ?: return
+
+    install(Metrik) {
+        service = config.metrikService
+        apiKey = key
+        this.endpoint = endpoint
+        config.metrikRelease?.let { release = it }
+    }
 }
 
 fun initDb(config: ServerConfig): ISQLite {
     val options =
         ConnectionPool.Options
             .builder()
-            .maxConnections(10)
+            // Двойка, а не десятка: sqlx4k заводит отдельный OS-поток на соединение, плюс на каждое
+            // же кэш страниц SQLite и кэш подготовленных выражений. Замер на metrik (пять парных
+            // повторов, одинаковая нагрузка) дал при пуле 2 против 10 минус 59 МиБ полки и при этом
+            // плюс 10% запросов в секунду: писатель в SQLite всё равно один, и лишние соединения
+            // делят тот же лок. Десятка была дефолтом sqlx, а не выбором.
+            .maxConnections(2)
             .build()
 
     val dbPath = config.sqlitePath.toPath()

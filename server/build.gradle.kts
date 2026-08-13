@@ -85,6 +85,7 @@ dependencies {
     commonMainImplementation(libs.kotlinx.datetime)
     commonMainImplementation(libs.okio)
     commonMainImplementation(libs.mcp.kotlin.sdk.server)
+    commonMainImplementation(libs.metrik.agent)
 
     commonMainImplementation(libs.kotlinx.serialization.json)
     commonMainImplementation(ktorLibs.server.di)
