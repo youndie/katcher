@@ -2,5 +2,5 @@ apiVersion: v2
 name: katcher
 description: Katcher - tiny self-hosted crash tracker
 type: application
-version: 0.5.1
-appVersion: "0.5.1"
+version: 0.5.2
+appVersion: "0.5.2"
