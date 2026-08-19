@@ -105,6 +105,19 @@ class ErrorGroupRepositoryImpl(
         }
     }
 
+    override suspend fun reopen(groupId: Long) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create("UPDATE error_groups SET resolved = :resolved WHERE id = :id")
+                    .apply {
+                        bind("id", groupId)
+                        bind("resolved", false)
+                    },
+            )
+        }
+    }
+
     override suspend fun markRegressed(
         groupId: Long,
         release: String?,

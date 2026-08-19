@@ -140,6 +140,32 @@ class ReportProcessingTest : RepositoryTest() {
             assertEquals("1.4.2", activity.releases)
         }
 
+    @Test
+    fun `releases are counted per release with the busiest first`() =
+        runTest {
+            repeat(3) { useCase.process(report(release = "1.4.2"), appId) }
+            useCase.process(report(release = "1.4.1"), appId)
+
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+            val releases = reportRepository.releases(group.id, 4)
+
+            assertEquals(listOf("1.4.2" to 3, "1.4.1" to 1), releases.map { it.release to it.count })
+        }
+
+    @Test
+    fun `reopening clears the flag without claiming a regression`() =
+        runTest {
+            useCase.process(report(release = "1.4.2"), appId)
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+            groupRepository.resolve(group.id)
+
+            groupRepository.reopen(group.id)
+
+            val reopened = assertNotNull(groupRepository.findById(group.id))
+            assertFalse(reopened.resolved)
+            assertNull(reopened.regressedAt, "nothing happened in the application, only in somebody's mind")
+        }
+
     private fun fingerprint() = ProcessReportUseCase.generateFingerprint(stacktrace)
 
     @OptIn(ExperimentalTime::class)

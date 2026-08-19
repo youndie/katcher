@@ -10,10 +10,12 @@ import io.ktor.server.response.header
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
+import kotlinx.html.body
 import kotlinx.serialization.json.Json
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.feature.auth.withUserId
 import ru.workinprogress.feature.error.ui.errorsTableFragment
+import ru.workinprogress.feature.error.ui.stackTracePanel
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.ui.errorGroupPage
 import kotlin.time.Clock
@@ -21,6 +23,12 @@ import kotlin.time.ExperimentalTime
 
 /** The window the row trend is drawn over — the same seven days the app card counts. */
 private const val TREND_DAYS = 7
+
+/** The group page has room for a longer window than a row does. */
+private const val GROUP_TREND_DAYS = 14
+
+/** Releases shown on the group page; the tail is noise once the top few are visible. */
+private const val MAX_RELEASES = 4
 
 @OptIn(ExperimentalTime::class)
 fun Route.errorGroupPagesRoute(
@@ -70,10 +78,50 @@ fun Route.errorGroupPagesRoute(
                     .firstOrNull()
                     ?.stacktrace ?: group.title
 
+            val now = Clock.System.now().toEpochMilliseconds()
+            val activity = reportRepository.activity(listOf(group.id), now, GROUP_TREND_DAYS)[group.id]
+            val releases = reportRepository.releases(group.id, MAX_RELEASES)
+
             viewedRepository.updateVisitedAt(resource.groupId, userId)
             call.respondHtml {
                 context(call) {
-                    errorGroupPage(resource.parent.parent.appId, group, stacktrace)
+                    errorGroupPage(
+                        appId = resource.parent.parent.appId,
+                        group = group,
+                        stackTrace = stacktrace,
+                        activity = activity,
+                        releases = releases,
+                        now = now,
+                    )
+                }
+            }
+        }
+    }
+
+    get<AppsResource.AppId.Errors.GroupId.Frames> { resource ->
+        withUserId {
+            val groupId = resource.parent.groupId
+            val group =
+                errorGroupRepository.findById(groupId)
+                    ?: return@withUserId call.respond(HttpStatusCode.NotFound)
+
+            val stacktrace =
+                reportRepository
+                    .findByGroup(groupId, 1, 1)
+                    .items
+                    .firstOrNull()
+                    ?.stacktrace ?: group.title
+
+            call.respondHtml {
+                body {
+                    context(call) {
+                        stackTracePanel(
+                            appId = resource.parent.parent.parent.appId,
+                            groupId = groupId,
+                            stacktrace = stacktrace,
+                            expandAll = resource.all,
+                        )
+                    }
                 }
             }
         }

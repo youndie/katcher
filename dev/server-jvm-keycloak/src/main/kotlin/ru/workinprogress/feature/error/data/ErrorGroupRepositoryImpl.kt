@@ -83,6 +83,16 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
         }
     }
 
+    override suspend fun reopen(groupId: Long) {
+        withContext(Dispatchers.IO) {
+            transaction {
+                ErrorGroups.update({ ErrorGroups.id eq groupId }) {
+                    it[resolved] = false
+                }
+            }
+        }
+    }
+
     override suspend fun markRegressed(
         groupId: Long,
         release: String?,

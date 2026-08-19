@@ -14,6 +14,7 @@ import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import ru.workinprogress.feature.report.CreateReportParams
 import ru.workinprogress.feature.report.GroupActivity
+import ru.workinprogress.feature.report.ReleaseCount
 import ru.workinprogress.feature.report.Report
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.ReportsPaginated
@@ -163,6 +164,31 @@ class ReportRepositoryImpl : ReportRepository {
             }
         }
     }
+
+    override suspend fun releases(
+        groupId: Long,
+        limit: Int,
+    ): List<ReleaseCount> =
+        withContext(Dispatchers.IO) {
+            transaction {
+                val result = mutableListOf<ReleaseCount>()
+                exec(
+                    """
+                    SELECT release, COUNT(*) AS crashes
+                    FROM reports
+                    WHERE group_id = $groupId AND release IS NOT NULL
+                    GROUP BY release
+                    ORDER BY crashes DESC
+                    LIMIT $limit
+                    """.trimIndent(),
+                ) { rows ->
+                    while (rows.next()) {
+                        result += ReleaseCount(rows.getString("release"), rows.getInt("crashes"))
+                    }
+                }
+                result
+            }
+        }
 
     override suspend fun getReportById(reportId: Long): Report? =
         withContext(Dispatchers.IO) {
