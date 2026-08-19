@@ -19,6 +19,7 @@ import ru.workinprogress.feature.report.reportRoute
 import ru.workinprogress.feature.report.reportsPagesRoute
 import ru.workinprogress.feature.symbolication.symbolMapRouting
 import ru.workinprogress.katcher.static.CSS
+import ru.workinprogress.katcher.ui.Icons
 
 fun Application.configureRouting() =
     routing {
@@ -26,6 +27,13 @@ fun Application.configureRouting() =
             call.respondText(
                 CSS,
                 ContentType.Text.CSS,
+            )
+        }
+
+        get("/favicon.svg") {
+            call.respondText(
+                Icons.FAVICON_SVG,
+                ContentType.Image.SVG,
             )
         }
 

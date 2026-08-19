@@ -49,6 +49,37 @@ object Icons {
 </svg>"""
         }
 
+    /**
+     * The same mark as a standalone file for the browser tab.
+     *
+     * A favicon lives outside the page, so `currentColor` and the tokens mean nothing here —
+     * the two themes are carried by a `prefers-color-scheme` block inside the SVG itself,
+     * which is what makes it one file instead of two. The colours are the literal values of
+     * `--foreground` and `--primary`; they are written out because nothing resolves variables
+     * on the browser's side of the tab strip.
+     */
+    val FAVICON_SVG: String =
+        """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" shape-rendering="crispEdges">
+    <style>
+        .body { fill: #000000 }
+        .hole { fill: #ffffff }
+        @media (prefers-color-scheme: dark) {
+            .body { fill: #ffffff }
+            .hole { fill: #000000 }
+        }
+    </style>
+    <rect class="body" x="5" y="6" width="6" height="1"/>
+    <rect class="body" x="4" y="7" width="8" height="1"/>
+    <rect class="body" x="3" y="8" width="10" height="3"/>
+    <rect class="body" x="4" y="11" width="8" height="1"/>
+    <rect class="body" x="5" y="12" width="6" height="1"/>
+    <rect class="hole" x="5" y="8" width="1" height="1"/>
+    <rect class="body" x="9" y="4" width="1" height="2"/>
+    <rect fill="#ff5a4d" x="10" y="3" width="1" height="1"/>
+    <rect fill="#ff5a4d" x="11" y="2" width="2" height="1"/>
+    <rect fill="#ff5a4d" x="12" y="1" width="1" height="1"/>
+</svg>"""
+
     fun HTMLTag.copy() =
         unsafe {
             val copySvg =
