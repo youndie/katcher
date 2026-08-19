@@ -13,6 +13,7 @@ import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import ru.workinprogress.feature.report.CreateReportParams
 import ru.workinprogress.feature.report.GroupActivity
+import ru.workinprogress.feature.report.ReleaseCount
 import ru.workinprogress.feature.report.Report
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.ReportsPaginated
@@ -244,6 +245,35 @@ class ReportRepositoryImpl(
             activity
         }
     }
+
+    override suspend fun releases(
+        groupId: Long,
+        limit: Int,
+    ): List<ReleaseCount> =
+        TransactionContext.withCurrent(db) {
+            fetchAll(
+                Statement
+                    .create(
+                        """
+                        SELECT release, COUNT(*) AS crashes
+                        FROM reports
+                        WHERE group_id = :groupId AND release IS NOT NULL
+                        GROUP BY release
+                        ORDER BY crashes DESC
+                        LIMIT $limit
+                        """.trimIndent(),
+                    ).apply {
+                        bind("groupId", groupId)
+                    },
+            ).getOrThrow()
+                .rows
+                .map { row ->
+                    ReleaseCount(
+                        release = row.get("release").asString(),
+                        count = row.get("crashes").asInt(),
+                    )
+                }
+        }
 
     override suspend fun getReportById(reportId: Long) =
         TransactionContext.withCurrent(db) {

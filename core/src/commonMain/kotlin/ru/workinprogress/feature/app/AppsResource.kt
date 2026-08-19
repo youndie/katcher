@@ -89,8 +89,20 @@ class AppsResource {
                     }
                 }
 
+                /** The stacktrace panel on its own — the frames toggle swaps only this. */
+                @Resource("frames")
+                class Frames(
+                    val parent: GroupId,
+                    val all: Boolean = false,
+                )
+
                 @Resource("resolve")
                 class Resolve(
+                    val parent: GroupId,
+                )
+
+                @Resource("reopen")
+                class Reopen(
                     val parent: GroupId,
                 )
 

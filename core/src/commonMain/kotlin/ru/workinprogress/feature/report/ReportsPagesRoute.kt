@@ -6,14 +6,15 @@ import io.ktor.server.resources.get
 import io.ktor.server.resources.post
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.RoutingContext
 import kotlinx.html.body
 import kotlinx.html.div
 import kotlinx.html.id
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.feature.error.ErrorGroupRepository
+import ru.workinprogress.feature.report.ui.groupStatusFragment
 import ru.workinprogress.feature.report.ui.reportDetailsPage
 import ru.workinprogress.feature.report.ui.reportsTableFragment
-import ru.workinprogress.feature.report.ui.resolvedFragment
 
 fun Route.reportsPagesRoute(
     errorGroupRepository: ErrorGroupRepository,
@@ -56,14 +57,29 @@ fun Route.reportsPagesRoute(
 
     post<AppsResource.AppId.Errors.GroupId.Resolve> { resource ->
         errorGroupRepository.resolve(resource.parent.groupId)
+        respondStatus(resource.parent.parent.parent.appId, resource.parent.groupId, errorGroupRepository)
+    }
 
-        call.respondHtml {
-            body {
-                div(classes = "flex justify-between mb-8") {
-                    id = "resolved-container"
-                    resolvedFragment()
-                }
-            }
+    post<AppsResource.AppId.Errors.GroupId.Reopen> { resource ->
+        errorGroupRepository.reopen(resource.parent.groupId)
+        respondStatus(resource.parent.parent.parent.appId, resource.parent.groupId, errorGroupRepository)
+    }
+}
+
+/**
+ * Both actions answer with the same fragment, read back from the database rather than
+ * assumed: the button that comes back is the one the stored state calls for.
+ */
+private suspend fun RoutingContext.respondStatus(
+    appId: Int,
+    groupId: Long,
+    errorGroupRepository: ErrorGroupRepository,
+) {
+    val group = errorGroupRepository.findById(groupId) ?: return call.respond(HttpStatusCode.NotFound)
+
+    call.respondHtml {
+        body {
+            context(call) { groupStatusFragment(appId, group) }
         }
     }
 }

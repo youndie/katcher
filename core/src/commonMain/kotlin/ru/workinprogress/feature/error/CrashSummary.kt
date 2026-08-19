@@ -17,49 +17,6 @@ data class CrashSummary(
     companion object {
         private const val MAX_MESSAGE = 500
 
-        /**
-         * Frames from these packages are somebody else's code. The list is deliberately short
-         * and deliberately incomplete: a wrong guess costs one line of a row, and the row says
-         * so — an unrecognised frame is shown, never hidden.
-         */
-        private val FOREIGN_PREFIXES =
-            listOf(
-                "java.",
-                "javax.",
-                "jdk.",
-                "sun.",
-                "com.sun.",
-                "kotlin.",
-                "kotlinx.",
-                "android.",
-                "androidx.",
-                "com.android.",
-                "dalvik.",
-                "libcore.",
-                "io.ktor.",
-                "io.netty.",
-                "io.micrometer.",
-                "io.reactivex.",
-                "reactor.",
-                "okhttp3.",
-                "okio.",
-                "retrofit2.",
-                "com.squareup.",
-                "com.google.",
-                "com.fasterxml.",
-                "com.mongodb.",
-                "org.mongodb.",
-                "org.apache.",
-                "org.springframework.",
-                "org.slf4j.",
-                "ch.qos.",
-                "org.jetbrains.",
-                "org.junit.",
-                "org.gradle.",
-                "org.postgresql.",
-                "org.hibernate.",
-            )
-
         fun of(stacktrace: String?): CrashSummary {
             val lines = (stacktrace ?: "").replace("\r\n", "\n").lines()
             val header = lines.firstOrNull { it.isNotBlank() }?.trim().orEmpty()
@@ -76,7 +33,7 @@ data class CrashSummary(
                 lines
                     .asSequence()
                     .mapNotNull(StackFrames::parse)
-                    .firstOrNull { frame -> frame.symbol.isOwn() }
+                    .firstOrNull { frame -> StackFrames.isOwn(frame.symbol) }
 
             return CrashSummary(
                 exceptionType = exceptionType?.substringAfterLast('.')?.takeIf { it.isNotEmpty() } ?: exceptionType,
@@ -86,10 +43,5 @@ data class CrashSummary(
         }
 
         private fun String.looksLikeType(): Boolean = none { it.isWhitespace() } && any { it.isLetter() }
-
-        private fun String.isOwn(): Boolean {
-            val symbol = removePrefix("kfun:")
-            return FOREIGN_PREFIXES.none { prefix -> symbol.startsWith(prefix) }
-        }
     }
 }

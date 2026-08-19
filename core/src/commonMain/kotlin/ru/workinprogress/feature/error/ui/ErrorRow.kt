@@ -192,6 +192,8 @@ private fun FlowContent.rowBadge(
             span(classes = "$badgeBase border border-border") { +"Resolved" }
         }
 
+        // A row somebody has already opened and nobody has acted on carries no badge: the
+        // absence is the state.
         RowState.Viewed -> {
             Unit
         }

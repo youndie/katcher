@@ -31,7 +31,18 @@ interface ReportRepository {
         now: Long,
         days: Int,
     ): Map<Long, GroupActivity>
+
+    /** How the reports of one group split across releases, most reports first. */
+    suspend fun releases(
+        groupId: Long,
+        limit: Int,
+    ): List<ReleaseCount>
 }
+
+data class ReleaseCount(
+    val release: String,
+    val count: Int,
+)
 
 /**
  * [releases] is a range rather than a list: a row has space for "1.4.1 – 1.4.2" and none for
