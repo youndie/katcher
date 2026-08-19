@@ -6,14 +6,17 @@ hostname: ""
 
 server:
   image: katcher
-  version: 0.6.1
+  version: 0.6.2
   resources:
     requests:
       cpu: "30m"
       memory: "32Mi"
     limits:
       cpu: "1"
-      memory: "64Mi"
+      # 64Mi held at rest with room to spare, but it left nothing for a burst of concurrent
+      # queries — and an allocation that fails inside the native driver is not an exception
+      # this process survives. Raised while the crash under fast navigation is unexplained.
+      memory: "192Mi"
 
 # Bearer token for the MCP endpoint, which coding agents use to read crashes.
 # Empty means the endpoint is not mounted at all — the feature is off, not open.

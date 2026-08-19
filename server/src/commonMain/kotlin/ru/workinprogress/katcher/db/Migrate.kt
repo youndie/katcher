@@ -145,11 +145,15 @@ val allMigrations =
 
 suspend fun ISQLite.migrateDb() {
     this.transaction {
+        // `PRAGMA user_version = 0` is not a read — it writes zero. Asking that way reset the
+        // version on every start, so every start decided the database was legacy and ran all
+        // migrations again; the statements failed and nobody looked, because the results were
+        // discarded too. The version is read here and every statement below is checked.
         var currentVersion =
-            fetchAll("PRAGMA user_version = 0;")
-                .getOrNull()
-                ?.rows
-                ?.getOrNull(0)
+            fetchAll("PRAGMA user_version;")
+                .getOrThrow()
+                .rows
+                .firstOrNull()
                 ?.get(0)
                 ?.asLong()
                 ?.toInt() ?: 0
@@ -157,13 +161,13 @@ suspend fun ISQLite.migrateDb() {
         if (currentVersion == 0) {
             val tablesExist =
                 fetchAll("SELECT name FROM sqlite_master WHERE type='table' AND name='users';")
-                    .getOrNull()
-                    ?.rows
-                    ?.getOrNull(0)
+                    .getOrThrow()
+                    .rows
+                    .firstOrNull()
                     ?.get(0) != null
 
             if (tablesExist) {
-                execute("PRAGMA user_version = 1;")
+                execute("PRAGMA user_version = 1;").getOrThrow()
                 currentVersion = 1
                 println("Detected legacy database. Version set to 1.")
             }
@@ -175,9 +179,12 @@ suspend fun ISQLite.migrateDb() {
             for (v in (currentVersion + 1)..targetVersion) {
                 val migration = allMigrations[v - 1]
                 migration.forEach { sql ->
-                    this.execute(sql)
+                    // A migration that fails must stop the start, not be stepped over: a
+                    // server that runs on a half-migrated schema breaks later, somewhere else,
+                    // and by then nothing points back here.
+                    this.execute(sql).getOrThrow()
                 }
-                this.execute("PRAGMA user_version = $v;")
+                this.execute("PRAGMA user_version = $v;").getOrThrow()
                 println("Migrated to version $v")
             }
         }

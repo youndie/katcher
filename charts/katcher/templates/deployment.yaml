@@ -7,6 +7,11 @@ metadata:
     app: katcher-backend
 spec:
   replicas: 1
+  # Recreate, not RollingUpdate: the database is one SQLite file on a ReadWriteOnce volume,
+  # and a surge means two processes hold it at once — one of them possibly mid-migration.
+  # The cost is a few seconds of downtime on every deploy, which is the correct price.
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: katcher-backend
