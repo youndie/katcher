@@ -109,20 +109,26 @@ fun FlowContent.errorRow(
                     span(classes = "w-3.5 h-3.5 flex-none") { check() }
                 }
 
-                // The type never truncates and the message always does: two rows of the same
-                // exception differ in the message, and two different exceptions differ before
-                // the message starts.
-                span(classes = "font-mono text-sm font-semibold flex-none") {
-                    +(
-                        group.exceptionType ?: group.title
-                            .lineSequence()
-                            .first()
-                            .take(80)
-                    )
-                }
+                // The type keeps priority over the message and gives way before it can reach
+                // the trend beside it: it is allowed just over half the line and truncates
+                // there. Nothing in this row may be wider than the room it was given — the
+                // column next to it is a chart, and text over a chart is neither.
+                val exceptionType = group.exceptionType
 
-                group.message?.let { message ->
-                    span(classes = "text-sm truncate") { +message }
+                if (exceptionType != null) {
+                    span(classes = "font-mono text-sm font-semibold shrink-0 max-w-[55%] truncate") {
+                        +exceptionType
+                    }
+
+                    group.message?.let { message ->
+                        span(classes = "text-sm truncate min-w-0") { +message }
+                    }
+                } else {
+                    // A group from before composed titles: the head of the stacktrace is all
+                    // there is, and it is a sentence rather than a name, so it truncates whole.
+                    span(classes = "font-mono text-sm font-semibold truncate min-w-0") {
+                        +group.title.lineSequence().first()
+                    }
                 }
             }
 
