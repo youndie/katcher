@@ -1,0 +1,85 @@
+{{- if .Values.db.backupBeforeUpgrade }}
+# A copy of the database taken before every upgrade, because the migrations only run
+# forwards: once a release has widened the schema, the previous image cannot serve the
+# file it left behind. Helm's --atomic rolls the pods back and the database not at all,
+# so without this a failed upgrade leaves nothing to return to.
+#
+# The copy lives beside the original inside the same volume — one rolling copy, not a
+# history, since the disk is small and two copies of it are already the ceiling. The
+# version that wrote it is recorded next to it, so it is possible to tell what the copy
+# can be restored into.
+#
+# It is a copy of a file the running server still has open, not a quiesced backup: the
+# write-ahead files are copied too, which is what SQLite needs to recover from it, but a
+# report arriving mid-copy can still be missing from it. For a rollback that is enough;
+# for an archive it would not be.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: katcher-db-backup
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: katcher-backend
+  annotations:
+    "helm.sh/hook": pre-upgrade
+    "helm.sh/hook-weight": "-5"
+    # Kept until the next upgrade rather than deleted on success: when an upgrade goes
+    # wrong, the first question is whether the copy was taken, and a deleted Job cannot
+    # answer it.
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: katcher-backend
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: backup
+          image: {{ .Values.db.backupImage | quote }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              db="{{ .Values.db.path }}/{{ .Values.db.name }}"
+
+              if [ ! -f "$db" ]; then
+                echo "no database at $db yet — nothing to copy"
+                exit 0
+              fi
+
+              # The copy doubles the space the database takes. Failing here fails the
+              # upgrade, which is the point: filling the volume during a migration is a
+              # worse outcome than not upgrading.
+              need=$(du -k "$db" | cut -f1)
+              free=$(df -Pk "{{ .Values.db.path }}" | awk 'NR==2 {print $4}')
+              echo "database ${need}K, free ${free}K"
+              if [ "$free" -lt "$need" ]; then
+                echo "not enough room on {{ .Values.db.path }} for a copy" >&2
+                exit 1
+              fi
+
+              cp "$db" "$db.previous"
+              for tail in wal shm; do
+                [ -f "$db-$tail" ] && cp "$db-$tail" "$db.previous-$tail" || true
+              done
+              echo "{{ .Values.server.version }}" > "$db.previous.version"
+
+              ls -la "{{ .Values.db.path }}"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 200m
+              memory: 64Mi
+          volumeMounts:
+            - name: sqlite-data
+              mountPath: {{ .Values.db.path }}
+      volumes:
+        - name: sqlite-data
+          persistentVolumeClaim:
+            claimName: sqlite-pvc
+{{- end }}
