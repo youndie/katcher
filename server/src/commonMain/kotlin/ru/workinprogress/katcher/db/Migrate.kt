@@ -82,11 +82,19 @@ private val migrationV3 =
         """ALTER TABLE error_groups ADD COLUMN fix_linked_at BIGINT NULL;""",
     )
 
+private val migrationV4 =
+    listOf(
+        // The apps list counts crashes per day per app on every render; without this the
+        // count is a full scan of reports, the largest table there is.
+        """CREATE INDEX IF NOT EXISTS idx_reports_app_timestamp ON reports(app_id, timestamp);""",
+    )
+
 val allMigrations =
     listOf(
         migrationV1,
         migrationV2,
         migrationV3,
+        migrationV4,
     )
 
 suspend fun ISQLite.migrateDb() {
