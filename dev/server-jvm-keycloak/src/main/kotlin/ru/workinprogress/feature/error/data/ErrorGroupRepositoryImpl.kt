@@ -6,11 +6,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.exists
+import org.jetbrains.exposed.v1.core.greaterEq
+import org.jetbrains.exposed.v1.core.isNotNull
 import org.jetbrains.exposed.v1.core.leftJoin
+import org.jetbrains.exposed.v1.core.like
+import org.jetbrains.exposed.v1.core.lowerCase
+import org.jetbrains.exposed.v1.core.or
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -19,11 +27,14 @@ import org.jetbrains.exposed.v1.jdbc.update
 import ru.workinprogress.feature.error.CreateErrorGroupParams
 import ru.workinprogress.feature.error.DuplicateErrorGroupException
 import ru.workinprogress.feature.error.ErrorGroup
+import ru.workinprogress.feature.error.ErrorGroupFilterOptions
 import ru.workinprogress.feature.error.ErrorGroupRepository
 import ru.workinprogress.feature.error.ErrorGroupWithViewed
 import ru.workinprogress.feature.error.ErrorGroupsPaginated
+import ru.workinprogress.feature.report.ErrorGroupFilter
 import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
+import ru.workinprogress.feature.report.data.Reports
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -163,13 +174,60 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
         pageSize: Int,
         sortBy: ErrorGroupSort,
         sortOrder: ErrorGroupSortOrder,
+        filter: ErrorGroupFilter,
+        now: Long,
     ): ErrorGroupsPaginated =
         withContext(Dispatchers.IO) {
             transaction {
-                val total =
+                fun Op<Boolean>.withFilters(): Op<Boolean> {
+                    var condition = this
+                    if (filter.unresolvedOnly) condition = condition and (ErrorGroups.resolved eq false)
+                    filter.days?.let { days ->
+                        condition = condition and (ErrorGroups.lastSeen greaterEq (now - days * DAY_MILLIS))
+                    }
+                    filter.query?.takeIf { it.isNotBlank() }?.let { query ->
+                        val pattern = "%" + query.lowercase() + "%"
+                        condition =
+                            condition and
+                            (
+                                ErrorGroups.exceptionType.lowerCase().like(pattern) or
+                                    ErrorGroups.message.lowerCase().like(pattern) or
+                                    ErrorGroups.location.lowerCase().like(pattern) or
+                                    ErrorGroups.title.lowerCase().like(pattern)
+                            )
+                    }
+                    filter.environment?.let { environment ->
+                        condition =
+                            condition and
+                            exists(
+                                Reports.selectAll().where {
+                                    (Reports.groupId eq ErrorGroups.id) and (Reports.environment eq environment)
+                                },
+                            )
+                    }
+                    filter.release?.let { release ->
+                        condition =
+                            condition and
+                            exists(
+                                Reports.selectAll().where {
+                                    (Reports.groupId eq ErrorGroups.id) and (Reports.release eq release)
+                                },
+                            )
+                    }
+                    return condition
+                }
+
+                val totalUnfiltered =
                     ErrorGroups
                         .selectAll()
                         .where { ErrorGroups.appId eq appId }
+                        .count()
+                        .toInt()
+
+                val total =
+                    ErrorGroups
+                        .selectAll()
+                        .where { (ErrorGroups.appId eq appId).withFilters() }
                         .count()
                         .toInt()
 
@@ -177,9 +235,8 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
                     ErrorGroups
                         .leftJoin(UserErrorGroupViewed, { ErrorGroups.id }, { UserErrorGroupViewed.groupId })
                         .select(ErrorGroups.columns + listOf(UserErrorGroupViewed.viewedAt))
-                        .where {
-                            (ErrorGroups.appId eq appId)
-                        }.orderBy(
+                        .where { (ErrorGroups.appId eq appId).withFilters() }
+                        .orderBy(
                             when (sortBy) {
                                 ErrorGroupSort.id -> ErrorGroups.id
                                 ErrorGroupSort.title -> ErrorGroups.title
@@ -197,9 +254,36 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
                     totalPages = (total + pageSize - 1) / pageSize,
                     sortBy = sortBy,
                     sortOrder = sortOrder,
+                    total = total,
+                    totalUnfiltered = totalUnfiltered,
+                    filter = filter,
                 )
             }
         }
+
+    override suspend fun filterOptions(appId: Int): ErrorGroupFilterOptions =
+        withContext(Dispatchers.IO) {
+            transaction {
+                fun distinct(column: Column<String?>): List<String> =
+                    Reports
+                        .select(column)
+                        .where { (Reports.appId eq appId) and column.isNotNull() }
+                        .withDistinct()
+                        .limit(MAX_FILTER_OPTIONS)
+                        .mapNotNull { row -> row[column] }
+                        .sortedDescending()
+
+                ErrorGroupFilterOptions(
+                    environments = distinct(Reports.environment),
+                    releases = distinct(Reports.release),
+                )
+            }
+        }
+
+    private companion object {
+        const val DAY_MILLIS = 24L * 60 * 60 * 1000
+        const val MAX_FILTER_OPTIONS = 20
+    }
 
     private fun rowToErrorGroup(row: ResultRow) =
         ErrorGroup(

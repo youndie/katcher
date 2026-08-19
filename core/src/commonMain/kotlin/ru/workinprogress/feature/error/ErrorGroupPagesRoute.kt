@@ -39,15 +39,19 @@ fun Route.errorGroupPagesRoute(
     get<AppsResource.AppId.Errors.Paginated> { resource ->
         withUserId { userId ->
             val now = Clock.System.now().toEpochMilliseconds()
+            val appId = resource.parent.parent.appId
             val data =
                 errorGroupRepository.findByAppId(
-                    appId = resource.parent.parent.appId,
+                    appId = appId,
                     page = resource.page,
                     pageSize = resource.pageSize,
                     sortBy = resource.sortBy,
                     sortOrder = resource.sortOrder,
                     userId = userId,
+                    filter = resource.filter(),
+                    now = now,
                 )
+            val options = errorGroupRepository.filterOptions(appId)
 
             // One call for the page that was just read, not one per row.
             val activity =
@@ -59,7 +63,14 @@ fun Route.errorGroupPagesRoute(
 
             call.respondHtml {
                 context(call) {
-                    errorsTableFragment(resource.parent.parent.appId, data, activity, now)
+                    errorsTableFragment(
+                        appId = appId,
+                        data = data,
+                        activity = activity,
+                        options = options,
+                        now = now,
+                        filtersExpanded = resource.filters,
+                    )
                 }
             }
         }

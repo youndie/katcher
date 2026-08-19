@@ -19,10 +19,12 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import ru.workinprogress.feature.error.CreateErrorGroupParams
 import ru.workinprogress.feature.error.ErrorGroup
+import ru.workinprogress.feature.error.ErrorGroupFilterOptions
 import ru.workinprogress.feature.error.ErrorGroupRepository
 import ru.workinprogress.feature.error.ErrorGroupViewedRepository
 import ru.workinprogress.feature.error.ErrorGroupWithViewed
 import ru.workinprogress.feature.error.ErrorGroupsPaginated
+import ru.workinprogress.feature.report.ErrorGroupFilter
 import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
 import ru.workinprogress.katcher.db.ErrorGroupDbAutoRowMapper
@@ -168,6 +170,8 @@ class ErrorGroupRepositoryImpl(
         pageSize: Int,
         sortBy: ErrorGroupSort,
         sortOrder: ErrorGroupSortOrder,
+        filter: ErrorGroupFilter,
+        now: Long,
     ): ErrorGroupsPaginated =
         TransactionContext.withCurrent(db) {
             val safePageSize = pageSize.coerceIn(1, 100)
@@ -188,6 +192,40 @@ class ErrorGroupRepositoryImpl(
                     ErrorGroupSortOrder.desc -> "DESC"
                 }
 
+            // Built as text and bound as values: the shape of the query depends on which
+            // controls are set, the contents never do.
+            val conditions = mutableListOf("g.app_id = :appId")
+            if (filter.unresolvedOnly) conditions += "g.resolved = 0"
+            if (filter.days != null) conditions += "g.last_seen >= :since"
+            if (!filter.query.isNullOrBlank()) {
+                conditions +=
+                    """(
+                        LOWER(COALESCE(g.exception_type, '')) LIKE :query
+                        OR LOWER(COALESCE(g.message, '')) LIKE :query
+                        OR LOWER(COALESCE(g.location, '')) LIKE :query
+                        OR LOWER(g.title) LIKE :query
+                    )"""
+            }
+            if (filter.environment != null) {
+                conditions += "EXISTS (SELECT 1 FROM reports r WHERE r.group_id = g.id AND r.environment = :environment)"
+            }
+            if (filter.release != null) {
+                conditions += "EXISTS (SELECT 1 FROM reports r WHERE r.group_id = g.id AND r.release = :release)"
+            }
+
+            val where = conditions.joinToString(" AND ")
+
+            fun Statement.bindFilter(): Statement {
+                bind("appId", appId)
+                filter.days?.let { days -> bind("since", now - days * DAY_MILLIS) }
+                filter.query?.takeIf { it.isNotBlank() }?.let { query ->
+                    bind("query", "%" + query.lowercase() + "%")
+                }
+                filter.environment?.let { environment -> bind("environment", environment) }
+                filter.release?.let { release -> bind("release", release) }
+                return this
+            }
+
             val selectSql =
                 """
                 SELECT 
@@ -196,7 +234,7 @@ class ErrorGroupRepositoryImpl(
                 FROM error_groups g
                 LEFT JOIN user_error_group_viewed v
                     ON v.group_id = g.id AND v.user_id = :userId
-                WHERE g.app_id = :appId
+                WHERE $where
                 ORDER BY $sortField $order
                 LIMIT $safePageSize OFFSET $offset
                 """.trimIndent()
@@ -204,22 +242,62 @@ class ErrorGroupRepositoryImpl(
             val items =
                 fetchAll(
                     Statement.create(selectSql).apply {
-                        bind("appId", appId)
+                        bindFilter()
                         bind("userId", userId)
                     },
                     ErrorGroupWithViewedRowMapper,
                 ).getOrThrow()
 
-            val total = crudRepository.countByAppId(this, appId).getOrThrow()
+            val total =
+                fetchAll(
+                    Statement.create("SELECT COUNT(*) AS c FROM error_groups g WHERE $where").apply { bindFilter() },
+                ).getOrThrow()
+                    .rows
+                    .first()
+                    .get("c")
+                    .asInt()
+
+            val totalUnfiltered = crudRepository.countByAppId(this, appId).getOrThrow().toInt()
 
             ErrorGroupsPaginated(
                 items = items,
                 page = safePage,
-                totalPages = ((total + safePageSize - 1) / safePageSize).toInt(),
+                totalPages = ((total + safePageSize - 1) / safePageSize),
                 sortBy = sortBy,
                 sortOrder = sortOrder,
+                total = total,
+                totalUnfiltered = totalUnfiltered,
+                filter = filter,
             )
         }
+
+    override suspend fun filterOptions(appId: Int): ErrorGroupFilterOptions =
+        TransactionContext.withCurrent(db) {
+            suspend fun distinct(column: String): List<String> =
+                fetchAll(
+                    Statement
+                        .create(
+                            """
+                            SELECT DISTINCT $column AS value
+                            FROM reports
+                            WHERE app_id = :appId AND $column IS NOT NULL
+                            ORDER BY value DESC
+                            LIMIT $MAX_FILTER_OPTIONS
+                            """.trimIndent(),
+                        ).apply { bind("appId", appId) },
+                ).getOrThrow()
+                    .rows
+                    .mapNotNull { row -> row.get("value").asStringOrNull() }
+
+            ErrorGroupFilterOptions(environments = distinct("environment"), releases = distinct("release"))
+        }
+
+    private companion object {
+        const val DAY_MILLIS = 24L * 60 * 60 * 1000
+
+        /** A select is a list somebody reads, not a dump of every release ever shipped. */
+        const val MAX_FILTER_OPTIONS = 20
+    }
 }
 
 @OptIn(ExperimentalTime::class)
