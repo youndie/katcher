@@ -5,12 +5,14 @@ import io.github.smyrgeorge.sqlx4k.RowMapper
 import io.github.smyrgeorge.sqlx4k.Statement
 import io.github.smyrgeorge.sqlx4k.ValueEncoderRegistry
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
+import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import ru.workinprogress.feature.report.CreateReportParams
+import ru.workinprogress.feature.report.GroupActivity
 import ru.workinprogress.feature.report.Report
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.ReportsPaginated
@@ -171,6 +173,77 @@ class ReportRepositoryImpl(
                 totalPages = ((total + safePageSize - 1) / safePageSize).toInt(),
             )
         }
+
+    override suspend fun activity(
+        groupIds: List<Long>,
+        now: Long,
+        days: Int,
+    ): Map<Long, GroupActivity> {
+        if (groupIds.isEmpty()) return emptyMap()
+
+        // Ids come from a page of rows this server just read, so they are numbers by
+        // construction; there is nothing here a bind parameter would protect.
+        val ids = groupIds.joinToString(",")
+        val dayMillis = 24L * 60 * 60 * 1000
+        val windowStart = now - days * dayMillis
+
+        return TransactionContext.withCurrent(db) {
+            val buckets = mutableMapOf<Long, MutableList<Int>>()
+            fetchAll(
+                Statement.create(
+                    """
+                    SELECT group_id,
+                           CAST(($now - timestamp) / $dayMillis AS INTEGER) AS days_ago,
+                           COUNT(*) AS crashes
+                    FROM reports
+                    WHERE group_id IN ($ids) AND timestamp >= $windowStart AND timestamp <= $now
+                    GROUP BY group_id, days_ago
+                    """.trimIndent(),
+                ),
+            ).getOrThrow()
+                .rows
+                .forEach { row ->
+                    val daysAgo = row.get("days_ago").asInt()
+                    if (daysAgo in 0 until days) {
+                        val series = buckets.getOrPut(row.get("group_id").asLong()) { MutableList(days) { 0 } }
+                        series[days - 1 - daysAgo] = row.get("crashes").asInt()
+                    }
+                }
+
+            val activity = mutableMapOf<Long, GroupActivity>()
+            fetchAll(
+                Statement.create(
+                    """
+                    SELECT group_id,
+                           MIN(release) AS first_release,
+                           MAX(release) AS last_release,
+                           MIN(environment) AS first_environment,
+                           MAX(environment) AS last_environment
+                    FROM reports
+                    WHERE group_id IN ($ids)
+                    GROUP BY group_id
+                    """.trimIndent(),
+                ),
+            ).getOrThrow()
+                .rows
+                .forEach { row ->
+                    val groupId = row.get("group_id").asLong()
+                    val firstEnvironment = row.get("first_environment").asStringOrNull()
+                    val lastEnvironment = row.get("last_environment").asStringOrNull()
+
+                    activity[groupId] =
+                        GroupActivity(
+                            groupId = groupId,
+                            dailyCrashes = buckets[groupId] ?: List(days) { 0 },
+                            environment = firstEnvironment.takeIf { it == lastEnvironment },
+                            firstRelease = row.get("first_release").asStringOrNull(),
+                            lastRelease = row.get("last_release").asStringOrNull(),
+                        )
+                }
+
+            activity
+        }
+    }
 
     override suspend fun getReportById(reportId: Long) =
         TransactionContext.withCurrent(db) {

@@ -89,12 +89,24 @@ private val migrationV4 =
         """CREATE INDEX IF NOT EXISTS idx_reports_app_timestamp ON reports(app_id, timestamp);""",
     )
 
+private val migrationV5 =
+    listOf(
+        // The composed title: three fields instead of a truncated head of the stacktrace.
+        // Nullable on purpose — groups created before this keep falling back to `title`.
+        """ALTER TABLE error_groups ADD COLUMN exception_type TEXT NULL;""",
+        """ALTER TABLE error_groups ADD COLUMN message TEXT NULL;""",
+        """ALTER TABLE error_groups ADD COLUMN location TEXT NULL;""",
+        """ALTER TABLE error_groups ADD COLUMN regressed_at BIGINT NULL;""",
+        """ALTER TABLE error_groups ADD COLUMN regressed_release TEXT NULL;""",
+    )
+
 val allMigrations =
     listOf(
         migrationV1,
         migrationV2,
         migrationV3,
         migrationV4,
+        migrationV5,
     )
 
 suspend fun ISQLite.migrateDb() {

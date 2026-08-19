@@ -16,7 +16,13 @@ import ru.workinprogress.feature.auth.withUserId
 import ru.workinprogress.feature.error.ui.errorsTableFragment
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.ui.errorGroupPage
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+/** The window the row trend is drawn over — the same seven days the app card counts. */
+private const val TREND_DAYS = 7
+
+@OptIn(ExperimentalTime::class)
 fun Route.errorGroupPagesRoute(
     errorGroupRepository: ErrorGroupRepository,
     viewedRepository: ErrorGroupViewedRepository,
@@ -24,6 +30,7 @@ fun Route.errorGroupPagesRoute(
 ) {
     get<AppsResource.AppId.Errors.Paginated> { resource ->
         withUserId { userId ->
+            val now = Clock.System.now().toEpochMilliseconds()
             val data =
                 errorGroupRepository.findByAppId(
                     appId = resource.parent.parent.appId,
@@ -34,9 +41,17 @@ fun Route.errorGroupPagesRoute(
                     userId = userId,
                 )
 
+            // One call for the page that was just read, not one per row.
+            val activity =
+                reportRepository.activity(
+                    groupIds = data.items.map { it.errorGroup.id },
+                    now = now,
+                    days = TREND_DAYS,
+                )
+
             call.respondHtml {
                 context(call) {
-                    errorsTableFragment(resource.parent.parent.appId, data)
+                    errorsTableFragment(resource.parent.parent.appId, data, activity, now)
                 }
             }
         }

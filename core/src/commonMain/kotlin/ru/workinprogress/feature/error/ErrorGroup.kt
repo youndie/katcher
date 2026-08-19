@@ -26,7 +26,21 @@ data class ErrorGroup(
     val resolved: Boolean,
     /** Pull request an agent reported as fixing this group, if any. */
     val fixUrl: String? = null,
-)
+    /**
+     * Composed title. Null on groups created before it existed — those fall back to [title],
+     * which is the truncated head of the stacktrace.
+     */
+    val exceptionType: String? = null,
+    val message: String? = null,
+    val location: String? = null,
+    /** When a report arrived after somebody had marked this group resolved. */
+    val regressedAt: Long? = null,
+    val regressedRelease: String? = null,
+) {
+    val summary: CrashSummary get() = CrashSummary(exceptionType, message, location)
+
+    val regressed: Boolean get() = regressedAt != null && !resolved
+}
 
 @Serializable
 data class ErrorGroupWithViewed(
@@ -39,4 +53,7 @@ data class CreateErrorGroupParams(
     val appId: Int,
     val fingerprint: String,
     val title: String,
+    val exceptionType: String? = null,
+    val message: String? = null,
+    val location: String? = null,
 )

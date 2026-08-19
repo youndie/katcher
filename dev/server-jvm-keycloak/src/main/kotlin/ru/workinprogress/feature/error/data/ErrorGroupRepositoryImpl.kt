@@ -83,6 +83,22 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
         }
     }
 
+    override suspend fun markRegressed(
+        groupId: Long,
+        release: String?,
+        at: Long,
+    ) {
+        withContext(Dispatchers.IO) {
+            transaction {
+                ErrorGroups.update({ ErrorGroups.id eq groupId }) {
+                    it[resolved] = false
+                    it[regressedAt] = at
+                    it[regressedRelease] = release
+                }
+            }
+        }
+    }
+
     override suspend fun linkFix(
         groupId: Long,
         fixUrl: String,
@@ -110,6 +126,9 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
                             it[occurrences] = 0
                             it[lastSeen] = Clock.System.now().toEpochMilliseconds()
                             it[firstSeen] = Clock.System.now().toEpochMilliseconds()
+                            it[exceptionType] = newGroup.exceptionType
+                            it[message] = newGroup.message
+                            it[location] = newGroup.location
                         }
 
                     ErrorGroups
@@ -189,6 +208,11 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
                     .toLocalDateTime(TimeZone.currentSystemDefault()),
             resolved = row[ErrorGroups.resolved],
             fixUrl = row[ErrorGroups.fixUrl],
+            exceptionType = row[ErrorGroups.exceptionType],
+            message = row[ErrorGroups.message],
+            location = row[ErrorGroups.location],
+            regressedAt = row[ErrorGroups.regressedAt],
+            regressedRelease = row[ErrorGroups.regressedRelease],
         )
 
     private fun rowToErrorGroupViewed(row: ResultRow) =

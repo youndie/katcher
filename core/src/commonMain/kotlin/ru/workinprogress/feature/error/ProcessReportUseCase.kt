@@ -4,11 +4,14 @@ import org.kotlincrypto.hash.sha2.SHA256
 import ru.workinprogress.feature.report.CreateReportParams
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.symbolication.SymbolicationService
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 class DuplicateErrorGroupException(
     message: String,
 ) : Exception(message)
 
+@OptIn(ExperimentalTime::class)
 class ProcessReportUseCase(
     private val symbolicationService: SymbolicationService,
     private val errorGroupRepository: ErrorGroupRepository,
@@ -33,18 +36,25 @@ class ProcessReportUseCase(
         var group = errorGroupRepository.findByFingerprint(appId, fingerprint)
 
         if (group == null) {
+            val summary = CrashSummary.of(retraced.stacktrace)
+
             group =
                 try {
                     errorGroupRepository.insert(
                         CreateErrorGroupParams(
                             appId = appId,
                             fingerprint = fingerprint,
+                            // Kept as it was: the raw head is what a group created before the
+                            // composed title falls back to, and what the export still reads.
                             title =
                                 retraced.stacktrace
                                     .lineSequence()
                                     .take(2)
                                     .joinToString("\n")
                                     .take(255),
+                            exceptionType = summary.exceptionType,
+                            message = summary.message,
+                            location = summary.location,
                         ),
                     )
                 } catch (e: DuplicateErrorGroupException) {
@@ -54,6 +64,16 @@ class ProcessReportUseCase(
 
         if (group == null) {
             return
+        }
+
+        // A report on a resolved group means the fix did not hold. Leaving the flag on hid it
+        // from the list behind a tick and from the MCP listing entirely.
+        if (group.resolved) {
+            errorGroupRepository.markRegressed(
+                groupId = group.id,
+                release = retraced.release,
+                at = Clock.System.now().toEpochMilliseconds(),
+            )
         }
 
         reportRepository.insert(appId, group.id, retraced)

@@ -1,7 +1,12 @@
+@file:OptIn(ExperimentalTime::class)
+
 package ru.workinprogress.katcher.utils
 
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
+import kotlinx.datetime.toInstant
+import kotlin.time.ExperimentalTime
 
 fun LocalDateTime.human(): String {
     val yyyy = year.toString().padStart(4, '0')
@@ -60,3 +65,9 @@ fun silenceWords(
     val age = (now - lastCrashAt).coerceAtLeast(0)
     return if (age < 24 * 60 * 60 * 1000L) "last crash ${ageWords(age)}" else "quiet for ${daysWords(age)}"
 }
+
+/**
+ * Back to epoch milliseconds. Timestamps are stored as milliseconds and only turned into a
+ * local date on the way out, so anything that needs to measure age has to turn them back.
+ */
+fun LocalDateTime.epochMillis(): Long = toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()

@@ -17,6 +17,13 @@ object ErrorGroups : LongIdTable("error_groups") {
     val fixUrl = text("fix_url").nullable()
     val fixLinkedAt = long("fix_linked_at").nullable()
 
+    // Migration V5: the composed title, and the release a resolved group came back in.
+    val exceptionType = text("exception_type").nullable()
+    val message = text("message").nullable()
+    val location = text("location").nullable()
+    val regressedAt = long("regressed_at").nullable()
+    val regressedRelease = text("regressed_release").nullable()
+
     init {
         index(isUnique = true, appId, fingerprint)
         index(false, lastSeen)
