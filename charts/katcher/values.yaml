@@ -45,6 +45,16 @@ db:
   path: /data
   name: local.db
 
+  # A copy of the database is taken before every upgrade, by a pre-upgrade hook mounting the
+  # same volume. Migrations run forwards only, so without it a bad release has nothing to be
+  # rolled back to. Turn it off only where the data is disposable.
+  backupBeforeUpgrade: true
+
+  # Any image with a shell will do; the server image is distroless and has none. Pinned by
+  # digest-free tag on purpose — this runs once per upgrade and pulling a moving busybox is a
+  # smaller risk than an unpatched pinned one.
+  backupImage: "busybox:1.37"
+
 sourceMaps:
   size: 2Gi
   class: "local-path"
