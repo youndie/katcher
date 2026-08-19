@@ -79,9 +79,12 @@ fun FlowContent.errorRow(
     val group = item.errorGroup
     val state = stateOf(item)
 
+    // On a phone the row becomes a block and the numbers drop to their own line; nothing
+    // scrolls sideways, which is the one rule the narrow layout has.
     div(
         classes =
-            "flex items-center gap-3 px-4 py-3 border-b border-border border-l-[3px] " +
+            "flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 px-4 py-3 " +
+                "border-b border-border border-l-[3px] " +
                 "${state.edgeClasses} ${state.textClasses} cursor-pointer " +
                 "hover:bg-accent hover:text-accent-foreground transition",
     ) {
@@ -134,7 +137,7 @@ fun FlowContent.errorRow(
                     val origin = listOfNotNull(seen.environment, seen.releases).joinToString(" · ")
                     if (origin.isNotEmpty()) {
                         rowDivider()
-                        span(classes = "font-mono truncate") { +origin }
+                        span(classes = "hidden sm:inline font-mono truncate") { +origin }
                     }
                 }
 
@@ -142,26 +145,30 @@ fun FlowContent.errorRow(
             }
         }
 
-        div(classes = "flex-none") {
-            sparkLine(
-                values = activity?.dailyCrashes ?: List(TREND_POINTS) { 0 },
-                color = state.lineColor,
-                label = "crashes per day",
-            )
-        }
+        // `sm:contents` puts these three back as direct children of the row once there is
+        // width for columns, so the same markup is a block on a phone and a table above it.
+        div(classes = "flex items-center justify-end gap-3 sm:contents") {
+            div(classes = "flex-none") {
+                sparkLine(
+                    values = activity?.dailyCrashes ?: List(TREND_POINTS) { 0 },
+                    color = state.lineColor,
+                    label = "crashes per day",
+                )
+            }
 
-        div(classes = "w-16 flex-none text-right text-base font-semibold tabular-nums") {
-            +group.occurrences.toString()
-        }
+            div(classes = "sm:w-16 flex-none text-right text-base font-semibold tabular-nums") {
+                +group.occurrences.toString()
+            }
 
-        div(classes = "w-26 flex-none text-right text-[13px] font-mono") {
-            +ageWords((now - group.lastSeen.epochMillis()).coerceAtLeast(0))
+            div(classes = "sm:w-26 flex-none text-right text-[13px] font-mono") {
+                +ageWords((now - group.lastSeen.epochMillis()).coerceAtLeast(0))
+            }
         }
     }
 }
 
 private fun FlowContent.rowDivider() {
-    span(classes = "w-px h-3 bg-border flex-none")
+    span(classes = "hidden sm:block w-px h-3 bg-border flex-none")
 }
 
 private fun FlowContent.rowBadge(

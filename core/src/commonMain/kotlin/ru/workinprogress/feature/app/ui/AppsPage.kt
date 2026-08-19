@@ -8,6 +8,7 @@ import kotlinx.html.FlowContent
 import kotlinx.html.HTML
 import kotlinx.html.body
 import kotlinx.html.classes
+import kotlinx.html.code
 import kotlinx.html.div
 import kotlinx.html.h1
 import kotlinx.html.h2
@@ -23,6 +24,7 @@ import ru.workinprogress.katcher.ui.ButtonVariant
 import ru.workinprogress.katcher.ui.Icons.cloud
 import ru.workinprogress.katcher.ui.Icons.logo
 import ru.workinprogress.katcher.ui.commonHead
+import ru.workinprogress.katcher.ui.toastSlot
 import ru.workinprogress.katcher.ui.uiButton
 
 context(call: ApplicationCall)
@@ -38,9 +40,10 @@ fun HTML.appsPage(
 
     body(classes = "min-h-screen bg-background text-foreground") {
         div { id = "modal-root" }
+        toastSlot()
 
         div(classes = "max-w-5xl mx-auto p-6 space-y-4 lg:pt-16") {
-            div(classes = "flex justify-between mb-8 items-center") {
+            div(classes = "flex justify-between mb-8 items-center gap-3 flex-wrap") {
                 div(classes = "flex items-center space-x-4 lg:space-x-6") {
                     logo()
                     h1(classes = "text-2xl lg:text-3xl font-semibold") { +"katcher" }
@@ -129,7 +132,9 @@ private fun FlowContent.emptyAppsView() {
         }
 
         p(classes = "text-muted-foreground max-w-sm") {
-            +"Create your first app to start sending error reports to katcher"
+            +"Create an app to get a key. The key goes into "
+            code(classes = "font-mono text-foreground") { +"Katcher.start { }" }
+            +", and crashes start arriving."
         }
 
         uiButton(variant = ButtonVariant.Default) {
