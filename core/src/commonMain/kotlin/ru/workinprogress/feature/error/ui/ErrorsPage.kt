@@ -20,6 +20,7 @@ import ru.workinprogress.feature.app.App
 import ru.workinprogress.feature.app.AppOverview
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.feature.app.label
+import ru.workinprogress.feature.error.ErrorGroupFilterOptions
 import ru.workinprogress.feature.error.ErrorGroupsPaginated
 import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
@@ -104,10 +105,39 @@ fun HTML.errorsTableFragment(
     appId: Int,
     data: ErrorGroupsPaginated,
     activity: Map<Long, GroupActivity>,
+    options: ErrorGroupFilterOptions,
     now: Long,
+    filtersExpanded: Boolean = false,
 ) {
     body {
-        if (data.items.isEmpty()) {
+        // The bar is inside the fragment: it renders the state it was called with, so the
+        // controls and the list can never disagree about what is being shown.
+        filterBar(appId, data, options, filtersExpanded)
+
+        if (data.items.isEmpty() && !data.filter.isEmpty) {
+            div(classes = "px-4 py-10 flex flex-col items-center gap-3 text-center") {
+                h2(classes = "text-base font-semibold") { +"No group matches these filters" }
+                p(classes = "text-sm text-muted-foreground max-w-sm") {
+                    +"The app has ${data.totalUnfiltered} groups. Widen the period or clear a filter."
+                }
+
+                uiButton(variant = ButtonVariant.Outline, size = ButtonSize.Sm) {
+                    attributes.hx {
+                        get =
+                            call.application.href(
+                                AppsResource.AppId.Errors.Paginated(
+                                    parent = AppsResource.AppId.Errors(appId = appId),
+                                    sortBy = data.sortBy,
+                                    sortOrder = data.sortOrder,
+                                ),
+                            )
+                        target = "#errors-table-body"
+                        swap = HxSwap.innerHtml
+                    }
+                    +"Clear filters"
+                }
+            }
+        } else if (data.items.isEmpty()) {
             div(classes = "flex flex-col items-center justify-center py-16 text-center space-y-4") {
                 id = "empty-view"
 
@@ -167,15 +197,7 @@ fun HTML.errorsTableFragment(
             if (data.page > 1) {
                 uiButton(variant = ButtonVariant.Outline) {
                     attributes.hx {
-                        get =
-                            call.application.href(
-                                AppsResource.AppId.Errors.Paginated(
-                                    parent = AppsResource.AppId.Errors(appId = appId),
-                                    sortBy = data.sortBy,
-                                    sortOrder = data.sortOrder,
-                                    page = data.page - 1,
-                                ),
-                            )
+                        get = listHref(appId, data, page = data.page - 1)
                         target = "#errors-table-body"
                         swap = HxSwap.innerHtml
                     }
@@ -186,15 +208,7 @@ fun HTML.errorsTableFragment(
             if (data.page < data.totalPages) {
                 uiButton(variant = ButtonVariant.Outline) {
                     attributes.hx {
-                        get =
-                            call.application.href(
-                                AppsResource.AppId.Errors.Paginated(
-                                    parent = AppsResource.AppId.Errors(appId = appId),
-                                    sortBy = data.sortBy,
-                                    sortOrder = data.sortOrder,
-                                    page = data.page + 1,
-                                ),
-                            )
+                        get = listHref(appId, data, page = data.page + 1)
                         target = "#errors-table-body"
                         swap = HxSwap.innerHtml
                     }
@@ -219,17 +233,17 @@ fun FlowContent.sortCell(
     ) {
         attributes.hx {
             get =
-                call.application.href(
-                    AppsResource.AppId.Errors.Paginated(
-                        parent = AppsResource.AppId.Errors(appId = appId),
-                        sortBy = field,
-                        sortOrder =
-                            if (data.sortBy == field && data.sortOrder == ErrorGroupSortOrder.asc) {
-                                ErrorGroupSortOrder.desc
-                            } else {
-                                ErrorGroupSortOrder.asc
-                            },
-                    ),
+                listHref(
+                    appId = appId,
+                    data = data,
+                    page = 1,
+                    sortBy = field,
+                    sortOrder =
+                        if (data.sortBy == field && data.sortOrder == ErrorGroupSortOrder.asc) {
+                            ErrorGroupSortOrder.desc
+                        } else {
+                            ErrorGroupSortOrder.asc
+                        },
                 )
             target = "#errors-table-body"
             swap = HxSwap.innerHtml
@@ -244,3 +258,29 @@ fun FlowContent.sortCell(
         }
     }
 }
+
+/**
+ * Every link out of this fragment carries the whole state: sort, page and filters. A sort
+ * click that quietly dropped the filters would answer a question nobody asked.
+ */
+context(call: ApplicationCall)
+private fun listHref(
+    appId: Int,
+    data: ErrorGroupsPaginated,
+    page: Int = data.page,
+    sortBy: ErrorGroupSort = data.sortBy,
+    sortOrder: ErrorGroupSortOrder = data.sortOrder,
+): String =
+    call.application.href(
+        AppsResource.AppId.Errors.Paginated(
+            parent = AppsResource.AppId.Errors(appId = appId),
+            page = page,
+            sortBy = sortBy,
+            sortOrder = sortOrder,
+            q = data.filter.query,
+            environment = data.filter.environment,
+            release = data.filter.release,
+            days = data.filter.days,
+            unresolved = data.filter.unresolvedOnly,
+        ),
+    )

@@ -2,6 +2,7 @@ package ru.workinprogress.feature.error
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
+import ru.workinprogress.feature.report.ErrorGroupFilter
 import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
 
@@ -12,6 +13,10 @@ data class ErrorGroupsPaginated(
     val totalPages: Int,
     val sortBy: ErrorGroupSort,
     val sortOrder: ErrorGroupSortOrder,
+    /** Groups the filters let through, and groups the app has at all — "12 of 47". */
+    val total: Int = 0,
+    val totalUnfiltered: Int = 0,
+    val filter: ErrorGroupFilter = ErrorGroupFilter(),
 )
 
 @Serializable

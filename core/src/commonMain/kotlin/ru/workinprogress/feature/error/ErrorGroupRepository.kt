@@ -1,5 +1,6 @@
 package ru.workinprogress.feature.error
 
+import ru.workinprogress.feature.report.ErrorGroupFilter
 import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
 
@@ -20,7 +21,12 @@ interface ErrorGroupRepository {
         pageSize: Int,
         sortBy: ErrorGroupSort,
         sortOrder: ErrorGroupSortOrder,
+        filter: ErrorGroupFilter = ErrorGroupFilter(),
+        now: Long = 0,
     ): ErrorGroupsPaginated
+
+    /** Values the filters can offer for one app, taken from the reports that arrived. */
+    suspend fun filterOptions(appId: Int): ErrorGroupFilterOptions
 
     suspend fun findById(groupId: Long): ErrorGroup?
 
@@ -51,3 +57,8 @@ interface ErrorGroupRepository {
         linkedAt: Long,
     )
 }
+
+data class ErrorGroupFilterOptions(
+    val environments: List<String>,
+    val releases: List<String>,
+)

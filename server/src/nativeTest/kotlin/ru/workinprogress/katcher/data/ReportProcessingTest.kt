@@ -1,5 +1,7 @@
 package ru.workinprogress.katcher.data
 
+import io.github.smyrgeorge.sqlx4k.Statement
+import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
 import kotlinx.coroutines.test.runTest
 import ru.workinprogress.feature.app.AppRepository
 import ru.workinprogress.feature.app.AppType
@@ -164,6 +166,31 @@ class ReportProcessingTest : RepositoryTest() {
             val reopened = assertNotNull(groupRepository.findById(group.id))
             assertFalse(reopened.resolved)
             assertNull(reopened.regressedAt, "nothing happened in the application, only in somebody's mind")
+        }
+
+    @Test
+    fun `a report with unreadable breadcrumbs is still listed without them`() =
+        runTest {
+            useCase.process(report(release = "1.4.2"), appId)
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+
+            // What a client of an older shape could have written.
+            TransactionContext.withCurrent(db) {
+                execute(
+                    Statement
+                        .create("UPDATE reports SET breadcrumbs = :broken WHERE group_id = :groupId")
+                        .apply {
+                            bind("groupId", group.id)
+                            bind("broken", "[{\"message\": \"no timestamp, no type\"}]")
+                        },
+                )
+            }
+
+            val reports = reportRepository.findByGroup(group.id, 1, 15)
+
+            assertEquals(1, reports.items.size, "one unreadable field must not hide the report")
+            assertNull(reports.items.single().breadcrumbs)
+            assertEquals(stacktrace, reports.items.single().stacktrace)
         }
 
     private fun fingerprint() = ProcessReportUseCase.generateFingerprint(stacktrace)

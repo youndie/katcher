@@ -11,6 +11,7 @@ import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
+import ru.workinprogress.feature.report.Breadcrumb
 import ru.workinprogress.feature.report.CreateReportParams
 import ru.workinprogress.feature.report.GroupActivity
 import ru.workinprogress.feature.report.ReleaseCount
@@ -20,6 +21,8 @@ import ru.workinprogress.feature.report.ReportsPaginated
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
+
+private inline fun <reified T> decodeOrNull(raw: String): T? = runCatching { Json.decodeFromString<T>(raw) }.getOrNull()
 
 object ReportRowMapper : RowMapper<Report> {
     @OptIn(ExperimentalTime::class)
@@ -35,8 +38,11 @@ object ReportRowMapper : RowMapper<Report> {
                 Instant
                     .fromEpochMilliseconds(row.get("timestamp").asLong())
                     .toLocalDateTime(currentSystemDefault()),
-            context = row.get("context").asStringOrNull()?.let { Json.decodeFromString(it) },
-            breadcrumbs = row.get("breadcrumbs").asStringOrNull()?.let { Json.decodeFromString(it) },
+            // A report whose context or breadcrumbs will not parse is still a crash worth
+            // reading. These are written by a client we do not control and stored as text, so
+            // a shape we did not expect costs those fields and nothing else.
+            context = row.get("context").asStringOrNull()?.let { decodeOrNull<Map<String, String>>(it) },
+            breadcrumbs = row.get("breadcrumbs").asStringOrNull()?.let { decodeOrNull<List<Breadcrumb>>(it) },
             release = row.get("release").asStringOrNull(),
             environment = row.get("environment").asStringOrNull(),
         )
@@ -98,8 +104,9 @@ class ReportRepositoryImpl(
                         bind("appId", appId)
                     },
                     ReportRowMapper,
-                ).getOrNull()
-                    .orEmpty()
+                    // Not getOrNull(): an empty list is how this page says "no reports", and a
+                    // query that failed must not be able to say that.
+                ).getOrThrow()
 
             val countSql =
                 """
@@ -149,8 +156,9 @@ class ReportRepositoryImpl(
                         bind("groupId", groupId)
                     },
                     ReportRowMapper,
-                ).getOrNull()
-                    .orEmpty()
+                    // Not getOrNull(): an empty list is how this page says "no reports", and a
+                    // query that failed must not be able to say that.
+                ).getOrThrow()
 
             val countSql =
                 """

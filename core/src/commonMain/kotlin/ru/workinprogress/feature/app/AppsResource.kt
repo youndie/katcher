@@ -1,6 +1,7 @@
 package ru.workinprogress.feature.app
 
 import io.ktor.resources.Resource
+import ru.workinprogress.feature.report.ErrorGroupFilter
 import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
 
@@ -36,7 +37,27 @@ class AppsResource {
                 val pageSize: Int = 15,
                 val sortBy: ErrorGroupSort = ErrorGroupSort.id,
                 val sortOrder: ErrorGroupSortOrder = ErrorGroupSortOrder.desc,
-            )
+                // Filters travel in the query string too, so the fragment renders from the URL
+                // alone and a shared link shows the same list.
+                val q: String? = null,
+                val environment: String? = null,
+                val release: String? = null,
+                val days: Int? = null,
+                val unresolved: Boolean = false,
+                /** On a narrow screen the controls hide behind one button; this is that button. */
+                val filters: Boolean = false,
+            ) {
+                fun filter() =
+                    ErrorGroupFilter(
+                        // A control that was cleared sends an empty value rather than dropping
+                        // its parameter, and an empty value is not a filter.
+                        query = q?.takeIf { it.isNotBlank() },
+                        environment = environment?.takeIf { it.isNotBlank() },
+                        release = release?.takeIf { it.isNotBlank() },
+                        days = days,
+                        unresolvedOnly = unresolved,
+                    )
+            }
 
             @Resource("{groupId}")
             class GroupId(

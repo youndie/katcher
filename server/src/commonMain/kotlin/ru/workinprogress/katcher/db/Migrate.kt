@@ -100,6 +100,14 @@ private val migrationV5 =
         """ALTER TABLE error_groups ADD COLUMN regressed_release TEXT NULL;""",
     )
 
+private val migrationV6 =
+    listOf(
+        // The environment and release filters ask "does this group have a report like that",
+        // which without these is a scan of every report the group ever had.
+        """CREATE INDEX IF NOT EXISTS idx_reports_group_environment ON reports(group_id, environment);""",
+        """CREATE INDEX IF NOT EXISTS idx_reports_group_release ON reports(group_id, release);""",
+    )
+
 val allMigrations =
     listOf(
         migrationV1,
@@ -107,6 +115,7 @@ val allMigrations =
         migrationV3,
         migrationV4,
         migrationV5,
+        migrationV6,
     )
 
 suspend fun ISQLite.migrateDb() {
