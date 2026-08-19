@@ -29,6 +29,8 @@ import ru.workinprogress.katcher.ui.ButtonVariant
 import ru.workinprogress.katcher.ui.Icons.bug
 import ru.workinprogress.katcher.ui.Spark.sparkBars
 import ru.workinprogress.katcher.ui.commonHead
+import ru.workinprogress.katcher.ui.fragmentSlot
+import ru.workinprogress.katcher.ui.toastSlot
 import ru.workinprogress.katcher.ui.uiButton
 
 context(call: ApplicationCall)
@@ -81,22 +83,18 @@ fun HTML.appErrorsPage(
                 }
             }
 
-            div(
-                classes = "bg-card text-card-foreground border border-border",
-            ) {
-                id = "errors-table"
+            fragmentSlot(
+                slotId = "errors-table",
+                url = call.application.href(AppsResource.AppId.Errors(appId = app.id)),
+                header = {
+                    span(classes = "text-[15px] font-semibold") { +"Errors" }
+                },
+                placeholder = {
+                    div(classes = "px-4 py-6 text-xs font-mono text-muted-foreground") { +"loading…" }
+                },
+            )
 
-                attributes.hx {
-                    get =
-                        call.application.href(
-                            AppsResource.AppId.Errors(
-                                appId = app.id,
-                            ),
-                        )
-                    trigger = "load"
-                    swap = HxSwap.innerHtml
-                }
-            }
+            toastSlot()
         }
     }
 }
@@ -147,9 +145,11 @@ fun HTML.errorsTableFragment(
         }
 
         if (data.items.isNotEmpty()) {
+            // Column headers belong to a table; below sm the rows are blocks and there is
+            // nothing for them to head.
             div(
                 classes =
-                    "flex items-center gap-3 px-4 py-2 border-b border-border " +
+                    "hidden sm:flex items-center gap-3 px-4 py-2 border-b border-border " +
                         "text-[11px] tracking-[0.08em] uppercase text-muted-foreground",
             ) {
                 sortCell(appId, ErrorGroupSort.title, "Error", data, "flex-1 min-w-0")
@@ -176,7 +176,7 @@ fun HTML.errorsTableFragment(
                                     page = data.page - 1,
                                 ),
                             )
-                        target = "#errors-table"
+                        target = "#errors-table-body"
                         swap = HxSwap.innerHtml
                     }
                     +"← Prev"
@@ -195,7 +195,7 @@ fun HTML.errorsTableFragment(
                                     page = data.page + 1,
                                 ),
                             )
-                        target = "#errors-table"
+                        target = "#errors-table-body"
                         swap = HxSwap.innerHtml
                     }
                     +"Next →"
@@ -231,7 +231,7 @@ fun FlowContent.sortCell(
                             },
                     ),
                 )
-            target = "#errors-table"
+            target = "#errors-table-body"
             swap = HxSwap.innerHtml
         }
 

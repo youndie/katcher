@@ -11,6 +11,44 @@ fun HEAD.commonHead() {
     fonts()
     tailwind()
     dialogScript()
+    fragmentErrorScript()
+}
+
+/**
+ * A fragment that failed to load has to say so, and the server never learns that its answer
+ * did not arrive — so this is client-side by necessity. It renders the same three facts the
+ * design asks for (what was requested, what came back, when) and a button that asks again.
+ */
+fun HEAD.fragmentErrorScript() {
+    script {
+        unsafe {
+            val script =
+                """
+                window.katcherFragmentError = function (el, event, slotId) {
+                  const body = document.getElementById(slotId + '-body');
+                  if (!body) return;
+
+                  const url = (event.detail && event.detail.pathInfo && event.detail.pathInfo.requestPath) || el.getAttribute('hx-get') || '';
+                  const status = (event.detail && event.detail.xhr && event.detail.xhr.status) || 'no response';
+                  const time = new Date().toTimeString().slice(0, 8);
+
+                  body.innerHTML =
+                    '<div class="px-4 py-4 flex items-center justify-between gap-4 flex-wrap">' +
+                      '<div class="flex flex-col gap-1 min-w-0">' +
+                        '<div class="text-sm font-medium">This list could not be loaded</div>' +
+                        '<div class="text-xs font-mono text-muted-foreground break-all"></div>' +
+                      '</div>' +
+                      '<button class="inline-flex items-center justify-center h-8 px-3 text-xs font-medium border border-input bg-background cursor-pointer" ' +
+                        'hx-get="' + url + '" hx-target="#' + slotId + '-body" hx-swap="innerHTML">Retry</button>' +
+                    '</div>';
+
+                  body.querySelector('.font-mono').textContent = 'GET ' + url + ' — ' + status + ', ' + time;
+                  window.htmx && window.htmx.process(body);
+                };
+                """.trimIndent()
+            +script
+        }
+    }
 }
 
 fun HEAD.htmx() {

@@ -52,6 +52,12 @@ object Icons {
             +copySvg
         }
 
+    /** The one moving thing in this interface: a fragment says it is still loading. */
+    fun HTMLTag.spinner() =
+        unsafe {
+            +"""<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="animate-spin"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="3" stroke-dasharray="14 40"/></svg>"""
+        }
+
     fun HTMLTag.check() =
         unsafe {
             val checkSvg =

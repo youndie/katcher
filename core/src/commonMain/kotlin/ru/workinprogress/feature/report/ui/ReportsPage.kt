@@ -41,7 +41,9 @@ import ru.workinprogress.katcher.ui.Icons.close
 import ru.workinprogress.katcher.ui.Icons.info
 import ru.workinprogress.katcher.ui.Spark.sparkBars
 import ru.workinprogress.katcher.ui.commonHead
+import ru.workinprogress.katcher.ui.fragmentSlot
 import ru.workinprogress.katcher.ui.infoRow
+import ru.workinprogress.katcher.ui.toastSlot
 import ru.workinprogress.katcher.ui.uiButton
 import ru.workinprogress.katcher.ui.uiCard
 import ru.workinprogress.katcher.ui.uiCardContent
@@ -180,35 +182,33 @@ fun HTML.errorGroupPage(
 
             stackTracePanel(appId, group.id, stackTrace, expandAll = false)
 
-            div(classes = "border border-border bg-card text-card-foreground") {
-                div(classes = "px-4 py-3 border-b border-border flex items-center gap-2.5") {
-                    span(classes = "text-[15px] font-semibold") { +"Reports" }
-                    span(classes = "text-xs font-mono text-muted-foreground") {
-                        +"${group.occurrences} total, newest first"
+            fragmentSlot(
+                slotId = "reports-table",
+                url =
+                    call.application.href(
+                        AppsResource.AppId.Errors.GroupId.Reports.Paginated(
+                            groupId = group.id,
+                            appId = appId,
+                        ),
+                    ),
+                header = {
+                    div(classes = "flex items-center gap-2.5") {
+                        span(classes = "text-[15px] font-semibold") { +"Reports" }
+                        span(classes = "text-xs font-mono text-muted-foreground") {
+                            +"${group.occurrences} total, newest first"
+                        }
                     }
-                }
-
-                div {
-                    id = "reports-table"
-                    attributes.hx {
-                        get =
-                            call.application.href(
-                                AppsResource.AppId.Errors.GroupId.Reports.Paginated(
-                                    groupId = group.id,
-                                    appId = appId,
-                                ),
-                            )
-                        trigger = "load"
-                        swap = HxSwap.innerHtml
-                    }
-
+                },
+                placeholder = {
                     div(classes = "animate-pulse space-y-3 p-4") {
                         div(classes = "h-3 bg-muted w-1/3")
                         div(classes = "h-3 bg-muted w-full")
                         div(classes = "h-3 bg-muted w-2/3")
                     }
-                }
-            }
+                },
+            )
+
+            toastSlot()
         }
     }
 }
@@ -427,7 +427,7 @@ fun HTML.reportsTableFragment(
                                         page = data.page - 1,
                                     ),
                                 )
-                            target = "#reports-table"
+                            target = "#reports-table-body"
                             swap = HxSwap.innerHtml
                         }
                         +"← Prev"
@@ -448,7 +448,7 @@ fun HTML.reportsTableFragment(
                                         page = data.page + 1,
                                     ),
                                 )
-                            target = "#reports-table"
+                            target = "#reports-table-body"
                             swap = HxSwap.innerHtml
                         }
                         +"Next →"

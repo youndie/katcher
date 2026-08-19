@@ -127,8 +127,9 @@ private fun FlowContent.numbersRow(
 ) {
     div(
         classes =
-            "grid grid-cols-3 border-t border-border " +
-                if (state == CardState.Quiet) "text-foreground/70" else "",
+            "grid-cols-3 border-t border-border " +
+                // Three zeroes and a flat line are not worth a third of a phone screen.
+                if (state == CardState.Quiet) "hidden sm:grid text-foreground/70" else "grid",
     ) {
         numberCell(overview.unseenGroups.toString(), "unseen groups", withDivider = true)
         numberCell(overview.crashes24h.toString(), "crashes / 24h", withDivider = true)
