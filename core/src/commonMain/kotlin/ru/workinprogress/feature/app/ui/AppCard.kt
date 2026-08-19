@@ -6,86 +6,209 @@ import io.ktor.server.application.ApplicationCall
 import io.ktor.server.resources.href
 import kotlinx.html.FlowContent
 import kotlinx.html.button
+import kotlinx.html.classes
+import kotlinx.html.code
 import kotlinx.html.div
 import kotlinx.html.id
 import kotlinx.html.span
 import ru.workinprogress.feature.app.App
+import ru.workinprogress.feature.app.AppOverview
 import ru.workinprogress.feature.app.AppsResource
+import ru.workinprogress.feature.app.label
 import ru.workinprogress.katcher.ui.Icons.copy
+import ru.workinprogress.katcher.ui.Spark.sparkBars
+import ru.workinprogress.katcher.utils.maskKey
+import ru.workinprogress.katcher.utils.silenceWords
+
+/**
+ * State of one card, in the order the card is read: what is on fire, then what is waiting,
+ * then silence. Silence is a state too — it is stated in words rather than coloured,
+ * because an app that reports nothing is not necessarily an app that is fine.
+ */
+private enum class CardState {
+    Burning,
+    FixWaiting,
+    Crashing,
+    Quiet,
+    ;
+
+    val edgeClasses: String
+        get() =
+            when (this) {
+                Burning, Crashing -> "border-l-primary"
+                FixWaiting -> "border-l-accent"
+                Quiet -> "border-l-border"
+            }
+}
+
+private fun stateOf(overview: AppOverview): CardState =
+    when {
+        overview.newGroupsToday > 0 -> CardState.Burning
+        overview.fixesWaiting > 0 -> CardState.FixWaiting
+        overview.crashes24h > 0 -> CardState.Crashing
+        else -> CardState.Quiet
+    }
 
 context(call: ApplicationCall)
-fun FlowContent.appCard(app: App) {
+fun FlowContent.appCard(
+    app: App,
+    overview: AppOverview,
+    now: Long,
+    revealKey: Boolean = false,
+) {
+    val state = stateOf(overview)
+
     div(
         classes =
-            "transition border border-border duration-300 hover:shadow-md hover:scale-[1.01] " +
-                "cursor-pointer bg-card text-card-foreground pointer-events-auto",
+            "border border-border bg-card text-card-foreground flex flex-col " +
+                "transition hover:border-foreground/40 cursor-pointer pointer-events-auto",
     ) {
+        id = "app-card-${app.id}"
+
         attributes.hx {
-            get =
-                call.application.href(
-                    AppsResource.AppId(appId = app.id),
-                )
+            get = call.application.href(AppsResource.AppId(appId = app.id))
             trigger = "click"
             pushUrl = "true"
             target = "body"
             swap = HxSwap.outerHtml
         }
 
-        div(classes = "p-4 border-b border-border flex items-center justify-between") {
-            span(classes = "font-semibold") { +app.name }
+        div(classes = "p-4 flex items-start justify-between gap-3 border-l-[3px] ${state.edgeClasses}") {
+            div(classes = "flex flex-col gap-1.5 min-w-0") {
+                div(classes = "flex items-center gap-2") {
+                    span(
+                        classes =
+                            "text-[17px] font-semibold truncate " +
+                                if (state == CardState.Quiet) "text-foreground/70" else "",
+                    ) { +app.name }
 
-            span(
-                classes =
-                    "text-xs px-2 py-1 rounded bg-secondary text-secondary-foreground capitalize",
-            ) { text(app.type.name) }
-        }
+                    span(
+                        classes =
+                            "text-[10px] font-semibold tracking-[0.08em] uppercase px-1.5 py-0.5 " +
+                                "border border-border text-muted-foreground",
+                    ) { +app.type.label }
+                }
 
-        div(classes = "p-4") {
-            div(
-                classes =
-                    "text-xs font-mono bg-muted text-muted-foreground px-2 py-1 rounded " +
-                        "flex items-center justify-between",
-            ) {
-                span(classes = "truncate") { +app.apiKey }
-
-                button(
-                    classes =
-                        "ml-2 text-muted-foreground hover:text-foreground transition",
-                ) {
-                    id = "copy-btn-${app.id}"
-
-                    attributes["onclick"] =
-                        """
-                        event.stopPropagation();
-                        const icon = this.querySelector('.copy-icon');
-
-                        const original = icon.innerHTML;
-                        const successIcon = `
-                            <svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path d="M18 6h2v2h-2V6zm-2 4V8h2v2h-2zm-2 2v-2h2v2h-2zm-2 2h2v-2h-2v2zm-2 2h2v-2h-2v2zm-2 0v2h2v-2H8zm-2-2h2v2H6v-2zm0 0H4v-2h2v2z" fill="currentColor"/>
-                            </svg>
-                        `;
-
-                        navigator.clipboard.writeText('${app.apiKey}').then(() => {
-                            icon.innerHTML = successIcon;
-                            icon.classList.remove('copy-pop');
-                            void icon.offsetWidth; // restart animation
-                            icon.classList.add('copy-pop');
-
-                            setTimeout(() => {
-                                icon.innerHTML = original;
-                                icon.classList.remove('copy-pop');
-                            }, 3000);
-                        });
-                        """.trimIndent()
-
-                    div("w-4 h-4 copy-icon") {
-                        copy()
-                    }
+                div(classes = "text-[13px] font-mono text-muted-foreground") {
+                    +silenceWords(overview.lastCrashAt, now)
                 }
             }
 
-            div { id = "copy-status-${app.id}" }
+            if (overview.newGroupsToday > 0) {
+                cardBadge("${overview.newGroupsToday} new today", "bg-primary text-primary-foreground")
+            } else if (overview.fixesWaiting > 0) {
+                cardBadge(fixWords(overview.fixesWaiting), "bg-accent text-accent-foreground")
+            }
+        }
+
+        if (overview.neverReported) {
+            neverReportedBody()
+        } else {
+            numbersRow(overview, state)
+        }
+
+        appKeyRow(app, revealKey)
+    }
+}
+
+private fun FlowContent.cardBadge(
+    text: String,
+    colorClasses: String,
+) {
+    span(
+        classes =
+            "flex-none text-[10px] font-semibold tracking-[0.08em] uppercase px-1.5 py-1 $colorClasses",
+    ) { +text }
+}
+
+private fun FlowContent.numbersRow(
+    overview: AppOverview,
+    state: CardState,
+) {
+    div(
+        classes =
+            "grid grid-cols-3 border-t border-border " +
+                if (state == CardState.Quiet) "text-foreground/70" else "",
+    ) {
+        numberCell(overview.unseenGroups.toString(), "unseen groups", withDivider = true)
+        numberCell(overview.crashes24h.toString(), "crashes / 24h", withDivider = true)
+
+        div(classes = "p-3 px-4 flex flex-col gap-1.5") {
+            div(classes = "text-muted-foreground") {
+                sparkBars(overview.dailyCrashes, "crashes per day, last ${AppOverview.DAYS} days")
+            }
+            cellLabel("${AppOverview.DAYS} days")
         }
     }
 }
+
+private fun FlowContent.numberCell(
+    value: String,
+    label: String,
+    withDivider: Boolean,
+) {
+    div(classes = "p-3 px-4 flex flex-col gap-0.5 " + if (withDivider) "border-r border-border" else "") {
+        div(classes = "text-[26px] leading-none font-semibold tabular-nums") { +value }
+        cellLabel(label)
+    }
+}
+
+private fun FlowContent.cellLabel(text: String) {
+    div(classes = "text-[11px] tracking-[0.06em] uppercase text-muted-foreground") { +text }
+}
+
+private fun FlowContent.neverReportedBody() {
+    div(classes = "p-5 px-4 border-t border-border flex flex-col gap-2.5") {
+        div(classes = "text-[13px] leading-relaxed text-muted-foreground max-w-[380px]") {
+            +"No report has ever arrived with this key. Add "
+            code(classes = "font-mono text-foreground") { +"Katcher.start { }" }
+            +" to the app, or check that the key it ships is this one."
+        }
+    }
+}
+
+/**
+ * The key line of a card. Public because it is also a fragment on its own: Reveal swaps this
+ * one element and nothing else.
+ */
+context(call: ApplicationCall)
+fun FlowContent.appKeyRow(
+    app: App,
+    revealKey: Boolean,
+) {
+    div(classes = "px-4 py-2.5 border-t border-border flex items-center justify-between gap-3") {
+        id = "app-key-${app.id}"
+
+        if (revealKey) {
+            span(classes = "text-xs font-mono text-foreground truncate") { +app.apiKey }
+
+            button(classes = "ml-2 text-muted-foreground hover:text-foreground transition cursor-pointer") {
+                attributes["onclick"] =
+                    """
+                    event.stopPropagation();
+                    navigator.clipboard.writeText('${app.apiKey}');
+                    """.trimIndent()
+
+                div("w-4 h-4") { copy() }
+            }
+        } else {
+            span(classes = "text-xs font-mono text-muted-foreground truncate") { +"key ${maskKey(app.apiKey)}" }
+
+            button(
+                classes =
+                    "h-[26px] px-2.5 text-xs border border-border text-muted-foreground " +
+                        "hover:text-foreground transition cursor-pointer",
+            ) {
+                attributes["onclick"] = "event.stopPropagation();"
+                attributes.hx {
+                    get = call.application.href(AppsResource.AppId.Key(appId = app.id))
+                    target = "#app-key-${app.id}"
+                    swap = HxSwap.outerHtml
+                }
+                +"Reveal"
+            }
+        }
+    }
+}
+
+private fun fixWords(count: Int): String = if (count == 1) "1 fix waiting" else "$count fixes waiting"

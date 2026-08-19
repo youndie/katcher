@@ -11,6 +11,16 @@ class AppsResource {
         val appId: Int,
         val parent: AppsResource = AppsResource(),
     ) {
+        /** Reveals the api key of one app — a fragment, not a page. */
+        @Resource("key")
+        class Key(
+            val parent: AppId,
+        ) {
+            companion object {
+                operator fun invoke(appId: Int) = Key(AppId(appId))
+            }
+        }
+
         @Resource("errors")
         class Errors(
             val parent: AppId,

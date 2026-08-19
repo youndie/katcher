@@ -14,8 +14,10 @@ import kotlinx.html.h2
 import kotlinx.html.head
 import kotlinx.html.id
 import kotlinx.html.p
+import kotlinx.html.span
 import kotlinx.html.title
 import ru.workinprogress.feature.app.App
+import ru.workinprogress.feature.app.AppOverview
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.katcher.ui.ButtonVariant
 import ru.workinprogress.katcher.ui.Icons.cloud
@@ -24,7 +26,11 @@ import ru.workinprogress.katcher.ui.commonHead
 import ru.workinprogress.katcher.ui.uiButton
 
 context(call: ApplicationCall)
-fun HTML.appsPage(apps: List<App>) {
+fun HTML.appsPage(
+    apps: List<App>,
+    overviews: Map<Int, AppOverview>,
+    now: Long,
+) {
     head {
         title("Katcher – Apps")
         commonHead()
@@ -38,6 +44,12 @@ fun HTML.appsPage(apps: List<App>) {
                 div(classes = "flex items-center space-x-4 lg:space-x-6") {
                     logo()
                     h1(classes = "text-2xl lg:text-3xl font-semibold") { +"katcher" }
+
+                    if (apps.isNotEmpty()) {
+                        span(classes = "text-[13px] font-mono text-muted-foreground pt-1") {
+                            +appsSummary(apps, overviews)
+                        }
+                    }
                 }
 
                 uiButton(variant = ButtonVariant.Outline) {
@@ -59,12 +71,13 @@ fun HTML.appsPage(apps: List<App>) {
                     setOf(
                         "grid",
                         "grid-cols-1",
-                        "sm:grid-cols-2",
-                        "lg:grid-cols-3",
+                        "lg:grid-cols-2",
                         "gap-4",
                     )
 
-                apps.forEach { app -> appCard(app) }
+                apps.forEach { app ->
+                    appCard(app, overviews[app.id] ?: AppOverview.silent(app.id), now)
+                }
             }
 
             if (apps.isEmpty()) {
@@ -75,13 +88,18 @@ fun HTML.appsPage(apps: List<App>) {
 }
 
 context(call: ApplicationCall)
-fun FlowContent.onAppCreated(app: App) {
+fun FlowContent.onAppCreated(
+    app: App,
+    now: Long,
+) {
     div {
         attributes.hx {
             swapOob = "beforeend:#apps-grid"
         }
 
-        appCard(app)
+        // A card created a second ago has nothing behind it yet; the silent overview is the
+        // honest one, and it renders as "never reported".
+        appCard(app, AppOverview.silent(app.id), now)
     }
 
     div {
@@ -123,4 +141,18 @@ private fun FlowContent.emptyAppsView() {
             +"Add app"
         }
     }
+}
+
+/**
+ * The line next to the logo. Quiet is counted, not coloured: it belongs in the same sentence
+ * as the total, so a list of silent apps reads as a fact rather than as an alarm.
+ */
+private fun appsSummary(
+    apps: List<App>,
+    overviews: Map<Int, AppOverview>,
+): String {
+    val quiet = apps.count { app -> (overviews[app.id]?.crashes24h ?: 0) == 0 }
+    val appsWord = if (apps.size == 1) "1 app" else "${apps.size} apps"
+
+    return if (quiet == 0) appsWord else "$appsWord · $quiet quiet"
 }

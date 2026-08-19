@@ -12,7 +12,9 @@ import kotlinx.coroutines.runBlocking
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import okio.SYSTEM
+import ru.workinprogress.feature.app.AppOverviewRepository
 import ru.workinprogress.feature.app.AppRepository
+import ru.workinprogress.feature.app.data.AppOverviewRepositoryImpl
 import ru.workinprogress.feature.app.data.AppRepositoryImpl
 import ru.workinprogress.feature.auth.headerUserIdAuth
 import ru.workinprogress.feature.error.ErrorGroupRepository
@@ -129,6 +131,9 @@ fun Application.initDi(
         provide { serverConfig }
         provide<AppRepository> {
             AppRepositoryImpl(db, AppsCrudRepositoryImpl)
+        }
+        provide<AppOverviewRepository> {
+            AppOverviewRepositoryImpl(db)
         }
         provide<ErrorGroupRepository> {
             ErrorGroupRepositoryImpl(db, ErrorGroupCrudRepositoryImpl)
