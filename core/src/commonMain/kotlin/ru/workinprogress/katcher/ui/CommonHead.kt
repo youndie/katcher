@@ -10,8 +10,17 @@ fun HEAD.commonHead() {
     htmx()
     fonts()
     tailwind()
+    favicon()
     dialogScript()
     fragmentErrorScript()
+}
+
+fun HEAD.favicon() {
+    link {
+        rel = "icon"
+        type = "image/svg+xml"
+        href = "/favicon.svg"
+    }
 }
 
 /**
