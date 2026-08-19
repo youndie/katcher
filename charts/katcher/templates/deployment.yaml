@@ -48,10 +48,13 @@ spec:
               value: {{ .Values.metrik.endpoint | quote }}
             - name: METRIK_SERVICE
               value: {{ .Values.metrik.service | quote }}
-            {{- with .Values.metrik.release }}
+            # Release marker: metrik draws a line on the charts at every deploy, and the
+            # version of the image being deployed is the honest value for it. Left to be
+            # overridden — an installation that names releases differently says so — but not
+            # left empty, because "no marker" turns every change into an unexplained step in
+            # the graphs.
             - name: METRIK_RELEASE
-              value: {{ . | quote }}
-            {{- end }}
+              value: {{ .Values.metrik.release | default .Values.server.version | quote }}
             {{- if or .Values.metrik.key .Values.metrik.existingSecret }}
             # Ingest-key — через Secret: он один на всю инсталляцию metrik, и попадать в спеку
             # пода ему незачем.

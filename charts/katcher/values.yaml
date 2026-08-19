@@ -6,7 +6,7 @@ hostname: ""
 
 server:
   image: katcher
-  version: 0.6.0
+  version: 0.6.1
   resources:
     requests:
       cpu: "30m"
@@ -35,8 +35,10 @@ metrik:
   key: ""
   existingSecret: ""
   secretKey: ingest-key
-  # Name katcher reports under, and the release that draws deploy markers on the charts.
+  # Name katcher reports under.
   service: katcher
+  # The release that draws deploy markers on the charts. Empty means the image version is
+  # used, which is what a deploy actually changes.
   release: ""
 
 db:
