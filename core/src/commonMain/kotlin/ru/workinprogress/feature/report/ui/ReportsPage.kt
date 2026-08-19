@@ -98,7 +98,9 @@ fun HTML.errorGroupPage(
                 div(classes = "flex flex-col gap-2 min-w-0") {
                     div(classes = "flex items-center gap-2.5") {
                         span(classes = "w-[3px] h-5.5 flex-none ${edgeColor(group)}")
-                        h1(classes = "font-mono text-2xl font-semibold tracking-tight break-words") {
+                        // break-all, not break-words: "MongoCommandException" has no spaces to
+                        // break at, and at 320px it is wider than the screen.
+                        h1(classes = "font-mono text-xl sm:text-2xl font-semibold tracking-tight break-all min-w-0") {
                             +(group.exceptionType ?: group.title.lineSequence().first())
                         }
                     }
@@ -107,7 +109,7 @@ fun HTML.errorGroupPage(
                         p(classes = "text-base leading-relaxed text-foreground/88 max-w-2xl") { +message }
                     }
 
-                    div(classes = "flex items-center gap-2.5 text-[13px] font-mono text-muted-foreground") {
+                    div(classes = "flex items-center gap-2.5 flex-wrap text-[13px] font-mono text-muted-foreground") {
                         span(classes = "text-foreground") {
                             +(group.location ?: "no app frame · driver only")
                         }
@@ -375,37 +377,7 @@ fun HTML.reportsTableFragment(
     data: ReportsPaginated,
 ) {
     body {
-        data.items.forEach { report ->
-            val reportUrl =
-                call.application.href(
-                    AppsResource.AppId.Errors.GroupId.Reports.ReportId(
-                        appId = appId,
-                        groupId = groupId,
-                        reportId = report.id,
-                    ),
-                )
-
-            div(
-                classes =
-                    "flex items-center gap-4 px-4 py-2.5 border-b border-border text-[13px] " +
-                        "cursor-pointer hover:bg-accent hover:text-accent-foreground transition",
-            ) {
-                attributes.hx {
-                    get = reportUrl
-                    pushUrl = "true"
-                    target = "body"
-                    swap = HxSwap.outerHtml
-                }
-
-                span(classes = "w-32 flex-none font-mono") { +report.timestamp.human() }
-                span(classes = "w-16 flex-none font-mono truncate") { +(report.release ?: "—") }
-                span(classes = "flex-1 min-w-0 truncate") { +report.message }
-                span(classes = "flex-none text-xs font-mono text-muted-foreground") {
-                    +reportContents(report)
-                }
-                span(classes = "flex-none text-xs font-mono") { +"Open →" }
-            }
-        }
+        data.items.forEach { report -> reportRow(appId, groupId, report, expanded = false) }
 
         div(classes = "flex items-center justify-between gap-2 px-4 py-3") {
             span(classes = "text-xs font-mono text-muted-foreground") {
@@ -454,6 +426,84 @@ fun HTML.reportsTableFragment(
                         +"Next →"
                     }
                 }
+            }
+        }
+    }
+}
+
+/**
+ * One report in the list, and the same markup when it is opened in place.
+ *
+ * The row expands where it sits rather than sending the reader to another page: deciding
+ * whether a crash matters usually takes one look at its context, and a page that has to be
+ * navigated to and back from turns that look into a trip. "Open" still goes to the full
+ * report; this is the glance.
+ */
+context(call: ApplicationCall)
+fun FlowContent.reportRow(
+    appId: Int,
+    groupId: Long,
+    report: Report,
+    expanded: Boolean,
+) {
+    fun rowHref(
+        fragment: Boolean,
+        expand: Boolean,
+    ) = call.application.href(
+        AppsResource.AppId.Errors.GroupId.Reports.ReportId(
+            appId = appId,
+            groupId = groupId,
+            reportId = report.id,
+            fragment = fragment,
+            expanded = expand,
+        ),
+    )
+
+    div(classes = "border-b border-border last:border-b-0") {
+        id = "report-${report.id}"
+
+        // Below sm the columns become lines: five fixed-width cells do not fit a phone, and a
+        // row that does not fit takes the whole page sideways with it.
+        div(
+            classes =
+                "flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 px-4 py-2.5 text-[13px] " +
+                    "cursor-pointer hover:bg-accent hover:text-accent-foreground transition " +
+                    if (expanded) "bg-foreground/3" else "",
+        ) {
+            attributes.hx {
+                get = rowHref(fragment = true, expand = !expanded)
+                target = "#report-${report.id}"
+                swap = HxSwap.outerHtml
+                pushUrl = "false"
+            }
+
+            div(classes = "flex items-center gap-3 sm:contents") {
+                span(classes = "w-3 flex-none text-muted-foreground") { +if (expanded) "▾" else "▸" }
+                span(classes = "sm:w-32 flex-none font-mono") { +report.timestamp.human() }
+                span(classes = "sm:w-16 flex-none font-mono truncate") { +(report.release ?: "—") }
+            }
+
+            span(classes = "flex-1 min-w-0 truncate") { +report.message }
+
+            // The counts are a reason to open the row; once it is open they are inside it, and
+            // on a phone there is no room to say them twice.
+            span(classes = "hidden sm:inline flex-none text-xs font-mono text-muted-foreground") {
+                +reportContents(report)
+            }
+
+            a(
+                href = rowHref(fragment = false, expand = false),
+                classes = "hidden sm:inline flex-none text-xs font-mono",
+            ) {
+                attributes["onclick"] = "event.stopPropagation();"
+                +"Open →"
+            }
+        }
+
+        if (expanded) {
+            div(classes = "px-4 pb-4 pt-1 flex flex-col gap-4") {
+                reportContextBlock(report)
+                reportBreadcrumbsBlock(report)
             }
         }
     }
