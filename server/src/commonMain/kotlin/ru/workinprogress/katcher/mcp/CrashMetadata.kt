@@ -1,5 +1,7 @@
 package ru.workinprogress.katcher.mcp
 
+import ru.workinprogress.feature.error.StackFrames
+
 /**
  * A single stack frame reduced to constrained tokens.
  *
@@ -25,12 +27,6 @@ data class CrashMetadata(
 )
 
 object CrashMetadataExtractor {
-    /** `at pkg.Class.method(File.kt:123)` — JVM, Android, and Kotlin/Native `kfun:` frames. */
-    private val JVM_FRAME = Regex("""^\s*at\s+([^\s(]+)\s*\(([^):]+)(?::(\d+))?\)""")
-
-    /** `at 3  binary  0xADDR  kfun:pkg.Class#method(...) + 99` — Kotlin/Native. */
-    private val NATIVE_FRAME = Regex("""^\s*at\s+\d+\s+\S+\s+0x[0-9a-fA-F]+\s+(\S+)""")
-
     /** Leading `some.package.ExceptionType: message` line. */
     private val EXCEPTION_TYPE = Regex("""^([A-Za-z_][A-Za-z0-9_.$]*(?:Exception|Error|Throwable))\b""")
 
@@ -74,23 +70,14 @@ object CrashMetadataExtractor {
         )
     }
 
+    // Frames are recognised by the same parser that grouping uses, so the frames an agent
+    // is asked to verify are the frames the crash was grouped by.
     private fun parseFrame(line: String): CrashFrame? {
-        JVM_FRAME.find(line)?.let { match ->
-            val symbol = match.groupValues[1].sanitize()
-            val file = match.groupValues[2].sanitize()
-            val lineNumber = match.groupValues[3].toIntOrNull()
-            if (file.isEmpty() && symbol.isEmpty()) return null
-            return CrashFrame(file = file, line = lineNumber, symbol = symbol)
-        }
-
-        NATIVE_FRAME.find(line)?.let { match ->
-            val symbol = match.groupValues[1].sanitize()
-            if (symbol.isEmpty()) return null
-            // Native frames carry no source file; the symbol is all there is to verify.
-            return CrashFrame(file = "", line = null, symbol = symbol)
-        }
-
-        return null
+        val frame = StackFrames.parse(line) ?: return null
+        val symbol = frame.symbol.sanitize()
+        val file = frame.file.sanitize()
+        if (file.isEmpty() && symbol.isEmpty()) return null
+        return CrashFrame(file = file, line = frame.line, symbol = symbol)
     }
 
     private fun String.sanitize(): String = filter(ALLOWED_TOKEN_CHARS).take(MAX_TOKEN_LENGTH)
