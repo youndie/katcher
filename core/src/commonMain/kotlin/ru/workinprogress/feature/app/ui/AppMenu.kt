@@ -18,7 +18,10 @@ import ru.workinprogress.feature.app.AppsResource
  * came from the server that owns it.
  */
 context(call: ApplicationCall)
-fun FlowContent.appMenuButton(appId: Int) {
+fun FlowContent.appMenuButton(
+    appId: Int,
+    opensTo: Boolean = true,
+) {
     button(
         classes =
             "w-7 h-7 inline-flex items-center justify-center border border-border " +
@@ -26,9 +29,12 @@ fun FlowContent.appMenuButton(appId: Int) {
     ) {
         attributes["onclick"] = "event.stopPropagation();"
         attributes.hx {
-            get = call.application.href(AppsResource.AppId.Menu(appId = appId, open = true))
+            // The same button both opens and closes: while the menu is up it asks for the
+            // closed state, so pressing ⋯ twice leaves the card as it was found.
+            get = call.application.href(AppsResource.AppId.Menu(appId = appId, open = opensTo))
             target = "#app-menu-$appId"
             swap = HxSwap.outerHtml
+            pushUrl = "false"
         }
         +"⋯"
     }
@@ -39,7 +45,19 @@ fun FlowContent.appMenu(appId: Int) {
     div(classes = "relative") {
         attributes["onclick"] = "event.stopPropagation();"
 
-        appMenuButton(appId)
+        appMenuButton(appId, opensTo = false)
+
+        // A click anywhere else closes it. An open menu with no way out but the one button
+        // that opened it is a trap, and this is the version of "click outside" that needs no
+        // client-side state: a transparent sheet that asks the server for the closed menu.
+        div(classes = "fixed inset-0 z-30") {
+            attributes.hx {
+                get = call.application.href(AppsResource.AppId.Menu(appId = appId, open = false))
+                target = "#app-menu-$appId"
+                swap = HxSwap.outerHtml
+                pushUrl = "false"
+            }
+        }
 
         div(
             classes =
@@ -92,6 +110,8 @@ private fun FlowContent.menuItem(
             get = url
             this.target = target
             swap = if (target == "#modal-root") HxSwap.innerHtml else HxSwap.outerHtml
+            // A menu item opens a dialog or swaps a row; neither is a page to come back to.
+            pushUrl = "false"
         }
         // Whatever the item did, the menu has done its job and closes.
         attributes["hx-on::after-request"] =

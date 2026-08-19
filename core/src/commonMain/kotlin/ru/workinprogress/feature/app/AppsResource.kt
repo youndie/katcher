@@ -144,13 +144,23 @@ class AppsResource {
                     class ReportId(
                         val parent: Reports,
                         val reportId: Long,
+                        /** Ask for the row rather than the page — the list opens one in place. */
+                        val fragment: Boolean = false,
+                        val expanded: Boolean = false,
                     ) {
                         companion object {
                             operator fun invoke(
                                 appId: Int,
                                 groupId: Long,
                                 reportId: Long,
-                            ) = ReportId(Reports(GroupId(appId, groupId)), reportId)
+                                fragment: Boolean = false,
+                                expanded: Boolean = false,
+                            ) = ReportId(
+                                parent = Reports(GroupId(appId, groupId)),
+                                reportId = reportId,
+                                fragment = fragment,
+                                expanded = expanded,
+                            )
                         }
                     }
 

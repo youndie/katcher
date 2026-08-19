@@ -16,6 +16,7 @@ import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.feature.error.ErrorGroupRepository
 import ru.workinprogress.feature.report.ui.groupStatusFragment
 import ru.workinprogress.feature.report.ui.reportDetailsPage
+import ru.workinprogress.feature.report.ui.reportRow
 import ru.workinprogress.feature.report.ui.reportsTableFragment
 import ru.workinprogress.katcher.ui.toast
 
@@ -47,13 +48,17 @@ fun Route.reportsPagesRoute(
             reportRepository.getReportById(params.reportId)
                 ?: return@get call.respond(HttpStatusCode.NotFound)
 
-        call.respondHtml {
-            context(call) {
-                reportDetailsPage(
-                    appId = params.parent.parent.parent.parent.appId,
-                    groupId = params.parent.parent.groupId,
-                    report = report,
-                )
+        val appId = params.parent.parent.parent.parent.appId
+        val groupId = params.parent.parent.groupId
+
+        if (params.fragment) {
+            // Opened in place, inside the list it was clicked in.
+            call.respondHtml {
+                body { context(call) { reportRow(appId, groupId, report, expanded = params.expanded) } }
+            }
+        } else {
+            call.respondHtml {
+                context(call) { reportDetailsPage(appId = appId, groupId = groupId, report = report) }
             }
         }
     }

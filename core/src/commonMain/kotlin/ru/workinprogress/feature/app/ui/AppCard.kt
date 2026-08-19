@@ -76,6 +76,11 @@ fun FlowContent.appCard(
             target = "body"
             swap = HxSwap.outerHtml
         }
+        // htmx passes hx-push-url, hx-target and hx-swap down to every descendant that does
+        // not set its own. The card navigates the whole page, so without this the menu button
+        // inside it pushed /apps/1/menu?open=true into the address bar — a fragment URL that
+        // renders as a broken page when reloaded.
+        attributes["hx-disinherit"] = "hx-push-url hx-target hx-swap hx-trigger"
 
         div(classes = "p-4 flex items-start justify-between gap-3 border-l-[3px] ${state.edgeClasses}") {
             div(classes = "flex flex-col gap-1.5 min-w-0") {
@@ -194,7 +199,9 @@ fun FlowContent.appKeyRow(
     val current = active.firstOrNull()
     val superseded = active.drop(1)
 
-    div(classes = "px-4 py-2.5 border-t border-border flex flex-col gap-2") {
+    // Fixed height, one type size, one alignment: Reveal swaps this row's contents, and a
+    // card that changes size when it does turns reading a key into watching the page jump.
+    div(classes = "px-4 border-t border-border flex flex-col justify-center gap-2 min-h-12") {
         id = "app-key-$appId"
 
         if (current == null) {
@@ -207,9 +214,13 @@ fun FlowContent.appKeyRow(
 
         div(classes = "flex items-center justify-between gap-3") {
             if (revealKey) {
-                span(classes = "text-xs font-mono text-foreground truncate") { +current.key }
+                span(classes = "text-xs font-mono text-foreground truncate leading-6") { +current.key }
 
-                button(classes = "ml-2 text-muted-foreground hover:text-foreground transition cursor-pointer") {
+                button(
+                    classes =
+                        "h-[26px] w-[26px] flex-none inline-flex items-center justify-center " +
+                            "text-muted-foreground hover:text-foreground transition cursor-pointer",
+                ) {
                     attributes["onclick"] =
                         """
                         event.stopPropagation();
@@ -219,7 +230,7 @@ fun FlowContent.appKeyRow(
                     div("w-4 h-4") { copy() }
                 }
             } else {
-                span(classes = "text-xs font-mono text-muted-foreground truncate") {
+                span(classes = "text-xs font-mono text-muted-foreground truncate leading-6") {
                     +"key ${maskKey(current.key)}"
                 }
 

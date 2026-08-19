@@ -4,31 +4,26 @@ import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.resources.href
-import kotlinx.html.DIV
-import kotlinx.html.DL
 import kotlinx.html.HTML
 import kotlinx.html.body
-import kotlinx.html.dd
 import kotlinx.html.div
-import kotlinx.html.dl
-import kotlinx.html.dt
 import kotlinx.html.h1
-import kotlinx.html.h4
 import kotlinx.html.head
-import kotlinx.html.pre
+import kotlinx.html.id
 import kotlinx.html.span
 import kotlinx.html.title
 import ru.workinprogress.feature.app.AppsResource
+import ru.workinprogress.feature.error.StackChunk
+import ru.workinprogress.feature.error.StackTrace
 import ru.workinprogress.feature.report.Report
-import ru.workinprogress.katcher.ui.ButtonSize
-import ru.workinprogress.katcher.ui.ButtonVariant
 import ru.workinprogress.katcher.ui.commonHead
-import ru.workinprogress.katcher.ui.uiButton
-import ru.workinprogress.katcher.ui.uiCard
-import ru.workinprogress.katcher.ui.uiCardHeader
-import ru.workinprogress.katcher.ui.uiCardTitle
 import ru.workinprogress.katcher.utils.human
 
+/**
+ * One report, in the same language as the group it came from: facts first, then what it
+ * carried, then the trace. It is the page for the crash somebody wants to read whole — the
+ * glance lives in the list, which opens a row in place.
+ */
 context(call: ApplicationCall)
 fun HTML.reportDetailsPage(
     appId: Int,
@@ -40,149 +35,96 @@ fun HTML.reportDetailsPage(
         commonHead()
     }
 
-    body("bg-background min-h-screen text-foreground transition-colors") {
-        div("mx-auto max-w-5xl p-6 flex flex-col gap-4") {
-            div("flex items-center justify-between") {
-                val backUrl =
-                    call.application.href(
-                        AppsResource.AppId.Errors.GroupId(
-                            appId = appId,
-                            groupId = groupId,
-                        ),
-                    )
-
-                uiButton(
-                    variant = ButtonVariant.Outline,
-                    size = ButtonSize.Sm,
-                ) {
+    body(classes = "bg-background text-foreground min-h-screen") {
+        div(classes = "mx-auto max-w-5xl p-6 flex flex-col gap-5") {
+            div(classes = "flex items-center gap-2.5 text-xs font-mono text-muted-foreground") {
+                span(classes = "cursor-pointer hover:text-foreground transition") {
                     attributes.hx {
-                        get = backUrl
+                        get = call.application.href(AppsResource())
                         pushUrl = "true"
                         target = "body"
                         swap = HxSwap.outerHtml
                     }
-                    +"← Back to Reports"
+                    +"apps"
                 }
-
-                div("text-xs text-muted-foreground font-mono") {
-                    +"Report ID: ${report.id}"
+                +"/"
+                span(classes = "cursor-pointer hover:text-foreground transition") {
+                    attributes.hx {
+                        get = call.application.href(AppsResource.AppId(appId = appId))
+                        pushUrl = "true"
+                        target = "body"
+                        swap = HxSwap.outerHtml
+                    }
+                    +"errors"
                 }
+                +"/"
+                span(classes = "cursor-pointer hover:text-foreground transition") {
+                    attributes.hx {
+                        get =
+                            call.application.href(
+                                AppsResource.AppId.Errors.GroupId(appId = appId, groupId = groupId),
+                            )
+                        pushUrl = "true"
+                        target = "body"
+                        swap = HxSwap.outerHtml
+                    }
+                    +"group #$groupId"
+                }
+                +"/"
+                span(classes = "text-foreground") { +"report #${report.id}" }
             }
 
-            h1(classes = "text-2xl font-bold tracking-tight break-words mt-4 mb-4") { +report.message }
+            div(classes = "flex flex-col gap-2 min-w-0") {
+                h1(classes = "text-xl font-semibold leading-snug break-words") { +report.message }
 
-            uiCard {
-                uiCardHeader {
-                    uiCardTitle { +"Device & Environment" }
-                }
-
-                dl("grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4") {
-                    infoRow("Release", report.release ?: "n/a")
-                    infoRow("Environment", report.environment ?: "n/a")
-
-                    report.context?.forEach { (key, value) ->
-                        infoRow(key.replace("_", " ").capitalize(), value)
+                div(classes = "flex items-center gap-2.5 text-[13px] font-mono text-muted-foreground flex-wrap") {
+                    span(classes = "text-foreground") { +report.timestamp.human() }
+                    report.release?.let { release ->
+                        +"·"
+                        span { +release }
+                    }
+                    report.environment?.let { environment ->
+                        +"·"
+                        span { +environment }
                     }
                 }
             }
 
-            if (!report.breadcrumbs.isNullOrEmpty()) {
-                uiCard {
-                    uiCardHeader {
-                        uiCardTitle { +"Activity Timeline" }
+            reportContextBlock(report)
+            reportBreadcrumbsBlock(report)
+
+            div(classes = "border border-border bg-card text-card-foreground") {
+                id = "stacktrace"
+
+                div(classes = "px-4 py-3 border-b border-border flex items-center gap-2.5") {
+                    span(classes = "text-[15px] font-semibold") { +"Stacktrace" }
+                    span(classes = "text-xs font-mono text-muted-foreground") {
+                        val (total, own) = StackTrace.frameCounts(report.stacktrace)
+                        +"$total frames · $own yours"
                     }
+                }
 
-                    div("relative border-l border-border/70 ml-2 space-y-8 py-1") {
-                        report.breadcrumbs.forEach { breadcrumb ->
-                            div("relative pl-6") {
-                                div("absolute w-2.5 h-2.5 bg-primary rounded-full ring-4 ring-card -left-[5px] top-1.5") {}
-
-                                div("flex flex-col gap-2") {
-                                    div("flex items-start justify-between w-full gap-4") {
-                                        div("flex items-baseline gap-2.5") {
-                                            span("text-sm font-mono text-muted-foreground shrink-0") {
-                                                +breadcrumb.timestamp.human()
-                                            }
-                                            span("text-muted-foreground/40 text-sm") { +"—" }
-                                            h4("text-sm font-medium leading-snug text-foreground") {
-                                                +breadcrumb.message
-                                            }
-                                        }
-
-                                        span(
-                                            "inline-flex items-center px-1.5 py-0.5 rounded-md bg-secondary text-secondary-foreground text-[10px] font-semibold uppercase tracking-wider shrink-0",
-                                        ) {
-                                            +breadcrumb.type
-                                        }
-                                    }
-
-                                    breadcrumb.data?.let { data ->
-                                        div("grid grid-cols-1 gap-1.5 p-2 bg-muted/40 rounded-lg border border-border/50") {
-                                            data.forEach { (key, value) ->
-                                                div("text-xs font-mono flex items-start gap-2") {
-                                                    span("text-muted-foreground font-medium select-none") { +"$key:" }
-                                                    span("text-foreground/90 break-all") { +value }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                // Every frame, unfolded: this page is the one place somebody came to read the
+                // whole thing. Long frames scroll inside the panel rather than reshaping it.
+                div(classes = "font-mono text-[13px] leading-relaxed overflow-x-auto") {
+                    StackTrace.fold(report.stacktrace, expandAll = true).forEach { chunk ->
+                        val own = chunk is StackChunk.Own && chunk.frame.file.isNotEmpty()
+                        val text =
+                            when (chunk) {
+                                is StackChunk.Text -> chunk.text
+                                is StackChunk.Own -> chunk.text
+                                is StackChunk.Foreign -> chunk.lines.joinToString("\n")
                             }
-                        }
 
-                        div("relative pl-6") {
-                            div("absolute w-2.5 h-2.5 bg-primary rounded-full ring-4 ring-card -left-[5px] top-1.5") {}
-
-                            div("flex flex-col gap-2") {
-                                div("flex items-start justify-between w-full gap-4") {
-                                    div("flex items-baseline gap-2.5") {
-                                        span("text-sm font-mono text-muted-foreground shrink-0") {
-                                            +report.timestamp.human()
-                                        }
-                                        span("text-muted-foreground/40 text-sm") { +"—" }
-                                        h4("text-sm font-medium leading-snug text-foreground") {
-                                            +report.message
-                                        }
-                                    }
-
-                                    span(
-                                        "inline-flex items-center px-1.5 py-0.5 rounded-md bg-primary text-secondary-foreground text-[10px] font-semibold uppercase tracking-wider shrink-0",
-                                    ) {
-                                        +"Crash"
-                                    }
-                                }
-
-                                reportStackTrace(report)
-                            }
-                        }
+                        div(
+                            classes =
+                                "px-4 py-2 border-b border-border last:border-b-0 whitespace-pre " +
+                                    "w-max min-w-full " +
+                                    if (own) "border-l-[3px] border-l-primary" else "",
+                        ) { +text }
                     }
                 }
-            } else {
-                reportStackTrace(report)
             }
         }
-    }
-}
-
-private fun DIV.reportStackTrace(report: Report) {
-    div("bg-zinc-950 rounded-xl shadow-md overflow-hidden border border-border") {
-        div("px-4 py-2 bg-zinc-900/50 border-b border-zinc-800 flex justify-between items-center") {
-            span("text-[10px] font-mono text-zinc-500 uppercase tracking-widest") { +"Stacktrace" }
-        }
-        div("p-4 overflow-x-auto") {
-            pre("text-xs font-mono text-red-400/90 whitespace-pre-wrap leading-relaxed") {
-                +report.stacktrace
-            }
-        }
-    }
-}
-
-private fun DL.infoRow(
-    label: String,
-    value: String,
-) {
-    dl("flex flex-col gap-1") {
-        dt("text-[10px] text-muted-foreground uppercase font-bold tracking-tight") { +label }
-        dd("text-sm text-foreground font-mono break-all leading-tight") { +value }
     }
 }

@@ -44,11 +44,18 @@ fun FlowContent.stackTracePanel(
             }
         }
 
-        div(classes = "font-mono text-[13px] leading-relaxed") {
+        // Frames are long and must not be reflowed — a wrapped stacktrace stops being one line
+        // per frame — so the panel scrolls sideways on its own instead of pushing the page out
+        // of shape. Every row is w-max min-w-full so the borders run the full scrolled width.
+        div(classes = "font-mono text-[13px] leading-relaxed overflow-x-auto") {
             StackTrace.fold(stacktrace, expandAll).forEach { chunk ->
                 when (chunk) {
                     is StackChunk.Text -> {
-                        div(classes = "px-4 py-2.5 border-b border-border last:border-b-0 whitespace-pre-wrap") {
+                        div(
+                            classes =
+                                "px-4 py-2.5 border-b border-border last:border-b-0 " +
+                                    "whitespace-pre w-max min-w-full",
+                        ) {
                             +chunk.text
                         }
                     }
@@ -57,7 +64,7 @@ fun FlowContent.stackTracePanel(
                         div(
                             classes =
                                 "px-4 py-2 border-b border-border last:border-b-0 " +
-                                    "border-l-[3px] border-l-primary",
+                                    "border-l-[3px] border-l-primary whitespace-pre w-max min-w-full",
                         ) {
                             +chunk.text
                         }
@@ -68,7 +75,7 @@ fun FlowContent.stackTracePanel(
                             classes =
                                 "px-4 py-2 border-b border-border last:border-b-0 " +
                                     "bg-foreground/3 text-muted-foreground flex items-center gap-2 " +
-                                    "cursor-pointer hover:text-foreground transition",
+                                    "cursor-pointer hover:text-foreground transition w-max min-w-full",
                         ) {
                             attributes.hx {
                                 get = framesHref(appId, groupId, all = true)

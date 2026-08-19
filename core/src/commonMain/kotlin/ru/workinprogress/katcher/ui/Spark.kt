@@ -81,7 +81,7 @@ object Spark {
             // A flat line rather than a row of zero-height bars: nothing arrived, and that
             // should look like nothing, not like a chart that failed to draw.
             unsafe {
-                +"""<svg width="$WIDTH" height="$HEIGHT" viewBox="0 0 $WIDTH $HEIGHT" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="$label"><line x1="0" y1="${HEIGHT - 0.5}" x2="$WIDTH" y2="${HEIGHT - 0.5}" stroke="currentColor" stroke-opacity="0.25" stroke-width="1"/></svg>"""
+                +"""<svg width="$WIDTH" height="$HEIGHT" viewBox="0 0 $WIDTH $HEIGHT" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="$label" style="max-width:100%;height:auto"><line x1="0" y1="${HEIGHT - 0.5}" x2="$WIDTH" y2="${HEIGHT - 0.5}" stroke="currentColor" stroke-opacity="0.25" stroke-width="1"/></svg>"""
             }
             return
         }
@@ -104,7 +104,7 @@ object Spark {
                 }.joinToString("")
 
         unsafe {
-            +"""<svg width="$WIDTH" height="$HEIGHT" viewBox="0 0 $WIDTH $HEIGHT" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="$label">$bars</svg>"""
+            +"""<svg width="$WIDTH" height="$HEIGHT" viewBox="0 0 $WIDTH $HEIGHT" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="$label" style="max-width:100%;height:auto">$bars</svg>"""
         }
     }
 }
