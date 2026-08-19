@@ -56,6 +56,9 @@ class ErrorGroupRepositoryImpl(
                         firstSeen = Clock.System.now().toEpochMilliseconds(),
                         lastSeen = Clock.System.now().toEpochMilliseconds(),
                         resolved = false,
+                        exceptionType = newGroup.exceptionType,
+                        message = newGroup.message,
+                        location = newGroup.location,
                     ),
                 ).getOrThrow()
                 .toDomain()
@@ -97,6 +100,30 @@ class ErrorGroupRepositoryImpl(
                     ).apply {
                         bind("id", groupId)
                         bind("resolved", true)
+                    },
+            )
+        }
+    }
+
+    override suspend fun markRegressed(
+        groupId: Long,
+        release: String?,
+        at: Long,
+    ) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        """
+                        UPDATE error_groups
+                        SET resolved = :resolved, regressed_at = :at, regressed_release = :release
+                        WHERE id = :id
+                        """.trimIndent(),
+                    ).apply {
+                        bind("id", groupId)
+                        bind("resolved", false)
+                        bind("at", at)
+                        bind("release", release)
                     },
             )
         }
@@ -236,6 +263,11 @@ data class ErrorGroupDb(
     val resolved: Boolean,
     val fixUrl: String? = null,
     val fixLinkedAt: Long? = null,
+    val exceptionType: String? = null,
+    val message: String? = null,
+    val location: String? = null,
+    val regressedAt: Long? = null,
+    val regressedRelease: String? = null,
 )
 
 fun ErrorGroupDb.toDomain() =
@@ -249,6 +281,11 @@ fun ErrorGroupDb.toDomain() =
         occurrences,
         resolved,
         fixUrl,
+        exceptionType,
+        message,
+        location,
+        regressedAt,
+        regressedRelease,
     )
 
 object ErrorGroupWithViewedRowMapper : RowMapper<ErrorGroupWithViewed> {

@@ -4,8 +4,8 @@ import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.resources.href
+import kotlinx.html.FlowContent
 import kotlinx.html.HTML
-import kotlinx.html.TR
 import kotlinx.html.body
 import kotlinx.html.div
 import kotlinx.html.h1
@@ -14,28 +14,28 @@ import kotlinx.html.head
 import kotlinx.html.id
 import kotlinx.html.p
 import kotlinx.html.pre
-import kotlinx.html.table
-import kotlinx.html.tbody
-import kotlinx.html.td
-import kotlinx.html.th
-import kotlinx.html.thead
+import kotlinx.html.span
 import kotlinx.html.title
-import kotlinx.html.tr
 import ru.workinprogress.feature.app.App
+import ru.workinprogress.feature.app.AppOverview
 import ru.workinprogress.feature.app.AppsResource
+import ru.workinprogress.feature.app.label
 import ru.workinprogress.feature.error.ErrorGroupsPaginated
 import ru.workinprogress.feature.report.ErrorGroupSort
 import ru.workinprogress.feature.report.ErrorGroupSortOrder
+import ru.workinprogress.feature.report.GroupActivity
 import ru.workinprogress.katcher.ui.ButtonSize
 import ru.workinprogress.katcher.ui.ButtonVariant
 import ru.workinprogress.katcher.ui.Icons.bug
-import ru.workinprogress.katcher.ui.Icons.check
+import ru.workinprogress.katcher.ui.Spark.sparkBars
 import ru.workinprogress.katcher.ui.commonHead
 import ru.workinprogress.katcher.ui.uiButton
-import ru.workinprogress.katcher.utils.human
 
 context(call: ApplicationCall)
-fun HTML.appErrorsPage(app: App) {
+fun HTML.appErrorsPage(
+    app: App,
+    overview: AppOverview,
+) {
     head {
         title("Errors — ${app.name}")
         commonHead()
@@ -43,25 +43,46 @@ fun HTML.appErrorsPage(app: App) {
 
     body(classes = "bg-background text-foreground min-h-screen") {
         div(classes = "mx-auto max-w-5xl p-6 space-y-6") {
-            uiButton(
-                variant = ButtonVariant.Outline,
-                size = ButtonSize.Sm,
-            ) {
-                attributes.hx {
-                    get = call.application.href(AppsResource())
-                    pushUrl = "true"
-                    target = "body"
-                    swap = HxSwap.outerHtml
+            div(classes = "flex items-center justify-between gap-4 flex-wrap") {
+                div(classes = "flex items-center gap-3.5 min-w-0") {
+                    uiButton(
+                        variant = ButtonVariant.Outline,
+                        size = ButtonSize.Sm,
+                    ) {
+                        attributes.hx {
+                            get = call.application.href(AppsResource())
+                            pushUrl = "true"
+                            target = "body"
+                            swap = HxSwap.outerHtml
+                        }
+                        +"← Apps"
+                    }
+
+                    h1(classes = "text-2xl font-semibold tracking-tight truncate") { +app.name }
+
+                    span(
+                        classes =
+                            "text-[10px] font-semibold tracking-[0.08em] uppercase px-1.5 py-0.5 " +
+                                "border border-border text-muted-foreground flex-none",
+                    ) { +app.type.label }
                 }
-                +"← Back"
+
+                div(classes = "flex items-center gap-2.5") {
+                    div(classes = "flex items-baseline gap-1.5") {
+                        span(classes = "text-xl font-semibold tabular-nums") { +overview.crashes24h.toString() }
+                        span(classes = "text-xs uppercase tracking-[0.06em] text-muted-foreground") {
+                            +"crashes / 24h"
+                        }
+                    }
+
+                    div(classes = "text-muted-foreground") {
+                        sparkBars(overview.dailyCrashes, "crashes per day, last ${AppOverview.DAYS} days")
+                    }
+                }
             }
 
-            h1(classes = "text-3xl font-bold tracking-tight") { +app.name }
-
             div(
-                classes =
-                    "bg-card text-card-foreground shadow-lg p-4 rounded-xl " +
-                        "border border-border",
+                classes = "bg-card text-card-foreground border border-border",
             ) {
                 id = "errors-table"
 
@@ -84,6 +105,8 @@ context(call: ApplicationCall)
 fun HTML.errorsTableFragment(
     appId: Int,
     data: ErrorGroupsPaginated,
+    activity: Map<Long, GroupActivity>,
+    now: Long,
 ) {
     body {
         if (data.items.isEmpty()) {
@@ -97,11 +120,14 @@ fun HTML.errorsTableFragment(
                 }
 
                 h2(classes = "text-xl font-semibold") {
-                    +"No errors yet"
+                    +"Nothing has arrived yet"
                 }
 
                 p(classes = "text-muted-foreground max-w-sm") {
-                    +"Init Katcher in your application and start sending errors to see them here."
+                    +(
+                        "Either nothing is crashing, or reports are not reaching this key. " +
+                            "Send one on purpose to check the pipe."
+                    )
                 }
 
                 pre(
@@ -121,62 +147,19 @@ fun HTML.errorsTableFragment(
         }
 
         if (data.items.isNotEmpty()) {
-            table(classes = "w-full min-w-max") {
-                thead(classes = "bg-muted text-muted-foreground border-b border-border") {
-                    tr {
-                        th(classes = "p-2 w-8") { }
+            div(
+                classes =
+                    "flex items-center gap-3 px-4 py-2 border-b border-border " +
+                        "text-[11px] tracking-[0.08em] uppercase text-muted-foreground",
+            ) {
+                sortCell(appId, ErrorGroupSort.title, "Error", data, "flex-1 min-w-0")
+                span(classes = "w-26 flex-none") { +"Trend" }
+                sortCell(appId, ErrorGroupSort.occurrences, "Count", data, "w-16 flex-none text-right")
+                sortCell(appId, ErrorGroupSort.lastSeen, "Last seen", data, "w-26 flex-none text-right")
+            }
 
-                        headerCell(appId, ErrorGroupSort.title, "Message", data)
-                        headerCell(appId, ErrorGroupSort.occurrences, "Count", data)
-                        headerCell(
-                            appId,
-                            ErrorGroupSort.lastSeen,
-                            "Last seen",
-                            data,
-                            extraClasses = "w-[130px] min-w-[130px] whitespace-nowrap",
-                        )
-                    }
-                }
-
-                tbody {
-                    data.items.forEach { group ->
-
-                        tr(
-                            classes =
-                                "${if (group.viewed) "text-foreground/60" else ""} " +
-                                    "border-b border-border cursor-pointer " +
-                                    "hover:bg-accent hover:text-accent-foreground transition",
-                        ) {
-                            attributes.hx {
-                                get =
-                                    call.application.href(
-                                        AppsResource.AppId.Errors.GroupId(
-                                            parent = AppsResource.AppId.Errors(appId = appId),
-                                            groupId = group.errorGroup.id,
-                                        ),
-                                    )
-                                pushUrl = "true"
-                                target = "body"
-                                swap = HxSwap.outerHtml
-                            }
-
-                            td(classes = "w-8 h-8 align-middle text-center") {
-                                if (group.errorGroup.resolved) {
-                                    div("inline-flex items-center justify-center w-6 h-6 text-muted-foreground") {
-                                        check()
-                                    }
-                                }
-                            }
-                            td(classes = "p-2 whitespace-normal break-words max-w-[300px]") {
-                                +group.errorGroup.title
-                            }
-                            td(classes = "p-2") { text(group.errorGroup.occurrences) }
-                            td(classes = "p-2 w-[130px] min-w-[130px] whitespace-nowrap") {
-                                +group.errorGroup.lastSeen.human()
-                            }
-                        }
-                    }
-                }
+            data.items.forEach { item ->
+                errorRow(appId, item, activity[item.errorGroup.id], now)
             }
         }
 
@@ -222,19 +205,17 @@ fun HTML.errorsTableFragment(
     }
 }
 
+/** A column header that is also the sort link — the sort lives in the URL, not on the client. */
 context(call: ApplicationCall)
-fun TR.headerCell(
+fun FlowContent.sortCell(
     appId: Int,
     field: ErrorGroupSort,
     label: String,
     data: ErrorGroupsPaginated,
-    extraClasses: String = "",
+    extraClasses: String,
 ) {
-    th(
-        classes =
-            "p-2 text-left cursor-pointer " +
-                "hover:bg-accent hover:text-accent-foreground transition " +
-                extraClasses,
+    span(
+        classes = "cursor-pointer hover:text-foreground transition $extraClasses",
     ) {
         attributes.hx {
             get =
@@ -243,9 +224,7 @@ fun TR.headerCell(
                         parent = AppsResource.AppId.Errors(appId = appId),
                         sortBy = field,
                         sortOrder =
-                            if (data.sortBy == field &&
-                                data.sortOrder == ErrorGroupSortOrder.asc
-                            ) {
+                            if (data.sortBy == field && data.sortOrder == ErrorGroupSortOrder.asc) {
                                 ErrorGroupSortOrder.desc
                             } else {
                                 ErrorGroupSortOrder.asc
@@ -256,6 +235,12 @@ fun TR.headerCell(
             swap = HxSwap.innerHtml
         }
 
-        +label
+        if (data.sortBy == field) {
+            span(classes = "text-foreground") {
+                +(label + if (data.sortOrder == ErrorGroupSortOrder.desc) " ↓" else " ↑")
+            }
+        } else {
+            +label
+        }
     }
 }

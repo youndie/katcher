@@ -26,6 +26,17 @@ interface ErrorGroupRepository {
 
     suspend fun resolve(groupId: Long)
 
+    /**
+     * A report arrived for a group somebody had already marked resolved. The flag is cleared
+     * — a bug that is back is not fixed — and the release it came back in is recorded, so the
+     * row can say which one.
+     */
+    suspend fun markRegressed(
+        groupId: Long,
+        release: String?,
+        at: Long,
+    )
+
     /** Records the pull request an agent reported as fixing this group. */
     suspend fun linkFix(
         groupId: Long,

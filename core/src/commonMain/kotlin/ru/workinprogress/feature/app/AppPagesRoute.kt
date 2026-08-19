@@ -57,8 +57,16 @@ fun Route.appPagesRoute(
     }
 
     get<AppsResource.AppId> { resource ->
-        val app = appRepository.findById(resource.appId) ?: return@get call.respond(HttpStatusCode.NotFound)
+        withUserId { userId ->
+            val app =
+                appRepository.findById(resource.appId)
+                    ?: return@withUserId call.respond(HttpStatusCode.NotFound)
 
-        call.respondHtml { context(call) { appErrorsPage(app) } }
+            val now = Clock.System.now().toEpochMilliseconds()
+            val overview =
+                appOverviewRepository.overview(userId, now)[app.id] ?: AppOverview.silent(app.id)
+
+            call.respondHtml { context(call) { appErrorsPage(app, overview) } }
+        }
     }
 }

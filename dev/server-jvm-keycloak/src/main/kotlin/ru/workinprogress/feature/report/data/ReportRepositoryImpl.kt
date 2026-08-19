@@ -13,6 +13,7 @@ import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import ru.workinprogress.feature.report.CreateReportParams
+import ru.workinprogress.feature.report.GroupActivity
 import ru.workinprogress.feature.report.Report
 import ru.workinprogress.feature.report.ReportRepository
 import ru.workinprogress.feature.report.ReportsPaginated
@@ -94,6 +95,74 @@ class ReportRepositoryImpl : ReportRepository {
                 )
             }
         }
+
+    override suspend fun activity(
+        groupIds: List<Long>,
+        now: Long,
+        days: Int,
+    ): Map<Long, GroupActivity> {
+        if (groupIds.isEmpty()) return emptyMap()
+
+        val ids = groupIds.joinToString(",")
+        val dayMillis = 24L * 60 * 60 * 1000
+        val windowStart = now - days * dayMillis
+
+        return withContext(Dispatchers.IO) {
+            transaction {
+                val buckets = mutableMapOf<Long, MutableList<Int>>()
+                exec(
+                    """
+                    SELECT group_id,
+                           CAST(($now - timestamp) / $dayMillis AS INTEGER) AS days_ago,
+                           COUNT(*) AS crashes
+                    FROM reports
+                    WHERE group_id IN ($ids) AND timestamp >= $windowStart AND timestamp <= $now
+                    GROUP BY group_id, days_ago
+                    """.trimIndent(),
+                ) { rows ->
+                    while (rows.next()) {
+                        val daysAgo = rows.getInt("days_ago")
+                        if (daysAgo in 0 until days) {
+                            val series =
+                                buckets.getOrPut(rows.getLong("group_id")) { MutableList(days) { 0 } }
+                            series[days - 1 - daysAgo] = rows.getInt("crashes")
+                        }
+                    }
+                }
+
+                val activity = mutableMapOf<Long, GroupActivity>()
+                exec(
+                    """
+                    SELECT group_id,
+                           MIN(release) AS first_release,
+                           MAX(release) AS last_release,
+                           MIN(environment) AS first_environment,
+                           MAX(environment) AS last_environment
+                    FROM reports
+                    WHERE group_id IN ($ids)
+                    GROUP BY group_id
+                    """.trimIndent(),
+                ) { rows ->
+                    while (rows.next()) {
+                        val groupId = rows.getLong("group_id")
+                        val firstEnvironment = rows.getString("first_environment")
+                        val lastEnvironment = rows.getString("last_environment")
+
+                        activity[groupId] =
+                            GroupActivity(
+                                groupId = groupId,
+                                dailyCrashes = buckets[groupId] ?: List(days) { 0 },
+                                environment = firstEnvironment.takeIf { it == lastEnvironment },
+                                firstRelease = rows.getString("first_release"),
+                                lastRelease = rows.getString("last_release"),
+                            )
+                    }
+                }
+
+                activity
+            }
+        }
+    }
 
     override suspend fun getReportById(reportId: Long): Report? =
         withContext(Dispatchers.IO) {
