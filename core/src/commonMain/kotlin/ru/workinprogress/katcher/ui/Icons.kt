@@ -6,38 +6,46 @@ import kotlinx.html.HTMLTag
 import kotlinx.html.unsafe
 
 object Icons {
-    fun HTMLTag.logo() =
+    /**
+     * The mark: a lit bomb on a 16×16 grid, drawn as whole pixels.
+     *
+     * Sized in multiples of 16 wherever it appears — at 40 or 56 the grid lands on half
+     * pixels and the edges blur, which is the one thing pixel art cannot survive. The body
+     * follows the text colour so the same file works in both themes; only the lit fuse is
+     * coloured, and it is the primary red the interface already uses for "this is burning".
+     */
+    fun HTMLTag.logo(size: Int = 48) =
         unsafe {
-            +"""<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-        <linearGradient id="katcher_grad" x1="10" y1="10" x2="54" y2="54" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stop-color="#7F52FF"/> <stop offset="100%" stop-color="#00C2FF"/> </linearGradient>
-        <filter id="soft_shadow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur in="SourceAlpha" stdDeviation="1" result="blur"/>
-            <feOffset in="blur" dx="0" dy="1" result="offsetBlur"/>
-            <feFlood flood-color="#000000" flood-opacity="0.2" result="offsetColor"/>
-            <feComposite in="offsetColor" in2="offsetBlur" operator="in" result="offsetBlur"/>
-            <feMerge>
-                <feMergeNode in="offsetBlur"/>
-                <feMergeNode in="SourceGraphic"/>
-            </feMerge>
-        </filter>
-    </defs>
-    
-    <g filter="url(#soft_shadow)">
-        <path d="M14 12C14 9.79086 15.7909 8 18 8H30L42 26L32 26L14 12Z" fill="url(#katcher_grad)"/>
-        
-        <path d="M14 24L30 36H44L52 48C53.1046 49.6569 51.9176 52 49.9282 52H18C15.7909 52 14 50.2091 14 48V24Z" fill="url(#katcher_grad)"/>
-    </g>
+            +"""<svg width="$size" height="$size" viewBox="0 0 16 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Katcher">
+    <rect x="5" y="6" width="6" height="1" fill="currentColor"/>
+    <rect x="4" y="7" width="8" height="1" fill="currentColor"/>
+    <rect x="3" y="8" width="10" height="3" fill="currentColor"/>
+    <rect x="4" y="11" width="8" height="1" fill="currentColor"/>
+    <rect x="5" y="12" width="6" height="1" fill="currentColor"/>
+    <rect x="5" y="8" width="1" height="1" fill="var(--color-background)"/>
+    <rect x="9" y="4" width="1" height="2" fill="currentColor"/>
+    <rect x="10" y="3" width="1" height="1" fill="var(--color-primary)"/>
+    <rect x="11" y="2" width="2" height="1" fill="var(--color-primary)"/>
+    <rect x="12" y="1" width="1" height="1" fill="var(--color-primary)"/>
 </svg>"""
         }
 
-    fun HTMLTag.logoMonochrome() =
+    /**
+     * One colour, spark included — for anywhere the tokens do not reach: a favicon, an embed,
+     * a foreign page.
+     */
+    fun HTMLTag.logoMonochrome(size: Int = 48) =
         unsafe {
-            +"""<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M14 12C14 9.79086 15.7909 8 18 8H30L42 26L32 26L14 12Z" fill="currentColor"/>
-    
-    <path d="M14 24L30 36H44L52 48C53.1046 49.6569 51.9176 52 49.9282 52H18C15.7909 52 14 50.2091 14 48V24Z" fill="currentColor"/>
+            +"""<svg width="$size" height="$size" viewBox="0 0 16 16" shape-rendering="crispEdges" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Katcher">
+    <rect x="5" y="6" width="6" height="1" fill="currentColor"/>
+    <rect x="4" y="7" width="8" height="1" fill="currentColor"/>
+    <rect x="3" y="8" width="10" height="3" fill="currentColor"/>
+    <rect x="4" y="11" width="8" height="1" fill="currentColor"/>
+    <rect x="5" y="12" width="6" height="1" fill="currentColor"/>
+    <rect x="9" y="4" width="1" height="2" fill="currentColor"/>
+    <rect x="10" y="3" width="1" height="1" fill="currentColor"/>
+    <rect x="11" y="2" width="2" height="1" fill="currentColor"/>
+    <rect x="12" y="1" width="1" height="1" fill="currentColor"/>
 </svg>"""
         }
 
