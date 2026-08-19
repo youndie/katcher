@@ -7,7 +7,6 @@ data class App(
     val id: Int,
     val name: String,
     val type: AppType,
-    val apiKey: String,
 )
 
 enum class AppType {

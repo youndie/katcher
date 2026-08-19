@@ -108,6 +108,30 @@ private val migrationV6 =
         """CREATE INDEX IF NOT EXISTS idx_reports_group_release ON reports(group_id, release);""",
     )
 
+private val migrationV7 =
+    listOf(
+        // Keys move out of the apps row: an app can have more than one alive so a reissue does
+        // not cut off builds already in the field, and each key remembers when it was last
+        // used — which is what makes revoking the old one a decision rather than a guess.
+        """CREATE TABLE app_keys (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+app_id INTEGER NOT NULL,
+api_key TEXT NOT NULL,
+created_at BIGINT NOT NULL,
+last_used_at BIGINT NULL,
+revoked_at BIGINT NULL,
+FOREIGN KEY (app_id) REFERENCES apps(id) ON DELETE CASCADE
+);""",
+        """CREATE UNIQUE INDEX app_keys_api_key ON app_keys(api_key);""",
+        """CREATE INDEX app_keys_app_id ON app_keys(app_id);""",
+        // Zero rather than a made-up date: nobody recorded when these were issued.
+        """INSERT INTO app_keys (app_id, api_key, created_at) SELECT id, api_key, 0 FROM apps;""",
+        // The column goes, index first — SQLite refuses to drop an indexed column. Leaving a
+        // second copy of every key in a table nothing writes to is how it goes stale in secret.
+        """DROP INDEX apps_api_key;""",
+        """ALTER TABLE apps DROP COLUMN api_key;""",
+    )
+
 val allMigrations =
     listOf(
         migrationV1,
@@ -116,6 +140,7 @@ val allMigrations =
         migrationV4,
         migrationV5,
         migrationV6,
+        migrationV7,
     )
 
 suspend fun ISQLite.migrateDb() {

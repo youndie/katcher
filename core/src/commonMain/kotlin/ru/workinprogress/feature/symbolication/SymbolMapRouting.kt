@@ -15,13 +15,13 @@ import okio.Buffer
 import okio.Sink
 import okio.blackholeSink
 import okio.use
-import ru.workinprogress.feature.app.AppRepository
+import ru.workinprogress.feature.app.AppKeyRepository
 import ru.workinprogress.retrace.MappingFileStorage
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 fun Route.symbolMapRouting(
-    appRepository: AppRepository,
+    appKeyRepository: AppKeyRepository,
     fileStorage: MappingFileStorage,
     symbolMapRepository: SymbolMapRepository,
     serverConfig: ru.workinprogress.katcher.ServerConfig,
@@ -79,14 +79,14 @@ fun Route.symbolMapRouting(
                         }
 
                         println("SymbolMapRouting - Looking up app with apiKey: $appKey")
-                        val app =
-                            appRepository.findByApiKey(appKey)
+                        val key =
+                            appKeyRepository.findActiveByKey(appKey)
                                 ?: return@post call.respond(HttpStatusCode.Unauthorized).also {
                                     println("SymbolMapRouting - App not found or unauthorized")
                                 }
 
-                        println("SymbolMapRouting - Found app with id: ${app.id}")
-                        val path = "${serverConfig.sourceMapPath}/${app.id}/$buildUuid.txt"
+                        println("SymbolMapRouting - Found app with id: ${key.appId}")
+                        val path = "${serverConfig.sourceMapPath}/${key.appId}/$buildUuid.txt"
                         println("SymbolMapRouting - Writing mapping file to: $path")
 
                         fileStorage.write(path) { fileSink ->
@@ -98,7 +98,7 @@ fun Route.symbolMapRouting(
                         val id =
                             symbolMapRepository.save(
                                 SymbolMap(
-                                    appId = app.id,
+                                    appId = key.appId,
                                     buildUuid = buildUuid,
                                     type = type,
                                     filePath = path,

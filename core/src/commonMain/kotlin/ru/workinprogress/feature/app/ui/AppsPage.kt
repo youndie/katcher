@@ -18,6 +18,7 @@ import kotlinx.html.p
 import kotlinx.html.span
 import kotlinx.html.title
 import ru.workinprogress.feature.app.App
+import ru.workinprogress.feature.app.AppKey
 import ru.workinprogress.feature.app.AppOverview
 import ru.workinprogress.feature.app.AppsResource
 import ru.workinprogress.katcher.ui.ButtonVariant
@@ -31,6 +32,7 @@ context(call: ApplicationCall)
 fun HTML.appsPage(
     apps: List<App>,
     overviews: Map<Int, AppOverview>,
+    keys: Map<Int, List<AppKey>>,
     now: Long,
 ) {
     head {
@@ -48,11 +50,7 @@ fun HTML.appsPage(
                     logo()
                     h1(classes = "text-2xl lg:text-3xl font-semibold") { +"katcher" }
 
-                    if (apps.isNotEmpty()) {
-                        span(classes = "text-[13px] font-mono text-muted-foreground pt-1") {
-                            +appsSummary(apps, overviews)
-                        }
-                    }
+                    appsSummaryFragment(apps, overviews)
                 }
 
                 uiButton(variant = ButtonVariant.Outline) {
@@ -79,7 +77,12 @@ fun HTML.appsPage(
                     )
 
                 apps.forEach { app ->
-                    appCard(app, overviews[app.id] ?: AppOverview.silent(app.id), now)
+                    appCard(
+                        app = app,
+                        overview = overviews[app.id] ?: AppOverview.silent(app.id),
+                        keys = keys[app.id].orEmpty(),
+                        now = now,
+                    )
                 }
             }
 
@@ -93,6 +96,7 @@ fun HTML.appsPage(
 context(call: ApplicationCall)
 fun FlowContent.onAppCreated(
     app: App,
+    keys: List<AppKey>,
     now: Long,
 ) {
     div {
@@ -102,7 +106,7 @@ fun FlowContent.onAppCreated(
 
         // A card created a second ago has nothing behind it yet; the silent overview is the
         // honest one, and it renders as "never reported".
-        appCard(app, AppOverview.silent(app.id), now)
+        appCard(app, AppOverview.silent(app.id), keys, now)
     }
 
     div {
@@ -149,8 +153,24 @@ private fun FlowContent.emptyAppsView() {
 }
 
 /**
- * The line next to the logo. Quiet is counted, not coloured: it belongs in the same sentence
- * as the total, so a list of silent apps reads as a fact rather than as an alarm.
+ * The line next to the logo, as a fragment: deleting an app changes the count, and the count
+ * lives outside the card that went away, so the answer corrects it out of band.
+ */
+fun FlowContent.appsSummaryFragment(
+    apps: List<App>,
+    overviews: Map<Int, AppOverview>,
+) {
+    span(classes = "text-[13px] font-mono text-muted-foreground pt-1") {
+        id = "apps-summary"
+        attributes.hx { swapOob = "true" }
+
+        if (apps.isNotEmpty()) +appsSummary(apps, overviews)
+    }
+}
+
+/**
+ * Quiet is counted, not coloured: it belongs in the same sentence as the total, so a list of
+ * silent apps reads as a fact rather than as an alarm.
  */
 private fun appsSummary(
     apps: List<App>,

@@ -15,7 +15,7 @@ fun Route.pagesRoute() {
             call.respondRedirect("/apps")
         }
 
-        appPagesRoute(get(), get())
+        appPagesRoute(get(), get(), get())
         errorGroupPagesRoute(get(), get(), get())
         reportsPagesRoute(get(), get())
     }

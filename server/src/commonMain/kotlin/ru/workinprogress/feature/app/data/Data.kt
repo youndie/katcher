@@ -13,9 +13,13 @@ import io.github.smyrgeorge.sqlx4k.annotation.Table
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asIntOrNull
+import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asLongOrNull
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 import ru.workinprogress.feature.app.App
+import ru.workinprogress.feature.app.AppContents
+import ru.workinprogress.feature.app.AppKey
+import ru.workinprogress.feature.app.AppKeyRepository
 import ru.workinprogress.feature.app.AppOverview
 import ru.workinprogress.feature.app.AppOverviewRepository
 import ru.workinprogress.feature.app.AppRepository
@@ -28,7 +32,6 @@ data class AppDb(
     @Id(insert = false)
     val id: Int,
     val name: String,
-    val apiKey: String,
     val type: String,
 )
 
@@ -39,14 +42,13 @@ object AppRowMapper : RowMapper<AppDb> {
     ): AppDb {
         val id: ResultSet.Row.Column = row.get("id")
         val name: ResultSet.Row.Column = row.get("name")
-        val apiKey: ResultSet.Row.Column = row.get("api_key")
         val type: ResultSet.Row.Column = row.get("type")
 
-        return AppDb(id = id.asInt(), name = name.asString(), apiKey = apiKey.asString(), type = type.asString())
+        return AppDb(id = id.asInt(), name = name.asString(), type = type.asString())
     }
 }
 
-fun AppDb.toDomain() = App(id = id, name = name, apiKey = apiKey, type = AppType.valueOf(type))
+fun AppDb.toDomain() = App(id = id, name = name, type = AppType.valueOf(type))
 
 @OptIn(ExperimentalUuidApi::class)
 class AppRepositoryImpl(
@@ -58,20 +60,59 @@ class AppRepositoryImpl(
         type: AppType,
     ): App =
         TransactionContext.withCurrent(db) {
-            val apiKey = Uuid.random().toString().replace("-", "")
-
             crudRepository
-                .insert(this, AppDb(id = 0, name = name, apiKey = apiKey, type = type.name))
+                .insert(this, AppDb(id = 0, name = name, type = type.name))
                 .getOrThrow()
                 .toDomain()
         }
 
-    override suspend fun findByApiKey(apiKey: String): App? =
+    override suspend fun rename(
+        id: Int,
+        name: String,
+    ) {
         TransactionContext.withCurrent(db) {
-            crudRepository
-                .findOneByApiKey(this, apiKey)
-                .getOrNull()
-                ?.toDomain()
+            execute(
+                Statement
+                    .create("UPDATE apps SET name = :name WHERE id = :id")
+                    .apply {
+                        bind("id", id)
+                        bind("name", name)
+                    },
+            )
+        }
+    }
+
+    override suspend fun delete(id: Int) {
+        TransactionContext.withCurrent(db) {
+            // Order matters: the foreign keys are RESTRICT, so each table has to be empty
+            // before the one it points at.
+            listOf(
+                "DELETE FROM user_error_group_viewed WHERE group_id IN (SELECT id FROM error_groups WHERE app_id = :id)",
+                "DELETE FROM reports WHERE app_id = :id",
+                "DELETE FROM error_groups WHERE app_id = :id",
+                "DELETE FROM symbol_maps WHERE app_id = :id",
+                "DELETE FROM app_keys WHERE app_id = :id",
+                "DELETE FROM apps WHERE id = :id",
+            ).forEach { sql ->
+                execute(Statement.create(sql).apply { bind("id", id) })
+            }
+        }
+    }
+
+    override suspend fun contents(id: Int): AppContents =
+        TransactionContext.withCurrent(db) {
+            suspend fun count(sql: String): Int =
+                fetchAll(Statement.create(sql).apply { bind("id", id) })
+                    .getOrThrow()
+                    .rows
+                    .first()
+                    .get("c")
+                    .asInt()
+
+            AppContents(
+                groups = count("SELECT COUNT(*) AS c FROM error_groups WHERE app_id = :id"),
+                reports = count("SELECT COUNT(*) AS c FROM reports WHERE app_id = :id"),
+            )
         }
 
     override suspend fun findAll(): List<App> =
@@ -91,12 +132,6 @@ interface AppsCrudRepository : CrudRepository<AppDb> {
     suspend fun findOneById(
         context: QueryExecutor,
         id: Int,
-    ): Result<AppDb?>
-
-    @Query("SELECT * FROM apps WHERE api_key = :apiKey")
-    suspend fun findOneByApiKey(
-        context: QueryExecutor,
-        apiKey: String,
     ): Result<AppDb?>
 
     @Query("SELECT * FROM apps")
@@ -202,3 +237,111 @@ class AppOverviewRepositoryImpl(
         const val DAY_MILLIS = 24L * 60 * 60 * 1000
     }
 }
+
+@OptIn(ExperimentalUuidApi::class)
+class AppKeyRepositoryImpl(
+    private val db: ISQLite,
+) : AppKeyRepository {
+    override suspend fun findActiveByKey(key: String): AppKey? =
+        TransactionContext.withCurrent(db) {
+            fetchAll(
+                Statement
+                    .create("SELECT * FROM app_keys WHERE api_key = :key AND revoked_at IS NULL LIMIT 1")
+                    .apply { bind("key", key) },
+            ).getOrThrow()
+                .rows
+                .firstOrNull()
+                ?.toAppKey()
+        }
+
+    override suspend fun listByApp(appId: Int): List<AppKey> =
+        TransactionContext.withCurrent(db) {
+            fetchAll(
+                Statement
+                    .create("SELECT * FROM app_keys WHERE app_id = :appId ORDER BY id DESC")
+                    .apply { bind("appId", appId) },
+            ).getOrThrow()
+                .rows
+                .map { row -> row.toAppKey() }
+        }
+
+    override suspend fun listAll(): Map<Int, List<AppKey>> =
+        TransactionContext.withCurrent(db) {
+            fetchAll(Statement.create("SELECT * FROM app_keys ORDER BY id DESC"))
+                .getOrThrow()
+                .rows
+                .map { row -> row.toAppKey() }
+                .groupBy { key -> key.appId }
+        }
+
+    override suspend fun issue(
+        appId: Int,
+        at: Long,
+    ): AppKey =
+        TransactionContext.withCurrent(db) {
+            val key = Uuid.random().toString().replace("-", "")
+
+            execute(
+                Statement
+                    .create(
+                        """
+                        INSERT INTO app_keys (app_id, api_key, created_at)
+                        VALUES (:appId, :key, :createdAt)
+                        """.trimIndent(),
+                    ).apply {
+                        bind("appId", appId)
+                        bind("key", key)
+                        bind("createdAt", at)
+                    },
+            )
+
+            fetchAll(
+                Statement.create("SELECT * FROM app_keys WHERE api_key = :key").apply { bind("key", key) },
+            ).getOrThrow()
+                .rows
+                .first()
+                .toAppKey()
+        }
+
+    override suspend fun revoke(
+        id: Long,
+        at: Long,
+    ) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create("UPDATE app_keys SET revoked_at = :at WHERE id = :id AND revoked_at IS NULL")
+                    .apply {
+                        bind("id", id)
+                        bind("at", at)
+                    },
+            )
+        }
+    }
+
+    override suspend fun markUsed(
+        id: Long,
+        at: Long,
+    ) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create("UPDATE app_keys SET last_used_at = :at WHERE id = :id")
+                    .apply {
+                        bind("id", id)
+                        bind("at", at)
+                    },
+            )
+        }
+    }
+}
+
+private fun ResultSet.Row.toAppKey() =
+    AppKey(
+        id = get("id").asLong(),
+        appId = get("app_id").asInt(),
+        key = get("api_key").asString(),
+        createdAt = get("created_at").asLong(),
+        lastUsedAt = get("last_used_at").asLongOrNull(),
+        revokedAt = get("revoked_at").asLongOrNull(),
+    )
