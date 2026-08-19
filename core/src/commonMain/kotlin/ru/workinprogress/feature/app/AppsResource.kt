@@ -22,6 +22,71 @@ class AppsResource {
             }
         }
 
+        /** The ⋯ menu of one card. Open and closed are two responses, not a class toggle. */
+        @Resource("menu")
+        class Menu(
+            val parent: AppId,
+            val open: Boolean = true,
+        ) {
+            companion object {
+                operator fun invoke(
+                    appId: Int,
+                    open: Boolean = true,
+                ) = Menu(AppId(appId), open)
+            }
+        }
+
+        @Resource("rename")
+        class Rename(
+            val parent: AppId,
+        ) {
+            companion object {
+                operator fun invoke(appId: Int) = Rename(AppId(appId))
+            }
+        }
+
+        /** POST issues a key; the dialog that asks first is [Reissue]. */
+        @Resource("keys")
+        class Keys(
+            val parent: AppId,
+        ) {
+            companion object {
+                operator fun invoke(appId: Int) = Keys(AppId(appId))
+            }
+
+            @Resource("{keyId}/revoke")
+            class Revoke(
+                val parent: Keys,
+                val keyId: Long,
+            ) {
+                companion object {
+                    operator fun invoke(
+                        appId: Int,
+                        keyId: Long,
+                    ) = Revoke(Keys(AppId(appId)), keyId)
+                }
+            }
+        }
+
+        @Resource("reissue")
+        class Reissue(
+            val parent: AppId,
+        ) {
+            companion object {
+                operator fun invoke(appId: Int) = Reissue(AppId(appId))
+            }
+        }
+
+        /** GET asks, DELETE does it. */
+        @Resource("delete")
+        class Delete(
+            val parent: AppId,
+        ) {
+            companion object {
+                operator fun invoke(appId: Int) = Delete(AppId(appId))
+            }
+        }
+
         @Resource("errors")
         class Errors(
             val parent: AppId,

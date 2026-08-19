@@ -57,7 +57,7 @@ fun Route.pagesRoute() {
             call.respondRedirect("/apps")
         }
         runBlocking {
-            appPagesRoute(dependencies.resolve(), dependencies.resolve())
+            appPagesRoute(dependencies.resolve(), dependencies.resolve(), dependencies.resolve())
             errorGroupPagesRoute(
                 dependencies.resolve(),
                 dependencies.resolve(),
