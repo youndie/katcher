@@ -5,7 +5,7 @@ on:
 
 jobs:
   linux-image:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64, wsl]
     steps:
       - name: Checkout sources
         uses: actions/checkout@v7
