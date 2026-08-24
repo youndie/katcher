@@ -1,5 +1,5 @@
 # ---------- Stage 1 : Build ----------
-FROM --platform=linux/amd64 gradle:9.7.0-jdk25-noble AS build
+FROM --platform=linux/amd64 gradle:9.7.1-jdk25-noble AS build
 
 WORKDIR /app
 COPY . .
