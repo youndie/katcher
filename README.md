@@ -207,6 +207,14 @@ dependencies {
 }
 ```
 
+The client publishes for JVM, `linuxX64`, `linuxArm64`, `macosX64`, `macosArm64`, `mingwX64`, `iosArm64`,
+`iosSimulatorArm64` and `iosX64` — the same set in every release, whatever machine cut it. Android has its
+own coordinate, see [Android integration](#android-integration).
+
+The client brings no HTTP engine of its own: pick the one your platform has. `ktor-client-cio` works on JVM
+and on the Linux targets, `ktor-client-darwin` is the engine for iOS and macOS. Without an engine on the
+classpath `Katcher.start()` builds fine and then fails at the first upload.
+
 ### Configuration
 
 Configuration
@@ -232,6 +240,39 @@ fun main() {
     // Your app logic...
 }
 ```
+
+### Compose Multiplatform and iOS
+
+Call `Katcher.start {}` from common code — the same call that installs `Thread.UncaughtExceptionHandler`
+on the JVM installs Kotlin/Native's `setUnhandledExceptionHook` on Apple targets, and chains to whatever
+hook was there before, so an existing handler still runs and the process still terminates the way it did.
+
+```kotlin
+// iosMain
+fun initKatcher() {
+    Katcher.start {
+        remoteHost = "https://katcher.example.com"
+        appKey = "<YOUR_APP_KEY>"
+        release = "1.0.0"
+        environment = "Production"
+    }
+}
+```
+
+with `implementation("io.ktor:ktor-client-darwin:$ktor_version")` in the same source set.
+
+Two things are worth knowing before you rely on it:
+
+- **What the hook sees.** Kotlin exceptions that reach the runtime uncaught. Crashes that never pass through
+  the Kotlin runtime — `SIGSEGV`, an `NSException` raised in Swift or Objective-C, a watchdog termination —
+  are invisible to it, and still need Apple's own crash reports.
+- **Where a report waits.** Reports are written to `$HOME/Library/Caches/katcher_cache` inside the app
+  sandbox — a crash at launch, before the upload coroutine ever runs, is delivered on the next launch
+  instead of being lost. On Linux and Windows the directory stays `.katcher_cache` next to the working
+  directory.
+
+The server symbolicates Android R8 mappings; an iOS stack trace arrives the way Kotlin/Native prints it,
+with no dSYM step.
 
 ### Breadcrumbs (Activity Tracking)
 

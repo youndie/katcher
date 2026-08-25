@@ -17,6 +17,12 @@ required in production). Client is a KMP library apps embed to capture and uploa
 - `client/` — the crash-reporting library consumers embed (`ru.workinprogress.katcher:client`).
   `commonMain/Katcher.kt` is the public API (`Katcher.start {}`, `Katcher.catch()`, `Katcher.addBreadcrumb()`).
   Platform-specific `expect/actual`: `setupPlatformHandler()`, `fileSystem` (`KatcherFileSystem`).
+  `client/` and `shared/` list their targets explicitly (JVM, both Linux, both macOS, three iOS, mingw)
+  — unlike `server/` and `core/`, which still pick one native target from `os.name`. Do not "simplify"
+  them back: a host-picked target means the published version carries whichever variant the build
+  machine happened to support, and iOS consumers get nothing. Apple klibs cross-compile on Linux
+  (`kotlin.native.enableKlibsCrossCompilation` in `gradle.properties`), so CI publishes them from
+  `ubuntu-latest`; only running Apple tests needs a Mac.
 - `dev/` — sample/dogfooding apps (`sample-kotlin-jvm`, `client-android`, `android-gradle-plugin`,
   `server-jvm-keycloak`, `retrace`) — not shipped, used for manual testing.
 - `charts/katcher/` — Helm chart for deploying the server.
@@ -37,6 +43,12 @@ stores pending reports at `System.getProperty("user.dir")/.katcher_cache` — th
 to be a persistent path. Consumers deploying on Kubernetes/containers must mount a persistent volume at
 that path (`user.dir` for a Jib-built image is typically `/app`) or reports from startup-time crashes
 are lost on container restart before ever being retried.
+
+On Kotlin/Native the cache directory is chosen at runtime from `Platform.osFamily`
+(`client/src/nativeMain/.../NativeKatcherFileSystem.kt`, `defaultCacheDir()`): `$HOME/Library/Caches/katcher_cache`
+on Apple targets, `.katcher_cache` next to the working directory everywhere else. The working directory of an
+iOS app is the read-only bundle, so the relative path would turn every `saveReport()` inside the crash handler
+into an exception that only `println`s.
 
 `setupJvmUncaughtExceptionHandler()` installs via `Thread.setDefaultUncaughtExceptionHandler` — this only
 fires for exceptions that genuinely propagate uncaught on a thread. If a host framework (e.g. Ktor's
@@ -74,6 +86,11 @@ Everything else — call hierarchies, single-test runs, the debugger, `inspectio
 - `./gradlew :server:build` / `:client:build` — standard Gradle multiplatform build.
 - Native server tests live in `server/src/nativeTest/kotlin/.../data/*Test.kt` (repository-level tests
   against SQLite).
+- On a Mac `:client:build` also runs the client's native suite on the iOS simulator, which needs an
+  installed simulator runtime — with Xcode present but no runtime the task fails with "Xcode does not
+  support simulator tests for ios_simulator_arm64". Install a runtime, or run
+  `./gradlew :client:build -x iosSimulatorArm64Test`; `:client:macosArm64Test` covers the same suite
+  on the Apple side. CI runs on Linux and never schedules it.
 - Version catalogs: root `libs.versions.toml` (Kotlin/Compose/Android), plus `ktorLibs` and
   `kotlinCrypto` pulled in via Gradle's version-catalog-from-module feature, and `jvmLibs` from
   `gradle/jvmLibs.versions.toml` for JVM-only tooling (Jib, Kotlin JVM plugin).
