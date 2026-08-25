@@ -34,8 +34,11 @@ jobs:
           key: konan-${{ runner.os }}-${{ hashFiles('gradle/*.versions.toml') }}
           restore-keys: konan-${{ runner.os }}-
 
-      # build covers ktlintCheck (through check) and the tests of every module. The native
-      # target is picked by host, so on this runner it resolves to linuxX64.
+      # build covers ktlintCheck (through check) and the tests of every module. server and core
+      # pick their native target by host, so on this runner that is linuxX64; client and shared
+      # declare every target they publish, and the Apple ones are cross-compiled here as klibs
+      # (kotlin.native.enableKlibsCrossCompilation in gradle.properties). Tests still run only
+      # for the host target.
       - run: ./gradlew build --stacktrace
 
       - if: failure()
