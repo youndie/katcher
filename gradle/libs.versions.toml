@@ -1,6 +1,6 @@
 [versions]
 # The shared build conventions. One number: every sborka plugin below takes its version from here.
-sborka = "0.1.0.13"
+sborka = "0.1.0.15"
 androidGradlePlugin = "9.3.1"
 atomicfu = "0.33.0"
 kotlin = "2.4.10"
