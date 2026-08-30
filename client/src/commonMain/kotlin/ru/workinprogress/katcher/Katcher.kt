@@ -30,7 +30,7 @@ import kotlin.time.Clock
 
 internal expect fun setupPlatformHandler()
 
-object Katcher {
+public object Katcher {
     private val isCrashing = atomic(false)
     private var config: KatcherConfig = KatcherConfig()
     private const val LOGO = """📡"""
@@ -38,7 +38,7 @@ object Katcher {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val _breadcrumbs = atomic(emptyList<Breadcrumb>())
 
-    val breadcrumbs: List<Breadcrumb>
+    public val breadcrumbs: List<Breadcrumb>
         get() = _breadcrumbs.value
 
     private val uploadSignal = Channel<Unit>(Channel.CONFLATED)
@@ -73,7 +73,7 @@ object Katcher {
         }
     }
 
-    fun start(configure: KatcherConfig.() -> Unit) {
+    public fun start(configure: KatcherConfig.() -> Unit) {
         val newConfig = KatcherConfig().apply(configure)
 
         if (newConfig.appKey.isEmpty() || newConfig.remoteHost.isEmpty()) {
@@ -93,7 +93,7 @@ object Katcher {
         if (config.isDebug) println("$LOGO Katcher initialized. Storage ready.")
     }
 
-    fun catch(
+    public fun catch(
         throwable: Throwable,
         context: Map<String, String> = emptyMap(),
     ) {
@@ -126,7 +126,7 @@ object Katcher {
         }
     }
 
-    fun addBreadcrumb(
+    public fun addBreadcrumb(
         message: String,
         type: String = "info",
         data: Map<String, String>? = null,
@@ -145,7 +145,7 @@ object Katcher {
         }
     }
 
-    fun clearBreadcrumbs() {
+    public fun clearBreadcrumbs() {
         _breadcrumbs.value = emptyList()
     }
 

@@ -3,7 +3,7 @@ package ru.workinprogress.feature.report
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CreateReportParams(
+public data class CreateReportParams(
     val appKey: String,
     val message: String,
     val stacktrace: String,

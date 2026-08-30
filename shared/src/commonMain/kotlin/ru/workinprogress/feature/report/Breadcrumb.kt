@@ -4,7 +4,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Breadcrumb(
+public data class Breadcrumb(
     val timestamp: LocalDateTime,
     val type: String,
     val message: String,

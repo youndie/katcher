@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Suppress("ktlint:standard:enum-entry-name-case")
-enum class ErrorGroupSort {
+public enum class ErrorGroupSort {
     id,
     title,
     lastSeen,
@@ -13,7 +13,7 @@ enum class ErrorGroupSort {
 
 @Serializable
 @Suppress("ktlint:standard:enum-entry-name-case")
-enum class ErrorGroupSortOrder {
+public enum class ErrorGroupSortOrder {
     asc,
     desc,
 }
@@ -24,7 +24,7 @@ enum class ErrorGroupSortOrder {
  * a pasted link give the same list.
  */
 @Serializable
-data class ErrorGroupFilter(
+public data class ErrorGroupFilter(
     val query: String? = null,
     val environment: String? = null,
     val release: String? = null,
