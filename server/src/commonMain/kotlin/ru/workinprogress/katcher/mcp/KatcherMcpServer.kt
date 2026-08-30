@@ -562,21 +562,23 @@ private fun intSchema(description: String): JsonObject =
         put("description", description)
     }
 
+// `arguments` is already a `JsonObject?` on this version of the MCP types, so the `as? JsonObject`
+// that used to stand here was a cast to the type it already had. Nullable it still is, hence `?.`.
 private fun CallToolRequest.longArg(name: String): Long? =
-    (arguments as? JsonObject)
+    arguments
         ?.get(name)
         ?.jsonPrimitive
         ?.content
         ?.toLongOrNull()
 
 private fun CallToolRequest.stringArg(name: String): String? =
-    runCatching { (arguments as? JsonObject)?.get(name)?.jsonPrimitive?.content }.getOrNull()
+    runCatching { arguments?.get(name)?.jsonPrimitive?.content }.getOrNull()
 
 private fun CallToolRequest.boolArg(name: String): Boolean? =
-    runCatching { (arguments as? JsonObject)?.get(name)?.jsonPrimitive?.boolean }.getOrNull()
+    runCatching { arguments?.get(name)?.jsonPrimitive?.boolean }.getOrNull()
 
 private fun CallToolRequest.frameVerifications(): List<FrameVerification> {
-    val array = (arguments as? JsonObject)?.get("framesVerified") as? JsonArray ?: return emptyList()
+    val array = arguments?.get("framesVerified") as? JsonArray ?: return emptyList()
     return array.jsonArray.mapNotNull { element ->
         val obj = runCatching { element.jsonObject }.getOrNull() ?: return@mapNotNull null
         val file = runCatching { obj["file"]?.jsonPrimitive?.content }.getOrNull() ?: return@mapNotNull null

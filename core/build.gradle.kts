@@ -13,7 +13,16 @@ kotlin {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
+        // `-Xcontext-parameters` is gone: context parameters are on by default at language version
+        // 2.4, and the compiler says so — "the argument is redundant for the current language
+        // version". It said so before this migration too; `allWarningsAsErrors`, which the shared
+        // conventions turn on, is what turned saying into failing.
+
+        // OPTED IN OUT LOUD. Ktor's HTMX DSL is experimental, and this module is built on it — 183
+        // warnings from one file alone. Saying it once here is the statement `@OptIn` would make at
+        // every use site, and it is an honest one: the pages in this module will need rewriting when
+        // that DSL changes.
+        optIn.add("io.ktor.utils.io.ExperimentalKtorApi")
     }
 
     jvm()

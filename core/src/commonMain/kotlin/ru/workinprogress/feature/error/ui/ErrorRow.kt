@@ -208,7 +208,7 @@ private fun FlowContent.rowBadge(
         // A row somebody has already opened and nobody has acted on carries no badge: the
         // absence is the state.
         RowState.Viewed -> {
-            Unit
+            // Nothing: the comment above is the whole branch.
         }
     }
 }
