@@ -1,4 +1,6 @@
 [versions]
+# The shared build conventions. One number: every sborka plugin below takes its version from here.
+sborka = "0.1.0.13"
 androidGradlePlugin = "9.3.1"
 atomicfu = "0.33.0"
 kotlin = "2.4.10"
@@ -28,6 +30,10 @@ sqlx4k-codegen = { module = "io.github.smyrgeorge:sqlx4k-codegen", version.ref =
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
 [plugins]
+sborkaKmp = { id = "ru.workinprogress.sborka.kmp", version.ref = "sborka" }
+sborkaJvm = { id = "ru.workinprogress.sborka.jvm", version.ref = "sborka" }
+sborkaLint = { id = "ru.workinprogress.sborka.lint", version.ref = "sborka" }
+sborkaPublish = { id = "ru.workinprogress.sborka.publish", version.ref = "sborka" }
 ktlintPlugin = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 pluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

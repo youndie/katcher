@@ -35,8 +35,12 @@ fun Application.configureAuth() {
             providerLookup = {
                 OAuthServerSettings.OAuth2ServerSettings(
                     name = "keycloak",
-                    authorizeUrl = "${System.getenv("KC_URL")}/realms/${System.getenv("KC_REALM")}/protocol/openid-connect/auth",
-                    accessTokenUrl = "${System.getenv("KC_URL")}/realms/${System.getenv("KC_REALM")}/protocol/openid-connect/token",
+                    authorizeUrl = "${System.getenv(
+                        "KC_URL",
+                    )}/realms/${System.getenv("KC_REALM")}/protocol/openid-connect/auth",
+                    accessTokenUrl = "${System.getenv(
+                        "KC_URL",
+                    )}/realms/${System.getenv("KC_REALM")}/protocol/openid-connect/token",
                     requestMethod = HttpMethod.Post,
                     clientId = System.getenv("KC_CLIENT_ID"),
                     clientSecret = System.getenv("KC_SECRET"),

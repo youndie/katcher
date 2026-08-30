@@ -1,15 +1,12 @@
 plugins {
+    // Every module was linted through the `subprojects { }` block in the root. That block is gone,
+    // so the linter is named per module — including here, or removing the block would have quietly
+    // dropped two modules out of the gate.
+    id("ru.workinprogress.sborka.lint")
     id("com.android.application")
 }
 
-repositories {
-    google()
-    mavenCentral()
-}
-
-kotlin {
-    jvmToolchain(25)
-}
+// No `repositories { }` here either — see `dev/client-android`.
 
 android {
     namespace = "ru.workinprogress.katcher.sample"

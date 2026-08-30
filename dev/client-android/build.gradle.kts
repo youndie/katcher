@@ -1,14 +1,14 @@
 plugins {
-    kotlin("multiplatform")
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    id("org.jetbrains.kotlin.multiplatform")
+    id("ru.workinprogress.sborka.kmp")
+    id("ru.workinprogress.sborka.lint")
+    id("com.android.kotlin.multiplatform.library")
     `maven-publish`
 }
 
-group = "ru.workinprogress.katcher"
-
-repositories {
-    google()
-}
+// The group comes from `sborka.group`, and the `repositories { }` block is gone: declared per
+// project it overrides what settings declare, which is what FAIL_ON_PROJECT_REPOS refuses. `google()`
+// is in the settings list, filtered to androidx / com.android / com.google.
 
 publishing {
     publications {

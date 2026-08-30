@@ -171,7 +171,13 @@ private fun FlowContent.periodTab(
     span(
         classes =
             "h-8 px-2.5 inline-flex items-center text-[13px] cursor-pointer transition " +
-                (if (active) "bg-foreground text-background font-medium" else "text-muted-foreground hover:text-foreground") +
+                (
+                    if (active) {
+                        "bg-foreground text-background font-medium"
+                    } else {
+                        "text-muted-foreground hover:text-foreground"
+                    }
+                ) +
                 " border-l border-input first:border-l-0",
     ) {
         attributes.hx {
@@ -194,7 +200,11 @@ private fun FlowContent.toggle(
     span(
         classes =
             "h-8 px-2.5 inline-flex items-center text-[13px] border border-input cursor-pointer transition " +
-                if (active) "bg-foreground text-background font-medium" else "text-muted-foreground hover:text-foreground",
+                if (active) {
+                    "bg-foreground text-background font-medium"
+                } else {
+                    "text-muted-foreground hover:text-foreground"
+                },
     ) {
         attributes.hx {
             get = filterHref(appId, data, next)

@@ -39,7 +39,14 @@ object Spark {
                     val x = (index * step).toInt()
                     // Nothing in the window draws a baseline rather than nothing at all: an
                     // empty cell reads as "no chart", a flat line reads as "no crashes".
-                    val y = if (max == 0) LINE_HEIGHT - 1 else LINE_HEIGHT - (value.toDouble() / max * (LINE_HEIGHT - 2)).toInt() - 1
+                    val y =
+                        if (max ==
+                            0
+                        ) {
+                            LINE_HEIGHT - 1
+                        } else {
+                            LINE_HEIGHT - (value.toDouble() / max * (LINE_HEIGHT - 2)).toInt() - 1
+                        }
                     "$x,$y"
                 }.joinToString(" ")
 
