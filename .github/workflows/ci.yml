@@ -19,12 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v5
+      - uses: youndie/sborka/.github/actions/setup-kotlin@main
         with:
-          distribution: temurin
-          java-version: 25
-
-      - uses: gradle/actions/setup-gradle@v6
+          konan-cache: "true"
 
       # Kotlin/Native cache: LLVM and the sysroots weigh hundreds of megabytes and are
       # downloaded once. Without it every run spends minutes on that alone.
