@@ -18,7 +18,7 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("unused")
-object Katcher {
+public object Katcher {
     private const val TAG = "Katcher"
     private const val CRASH_DIR = "katcher_crashes"
     private const val MAX_BREADCRUMBS = 50
@@ -40,14 +40,14 @@ object Katcher {
         val data: Map<String, String>?,
     )
 
-    data class KatcherConfig(
+    public data class KatcherConfig(
         var apiUrl: String,
         var appKey: String,
         var environment: String = "production",
         var isDebug: Boolean = false,
     )
 
-    class BuildConfigDynamically(
+    public class BuildConfigDynamically(
         context: Context,
     ) {
         private val clazz: Class<*>? by lazy {
@@ -58,13 +58,13 @@ object Katcher {
             }
         }
 
-        val buildUuid: String?
+        public val buildUuid: String?
             get() = getStringField("KATCHER_BUILD_UUID")
 
-        val serverUrl: String?
+        public val serverUrl: String?
             get() = getStringField("KATCHER_SERVER_URL")
 
-        val appKey: String?
+        public val appKey: String?
             get() = getStringField("KATCHER_APP_KEY")
 
         private fun getStringField(fieldName: String): String? {
@@ -77,7 +77,7 @@ object Katcher {
         }
     }
 
-    fun start(context: Context) {
+    public fun start(context: Context) {
         val config = BuildConfigDynamically(context)
 
         val uuid = config.buildUuid
@@ -98,7 +98,7 @@ object Katcher {
         }
     }
 
-    fun start(
+    public fun start(
         context: Context,
         buildUuid: String,
         configBuilder: KatcherConfig.() -> Unit,
@@ -198,7 +198,7 @@ object Katcher {
         }
     }
 
-    fun addBreadcrumb(
+    public fun addBreadcrumb(
         message: String,
         type: String = "info",
         data: Map<String, String>? = null,
@@ -222,7 +222,7 @@ object Katcher {
         }
     }
 
-    fun clearBreadcrumbs() {
+    public fun clearBreadcrumbs() {
         synchronized(breadcrumbs) {
             breadcrumbs.clear()
         }
