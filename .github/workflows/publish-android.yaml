@@ -9,18 +9,14 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v7
-      - name: Setup Java
-        uses: actions/setup-java@v5
+      - uses: youndie/sborka/.github/actions/setup-kotlin@main
         with:
-          distribution: 'temurin'
-          java-version: 25
-          cache: 'gradle'
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
+          konan-cache: "true"
       - name: Publish
         run: |
           ./gradlew :dev:client-android:publishAndroidPublicationToWipRepository :dev:android-gradle-plugin:publishAllPublicationsToWipRepository --no-daemon
         env:
-          ORG_GRADLE_PROJECT_BUILD_NUMBER: ${{ github.run_number }}
+          # The version head is `version` in gradle.properties; CI appends the run number.
+          ORG_GRADLE_PROJECT_VERSION: 0.6.${{ github.run_number }}
           ORG_GRADLE_PROJECT_REPOSILITE_USER: ${{ secrets.REPOSILITE_USER }}
           ORG_GRADLE_PROJECT_REPOSILITE_SECRET: ${{ secrets.REPOSILITE_SECRET }}

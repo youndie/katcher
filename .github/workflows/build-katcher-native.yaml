@@ -23,15 +23,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Setup Java
-        uses: actions/setup-java@v5
+      - uses: youndie/sborka/.github/actions/setup-kotlin@main
         with:
-          distribution: 'temurin'
-          java-version: 25
-          cache: 'gradle'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
+          konan-cache: "true"
 
       - name: Build
         run: ./gradlew :server:linkReleaseExecutableNative --no-daemon
