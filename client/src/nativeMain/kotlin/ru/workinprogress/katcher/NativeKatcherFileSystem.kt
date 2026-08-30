@@ -40,7 +40,7 @@ internal fun defaultCacheDir(): Path =
 
 private const val CACHE_DIR_NAME = "katcher_cache"
 
-class NativeKatcherFileSystem(
+public class NativeKatcherFileSystem(
     private val cacheDir: Path = DEFAULT_CACHE_DIR,
     private val fs: FileSystem = FileSystem.SYSTEM,
 ) : KatcherFileSystem {
@@ -95,7 +95,7 @@ class NativeKatcherFileSystem(
         runCatching { fs.delete(path, mustExist = false) }
     }
 
-    companion object {
+    public companion object {
         internal const val MAX_REPORTS = 50
 
         private val DEFAULT_CACHE_DIR: Path get() = defaultCacheDir()

@@ -2,7 +2,7 @@ package ru.workinprogress.katcher.jvm
 
 import ru.workinprogress.katcher.Katcher
 
-fun setupJvmUncaughtExceptionHandler() {
+public fun setupJvmUncaughtExceptionHandler() {
     val currentHandler = Thread.getDefaultUncaughtExceptionHandler()
 
     Thread.setDefaultUncaughtExceptionHandler { t, e ->
