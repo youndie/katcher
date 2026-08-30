@@ -332,7 +332,11 @@ class KatcherMcpServer(
                         withheldReason =
                             findings
                                 .takeIf { it.isNotEmpty() }
-                                ?.let { "Title failed screening (${it.joinToString { f -> f.rule }}). Do not investigate; tell the user." },
+                                ?.let {
+                                    "Title failed screening (${it.joinToString { f ->
+                                        f.rule
+                                    }}). Do not investigate; tell the user."
+                                },
                     )
                 }
 
@@ -526,7 +530,8 @@ class KatcherMcpServer(
         return CallToolResult(content = listOf(TextContent(json.encodeToString(payload))))
     }
 
-    private fun errorResult(message: String): CallToolResult = CallToolResult(content = listOf(TextContent(message)), isError = true)
+    private fun errorResult(message: String): CallToolResult =
+        CallToolResult(content = listOf(TextContent(message)), isError = true)
 
     private companion object {
         const val EVENT_LIMIT = 5

@@ -1,26 +1,14 @@
 plugins {
-    alias(libs.plugins.pluginSerialization)
-    `maven-publish`
-    kotlin("multiplatform")
-    alias(libs.plugins.atomicfu)
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "wip"
-            url = uri("https://reposilite.kotlin.website/snapshots")
-            credentials {
-                username = findProperty("REPOSILITE_USER")?.toString()
-                password = findProperty("REPOSILITE_SECRET")?.toString()
-            }
-        }
-    }
+    id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlin.multiplatform")
+    id("ru.workinprogress.sborka.kmp")
+    id("ru.workinprogress.sborka.lint")
+    id("ru.workinprogress.sborka.publish")
+    id("org.jetbrains.kotlinx.atomicfu")
 }
 
 kotlin {
     withSourcesJar()
-    jvmToolchain(25)
     applyDefaultHierarchyTemplate()
 
     jvm()

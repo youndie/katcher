@@ -74,8 +74,9 @@ class ErrorGroupViewedRepositoryTest : RepositoryTest() {
                 TransactionContext.withCurrent(db) {
                     fetchAll(
                         Statement
-                            .create("SELECT viewed_at FROM user_error_group_viewed WHERE group_id = :groupId AND user_id = :userId")
-                            .apply {
+                            .create(
+                                "SELECT viewed_at FROM user_error_group_viewed WHERE group_id = :groupId AND user_id = :userId",
+                            ).apply {
                                 bind("groupId", groupId)
                                 bind("userId", userId)
                             },

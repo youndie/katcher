@@ -1,19 +1,56 @@
+# The style of the portfolio, in one file.
+#
+# It lives here rather than in the ktlint plugin's defaults for the same reason the tool version is
+# pinned: left to the default, the style shifts when the plugin is bumped instead of when someone
+# decides to change it. `sborka.lint` writes this file out (`./gradlew updateEditorconfig`) and
+# refuses a repository whose copy has drifted, unless that repository says `sborka.editorconfig=custom`.
+#
+# Merged from what the repositories already agreed on: 120 columns, ktlint_official, no star imports,
+# two spaces for data formats, and markdown left alone because it uses trailing spaces for line breaks.
 root = true
 
 [*]
+charset = utf-8
+end_of_line = lf
 insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
 
-#  KSP output lands on :server's commonMain srcDirs, so ktlint sees it. Generated code is
-#  not ours to style, and the plugin's own `filter` does not reach KMP source sets.
-[**/build/generated/**.{kt,kts}]
-ktlint = disabled
+[*.{kt,kts}]
+max_line_length = 120
+ktlint_code_style = ktlint_official
 
-[{*.kt,*.kts}]
-ktlint_function_naming_ignore_when_annotated_with = Composable
-
-ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
-
-#  Disable wildcard imports entirely
+# No star imports. A wildcard hides which module a name came from, and several repositories here
+# deliberately carry names that shadow a library's.
+ij_kotlin_packages_to_use_import_on_demand = false
 ij_kotlin_name_count_to_use_star_import = 2147483647
 ij_kotlin_name_count_to_use_star_import_for_members = 2147483647
-ij_kotlin_packages_to_use_import_on_demand = unset
+
+ij_kotlin_allow_trailing_comma = true
+ij_kotlin_allow_trailing_comma_on_call_site = true
+
+# A composable is named like a type, not like a function, and Compose reads that way everywhere. The
+# exemption targets the annotation, not the file: an ordinary function in the same source is still
+# held to camel case. Harmless in a repository with no Compose in it.
+ktlint_function_naming_ignore_when_annotated_with = Composable
+
+[*.{json,yml,yaml,toml}]
+indent_size = 2
+
+[*.{md,txt}]
+# Markdown uses trailing spaces for hard line breaks; trimming them silently reflows documents.
+trim_trailing_whitespace = false
+max_line_length = off
+
+# Generated sources are rewritten on every build and must not be edited, so a formatter running on
+# them would fail a build nobody can fix. The plugin's own source filter does not reach here: it
+# fixes the file list before this setting would apply.
+[**/build/**.kt]
+ktlint = disabled
+
+# KSP output lands on :server's commonMain srcDirs, so ktlint sees it there rather than under a
+# `build/generated` path the shared rule above already covers. Generated code is not ours to style,
+# and the plugin's own `filter` does not reach KMP source sets.
+[**/build/generated/**.{kt,kts}]
+ktlint = disabled

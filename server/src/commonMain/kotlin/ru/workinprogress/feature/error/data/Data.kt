@@ -207,7 +207,8 @@ class ErrorGroupRepositoryImpl(
                     )"""
             }
             if (filter.environment != null) {
-                conditions += "EXISTS (SELECT 1 FROM reports r WHERE r.group_id = g.id AND r.environment = :environment)"
+                conditions +=
+                    "EXISTS (SELECT 1 FROM reports r WHERE r.group_id = g.id AND r.environment = :environment)"
             }
             if (filter.release != null) {
                 conditions += "EXISTS (SELECT 1 FROM reports r WHERE r.group_id = g.id AND r.release = :release)"

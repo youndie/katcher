@@ -48,7 +48,9 @@ class NativeKatcherFileSystem(
         fs.createDirectories(cacheDir)
         enforceLimit()
 
-        val fileName = "crash_${Clock.System.now().toEpochMilliseconds()}_${Random.nextLong().toULong().toString(16)}.json"
+        val fileName = "crash_${Clock.System.now().toEpochMilliseconds()}_${Random.nextLong().toULong().toString(
+            16,
+        )}.json"
         fs.write(cacheDir / fileName) {
             writeUtf8(Katcher.json.encodeToString(params))
         }

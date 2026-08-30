@@ -1,6 +1,10 @@
 import io.ktor.plugin.features.DockerImageRegistry
 
 plugins {
+    // Every module was linted through the `subprojects { }` block in the root. That block is gone,
+    // so the linter is named per module — including here, or removing the block would have quietly
+    // dropped two modules out of the gate.
+    id("ru.workinprogress.sborka.lint")
     alias(jvmLibs.plugins.jib)
     alias(jvmLibs.plugins.kotlinJvm)
     alias(ktorLibs.plugins.ktor)

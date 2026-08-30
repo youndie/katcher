@@ -1,5 +1,13 @@
 plugins {
-    kotlin("multiplatform")
+    id("org.jetbrains.kotlin.multiplatform")
+    id("ru.workinprogress.sborka.kmp")
+    id("ru.workinprogress.sborka.lint")
+}
+
+// NOT A LIBRARY: nothing publishes or resolves this module, so there is no consumer for a
+// spelled-out public API to be spelled out for.
+kotlin {
+    explicitApi = null
 }
 
 kotlin {

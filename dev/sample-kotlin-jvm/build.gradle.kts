@@ -1,10 +1,16 @@
 plugins {
-    kotlin("jvm")
+    id("org.jetbrains.kotlin.jvm")
+    id("ru.workinprogress.sborka.jvm")
+    id("ru.workinprogress.sborka.lint")
     application
 }
 
+// A SAMPLE, not a library.
 kotlin {
-    jvmToolchain(25)
+    explicitApi = null
+}
+
+kotlin {
 }
 
 dependencies {

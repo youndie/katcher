@@ -1,33 +1,19 @@
 plugins {
     `kotlin-dsl`
-    `maven-publish`
+    id("ru.workinprogress.sborka.lint")
+    id("ru.workinprogress.sborka.publish")
 }
 
-group = "ru.workinprogress.katcher"
-
-repositories {
-    mavenCentral()
-    google()
-}
+// The group, the `maven-publish` plugin, the repository and the credentials all came from here and
+// now come from `ru.workinprogress.sborka.publish`. The `repositories { }` block goes with them:
+// declared per project it overrides what settings declare, which is what FAIL_ON_PROJECT_REPOS
+// refuses — and `google()` is in the settings list already, filtered to the groups it answers for.
 
 gradlePlugin {
     plugins {
         register("katcherPlugin") {
             id = "ru.workinprogress.katcher.gradle.plugin"
             implementationClass = "ru.workinprogress.katcher.gradle.KatcherGradlePlugin"
-        }
-    }
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "wip"
-            url = uri("https://reposilite.kotlin.website/snapshots")
-            credentials {
-                username = findProperty("REPOSILITE_USER")?.toString()
-                password = findProperty("REPOSILITE_SECRET")?.toString()
-            }
         }
     }
 }

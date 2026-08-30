@@ -38,7 +38,11 @@ data class CrashSummary(
             return CrashSummary(
                 exceptionType = exceptionType?.substringAfterLast('.')?.takeIf { it.isNotEmpty() } ?: exceptionType,
                 message = message?.take(MAX_MESSAGE),
-                location = ownFrame?.let { frame -> frame.file + frame.line?.let { ":$it" }.orEmpty() }?.takeIf { it.isNotEmpty() },
+                location =
+                    ownFrame
+                        ?.let { frame ->
+                            frame.file + frame.line?.let { ":$it" }.orEmpty()
+                        }?.takeIf { it.isNotEmpty() },
             )
         }
 
