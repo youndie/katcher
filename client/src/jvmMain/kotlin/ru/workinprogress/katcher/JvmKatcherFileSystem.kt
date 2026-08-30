@@ -5,7 +5,7 @@ import java.io.File
 
 internal actual val fileSystem: KatcherFileSystem = JvmKatcherFileSystem()
 
-class JvmKatcherFileSystem : KatcherFileSystem {
+public class JvmKatcherFileSystem : KatcherFileSystem {
     override fun saveReport(params: CreateReportParams) {
         enforceLimit()
         val fileName = "crash_${System.currentTimeMillis()}_${java.util.UUID.randomUUID()}.json"
@@ -43,7 +43,7 @@ class JvmKatcherFileSystem : KatcherFileSystem {
         }
     }
 
-    companion object {
+    public companion object {
         private const val MAX_REPORTS = 50
 
         private val cacheDir =

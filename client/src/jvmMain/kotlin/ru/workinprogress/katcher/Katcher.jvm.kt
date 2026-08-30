@@ -2,11 +2,11 @@ package ru.workinprogress.katcher
 
 import ru.workinprogress.katcher.jvm.setupJvmUncaughtExceptionHandler
 
-actual fun setupPlatformHandler() {
+public actual fun setupPlatformHandler() {
     setupJvmUncaughtExceptionHandler()
 }
 
-fun getSystemAttributes(): Map<String, String> {
+public fun getSystemAttributes(): Map<String, String> {
     val runtime = Runtime.getRuntime()
     return mapOf(
         "device.os" to "${System.getProperty("os.name")} ${System.getProperty("os.version")}",

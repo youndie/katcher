@@ -29,7 +29,7 @@ internal actual fun setupPlatformHandler() {
 }
 
 @OptIn(ExperimentalNativeApi::class)
-fun getSystemAttributes(): Map<String, String> =
+public fun getSystemAttributes(): Map<String, String> =
     mapOf(
         "device.os" to Platform.osFamily.name,
         "device.arch" to Platform.cpuArchitecture.name,

@@ -5,7 +5,7 @@ import ru.workinprogress.katcher.Katcher
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
-class KatcherCoroutineExceptionHandler :
+public class KatcherCoroutineExceptionHandler :
     AbstractCoroutineContextElement(CoroutineExceptionHandler.Key),
     CoroutineExceptionHandler {
     override fun handleException(
