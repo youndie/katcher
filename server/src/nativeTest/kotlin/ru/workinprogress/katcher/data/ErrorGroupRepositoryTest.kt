@@ -107,7 +107,6 @@ class ErrorGroupRepositoryTest : RepositoryTest() {
                 )
             repository.updateOccurrences(group.id)
             repository.updateOccurrences(group.id)
-            2
             val updated = repository.findById(group.id)
             assertNotNull(updated)
             assertEquals(2, updated.occurrences)
