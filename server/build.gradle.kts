@@ -21,7 +21,10 @@ ksp {
 
 kotlin {
     compilerOptions {
-        freeCompilerArgs.add("-Xcontext-parameters")
+        // `-Xcontext-parameters` is gone: context parameters are on by default at language version
+        // 2.4, and the compiler says so — "the argument is redundant for the current language
+        // version". It said so before this migration too; `allWarningsAsErrors`, which the shared
+        // conventions turn on, is what turned saying into failing.
     }
 
     jvm()
