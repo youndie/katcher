@@ -28,7 +28,7 @@ plugins {
     // the root, with a comment saying it had to be there because project repositories override the
     // settings ones. They do — which is exactly what `FAIL_ON_PROJECT_REPOS` refuses, and why the
     // block is gone: declared once here, every module resolves the agent from the same place.
-    id("ru.workinprogress.sborka.settings") version "0.1.0.15"
+    id("ru.workinprogress.sborka.settings") version "0.1.0.23"
 }
 
 dependencyResolutionManagement {
