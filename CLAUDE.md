@@ -23,6 +23,11 @@ required in production). Client is a KMP library apps embed to capture and uploa
   machine happened to support, and iOS consumers get nothing. Apple klibs cross-compile on Linux
   (`kotlin.native.enableKlibsCrossCompilation` in `gradle.properties`), so CI publishes them from
   `ubuntu-latest`; only running Apple tests needs a Mac.
+  The android target lives beside them: `jvmSharedMain` holds what JVM and Android share (the
+  `Thread.setDefaultUncaughtExceptionHandler` install, `FileKatcherFileSystem`), and each of the two
+  supplies only its cache directory and its system attributes. Its publication is
+  `ru.workinprogress.katcher:client-android` — the coordinate `dev/client-android` used until 0.4.92,
+  which is why that module no longer publishes anything (#27).
 - `dev/` — sample/dogfooding apps (`sample-kotlin-jvm`, `client-android`, `android-gradle-plugin`,
   `server-jvm-keycloak`, `retrace`) — not shipped, used for manual testing.
 - `charts/katcher/` — Helm chart for deploying the server.
@@ -43,6 +48,19 @@ stores pending reports at `System.getProperty("user.dir")/.katcher_cache` — th
 to be a persistent path. Consumers deploying on Kubernetes/containers must mount a persistent volume at
 that path (`user.dir` for a Jib-built image is typically `/app`) or reports from startup-time crashes
 are lost on container restart before ever being retried.
+
+On Android the directory comes from `Context.cacheDir` — `user.dir` there is `/`, which is not writable,
+and an application cannot repoint it either (`System.setProperty("user.dir", …)` is refused by the runtime
+with "Ignoring attempt to set property"). The `Context` arrives without the consumer doing anything:
+`KatcherInitProvider` (`client/src/androidMain/.../KatcherContext.kt`) is a `ContentProvider` declared in
+the library's own `AndroidManifest.xml`, so it runs before `Application.onCreate`. `Katcher.installContext()`
+is the escape hatch when manifest merging dropped it.
+
+`KatcherFileSystem.prepare()` is called from `Katcher.start { }` and throws when the directory cannot be
+created or written to; `start` then prints and returns **without setting the config**, so `catch()` is a
+no-op afterwards. Before that, an unwritable directory only showed up as a caught exception inside
+`Katcher.catch` at crash time — which prints a line and never signals the upload, i.e. a reporter that
+says "Storage ready" and reports nothing (#27).
 
 On Kotlin/Native the cache directory is chosen at runtime from `Platform.osFamily`
 (`client/src/nativeMain/.../NativeKatcherFileSystem.kt`, `defaultCacheDir()`): `$HOME/Library/Caches/katcher_cache`

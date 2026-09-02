@@ -10,6 +10,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -28,6 +29,31 @@ class NativeKatcherFileSystemTest {
     @AfterTest
     fun tearDown() {
         fs.deleteRecursively(cacheDir, mustExist = false)
+    }
+
+    @Test
+    fun `test prepare creates the cache directory and leaves nothing behind`() {
+        assertFalse(fs.exists(cacheDir))
+
+        katcherFileSystem.prepare()
+
+        assertTrue(fs.exists(cacheDir))
+        assertEquals(emptyList(), fs.list(cacheDir))
+    }
+
+    // Каталог, в который нельзя писать: путь занят файлом. prepare обязан отказать здесь, а не
+    // молчать до первого краша.
+    @Test
+    fun `test prepare refuses when the path is not a usable directory`() {
+        val occupied =
+            FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "katcher-occupied-${Random.nextLong().toULong().toString(16)}"
+        fs.write(occupied) { writeUtf8("not a directory") }
+
+        try {
+            assertFails { NativeKatcherFileSystem(occupied / "reports", fs).prepare() }
+        } finally {
+            fs.delete(occupied, mustExist = false)
+        }
     }
 
     @Test

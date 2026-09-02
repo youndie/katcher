@@ -1,11 +1,5 @@
 package ru.workinprogress.katcher
 
-import ru.workinprogress.katcher.jvm.setupJvmUncaughtExceptionHandler
-
-public actual fun setupPlatformHandler() {
-    setupJvmUncaughtExceptionHandler()
-}
-
 public fun getSystemAttributes(): Map<String, String> {
     val runtime = Runtime.getRuntime()
     return mapOf(

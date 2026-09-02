@@ -44,6 +44,19 @@ public class NativeKatcherFileSystem(
     private val cacheDir: Path = DEFAULT_CACHE_DIR,
     private val fs: FileSystem = FileSystem.SYSTEM,
 ) : KatcherFileSystem {
+    override fun prepare() {
+        fs.createDirectories(cacheDir)
+
+        // Каталог создан — это ещё не значит, что в него пишут: путь может быть занят файлом,
+        // смонтирован только на чтение, или лежать в песочнице чужого процесса. Спрашиваем записью.
+        val probe = cacheDir / ".katcher_probe"
+        try {
+            fs.write(probe) { writeUtf8("katcher") }
+        } finally {
+            runCatching { fs.delete(probe, mustExist = false) }
+        }
+    }
+
     override fun saveReport(params: CreateReportParams) {
         fs.createDirectories(cacheDir)
         enforceLimit()

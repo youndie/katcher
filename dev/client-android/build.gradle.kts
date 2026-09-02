@@ -3,33 +3,24 @@ plugins {
     id("ru.workinprogress.sborka.kmp")
     id("ru.workinprogress.sborka.lint")
     id("com.android.kotlin.multiplatform.library")
-    `maven-publish`
 }
 
 // The group comes from `sborka.group`, and the `repositories { }` block is gone: declared per
 // project it overrides what settings declare, which is what FAIL_ON_PROJECT_REPOS refuses. `google()`
 // is in the settings list, filtered to androidx / com.android / com.google.
 
-publishing {
-    publications {
-        withType<MavenPublication> {
-            if ("android" in name) {
-                artifactId = "client-android"
-            }
-        }
-    }
-
-    repositories {
-        maven {
-            name = "wip"
-            url = uri("https://reposilite.kotlin.website/snapshots")
-            credentials {
-                username = findProperty("REPOSILITE_USER")?.toString()
-                password = findProperty("REPOSILITE_SECRET")?.toString()
-            }
-        }
-    }
-}
+// NOT PUBLISHED ANY MORE, AND THAT IS THE POINT.
+//
+// This module used to publish `ru.workinprogress.katcher:client-android` (0.4.92 the last one).
+// That coordinate now belongs to the android variant of the multiplatform `client`: both declared
+// `object Katcher` in package `ru.workinprogress.katcher`, so an application that needed the
+// multiplatform client on Android could not have them both on one classpath — it got
+// "Duplicate class ru.workinprogress.katcher.Katcher" (#27).
+//
+// The module stays here as the single-platform Android implementation it always was — readable,
+// buildable, and the thing `dev/sample-android` runs against. Consumers take the multiplatform
+// client instead: `ru.workinprogress.katcher:client`, which carries an `android` variant since
+// 0.6.x and reads the same `KATCHER_BUILD_UUID` from BuildConfig.
 
 kotlin {
     withSourcesJar()
