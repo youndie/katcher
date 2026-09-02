@@ -65,6 +65,12 @@ If these headers are missing, Katcher returns 401 Unauthorized.
 
 This makes it trivial to run behind any SSO provider (Keycloak, Google, GitHub, etc.) without embedding OAuth logic.
 
+**The ingest endpoint is deliberately outside this.** `POST /api/reports` sits outside the
+`authenticate` block the pages are inside, because a crashing application has no browser session and
+no SSO cookie to present. It is not unauthenticated: the report carries an `appKey`, and an unknown
+or revoked key is answered with 401 without the report being queued. What the headers above protect
+is the UI and the API a person reads — not the address applications post to.
+
 ## Running server
 
 ```shell
@@ -315,6 +321,13 @@ Katcher automatically captures:
 
 and sends a POST request to:
 ```https://<remoteHost>/api/reports```
+
+The endpoint answers **`202 Accepted`**, not `200` — the report is queued, not yet written. A client
+of your own should check for that code and not for any 2xx: a reverse proxy, a captive portal or a
+misrouted request answers `200` cheerfully, and a client that accepts it counts a crash as delivered
+that katcher never received. The other two answers are `401` for an unknown or revoked `appKey` and
+`503` when the queue refuses the report; both mean "not stored", and both are worth retrying later
+rather than dropping.
 
 ## Why??
 
