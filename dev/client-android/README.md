@@ -1,5 +1,13 @@
 ### Katcher Android Client
 
+> **Not published any more, and not the one to reach for.** `ru.workinprogress.katcher:client-android`
+> now points at the android variant of the multiplatform client (`ru.workinprogress.katcher:client`),
+> which covers Android with the same `Katcher.start { }` API as every other platform, keeps reports in
+> `Context.cacheDir` and reads the same `KATCHER_BUILD_UUID` from `BuildConfig`. Both libraries declared
+> `object Katcher` in `ru.workinprogress.katcher`, so an application that needed the multiplatform client
+> could not have them both on one classpath — see issue #27. `0.4.92` is the last release of this module;
+> the sources stay here, and `dev/sample-android` still builds against them.
+
 Katcher is a lightweight crash reporting client for Android. This module (`dev/client-android`) collects uncaught exceptions, persists them on disk, and uploads reports to your Katcher server.
 
 This document explains how to add and configure the Android client in your app.

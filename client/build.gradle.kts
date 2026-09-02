@@ -5,6 +5,7 @@ plugins {
     id("ru.workinprogress.sborka.lint")
     id("ru.workinprogress.sborka.publish")
     id("org.jetbrains.kotlinx.atomicfu")
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
 }
 
 kotlin {
@@ -12,6 +13,17 @@ kotlin {
     applyDefaultHierarchyTemplate()
 
     jvm()
+
+    android {
+        namespace = "ru.workinprogress.katcher.client"
+        compileSdk = 36
+        minSdk = 24
+
+        optimization {
+            consumerKeepRules.publish = true
+            consumerKeepRules.files.add(project.file("consumer-rules.pro"))
+        }
+    }
 
     // Таргеты перечислены явно, а не выбираются по os.name: иначе в опубликованной версии
     // оказывается ровно один нативный вариант — тот, что подошёл машине сборки,
@@ -26,12 +38,23 @@ kotlin {
     mingwX64()
 
     sourceSets {
+        // JVM и Android делят всё, кроме каталога отчётов: обработчик исключений тот же
+        // (Thread.setDefaultUncaughtExceptionHandler Android чтит), хранилище то же файловое.
+        val jvmSharedMain = create("jvmSharedMain") { dependsOn(commonMain.get()) }
+        named("jvmMain") { dependsOn(jvmSharedMain) }
+        named("androidMain") { dependsOn(jvmSharedMain) }
+
         named("nativeMain") {
             dependencies {
                 implementation(libs.okio)
             }
         }
         named("nativeTest") {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+        named("jvmTest") {
             dependencies {
                 implementation(kotlin("test"))
             }

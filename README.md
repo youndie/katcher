@@ -183,12 +183,33 @@ Katcher is designed to run on Kubernetes. We provide an official Helm chart.
 
 ## Android integration
 
-Building an Android app? Use these components:
+Android is a variant of the same multiplatform client — `ru.workinprogress.katcher:client` — so an
+application that shares code between Android, iOS and the JVM reports through one library and one API:
 
-- Android client: [dev/client-android/README.md](dev/client-android/README.md)
-- Android Gradle plugin: [dev/android-gradle-plugin/README.md](dev/android-gradle-plugin/README.md)
+```kotlin
+dependencies {
+    implementation("ru.workinprogress.katcher:client:$katcher_version")
+    implementation("io.ktor:ktor-client-okhttp:$ktor_version")
+}
+```
 
-The Gradle plugin generates required BuildConfig fields (`KATCHER_BUILD_UUID`, `KATCHER_SERVER_URL`, `KATCHER_APP_KEY`) and uploads your ProGuard/R8 mapping file after builds. The Android client reads those fields automatically and reports crashes to `{serverUrl}/api/reports` with offline persistence.
+`Katcher.start { }` is enough; the library takes the application `Context` itself, through a
+`ContentProvider` its manifest contributes, and keeps pending reports in the app's own cache
+directory (`Context.cacheDir/katcher_cache`). Device attributes — model, brand, Android version, ABI —
+are attached to every report.
+
+The Android Gradle plugin ([dev/android-gradle-plugin/README.md](dev/android-gradle-plugin/README.md))
+uploads your ProGuard/R8 mapping after a build and generates the `KATCHER_BUILD_UUID`,
+`KATCHER_SERVER_URL` and `KATCHER_APP_KEY` BuildConfig fields. The client reads `KATCHER_BUILD_UUID`
+on its own and sends it as `build_uuid`, which is what the server matches the mapping against;
+the URL and the key you pass to `Katcher.start { }`.
+
+`dev/client-android` is the older single-platform Android client, with its own API
+(`Katcher.start(context)`) and its own implementation. **It is no longer published**: it declared the
+same `object Katcher` in the same package as the multiplatform client, so the two could not sit on one
+classpath, and the coordinate `ru.workinprogress.katcher:client-android` now belongs to the
+multiplatform client's android variant. The module stays in the repository as a source-level example;
+`0.4.92` remains the last release of it.
 
 ## Sending Errors From Your Application (Kotlin Client)
 
@@ -213,13 +234,18 @@ dependencies {
 }
 ```
 
-The client publishes for JVM, `linuxX64`, `linuxArm64`, `macosX64`, `macosArm64`, `mingwX64`, `iosArm64`,
-`iosSimulatorArm64` and `iosX64` — the same set in every release, whatever machine cut it. Android has its
-own coordinate, see [Android integration](#android-integration).
+The client publishes for JVM, Android, `linuxX64`, `linuxArm64`, `macosX64`, `macosArm64`, `mingwX64`,
+`iosArm64`, `iosSimulatorArm64` and `iosX64` — the same set in every release, whatever machine cut it.
 
 The client brings no HTTP engine of its own: pick the one your platform has. `ktor-client-cio` works on JVM
-and on the Linux targets, `ktor-client-darwin` is the engine for iOS and macOS. Without an engine on the
-classpath `Katcher.start()` builds fine and then fails at the first upload.
+and on the Linux targets, `ktor-client-okhttp` on Android, `ktor-client-darwin` on iOS and macOS. Without an
+engine on the classpath `Katcher.start()` builds fine and then fails at the first upload.
+
+Where the reports wait for their upload differs by platform, and it is always a directory the application
+can write to: `Context.cacheDir/katcher_cache` on Android, `$HOME/Library/Caches/katcher_cache` on iOS and
+macOS, `.katcher_cache` next to the working directory on the JVM, Linux and Windows. If that directory
+cannot be created or written to, `Katcher.start { }` says so and does not start — a reporter that cannot
+store a report is worth an error at startup rather than a silent one at crash time.
 
 ### Configuration
 

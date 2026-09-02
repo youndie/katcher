@@ -1,4 +1,4 @@
-name: Publish android
+name: Publish the android gradle plugin
 
 on:
   workflow_dispatch:
@@ -12,9 +12,13 @@ jobs:
       - uses: youndie/sborka/.github/actions/setup-kotlin@main
         with:
           konan-cache: "true"
+      # :dev:client-android is not published here any more. The `client-android` coordinate now
+      # belongs to the android variant of the multiplatform `client`, published by `Publish client`;
+      # two different libraries under one coordinate is what made them a duplicate class in a
+      # consumer that needed both (#27).
       - name: Publish
         run: |
-          ./gradlew :dev:client-android:publishAndroidPublicationToWipRepository :dev:android-gradle-plugin:publishAllPublicationsToWipRepository --no-daemon
+          ./gradlew :dev:android-gradle-plugin:publishAllPublicationsToWipRepository --no-daemon
         env:
           # The version head is `version` in gradle.properties; CI appends the run number.
           ORG_GRADLE_PROJECT_VERSION: 0.6.${{ github.run_number }}

@@ -80,6 +80,15 @@ public object Katcher {
             println("$LOGO Configuration error: appKey and remoteHost are required.")
             return
         }
+        // Каталог отчётов проверяется здесь, а не при первом краше. Проверка при краше попадает
+        // в catch внутри `catch()`, печатает строчку и не сигналит выгрузку: снаружи это выглядит
+        // как настроенный репортер, которому нечего отправлять.
+        val storage = runCatching { fileSystem.prepare() }
+        storage.exceptionOrNull()?.let { failure ->
+            println("$LOGO Storage error: ${failure.message}. Reports cannot be stored, Katcher is not started.")
+            return
+        }
+
         config = newConfig
         setupPlatformHandler()
         clearBreadcrumbs()
