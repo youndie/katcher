@@ -1,3 +1,6 @@
+// `wasmJs` is still behind an opt-in in the Kotlin DSL (Kotlin 2.4.x).
+@file:OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
+
 plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     id("org.jetbrains.kotlin.multiplatform")
@@ -21,6 +24,13 @@ kotlin {
     iosSimulatorArm64()
     iosX64()
     mingwX64()
+
+    // A browser is a client of the ingest like any other, and `CreateReportParams` is the whole of
+    // what it sends. Without this target a Kotlin/Wasm client declares its own copy of the wire
+    // contract, which compiles for as long as the two stay in step and drops fields in silence
+    // afterwards. Nothing in this module is platform-specific and all three dependencies publish
+    // for wasmJs.
+    wasmJs { browser() }
 }
 
 dependencies {
