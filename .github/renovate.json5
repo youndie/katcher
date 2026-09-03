@@ -35,20 +35,6 @@
 
   ignorePaths: ["**/build/**", "**/.gradle/**", "**/node_modules/**"],
 
-  // Unlike tracy and metrik, this repository does not keep the ktlint CLI version in a catalog —
-  // it is pinned in the root build.gradle.kts, next to the marker comment this reads. Without
-  // this the pin is invisible to Renovate and the marker means nothing. Not to be confused with
-  // the `ktlintPlugin` catalog entry: the plugin and the CLI are two different versions.
-  customManagers: [
-    {
-      customType: "regex",
-      managerFilePatterns: ["/^build\\.gradle\\.kts$/"],
-      matchStrings: [
-        "// renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\s+version\\s*=\\s*\"(?<currentValue>.*?)\"",
-      ],
-    },
-  ],
-
   packageRules: [
     {
       description: "Kotlin: the compiler and its plugins move as one version, and that is never a routine bump",
@@ -64,6 +50,15 @@
       description: "kotlinx-datetime publishes `-compat` builds for consumers pinned to an older line. They sort as newer and are not upgrades",
       matchPackageNames: ["org.jetbrains.kotlinx:kotlinx-datetime"],
       allowedVersions: "!/-compat$/",
+    },
+    {
+      // The build conventions are one release published under two names: the catalog entry
+      // `sborka` (the plugin coordinates) and the settings plugin id resolved in
+      // settings.gradle.kts. Without this they arrive as two pull requests for one number, which
+      // is what happens today in the repositories that migrated first.
+      description: "sborka is one release, not one release per place it is named",
+      matchPackageNames: ["/^ru\\.workinprogress\\.sborka/"],
+      groupName: "sborka",
     },
     {
       description: "AGP and KSP are pinned to the Kotlin version — look at them together, not as two PRs for one number",
@@ -83,7 +78,9 @@
     {
       description: "ktlint is build tooling, not a runtime dependency",
       matchPackageNames: [
-        "/^org\\.jlleitschuh\\.gradle\\.ktlint[:.]/",
+        // The plugin is named by its bare id, with nothing after it — a pattern that demands a
+        // `:` or a `.` next matches the coordinate and misses the plugin entirely.
+        "org.jlleitschuh.gradle.ktlint",
         "/^com\\.pinterest\\.ktlint[:.]/",
       ],
       matchUpdateTypes: ["minor", "patch"],
