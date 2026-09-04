@@ -2,37 +2,56 @@
 
 Katcher ships with a Helm chart designed for easy deployment on Kubernetes using [Traefik](https://traefik.io/) as the Ingress controller.
 
-### 1. Prerequisites (Authentication)
+### 1. Install with sign-in included
 
-Katcher is designed to be lightweight and agnostic to your authentication provider. It relies on a "Trusted Handoff" architecture:
+Katcher has no login of its own: it trusts headers set by whatever runs in front of it. If you have
+an SSO already, skip to [Bring your own SSO](#3-bring-your-own-sso). If you do not, the release can
+carry one — the provider ([shildik](https://github.com/youndie/shildik), storing
+its state in a SQLite file like Katcher does), an oauth2-proxy in front of Katcher, and a Job that
+creates the realm, the client and the first person.
 
-1.  It sits behind your existing auth layer (SSO, OAuth2 Proxy, Keycloak, etc.).
-2.  It expects the ingress controller to handle authentication.
-3.  It reads user details from trusted HTTP headers.
+It is **off by default**, and that is deliberate rather than a preference about which path is
+normal: an installation that already has an SSO must not acquire a second identity provider by
+upgrading. With it off, the manifests this chart renders are unchanged to the byte — CI checks
+exactly that.
 
-Before installing, ensure you have a **Traefik Middleware** (e.g., connected to `oauth2-proxy`) that authenticates requests and forwards the following headers:
+The provider needs a hostname of its own (an OIDC provider serves its paths at the root of a host),
+and one Secret, because none of this may live in values:
 
-* `X-Auth-Request-User` (User identifier)
-* `X-Auth-Request-Email` (User email)
-
-#### Example: Middleware Configuration
-
-Here is an example `Middleware` resource connecting Traefik to `oauth2-proxy`:
-
-```yaml
-apiVersion: traefik.io/v1alpha1
-kind: Middleware
-metadata:
-  name: auth-auth-mw
-  namespace: auth
-spec:
-  forwardAuth:
-    address: [http://oauth2-proxy.auth.svc.cluster.local:4180](http://oauth2-proxy.auth.svc.cluster.local:4180)
-    trustForwardHeader: true
-    authResponseHeaders:
-      - X-Auth-Request-User
-      - X-Auth-Request-Email
+```shell
+kubectl create secret generic katcher-auth -n katcher \
+  --from-literal=masterKeys="$(openssl rand -base64 32)" \
+  --from-literal=bootstrapToken="$(openssl rand -hex 16)" \
+  --from-literal=clientSecret="$(openssl rand -hex 24)" \
+  --from-literal=cookieSecret="$(openssl rand -base64 24 | head -c 32)" \
+  --from-literal=initialPassword='at-least-twelve-characters'
 ```
+
+```shell
+helm dependency build ./charts/katcher
+
+helm upgrade --install katcher ./charts/katcher -n katcher --create-namespace \
+  --set hostname=katcher.example.com \
+  --set shildik.enabled=true \
+  --set shildik.issuer=https://id.example.com \
+  --set shildik.ingress.host=id.example.com \
+  --set auth.initialUserEmail=you@example.com
+```
+
+What that changes in the release:
+
+* the UI route goes to the proxy instead of to Katcher with a middleware attached — authentication
+  happens inside that service rather than beside it;
+* the ingest and MCP routes still bypass it, exactly as they bypass an external SSO;
+* one Secret serves the provider, the proxy and the Job. `masterKeys` encrypts the signing keys:
+  lose it and every token you have issued becomes unverifiable.
+
+Two limits worth knowing before choosing this over your own SSO. The provider runs a **single
+replica** on a `ReadWriteOnce` volume — one SQLite file has one writer — so upgrades cost a few
+seconds during which nobody can sign in. And the people who may sign in live in that volume: it is
+yours to back up, and its backup is the whole volume rather than a copy of the `.db` file, because
+the newest writes sit in the WAL until a checkpoint.
+
 ### 2. Configuration (values.yaml)
 
 Create a my-values.yaml file to configure your deployment. Katcher uses SQLite by default, so persistent storage is required.
@@ -73,60 +92,45 @@ traefik:
    # The certResolver defined in your Traefik static config (e.g., 'letsencrypt' or 'cloudflare')
    certResolver: cloudflare
 
-   # The middleware defined in Step 1 that protects the UI
+   # Your own middleware, when you are not using the bundled provider — see "Bring your own SSO"
    middlewares:
       - auth-auth-mw
 ```
-### Alternative: let the chart do the sign-in
+### 3. Bring your own SSO
 
-Everything above assumes you already have an SSO and a middleware that speaks to it. If you do not,
-the release can carry its own — the provider ([shildik](https://github.com/youndie/shildik), storing
-its state in a SQLite file like Katcher does), an oauth2-proxy in front of Katcher, and a Job that
-creates the realm, the client and the first person.
+With `shildik.enabled=false` — the default — nothing in the release signs anybody in, and the
+installation you already have is the one that does. Katcher is agnostic about which: it relies on a
+"Trusted Handoff" architecture:
 
-It is **off by default**, and that is deliberate: an installation that has an SSO must not acquire a
-second identity provider by upgrading. With it off, the manifests this chart renders are unchanged
-to the byte — CI checks exactly that.
+1.  It sits behind your existing auth layer (SSO, OAuth2 Proxy, Keycloak, etc.).
+2.  It expects the ingress controller to handle authentication.
+3.  It reads user details from trusted HTTP headers.
 
-The provider needs a hostname of its own (an OIDC provider serves its paths at the root of a host),
-and one Secret, because none of this may live in values:
+Before installing, ensure you have a **Traefik Middleware** (e.g., connected to `oauth2-proxy`) that authenticates requests and forwards the following headers:
 
-```shell
-kubectl create secret generic katcher-auth -n katcher \
-  --from-literal=masterKeys="$(openssl rand -base64 32)" \
-  --from-literal=bootstrapToken="$(openssl rand -hex 16)" \
-  --from-literal=clientSecret="$(openssl rand -hex 24)" \
-  --from-literal=cookieSecret="$(openssl rand -base64 24 | head -c 32)" \
-  --from-literal=initialPassword='at-least-twelve-characters'
+* `X-Auth-Request-User` (User identifier)
+* `X-Auth-Request-Email` (User email)
+
+#### Example: Middleware Configuration
+
+Here is an example `Middleware` resource connecting Traefik to `oauth2-proxy`:
+
+```yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: auth-auth-mw
+  namespace: auth
+spec:
+  forwardAuth:
+    address: [http://oauth2-proxy.auth.svc.cluster.local:4180](http://oauth2-proxy.auth.svc.cluster.local:4180)
+    trustForwardHeader: true
+    authResponseHeaders:
+      - X-Auth-Request-User
+      - X-Auth-Request-Email
 ```
 
-```shell
-helm dependency build ./charts/katcher
-
-helm upgrade --install katcher ./charts/katcher -n katcher --create-namespace \
-  --set hostname=katcher.example.com \
-  --set shildik.enabled=true \
-  --set shildik.issuer=https://id.example.com \
-  --set shildik.ingress.host=id.example.com \
-  --set auth.initialUserEmail=you@example.com
-```
-
-What that changes in the release:
-
-* the UI route goes to the proxy instead of to Katcher with a middleware attached — authentication
-  happens inside that service rather than beside it;
-* the ingest and MCP routes still bypass it, exactly as they bypass an external SSO;
-* one Secret serves the provider, the proxy and the Job. `masterKeys` encrypts the signing keys:
-  lose it and every token you have issued becomes unverifiable.
-
-Two limits worth knowing before choosing this over your own SSO. The provider runs a **single
-replica** on a `ReadWriteOnce` volume — one SQLite file has one writer — so upgrades cost a few
-seconds during which nobody can sign in. And the people who may sign in live in that volume: it is
-yours to back up, and its backup is the whole volume rather than a copy of the `.db` file, because
-the newest writes sit in the WAL until a checkpoint.
-
-### 3. Installation
-Install or upgrade the chart using Helm. Point it to your values file:
+Then install with that middleware named:
 ```shell 
 helm upgrade --install katcher ./charts/katcher \
   --namespace katcher --create-namespace \
@@ -140,9 +144,10 @@ helm upgrade --install katcher ./charts/katcher \
   --set traefik.authMiddleware.name=auth-auth-mw \
   --set traefik.authMiddleware.namespace=auth
 ```
-**How it works**
+### How it works
+
 The Helm chart creates distinct **IngressRoutes**:
-1. **The UI Route** (`/`): Protected by the authMiddleware. Humans accessing the dashboard must log in via your SSO. Katcher reads the injected headers to identify the user.
+1. **The UI Route** (`/`): protected. With the bundled provider it goes to the oauth2-proxy that comes with the release; with your own SSO it goes to Katcher with your middleware attached. Either way somebody has established who the person is, and Katcher reads the injected headers to identify them.
 2. **The API Route** (`/api/reports`): **Publicly accessible** (bypasses the auth middleware). This allows your applications and SDKs to send crash reports without needing an interactive login session.
 3. **The MCP Route** (`/mcp`): created **only when `mcp.token` is set**. Also bypasses the auth middleware, because an MCP client is a machine with no browser session and would otherwise be rejected before reaching Katcher. It authenticates with the bearer token instead.
 

@@ -27,63 +27,12 @@ Katcher provides:
 - Error grouping dashboard built with HTMX
 - Zero-runtime-dependency deployment via Kotlin/Native
 - SQLite storage using sqlx4k for multiplatform database access
-- Authentication via reverse proxy (supports OAuth2-Proxy, Traefik, Nginx)
+- Authentication via reverse proxy (OAuth2-Proxy, Traefik, Nginx) — with a provider available in the box for installations that have none
 - Dark/light theme, responsive UI
 
-## Tech Stack
+## Getting started
 
-### Backend
-
-- Ktor (native server engine)
-- Kotlin/Native
-- SQLite (sqlx4k)
-- kotlinx.serialization, kotlinx.datetime
-
-### Frontend
-
-- HTMX (dynamic navigation without JavaScript frameworks)
-- Tailwind CSS
-- kotlinx.html server-side templates
-
-Everything is rendered server-side; no bundlers or Node runtime needed in production.
-
-## Authentication
-
-Katcher does not implement its own user login.
-Instead, it trusts upstream authentication headers provided by middleware such as:
-
-- oauth2-proxy
-- Traefik ForwardAuth
-- NGINX auth_request
-
-Katcher reads the following headers:
-
-- `X-Auth-Request-User` — unique user identifier
-- `X-Auth-Request-Email` — user email
-
-If these headers are missing, Katcher returns 401 Unauthorized.
-
-This makes it trivial to run behind any SSO provider (Keycloak, Google, GitHub, etc.) without embedding OAuth logic.
-
-**The ingest endpoint is deliberately outside this.** `POST /api/reports` sits outside the
-`authenticate` block the pages are inside, because a crashing application has no browser session and
-no SSO cookie to present. It is not unauthenticated: the report carries an `appKey`, and an unknown
-or revoked key is answered with 401 without the report being queued. What the headers above protect
-is the UI and the API a person reads — not the address applications post to.
-
-## Running server
-
-```shell
-docker run -p 8080:8080 \
-  -v ./data:/data \
-  ghcr.io/youndie/katcher:latest
-```
-
-That container has **no sign-in**: with nothing in front of it, every page answers 401, because
-Katcher expects the headers above to have been established by somebody else. It is the right shape
-for a cluster that already has an SSO, and a dead end on a laptop.
-
-### With sign-in, in one command
+### Run it, with sign-in, in one command
 
 ```shell
 docker compose -f docker/compose.yaml up -d
@@ -107,24 +56,58 @@ Two things it demonstrates beyond "the UI opens":
 Every secret in that file is a literal in a public repository and nothing speaks TLS, so it is for
 trying the product out and for demonstrating it — not a deployment.
 
-## Reverse Proxy Setup
+### Deploy it to Kubernetes
 
-### Example oauth2-proxy configuration:
+The chart installs the same arrangement: Katcher, the provider, and the proxy between them.
 
-The following headers:
+```shell
+helm dependency build ./charts/katcher
 
-- `X-Auth-Request-User`
-- `X-Auth-Request-Email`
-
-must be forwarded to Ktor.
-
-### For Traefik:
-
-```yaml 
-authResponseHeaders:
-  - X-Auth-Request-User
-  - X-Auth-Request-Email
+helm upgrade --install katcher ./charts/katcher -n katcher --create-namespace \
+  --set hostname=katcher.example.com \
+  --set shildik.enabled=true \
+  --set shildik.issuer=https://id.example.com \
+  --set shildik.ingress.host=id.example.com \
+  --set auth.initialUserEmail=you@example.com
 ```
+
+The provider needs a Secret of its own and a hostname of its own; both are two lines in the
+👉 **[Deployment Guide](charts/katcher/README.md)**, along with what it costs — a single replica,
+and a few seconds of sign-in downtime on upgrades.
+
+**Already have an SSO?** Then you want none of the above: leave `shildik.enabled` at its default
+`false`, point your middleware at Katcher, and the release stays what it always was. That path is
+[further down](#authentication) and in the same guide.
+
+### Just the server
+
+```shell
+docker run -p 8080:8080 \
+  -v ./data:/data \
+  ghcr.io/youndie/katcher:latest
+```
+
+That container has **no sign-in**: with nothing in front of it every page answers 401, because
+Katcher expects the headers described under [Authentication](#authentication) to have been
+established by somebody else. The right shape behind an SSO you already run, and a dead end
+otherwise.
+
+## Tech Stack
+
+### Backend
+
+- Ktor (native server engine)
+- Kotlin/Native
+- SQLite (sqlx4k)
+- kotlinx.serialization, kotlinx.datetime
+
+### Frontend
+
+- HTMX (dynamic navigation without JavaScript frameworks)
+- Tailwind CSS
+- kotlinx.html server-side templates
+
+Everything is rendered server-side; no bundlers or Node runtime needed in production.
 
 ## AI agents (MCP)
 
@@ -203,17 +186,58 @@ Neither of these makes untrusted text safe — no server-side check can, because
 limitation is in the models. They narrow the easy path. Run agents with the sandboxing and
 approval settings you would use for any tool that reads outside input.
 
+## Authentication
+
+**Katcher does not implement its own user login**, and the arrangement in the quick start does not
+contradict that: the provider and the proxy run *beside* it, not inside it. What Katcher does is
+trust upstream authentication headers, provided by middleware such as:
+
+- oauth2-proxy
+- Traefik ForwardAuth
+- NGINX auth_request
+
+Katcher reads the following headers:
+
+- `X-Auth-Request-User` — unique user identifier
+- `X-Auth-Request-Email` — user email
+
+If these headers are missing, Katcher returns 401 Unauthorized.
+
+This makes it trivial to run behind any SSO provider (Keycloak, Google, GitHub, etc.) without embedding OAuth logic.
+
+**The ingest endpoint is deliberately outside this.** `POST /api/reports` sits outside the
+`authenticate` block the pages are inside, because a crashing application has no browser session and
+no SSO cookie to present. It is not unauthenticated: the report carries an `appKey`, and an unknown
+or revoked key is answered with 401 without the report being queued. What the headers above protect
+is the UI and the API a person reads — not the address applications post to.
+
+## Reverse Proxy Setup
+
+### Example oauth2-proxy configuration:
+
+The following headers:
+
+- `X-Auth-Request-User`
+- `X-Auth-Request-Email`
+
+must be forwarded to Ktor.
+
+### For Traefik:
+
+```yaml 
+authResponseHeaders:
+  - X-Auth-Request-User
+  - X-Auth-Request-Email
+```
+
 ## 🚀 Deployment
 
-Katcher is designed to run on Kubernetes. We provide an official Helm chart.
+Katcher is designed to run on Kubernetes, and ships an official Helm chart. The quick start above
+installs it with the provider bundled; leaving `shildik.enabled=false` installs it in front of the
+SSO you already run, which is what the sections above describe.
 
-👉 **[Read the Deployment Guide](charts/katcher/README.md)** to learn how to install Katcher with Helm, configure Traefik Ingress, and set up SSO integration.
-
-The chart can also bring **its own sign-in**, for a cluster with no SSO: `shildik.enabled=true` adds
-an OpenID Connect provider and an oauth2-proxy to the release, the same three-part arrangement the
-compose file uses. It is off by default — an installation that already has an SSO must not acquire
-a second identity provider by upgrading — and with it off the rendered manifests are unchanged, to
-the byte.
+👉 **[Read the Deployment Guide](charts/katcher/README.md)** — both paths, the values, the
+IngressRoutes, and what the bundled provider costs.
 
 ## Android integration
 
