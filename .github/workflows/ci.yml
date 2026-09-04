@@ -101,14 +101,12 @@ jobs:
             exit 1
           fi
 
-      - name: Required values are required
+      # Only what the bundled path promises. `hostname` is **not** checked here: the chart has
+      # always rendered without one (an IngressRoute with an empty Host), and a guard asserting
+      # otherwise fails on behaviour nobody introduced — it did, on the first run of this job.
+      # Making it required is a change to everyone's chart and belongs in its own change.
+      - name: A bundled provider nobody can sign in to is refused
         run: |
-          if helm template katcher charts/katcher > /dev/null 2>&1; then
-            echo "the chart rendered without a hostname" >&2
-            exit 1
-          fi
-          # Somebody has to be able to sign in: a bundled provider with no first user is an
-          # installation nobody can open.
           if helm template katcher charts/katcher --set hostname=katcher.example.com --set shildik.enabled=true \
                --set shildik.issuer=https://id.example.com --set shildik.ingress.host=id.example.com > /dev/null 2>&1; then
             echo "the bundled provider rendered without an initial user" >&2
