@@ -61,12 +61,23 @@ jobs:
       # The ordinary installation: an SSO of your own in front, and no provider in the release.
       - run: helm lint charts/katcher --set hostname=katcher.example.com --set traefik.authMiddleware.name=auth-mw
 
+      # `grep -q X && { … exit 1; }` is not written here on purpose: as the last command of a step
+      # it exits non-zero when the pattern is **absent** — the step then fails for saying "no".
       - name: Nothing of the bundled provider exists unless it is switched on
         run: |
           rendered=$(helm template katcher charts/katcher --set hostname=katcher.example.com --set traefik.authMiddleware.name=auth-mw)
-          echo "$rendered" | grep -q 'katcher-auth-proxy' && { echo "the proxy is rendered without shildik.enabled" >&2; exit 1; }
-          echo "$rendered" | grep -q 'katcher-shildik' && { echo "the provider is rendered without shildik.enabled" >&2; exit 1; }
-          echo "$rendered" | grep -q 'name: auth-mw' || { echo "the external auth middleware is no longer wired" >&2; exit 1; }
+          if echo "$rendered" | grep -q 'katcher-auth-proxy'; then
+            echo "the proxy is rendered without shildik.enabled" >&2
+            exit 1
+          fi
+          if echo "$rendered" | grep -q 'katcher-shildik'; then
+            echo "the provider is rendered without shildik.enabled" >&2
+            exit 1
+          fi
+          if ! echo "$rendered" | grep -q 'name: auth-mw'; then
+            echo "the external auth middleware is no longer wired" >&2
+            exit 1
+          fi
 
       # With the provider bundled: the proxy, the provider and the Job that connects them.
       - name: The bundled installation renders whole
@@ -78,11 +89,17 @@ jobs:
             --set shildik.ingress.host=id.example.com \
             --set auth.initialUserEmail=someone@example.test)
           for needed in katcher-auth-proxy katcher-shildik katcher-auth-bootstrap; do
-            echo "$rendered" | grep -q "$needed" || { echo "$needed is missing from the bundled render" >&2; exit 1; }
+            if ! echo "$rendered" | grep -q "$needed"; then
+              echo "$needed is missing from the bundled render" >&2
+              exit 1
+            fi
           done
           # The UI route must reach the proxy rather than katcher directly: routed straight at the
           # backend it would answer 401 to everyone, since nothing would set the headers.
-          echo "$rendered" | grep -q 'name: katcher-auth-proxy' || { echo "the UI route bypasses the proxy" >&2; exit 1; }
+          if ! echo "$rendered" | grep -q 'name: katcher-auth-proxy'; then
+            echo "the UI route bypasses the proxy" >&2
+            exit 1
+          fi
 
       - name: Required values are required
         run: |
