@@ -65,6 +65,58 @@ sourceMaps:
   class: "local-path"
   path: /source-maps
 
+# **Sign-in, bundled.** Off by default, and that is the important half: Katcher trusts headers set
+# by whatever runs in front of it, and an installation that already has an SSO (the `traefik`
+# section below) must not acquire a second identity provider by upgrading.
+#
+# Switched on, three things appear: the shildik chart as a subchart (an OpenID Connect provider
+# keeping its state in a SQLite file, like Katcher), an oauth2-proxy in front of Katcher, and a Job
+# that creates the realm, the client and the first person to sign in as.
+#
+# It needs a hostname of its own for the provider — an OIDC provider serves its paths at the root
+# of a host, and sharing Katcher's would collide. And it needs one Secret, created before
+# installing, because none of these values may be secrets:
+#
+#     kubectl create secret generic katcher-auth \
+#       --from-literal=masterKeys="$(openssl rand -base64 32)" \
+#       --from-literal=bootstrapToken="$(openssl rand -hex 16)" \
+#       --from-literal=clientSecret="$(openssl rand -hex 24)" \
+#       --from-literal=cookieSecret="$(openssl rand -base64 24 | head -c 32)" \
+#       --from-literal=initialPassword='<at least 12 characters>'
+auth:
+  secretName: katcher-auth
+  # The person who can sign in on the first day. They are created once; changing this later adds
+  # another, it does not rename anyone.
+  initialUserEmail: ""
+  proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.13.0
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+      limits:
+        cpu: "1"
+        memory: 128Mi
+  bootstrapImage: curlimages/curl:8.11.1
+
+# Values of the shildik subchart, and the switch that brings it in at all. `enabled: false` means
+# the provider is not installed — not installed and turned off, absent.
+shildik:
+  enabled: false
+  # The address the provider answers on, from the browser's side. It goes into every token as
+  # `iss`, and the proxy compares the two.
+  issuer: ""
+  ingress:
+    enabled: true
+    host: ""
+  # **The same Secret as `auth.secretName`, named again because a subchart reads its own values.**
+  # One secret serves the provider, the proxy and the bootstrap Job; two would be two things to
+  # rotate. A template guard fails the render if these names ever drift apart.
+  secret:
+    name: katcher-auth
+    masterKeysKey: masterKeys
+    bootstrapTokenKey: bootstrapToken
+
 traefik:
   certResolver: cloudflare
   authMiddleware:

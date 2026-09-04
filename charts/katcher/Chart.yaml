@@ -2,5 +2,21 @@ apiVersion: v2
 name: katcher
 description: Katcher - tiny self-hosted crash tracker
 type: application
-version: 0.5.2
-appVersion: "0.5.2"
+version: 0.6.0
+appVersion: "0.6.2"
+
+# The provider that signs people in, for installations that have no SSO of their own.
+#
+# A dependency rather than a copy: it is the same chart shildik publishes, pulled from the same
+# registry as its image. `condition` is what keeps it out of everyone else's install — an
+# installation that already has an SSO must not get a second identity provider by upgrading.
+#
+# Fetch it before installing from a checkout:
+#
+#     helm dependency update charts/katcher
+dependencies:
+  - name: shildik-sqlite
+    version: "0.1.0"
+    repository: oci://ghcr.io/youndie/charts
+    alias: shildik
+    condition: shildik.enabled

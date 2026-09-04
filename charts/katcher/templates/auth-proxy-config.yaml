@@ -1,0 +1,65 @@
+{{- if .Values.shildik.enabled }}
+{{- if ne .Values.auth.secretName .Values.shildik.secret.name }}
+{{- fail (printf "auth.secretName (%s) and shildik.secret.name (%s) must name the same Secret: the provider, the proxy and the bootstrap Job all read it, and a mismatch shows up as a provider stuck in CreateContainerConfigError" .Values.auth.secretName .Values.shildik.secret.name) }}
+{{- end }}
+# oauth2-proxy: the piece that turns "who is this" into the headers Katcher reads.
+#
+# Katcher has no login of its own — it trusts `X-Auth-Request-User` and `X-Auth-Request-Email`.
+# With an SSO of your own that job belongs to a Traefik middleware (see the `traefik` values). This
+# is the same job done by a proxy that comes with the release, for an installation that has no SSO.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: katcher-auth-proxy
+  namespace: {{ .Release.Namespace }}
+data:
+  # **The header names cannot be set by oauth2-proxy's flags.** `--set-xauthrequest` sets them on
+  # the *response*, for nginx `auth_request` mode; what reaches an upstream by flags is
+  # `X-Forwarded-*`, which Katcher does not read — it answers 401 to a person who has just signed
+  # in. `injectRequestHeaders` below is the only place those names can be said, so the header
+  # contract stays Katcher's and the adapter lives here.
+  #
+  # This is oauth2-proxy's "alpha" configuration and may change between minor releases, which is
+  # why the image is pinned to an exact tag in values.
+  alpha.yaml: |
+    server:
+      BindAddress: 0.0.0.0:4180
+
+    upstreamConfig:
+      upstreams:
+        - id: katcher
+          path: /
+          uri: http://katcher-backend:8080
+
+    injectRequestHeaders:
+      - name: X-Auth-Request-User
+        values:
+          - claim: user
+      - name: X-Auth-Request-Email
+        values:
+          - claim: email
+
+    providers:
+      - id: shildik
+        provider: oidc
+        clientID: katcher
+        clientSecretFile: /etc/katcher-auth/clientSecret
+        scope: openid profile email
+        loginURL: {{ .Values.shildik.issuer }}/realms/main/oauth2/authorize
+        # Redeeming and key fetching stay inside the cluster: they are machine-to-machine and have
+        # no reason to leave it, or to depend on the ingress being up.
+        redeemURL: http://{{ .Release.Name }}-shildik:8080/realms/main/oauth2/token
+        profileURL: http://{{ .Release.Name }}-shildik:8080/realms/main/oauth2/userinfo
+        oidcConfig:
+          # The issuer is the **browser's** address of the provider, because that is what goes into
+          # the token. Discovery is skipped: fetched over the in-cluster address it would name that
+          # one as `issuer`, and the token's would not match.
+          issuerURL: {{ .Values.shildik.issuer }}/realms/main
+          skipDiscovery: true
+          jwksURL: http://{{ .Release.Name }}-shildik:8080/realms/main/oauth2/jwks
+          emailClaim: email
+          userIDClaim: email
+          # Spelled out because the alpha config fills in no default: without it the callback fails
+          # with "audience claims [] do not exist in claims" while the token plainly carries one.
+          audienceClaims: [aud]
+{{- end }}

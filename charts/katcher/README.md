@@ -77,6 +77,54 @@ traefik:
    middlewares:
       - auth-auth-mw
 ```
+### Alternative: let the chart do the sign-in
+
+Everything above assumes you already have an SSO and a middleware that speaks to it. If you do not,
+the release can carry its own — the provider ([shildik](https://github.com/youndie/shildik), storing
+its state in a SQLite file like Katcher does), an oauth2-proxy in front of Katcher, and a Job that
+creates the realm, the client and the first person.
+
+It is **off by default**, and that is deliberate: an installation that has an SSO must not acquire a
+second identity provider by upgrading. With it off, the manifests this chart renders are unchanged
+to the byte — CI checks exactly that.
+
+The provider needs a hostname of its own (an OIDC provider serves its paths at the root of a host),
+and one Secret, because none of this may live in values:
+
+```shell
+kubectl create secret generic katcher-auth -n katcher \
+  --from-literal=masterKeys="$(openssl rand -base64 32)" \
+  --from-literal=bootstrapToken="$(openssl rand -hex 16)" \
+  --from-literal=clientSecret="$(openssl rand -hex 24)" \
+  --from-literal=cookieSecret="$(openssl rand -base64 24 | head -c 32)" \
+  --from-literal=initialPassword='at-least-twelve-characters'
+```
+
+```shell
+helm dependency build ./charts/katcher
+
+helm upgrade --install katcher ./charts/katcher -n katcher --create-namespace \
+  --set hostname=katcher.example.com \
+  --set shildik.enabled=true \
+  --set shildik.issuer=https://id.example.com \
+  --set shildik.ingress.host=id.example.com \
+  --set auth.initialUserEmail=you@example.com
+```
+
+What that changes in the release:
+
+* the UI route goes to the proxy instead of to Katcher with a middleware attached — authentication
+  happens inside that service rather than beside it;
+* the ingest and MCP routes still bypass it, exactly as they bypass an external SSO;
+* one Secret serves the provider, the proxy and the Job. `masterKeys` encrypts the signing keys:
+  lose it and every token you have issued becomes unverifiable.
+
+Two limits worth knowing before choosing this over your own SSO. The provider runs a **single
+replica** on a `ReadWriteOnce` volume — one SQLite file has one writer — so upgrades cost a few
+seconds during which nobody can sign in. And the people who may sign in live in that volume: it is
+yours to back up, and its backup is the whole volume rather than a copy of the `.db` file, because
+the newest writes sit in the WAL until a checkpoint.
+
 ### 3. Installation
 Install or upgrade the chart using Helm. Point it to your values file:
 ```shell 

@@ -57,3 +57,7 @@ local.properties
 captures/
 .externalNativeBuild/
 .cxx/
+
+# A subchart fetched by `helm dependency build`. Pinned by Chart.yaml and Chart.lock, so the
+# unpacked copy is a build artifact rather than a source.
+charts/*/charts/

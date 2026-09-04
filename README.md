@@ -209,6 +209,12 @@ Katcher is designed to run on Kubernetes. We provide an official Helm chart.
 
 👉 **[Read the Deployment Guide](charts/katcher/README.md)** to learn how to install Katcher with Helm, configure Traefik Ingress, and set up SSO integration.
 
+The chart can also bring **its own sign-in**, for a cluster with no SSO: `shildik.enabled=true` adds
+an OpenID Connect provider and an oauth2-proxy to the release, the same three-part arrangement the
+compose file uses. It is off by default — an installation that already has an SSO must not acquire
+a second identity provider by upgrading — and with it off the rendered manifests are unchanged, to
+the byte.
+
 ## Android integration
 
 Android is a variant of the same multiplatform client — `ru.workinprogress.katcher:client` — so an
