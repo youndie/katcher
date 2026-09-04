@@ -79,6 +79,34 @@ docker run -p 8080:8080 \
   ghcr.io/youndie/katcher:latest
 ```
 
+That container has **no sign-in**: with nothing in front of it, every page answers 401, because
+Katcher expects the headers above to have been established by somebody else. It is the right shape
+for a cluster that already has an SSO, and a dead end on a laptop.
+
+### With sign-in, in one command
+
+```shell
+docker compose -f docker/compose.yaml up -d
+open http://127.0.0.1:4180        # someone@example.test / katcher-demo-password
+```
+
+Three containers and no database to operate: Katcher, an OpenID Connect provider
+([shildik](https://github.com/youndie/shildik), keeping its state in a SQLite file as Katcher
+does), and oauth2-proxy between them. A fourth runs once to create the realm, the client and the
+person, then exits.
+
+Two things it demonstrates beyond "the UI opens":
+
+* **The ingest paths stay open.** `/api/**` and `/mcp` skip the proxy's authentication, because an
+  application sending a crash report holds no browser session and an MCP client is a machine —
+  both would otherwise be redirected to a sign-in page they cannot complete. It is the same hole
+  the Helm chart punches with its bypass routes.
+* **Katcher itself is not published.** Only the proxy has a port; the container that trusts
+  headers is not reachable except through the thing that sets them.
+
+Every secret in that file is a literal in a public repository and nothing speaks TLS, so it is for
+trying the product out and for demonstrating it — not a deployment.
+
 ## Reverse Proxy Setup
 
 ### Example oauth2-proxy configuration:
