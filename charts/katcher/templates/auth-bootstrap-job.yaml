@@ -1,0 +1,88 @@
+{{- if .Values.shildik.enabled }}
+# The realm, the client and the first person — created once, after the provider is up.
+#
+# A Job rather than instructions in a README: an installation that has to be finished by hand is
+# one that is half-finished on the day somebody else installs it. It is a hook so it runs after the
+# provider exists, and it is idempotent so an upgrade re-runs it harmlessly.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: katcher-auth-bootstrap
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "5"
+    # Kept on failure: the log of a bootstrap that did not finish is the only thing that says why
+    # nobody can sign in.
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      name: katcher-auth-bootstrap
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: bootstrap
+          image: {{ .Values.auth.bootstrapImage | quote }}
+          env:
+            - name: ADMIN
+              # The management port, which no ingress publishes: the admin API exists on the
+              # cluster network only.
+              value: http://{{ .Release.Name }}-shildik:9000/admin
+            - name: REDIRECT_URI
+              value: https://{{ required "hostname is required" .Values.hostname }}/oauth2/callback
+            - name: USER_EMAIL
+              value: {{ required "auth.initialUserEmail is required when the provider is bundled: somebody has to be able to sign in" .Values.auth.initialUserEmail | quote }}
+            - name: TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.secretName }}
+                  key: bootstrapToken
+            - name: CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.secretName }}
+                  key: clientSecret
+            - name: USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.auth.secretName }}
+                  key: initialPassword
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -eu
+              for i in $(seq 1 60); do
+                curl -fsS -o /dev/null -H "Authorization: Bearer $TOKEN" "$ADMIN/tenants" && break
+                sleep 2
+              done
+
+              # **A failed step fails the Job.** Swallowing errors here would report a working
+              # sign-in that nobody can complete — and the failure would surface as "the login page
+              # rejects me", far from its cause. `create` tolerates one thing: the object already
+              # existing, which is what an upgrade means.
+              call() {
+                method=$1; path=$2; body=$3; allow=$4
+                code=$(curl -sS -o /tmp/out -w '%{http_code}' -X "$method" "$ADMIN$path" \
+                  -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' -d "$body")
+                case "$code" in
+                  2*) return 0 ;;
+                  *) case " $allow " in
+                       *" $code "*) echo "$method $path -> $code (already there)"; return 0 ;;
+                       *) echo "$method $path -> $code: $(cat /tmp/out)" >&2; return 1 ;;
+                     esac ;;
+                esac
+              }
+
+              call POST /tenants '{"realm":"main"}' "409 400"
+              call POST /tenants/main/clients "{\"clientId\":\"katcher\",\"redirectUris\":[\"$REDIRECT_URI\"]}" "409 400"
+              # Set rather than read back: a client returns its secret once, and a Job that has to
+              # capture it breaks on the run where the client already exists.
+              call PUT /tenants/main/clients/katcher/import-secret "{\"secret\":\"$CLIENT_SECRET\"}" ""
+              call POST /tenants/main/users "{\"id\":\"$USER_EMAIL\",\"email\":\"$USER_EMAIL\",\"emailVerified\":true}" ""
+              # Twelve characters is the provider's floor and it refuses anything shorter.
+              call PUT "/tenants/main/users/$USER_EMAIL/password" "{\"password\":\"$USER_PASSWORD\"}" ""
+
+              echo "bootstrap done: $USER_EMAIL can sign in at $REDIRECT_URI"
+{{- end }}

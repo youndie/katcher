@@ -45,3 +45,55 @@ jobs:
           path: |
             **/build/reports/**
           retention-days: 7
+
+  # The chart is not built by Gradle, so nothing else would ever look at it. A template that stops
+  # rendering is otherwise found by whoever installs it — the worst possible reviewer.
+  chart:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: azure/setup-helm@v5
+
+      - name: Fetch the subchart
+        run: helm dependency build charts/katcher
+
+      # The ordinary installation: an SSO of your own in front, and no provider in the release.
+      - run: helm lint charts/katcher --set hostname=katcher.example.com --set traefik.authMiddleware.name=auth-mw
+
+      - name: Nothing of the bundled provider exists unless it is switched on
+        run: |
+          rendered=$(helm template katcher charts/katcher --set hostname=katcher.example.com --set traefik.authMiddleware.name=auth-mw)
+          echo "$rendered" | grep -q 'katcher-auth-proxy' && { echo "the proxy is rendered without shildik.enabled" >&2; exit 1; }
+          echo "$rendered" | grep -q 'katcher-shildik' && { echo "the provider is rendered without shildik.enabled" >&2; exit 1; }
+          echo "$rendered" | grep -q 'name: auth-mw' || { echo "the external auth middleware is no longer wired" >&2; exit 1; }
+
+      # With the provider bundled: the proxy, the provider and the Job that connects them.
+      - name: The bundled installation renders whole
+        run: |
+          rendered=$(helm template katcher charts/katcher \
+            --set hostname=katcher.example.com \
+            --set shildik.enabled=true \
+            --set shildik.issuer=https://id.example.com \
+            --set shildik.ingress.host=id.example.com \
+            --set auth.initialUserEmail=someone@example.test)
+          for needed in katcher-auth-proxy katcher-shildik katcher-auth-bootstrap; do
+            echo "$rendered" | grep -q "$needed" || { echo "$needed is missing from the bundled render" >&2; exit 1; }
+          done
+          # The UI route must reach the proxy rather than katcher directly: routed straight at the
+          # backend it would answer 401 to everyone, since nothing would set the headers.
+          echo "$rendered" | grep -q 'name: katcher-auth-proxy' || { echo "the UI route bypasses the proxy" >&2; exit 1; }
+
+      - name: Required values are required
+        run: |
+          if helm template katcher charts/katcher > /dev/null 2>&1; then
+            echo "the chart rendered without a hostname" >&2
+            exit 1
+          fi
+          # Somebody has to be able to sign in: a bundled provider with no first user is an
+          # installation nobody can open.
+          if helm template katcher charts/katcher --set hostname=katcher.example.com --set shildik.enabled=true \
+               --set shildik.issuer=https://id.example.com --set shildik.ingress.host=id.example.com > /dev/null 2>&1; then
+            echo "the bundled provider rendered without an initial user" >&2
+            exit 1
+          fi

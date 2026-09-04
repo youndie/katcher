@@ -1,0 +1,77 @@
+{{- if .Values.shildik.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: katcher-auth-proxy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: katcher-auth-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: katcher-auth-proxy
+  template:
+    metadata:
+      labels:
+        app: katcher-auth-proxy
+      annotations:
+        # A changed configuration restarts the pod. Without this the ConfigMap updates and the
+        # proxy keeps serving the old provider settings until something else happens to restart it.
+        # The checksum reads the **other** file: a template that hashes itself recurses until helm
+        # gives up, which it does with the same message repeated a hundred times.
+        checksum/config: {{ include (print $.Template.BasePath "/auth-proxy-config.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: oauth2-proxy
+          image: {{ .Values.auth.proxy.image | quote }}
+          args:
+            - --alpha-config=/etc/oauth2-proxy/alpha.yaml
+            - --cookie-secret-file=/etc/katcher-auth/cookieSecret
+            - --email-domain=*
+            - --redirect-url=https://{{ required "hostname is required" .Values.hostname }}/oauth2/callback
+            # **The ingest paths stay open.** An application sending a crash report holds no browser
+            # session and an MCP client is a machine: both would be sent to a sign-in page they
+            # cannot complete. The same holes the IngressRoutes punch for an external SSO.
+            - --skip-auth-route=^/api
+            - --skip-auth-route=^/mcp
+          ports:
+            - name: http
+              containerPort: 4180
+          volumeMounts:
+            - name: config
+              mountPath: /etc/oauth2-proxy
+            - name: secrets
+              mountPath: /etc/katcher-auth
+          resources: {{- toYaml .Values.auth.proxy.resources | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: katcher-auth-proxy
+        - name: secrets
+          secret:
+            # Read from files rather than passed as flags: a flag is visible in `ps` inside the
+            # container and in the pod spec to anyone who can read it.
+            secretName: {{ .Values.auth.secretName }}
+            items:
+              - key: clientSecret
+                path: clientSecret
+              - key: cookieSecret
+                path: cookieSecret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: katcher-auth-proxy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: katcher-auth-proxy
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 4180
+      targetPort: http
+  selector:
+    app: katcher-auth-proxy
+{{- end }}

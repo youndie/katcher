@@ -89,6 +89,18 @@ spec:
         - name: katcher-backend
           port: 8080
       priority: 1
+{{- if .Values.shildik.enabled }}
+    # The bundled provider signs people in, so the route goes to the proxy and no middleware is
+    # named: authentication happens inside that service rather than beside it. The bypass routes
+    # above still point straight at katcher — an application sending a crash report has no session
+    # to establish.
+    - match: Host(`{{ .Values.hostname }}`)
+      kind: Rule
+      services:
+        - name: katcher-auth-proxy
+          port: 4180
+      priority: 10
+{{- else }}
     - match: Host(`{{ .Values.hostname }}`)
       kind: Rule
       middlewares:
@@ -100,5 +112,6 @@ spec:
         - name: katcher-backend
           port: 8080
       priority: 10
+{{- end }}
   tls:
     certResolver: {{ .Values.traefik.certResolver | quote }}
