@@ -1,0 +1,55 @@
+# The part of oauth2-proxy's configuration that flags cannot express.
+#
+# **Why this file exists at all.** Katcher reads `X-Auth-Request-User` and `X-Auth-Request-Email`.
+# Those are the names oauth2-proxy uses in nginx `auth_request` mode, where it answers a
+# sub-request and the web server copies the headers onward — and `--set-xauthrequest` sets them on
+# that *response*. Here it is the proxy itself that forwards the request, and what it passes
+# upstream by flags is `X-Forwarded-User` / `X-Forwarded-Email`. The names are not configurable
+# through flags; `injectRequestHeaders` below is where they are, so the header contract stays
+# katcher's and the adapter stays here.
+#
+# The structure is oauth2-proxy's "alpha" configuration and may change between minor releases —
+# hence the pinned image tag in compose.yaml.
+# With an alpha config the server's own address moves here too — `--http-address` stops being a
+# flag the moment this file is used, and the proxy exits saying so.
+server:
+  BindAddress: 0.0.0.0:4180
+
+upstreamConfig:
+  upstreams:
+    - id: katcher
+      path: /
+      uri: http://katcher:8080
+
+injectRequestHeaders:
+  - name: X-Auth-Request-User
+    values:
+      - claim: user
+  - name: X-Auth-Request-Email
+    values:
+      - claim: email
+
+providers:
+  - id: shildik
+    provider: oidc
+    clientID: katcher
+    clientSecret: demo-client-secret
+    scope: openid profile email
+    # **Discovery is skipped and every address is given by hand**, because the provider has two of
+    # them: the browser reaches it at 127.0.0.1:8080 and this container at shildik:8080. A
+    # discovery document fetched over the second would name the second as `issuer`, and the token's
+    # `iss` — the first — would not match it.
+    loginURL: http://127.0.0.1:8080/realms/main/oauth2/authorize
+    redeemURL: http://shildik:8080/realms/main/oauth2/token
+    profileURL: http://shildik:8080/realms/main/oauth2/userinfo
+    oidcConfig:
+      issuerURL: http://127.0.0.1:8080/realms/main
+      skipDiscovery: true
+      jwksURL: http://shildik:8080/realms/main/oauth2/jwks
+      emailClaim: email
+      userIDClaim: email
+      # **Spelled out because the alpha config fills in no default for it.** With flags this is
+      # `aud` unless said otherwise; here the list starts empty, and the callback fails with
+      # "audience claims [] do not exist in claims" while the token in the message plainly carries
+      # `aud: katcher`.
+      audienceClaims: [aud]

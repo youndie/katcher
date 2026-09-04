@@ -1,0 +1,141 @@
+# Katcher with sign-in, in one command.
+#
+# Katcher itself has no login: it reads `X-Auth-Request-User` and `X-Auth-Request-Email` and
+# expects something in front to have established who the person is. That is the right shape for a
+# cluster, where an SSO already exists, and a dead end on a laptop — where there is nothing in
+# front, so the UI answers 401 and cannot be tried at all.
+#
+# This file is the missing front: an OpenID Connect provider (shildik) and oauth2-proxy between it
+# and katcher. Three containers, no database to operate — the provider keeps its state in a SQLite
+# file, as katcher does.
+#
+#   docker compose -f docker/compose.yaml up -d
+#   open http://127.0.0.1:4180        # someone@example.test / katcher-demo-password
+#
+# **This is not a deployment.** Every secret below is a literal in a file in a public repository,
+# and both providers are reachable on localhost without TLS. It exists so the product can be tried
+# and demonstrated; a real installation puts katcher behind the SSO it already has.
+services:
+  # The identity provider. Published on 8080 because the browser talks to it directly — the
+  # sign-in page and the authorization redirect are its, not the proxy's.
+  shildik:
+    image: ghcr.io/youndie/shildik-sqlite:latest
+    # The images are linux/amd64 only. `docker run` falls back to emulation on an arm64 host;
+    # compose refuses the pull without this.
+    platform: linux/amd64
+    environment:
+      # Must equal the address the **browser** reaches, because it goes into every token as `iss`
+      # and oauth2-proxy compares the two.
+      SHILDIK_ISSUER: http://127.0.0.1:8080
+      SHILDIK_DB_PATH: /data/shildik.db
+      SHILDIK_MIGRATIONS: /app/migrations
+      SHILDIK_MASTER_KEYS: demo-master-key-not-for-anything-real
+      SHILDIK_BOOTSTRAP_TOKEN: demo-bootstrap-token
+    volumes:
+      - shildik-data:/data
+    ports:
+      - "8080:8080"
+    # **No healthcheck, deliberately.** The image is distroless: no shell, no `wget`, and the
+    # binary answers no `--version`. A check that cannot pass would leave the container `unhealthy`
+    # for ever and teach whoever reads `docker compose ps` to ignore the column. Waiting is done
+    # where it can be done honestly — the bootstrap below retries the management API until it
+    # answers.
+
+  # Creates the realm, the client oauth2-proxy signs in with, and one person to sign in as.
+  # Runs once and exits; everything it does is idempotent enough to re-run.
+  bootstrap:
+    image: curlimages/curl:8.11.1
+    depends_on:
+      - shildik
+    environment:
+      ADMIN: http://shildik:9000/admin
+      TOKEN: demo-bootstrap-token
+      CLIENT_SECRET: demo-client-secret
+      USER_EMAIL: someone@example.test
+      USER_PASSWORD: katcher-demo-password
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        set -eu
+        # The provider needs a moment; the management port is the one that answers first.
+        for i in $$(seq 1 30); do
+          curl -fsS -o /dev/null -H "Authorization: Bearer $$TOKEN" "$$ADMIN/tenants" && break
+          sleep 1
+        done
+
+        # **A failed step fails the container.** The first version of this script ended every call
+        # with `|| true` and printed "bootstrap done" — while the password had been refused for
+        # being shorter than twelve characters and nobody could sign in. A bootstrap that reports
+        # success it did not achieve is worse than one that stops.
+        #
+        # `create` tolerates one thing only: the object already existing, which is what a second
+        # `up` on the same volume means.
+        call() {
+          method=$$1; path=$$2; body=$$3; allow=$$4
+          code=$$(curl -sS -o /tmp/out -w '%{http_code}' -X "$$method" "$$ADMIN$$path" \
+            -H "Authorization: Bearer $$TOKEN" -H 'Content-Type: application/json' -d "$$body")
+          case "$$code" in
+            2*) return 0 ;;
+            *) case " $$allow " in
+                 *" $$code "*) echo "$$method $$path -> $$code (already there)"; return 0 ;;
+                 *) echo "$$method $$path -> $$code: $$(cat /tmp/out)" >&2; return 1 ;;
+               esac ;;
+          esac
+        }
+
+        call POST /tenants '{"realm":"main"}' "409 400"
+        # The redirect address is oauth2-proxy's, and it has to match exactly: a client may only
+        # come back to an address it was registered with.
+        call POST /tenants/main/clients '{"clientId":"katcher","redirectUris":["http://127.0.0.1:4180/oauth2/callback"]}' "409 400"
+        # The secret is set rather than read: a created client returns its secret once, and a
+        # script that has to capture it breaks on the run where the client already exists.
+        call PUT /tenants/main/clients/katcher/import-secret "{\"secret\":\"$$CLIENT_SECRET\"}" ""
+        call POST /tenants/main/users "{\"id\":\"$$USER_EMAIL\",\"email\":\"$$USER_EMAIL\",\"name\":\"Someone\",\"emailVerified\":true}" ""
+        # Twelve characters is the provider's floor, not a suggestion: it refuses anything shorter.
+        call PUT "/tenants/main/users/$$USER_EMAIL/password" "{\"password\":\"$$USER_PASSWORD\"}" ""
+
+        echo "bootstrap done: sign in at http://127.0.0.1:4180 as $$USER_EMAIL / $$USER_PASSWORD"
+
+  katcher:
+    image: ghcr.io/youndie/katcher:latest
+    platform: linux/amd64
+    environment:
+      DB_PATH: /data/local.db
+      SOURCE_MAPS_PATH: /data/mappings
+    volumes:
+      - katcher-data:/data
+    # **Not published.** Everything reaches katcher through the proxy, which is what establishes
+    # who the person is. A published port here would be a way around the sign-in, on the same
+    # machine, by anyone who noticed.
+    expose:
+      - "8080"
+
+  # The front: it authenticates a person against shildik and passes katcher the headers it reads.
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:v7.13.0
+    depends_on:
+      - katcher
+      - bootstrap
+    ports:
+      - "4180:4180"
+    volumes:
+      - ./oauth2-proxy.yaml:/etc/oauth2-proxy/alpha.yaml:ro
+    command:
+      # The upstream, the provider and the headers live in the file: the names katcher reads are
+      # not something flags can set. Everything else is still a flag.
+      - --alpha-config=/etc/oauth2-proxy/alpha.yaml
+      # Any 32 bytes; the cookie is signed with it.
+      - --cookie-secret=0123456789abcdef0123456789abcdef
+      - --cookie-secure=false
+      - --email-domain=*
+      - --redirect-url=http://127.0.0.1:4180/oauth2/callback
+      # **The ingest paths stay open.** An application sending a crash report holds no browser
+      # session, and an MCP client is a machine: both would be redirected to a sign-in page they
+      # cannot complete. This is the same hole the Helm chart punches with its bypass routes.
+      - --skip-auth-route=^/api
+      - --skip-auth-route=^/mcp
+
+volumes:
+  # Named, and separate: one holds crash reports, the other holds who may read them.
+  katcher-data:
+  shildik-data:
