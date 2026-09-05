@@ -19,7 +19,7 @@ plugins {
 //
 // The module stays here as the single-platform Android implementation it always was — readable,
 // buildable, and the thing `dev/sample-android` runs against. Consumers take the multiplatform
-// client instead: `ru.workinprogress.katcher:client`, which carries an `android` variant since
+// client instead: `io.github.youndie.katcher:client`, which carries an `android` variant since
 // 0.6.x and reads the same `KATCHER_BUILD_UUID` from BuildConfig.
 
 kotlin {

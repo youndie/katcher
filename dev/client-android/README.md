@@ -1,11 +1,12 @@
 ### Katcher Android Client
 
-> **Not published any more, and not the one to reach for.** `ru.workinprogress.katcher:client-android`
-> now points at the android variant of the multiplatform client (`ru.workinprogress.katcher:client`),
+> **Not published any more, and not the one to reach for.** The name `client-android` now belongs to
+> the android variant of the multiplatform client (`io.github.youndie.katcher:client`),
 > which covers Android with the same `Katcher.start { }` API as every other platform, keeps reports in
 > `Context.cacheDir` and reads the same `KATCHER_BUILD_UUID` from `BuildConfig`. Both libraries declared
 > `object Katcher` in `ru.workinprogress.katcher`, so an application that needed the multiplatform client
-> could not have them both on one classpath — see issue #27. `0.4.92` is the last release of this module;
+> could not have them both on one classpath — see issue #27. `ru.workinprogress.katcher:client-android:0.4.92`
+> is the last release of this module, under the group this repository published before 0.7;
 > the sources stay here, and `dev/sample-android` still builds against them.
 
 Katcher is a lightweight crash reporting client for Android. This module (`dev/client-android`) collects uncaught exceptions, persists them on disk, and uploads reports to your Katcher server.
@@ -27,7 +28,7 @@ If you publish the artifact to your repository, use:
 
 ```kotlin
 dependencies {
-    implementation("ru.workinprogress.katcher:client-android:<version>")
+    implementation("io.github.youndie.katcher:client-android:<version>")
 }
 ```
 
@@ -58,7 +59,7 @@ Quick example (in your app module `build.gradle.kts`):
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("ru.workinprogress.katcher.gradle.plugin")
+    id("io.github.youndie.katcher.gradle.plugin")
 }
 
 katcher {

@@ -35,7 +35,7 @@ If you publish this plugin to your Maven/Gradle Plugin Portal, apply it in your 
 
 ```kotlin
 plugins {
-    id("ru.workinprogress.katcher.gradle.plugin") version "<version>"
+    id("io.github.youndie.katcher.gradle.plugin") version "<version>"
 }
 ```
 
@@ -51,12 +51,12 @@ Then in your app module `build.gradle.kts`:
 
 ```kotlin
 plugins {
-    id("ru.workinprogress.katcher.gradle.plugin")
+    id("io.github.youndie.katcher.gradle.plugin")
 }
 ```
 
 Notes:
-- The exact plugin id depends on your plugin publishing setup. The examples use `ru.workinprogress.katcher.gradle`.
+- The exact plugin id depends on your plugin publishing setup. The examples use `io.github.youndie.katcher.gradle`.
 
 ---
 
@@ -68,7 +68,7 @@ In your Android app module’s `build.gradle.kts`:
 plugins {
     id("com.android.application")
     kotlin("android")
-    id("ru.workinprogress.katcher.gradle.plugin")
+    id("io.github.youndie.katcher.gradle.plugin")
 }
 
 android {
