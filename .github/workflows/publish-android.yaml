@@ -21,6 +21,6 @@ jobs:
           ./gradlew :dev:android-gradle-plugin:publishAllPublicationsToWipRepository --no-daemon
         env:
           # The version head is `version` in gradle.properties; CI appends the run number.
-          ORG_GRADLE_PROJECT_VERSION: 0.6.${{ github.run_number }}
+          ORG_GRADLE_PROJECT_VERSION: 0.7.${{ github.run_number }}
           ORG_GRADLE_PROJECT_REPOSILITE_USER: ${{ secrets.REPOSILITE_USER }}
           ORG_GRADLE_PROJECT_REPOSILITE_SECRET: ${{ secrets.REPOSILITE_SECRET }}

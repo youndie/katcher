@@ -5,7 +5,7 @@
 [![native](https://img.shields.io/badge/Native-blue?logoColor=white)](https://kotlinlang.org)
 [![jvm](https://img.shields.io/badge/JVM-orange?logoColor=white)](https://kotlinlang.org)
 [![android](https://img.shields.io/badge/Android-green?logoColor=white)](https://android.com)
-[![katcher client](https://reposilite.kotlin.website/api/badge/latest/snapshots/ru/workinprogress/katcher/client?name=client&color=40c14a&prefix=v)](https://reposilite.kotlin.website/#/snapshots/ru/workinprogress/katcher/client)
+[![katcher client](https://reposilite.kotlin.website/api/badge/latest/snapshots/io/github/youndie/katcher/client?name=client&color=40c14a&prefix=v)](https://reposilite.kotlin.website/#/snapshots/io/github/youndie/katcher/client)
 [![Docker Image Version](https://img.shields.io/badge/server-latest-blue?logo=docker)](https://github.com/youndie/katcher/pkgs/container/katcher)
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
@@ -241,12 +241,12 @@ IngressRoutes, and what the bundled provider costs.
 
 ## Android integration
 
-Android is a variant of the same multiplatform client — `ru.workinprogress.katcher:client` — so an
+Android is a variant of the same multiplatform client — `io.github.youndie.katcher:client` — so an
 application that shares code between Android, iOS and the JVM reports through one library and one API:
 
 ```kotlin
 dependencies {
-    implementation("ru.workinprogress.katcher:client:$katcher_version")
+    implementation("io.github.youndie.katcher:client:$katcher_version")
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
 }
 ```
@@ -265,9 +265,10 @@ the URL and the key you pass to `Katcher.start { }`.
 `dev/client-android` is the older single-platform Android client, with its own API
 (`Katcher.start(context)`) and its own implementation. **It is no longer published**: it declared the
 same `object Katcher` in the same package as the multiplatform client, so the two could not sit on one
-classpath, and the coordinate `ru.workinprogress.katcher:client-android` now belongs to the
-multiplatform client's android variant. The module stays in the repository as a source-level example;
-`0.4.92` remains the last release of it.
+classpath, and the name `client-android` now belongs to the multiplatform client's android variant,
+published as `io.github.youndie.katcher:client-android`. The module stays in the repository as a
+source-level example; `ru.workinprogress.katcher:client-android:0.4.92` remains the last release of
+it, under the group this repository published before 0.7.
 
 ## Sending Errors From Your Application (Kotlin Client)
 
@@ -286,7 +287,7 @@ repositories {
 }
 
 dependencies {
-    implementation("ru.workinprogress.katcher:client:$katcher_version")
+    implementation("io.github.youndie.katcher:client:$katcher_version")
     //any ktor engine
     implementation("io.ktor:ktor-client-cio:$ktor_version")
 }

@@ -14,7 +14,7 @@ required in production). Client is a KMP library apps embed to capture and uploa
   symbolication) each hold their own Exposed/sqlx4k data access.
 - `shared/` — DTOs shared between client and server (`CreateReportParams`, `Breadcrumb`,
   `ReportResource`, `ErrorGroupSort`).
-- `client/` — the crash-reporting library consumers embed (`ru.workinprogress.katcher:client`).
+- `client/` — the crash-reporting library consumers embed (`io.github.youndie.katcher:client`).
   `commonMain/Katcher.kt` is the public API (`Katcher.start {}`, `Katcher.catch()`, `Katcher.addBreadcrumb()`).
   Platform-specific `expect/actual`: `setupPlatformHandler()`, `fileSystem` (`KatcherFileSystem`).
   `client/` and `shared/` list their targets explicitly (JVM, both Linux, both macOS, three iOS, mingw)
@@ -26,8 +26,9 @@ required in production). Client is a KMP library apps embed to capture and uploa
   The android target lives beside them: `jvmSharedMain` holds what JVM and Android share (the
   `Thread.setDefaultUncaughtExceptionHandler` install, `FileKatcherFileSystem`), and each of the two
   supplies only its cache directory and its system attributes. Its publication is
-  `ru.workinprogress.katcher:client-android` — the coordinate `dev/client-android` used until 0.4.92,
-  which is why that module no longer publishes anything (#27).
+  `io.github.youndie.katcher:client-android` — the name `dev/client-android` used until 0.4.92 (as
+  `ru.workinprogress.katcher:client-android`, the group this repository published before 0.7), which
+  is why that module no longer publishes anything (#27).
 - `dev/` — sample/dogfooding apps (`sample-kotlin-jvm`, `client-android`, `android-gradle-plugin`,
   `server-jvm-keycloak`, `retrace`) — not shipped, used for manual testing.
 - `charts/katcher/` — Helm chart for deploying the server.
