@@ -8,7 +8,7 @@ kotlinxCoroutinesCore = "1.11.0"
 kotlinxDatetime = "0.8.0"
 kotlinxSerializationJson = "1.11.0"
 mcpKotlinSdk = "0.15.0"
-metrikAgent = "0.1.13"
+metrikAgent = "0.2.16"
 sqlx4k = "1.13.0"
 ksp = "2.3.11"
 ktlint = "14.2.0"
@@ -22,7 +22,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 mcp-kotlin-sdk-server = { module = "io.modelcontextprotocol:kotlin-sdk-server", version.ref = "mcpKotlinSdk" }
 # Агент metrik: Ktor-плагин, меряет в процессе и раз в минуту шлёт одну UDP-датаграмму.
-metrik-agent = { module = "ru.workinprogress.metrik:agent", version.ref = "metrikAgent" }
+metrik-agent = { module = "io.github.youndie.metrik:agent", version.ref = "metrikAgent" }
 
 sqlx4k-sqlite = { module = "io.github.smyrgeorge:sqlx4k-sqlite", version.ref = "sqlx4k" }
 sqlx4k-codegen = { module = "io.github.smyrgeorge:sqlx4k-codegen", version.ref = "sqlx4k" }
