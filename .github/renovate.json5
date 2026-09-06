@@ -1,64 +1,32 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
 
-  extends: ["config:recommended"],
+  // The portfolio's shared configuration, extended by name: the timezone, the Monday schedule, the
+  // limits, `platformAutomerge: false`, the kotlin/kotlinx/sborka/ci-actions groups and majors going
+  // to a human were identical in ten repositories and now live in sborka.
+  //
+  // The automerge preset is extended second on purpose — its rule has to land after the base
+  // preset's "majors get a human" to override it for the harness — and its precondition holds
+  // here: ci.yml runs on `pull_request`.
+  extends: [
+    "github>youndie/sborka",
+    "github>youndie/sborka:automerge-harness",
+  ],
 
-  // Once a week, in UTC. Updates arrive as one Monday-morning batch rather than a
-  // trickle of a PR a day — every PR runs the full build, and that build is not cheap.
-  timezone: "Etc/UTC",
-  schedule: ["before 6am on monday"],
-
-  // Unlike tracy, the history here is prefixed (add:/fix:/bump:/docs:), so keep the prefixes.
-  // config:recommended maps dependency bumps to `fix:` and everything else to `chore:`.
-  semanticCommits: "enabled",
-
-  labels: ["dependencies"],
-
-  // With the build harness merging itself these numbers stop being a throttle on human attention
-  // and become one on runner time, so they can be higher.
-  prConcurrentLimit: 5,
-  prHourlyLimit: 0,
-
-  // Renovate merges the pull request itself rather than arming GitHub's auto-merge. Measured,
-  // not chosen: `enablePullRequestAutoMerge` is refused here with "Protected branch rules not
-  // configured for this branch" and "Pull request is in clean status" — GitHub will not arm
-  // auto-merge on a branch with no required checks, because there is nothing for it to wait for.
-  // Turning that on would mean branch protection on `main`, and direct pushes to `main` are the
-  // established way of working in these repositories.
-  platformAutomerge: false,
-
-  // Vulnerabilities are the one thing that ignores the schedule.
-  vulnerabilityAlerts: {
-    schedule: ["at any time"],
-    labels: ["dependencies", "security"],
-  },
-
+  // REPEATED IN FULL, not added to: `ignorePaths` is replaced by this value rather than merged with
+  // the preset's, so dropping the first two would un-ignore them.
   ignorePaths: ["**/build/**", "**/.gradle/**", "**/node_modules/**"],
 
+  // Below the extends, so these win: package rules are concatenated, preset first, and the last
+  // match takes effect.
   packageRules: [
     {
-      description: "Kotlin: the compiler and its plugins move as one version, and that is never a routine bump",
-      matchPackageNames: ["/^org\\.jetbrains\\.kotlin[:.]/"],
-      groupName: "kotlin",
-    },
-    {
-      description: "kotlinx ships as one release train — one PR",
-      matchPackageNames: ["/^org\\.jetbrains\\.kotlinx[:.]/"],
-      groupName: "kotlinx",
-    },
-    {
+      // BROADER THAN THE PRESET, which refuses `-0.6.x-compat` by name. A `-compat` build is the
+      // new version compiled against an OLD API; it sorts as newer and is never an upgrade,
+      // whichever line it is published for. Kept so the next such line is refused too.
       description: "kotlinx-datetime publishes `-compat` builds for consumers pinned to an older line. They sort as newer and are not upgrades",
       matchPackageNames: ["org.jetbrains.kotlinx:kotlinx-datetime"],
       allowedVersions: "!/-compat$/",
-    },
-    {
-      // The build conventions are one release published under two names: the catalog entry
-      // `sborka` (the plugin coordinates) and the settings plugin id resolved in
-      // settings.gradle.kts. Without this they arrive as two pull requests for one number, which
-      // is what happens today in the repositories that migrated first.
-      description: "sborka is one release, not one release per place it is named",
-      matchPackageNames: ["/^ru\\.workinprogress\\.sborka/"],
-      groupName: "sborka",
     },
     {
       description: "AGP and KSP are pinned to the Kotlin version — look at them together, not as two PRs for one number",
@@ -69,11 +37,6 @@
       description: "tailwind/ is the only npm corner of the repository — one PR is enough for it",
       matchManagers: ["npm"],
       groupName: "tailwind",
-    },
-    {
-      description: "The build harness arrives as one PR, not one per action",
-      matchManagers: ["github-actions"],
-      groupName: "ci actions",
     },
     {
       description: "ktlint is build tooling, not a runtime dependency",
@@ -95,23 +58,6 @@
       // not automerge holds back the whole PR. They are not the same risk: the wrapper is what
       // CI just ran, while no check on a pull request ever builds the Dockerfile.
       additionalBranchPrefix: "docker-",
-    },
-    {
-      description: "Majors of anything that ships get a human",
-      matchUpdateTypes: ["major"],
-      automerge: false,
-      labels: ["dependencies", "major"],
-    },
-    // Last, so it wins over the major rule above. This ordering is the whole point: a major of
-    // `actions/checkout` is not the same kind of event as a major of Ktor. The build harness is
-    // not shipped to anyone, and the check that would catch a bad bump is the build itself —
-    // which already ran on the PR. Requiring a human there buys nothing and costs a merge queue
-    // that nobody drains.
-    {
-      description: "The build harness merges itself, majors included: CI on pull_request is the review",
-      matchManagers: ["github-actions", "gradle-wrapper"],
-      automerge: true,
-      automergeType: "pr",
     },
   ],
 }
