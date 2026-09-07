@@ -21,6 +21,13 @@ public fun getSystemAttributes(): Map<String, String> {
     return attributes
 }
 
+// The field is written by katcher's Gradle plugin. A consumer who does not apply it has no
+// BuildConfig field to find, and that is the normal case rather than a failure worth a line in
+// somebody's log -- which is why this catch looks at nothing.
+@Suppress(
+    "ktlint:kapkan:swallowed-failure",
+    "the field is absent whenever the Gradle plugin is not applied, which is expected",
+)
 private fun buildUuid(): String? {
     val context = KatcherContext.applicationContext ?: return null
     return try {

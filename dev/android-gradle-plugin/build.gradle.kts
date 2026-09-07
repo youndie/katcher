@@ -1,11 +1,11 @@
 plugins {
     `kotlin-dsl`
-    id("ru.workinprogress.sborka.lint")
-    id("ru.workinprogress.sborka.publish")
+    id("io.github.youndie.sborka.lint")
+    id("io.github.youndie.sborka.publish")
 }
 
 // The group, the `maven-publish` plugin, the repository and the credentials all came from here and
-// now come from `ru.workinprogress.sborka.publish`. The `repositories { }` block goes with them:
+// now come from `io.github.youndie.sborka.publish`. The `repositories { }` block goes with them:
 // declared per project it overrides what settings declare, which is what FAIL_ON_PROJECT_REPOS
 // refuses — and `google()` is in the settings list already, filtered to the groups it answers for.
 

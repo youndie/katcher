@@ -14,7 +14,7 @@ plugins {
 
 // The group, the version, the ktlint wiring and a `repositories { }` block were all handed out from
 // a `subprojects { }` block here. They are `gradle.properties` now — `sborka.group` and `version` —
-// applied per module by `ru.workinprogress.sborka.base`.
+// applied per module by `io.github.youndie.sborka.base`.
 //
 // The repositories went to `settings.gradle.kts`. The comment that stood over them said they had to
 // be declared per project because project repositories override the settings ones — which is true,

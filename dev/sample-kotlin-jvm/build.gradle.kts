@@ -1,7 +1,7 @@
 plugins {
     id("org.jetbrains.kotlin.jvm")
-    id("ru.workinprogress.sborka.jvm")
-    id("ru.workinprogress.sborka.lint")
+    id("io.github.youndie.sborka.jvm")
+    id("io.github.youndie.sborka.lint")
     application
 }
 
