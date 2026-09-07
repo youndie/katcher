@@ -8,10 +8,10 @@ import io.github.smyrgeorge.sqlx4k.annotation.Repository
 import io.github.smyrgeorge.sqlx4k.annotation.Table
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
+import io.github.youndie.katcher.db.SymbolMapDbAutoRowMapper
 import io.github.youndie.katcher.feature.symbolication.MappingType
 import io.github.youndie.katcher.feature.symbolication.SymbolMap
 import io.github.youndie.katcher.feature.symbolication.SymbolMapRepository
-import io.github.youndie.katcher.db.SymbolMapDbAutoRowMapper
 
 @Table("symbol_maps")
 data class SymbolMapDb(

@@ -1,15 +1,15 @@
 package io.github.youndie.katcher.data
 
-import org.jetbrains.exposed.v1.core.StdOutSqlLogger
-import org.jetbrains.exposed.v1.jdbc.Database
-import org.jetbrains.exposed.v1.jdbc.SchemaUtils
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import io.github.youndie.katcher.feature.app.data.Apps
 import io.github.youndie.katcher.feature.error.data.ErrorGroups
 import io.github.youndie.katcher.feature.error.data.UserErrorGroupViewed
 import io.github.youndie.katcher.feature.report.data.Reports
 import io.github.youndie.katcher.feature.symbolication.data.SymbolMaps
 import io.github.youndie.katcher.feature.user.data.Users
+import org.jetbrains.exposed.v1.core.StdOutSqlLogger
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.io.File
 
 fun initDatabase() {

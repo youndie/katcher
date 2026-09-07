@@ -1,12 +1,12 @@
 package io.github.youndie.katcher.feature.symbolication
 
+import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryImpl
+import io.github.youndie.katcher.retrace.MappingFileStorage
+import io.github.youndie.katcher.retrace.MappingFileStorageOkio
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryImpl
-import io.github.youndie.katcher.retrace.MappingFileStorage
-import io.github.youndie.katcher.retrace.MappingFileStorageOkio
 
 val symbolicationModule =
     module {

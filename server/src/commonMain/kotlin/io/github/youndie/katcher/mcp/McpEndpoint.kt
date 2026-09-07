@@ -1,5 +1,6 @@
 package io.github.youndie.katcher.mcp
 
+import io.github.youndie.katcher.ServerConfig
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
@@ -14,7 +15,6 @@ import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.readRemaining
 import io.modelcontextprotocol.kotlin.sdk.server.mcpStatelessStreamableHttp
 import kotlinx.io.readString
-import io.github.youndie.katcher.ServerConfig
 
 const val MCP_PATH = "/mcp"
 

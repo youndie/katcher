@@ -2,7 +2,8 @@ package io.github.youndie.katcher.data
 
 import io.github.smyrgeorge.sqlx4k.Statement
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
-import kotlinx.coroutines.test.runTest
+import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
+import io.github.youndie.katcher.db.UsersCrudRepositoryImpl
 import io.github.youndie.katcher.feature.app.AppOverview
 import io.github.youndie.katcher.feature.app.AppOverviewRepository
 import io.github.youndie.katcher.feature.app.AppRepository
@@ -11,8 +12,7 @@ import io.github.youndie.katcher.feature.app.data.AppOverviewRepositoryImpl
 import io.github.youndie.katcher.feature.app.data.AppRepositoryImpl
 import io.github.youndie.katcher.feature.user.UserRepository
 import io.github.youndie.katcher.feature.user.data.UserRepositoryImpl
-import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
-import io.github.youndie.katcher.db.UsersCrudRepositoryImpl
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

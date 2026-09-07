@@ -1,5 +1,15 @@
 package io.github.youndie.katcher.feature.app.ui
 
+import io.github.youndie.katcher.feature.app.App
+import io.github.youndie.katcher.feature.app.AppKey
+import io.github.youndie.katcher.feature.app.AppOverview
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.feature.app.label
+import io.github.youndie.katcher.ui.Icons.copy
+import io.github.youndie.katcher.ui.Spark.sparkBars
+import io.github.youndie.katcher.utils.ageWords
+import io.github.youndie.katcher.utils.maskKey
+import io.github.youndie.katcher.utils.silenceWords
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
@@ -12,16 +22,6 @@ import kotlinx.html.code
 import kotlinx.html.div
 import kotlinx.html.id
 import kotlinx.html.span
-import io.github.youndie.katcher.feature.app.App
-import io.github.youndie.katcher.feature.app.AppKey
-import io.github.youndie.katcher.feature.app.AppOverview
-import io.github.youndie.katcher.feature.app.AppsResource
-import io.github.youndie.katcher.feature.app.label
-import io.github.youndie.katcher.ui.Icons.copy
-import io.github.youndie.katcher.ui.Spark.sparkBars
-import io.github.youndie.katcher.utils.ageWords
-import io.github.youndie.katcher.utils.maskKey
-import io.github.youndie.katcher.utils.silenceWords
 
 /**
  * State of one card, in the order the card is read: what is on fire, then what is waiting,

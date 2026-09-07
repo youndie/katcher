@@ -1,5 +1,8 @@
 package io.github.youndie.katcher.feature.error.ui
 
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.feature.error.StackChunk
+import io.github.youndie.katcher.feature.error.StackTrace
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
@@ -8,9 +11,6 @@ import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.id
 import kotlinx.html.span
-import io.github.youndie.katcher.feature.app.AppsResource
-import io.github.youndie.katcher.feature.error.StackChunk
-import io.github.youndie.katcher.feature.error.StackTrace
 
 /**
  * The stacktrace, with runs of library frames folded into one line each.

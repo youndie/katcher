@@ -1,5 +1,7 @@
 package io.github.youndie.katcher.feature.user.data
 
+import io.github.youndie.katcher.feature.user.User
+import io.github.youndie.katcher.feature.user.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -7,8 +9,6 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import io.github.youndie.katcher.feature.user.User
-import io.github.youndie.katcher.feature.user.UserRepository
 
 class UserRepositoryImpl : UserRepository {
     override suspend fun create(

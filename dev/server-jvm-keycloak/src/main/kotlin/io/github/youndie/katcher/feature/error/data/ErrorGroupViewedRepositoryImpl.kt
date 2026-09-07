@@ -1,5 +1,7 @@
 package io.github.youndie.katcher.feature.error.data
 
+import io.github.youndie.katcher.feature.error.ErrorGroupViewedRepository
+import io.github.youndie.katcher.feature.user.data.Users
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
@@ -7,8 +9,6 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.upsert
-import io.github.youndie.katcher.feature.error.ErrorGroupViewedRepository
-import io.github.youndie.katcher.feature.user.data.Users
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 

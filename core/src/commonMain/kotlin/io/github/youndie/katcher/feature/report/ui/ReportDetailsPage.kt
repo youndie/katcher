@@ -1,5 +1,11 @@
 package io.github.youndie.katcher.feature.report.ui
 
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.feature.error.StackChunk
+import io.github.youndie.katcher.feature.error.StackTrace
+import io.github.youndie.katcher.feature.report.Report
+import io.github.youndie.katcher.ui.commonHead
+import io.github.youndie.katcher.utils.human
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
@@ -12,12 +18,6 @@ import kotlinx.html.head
 import kotlinx.html.id
 import kotlinx.html.span
 import kotlinx.html.title
-import io.github.youndie.katcher.feature.app.AppsResource
-import io.github.youndie.katcher.feature.error.StackChunk
-import io.github.youndie.katcher.feature.error.StackTrace
-import io.github.youndie.katcher.feature.report.Report
-import io.github.youndie.katcher.ui.commonHead
-import io.github.youndie.katcher.utils.human
 
 /**
  * One report, in the same language as the group it came from: facts first, then what it

@@ -1,5 +1,6 @@
 package io.github.youndie.katcher.feature.error
 
+import io.github.youndie.katcher.feature.report.CreateReportParams
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStopping
 import kotlinx.coroutines.CoroutineScope
@@ -8,7 +9,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
-import io.github.youndie.katcher.feature.report.CreateReportParams
 import kotlin.coroutines.cancellation.CancellationException
 
 class ReportsQueueService(

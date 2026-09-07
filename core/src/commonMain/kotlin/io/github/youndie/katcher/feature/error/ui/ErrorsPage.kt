@@ -1,21 +1,5 @@
 package io.github.youndie.katcher.feature.error.ui
 
-import io.ktor.htmx.HxSwap
-import io.ktor.htmx.html.hx
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.resources.href
-import kotlinx.html.FlowContent
-import kotlinx.html.HTML
-import kotlinx.html.body
-import kotlinx.html.div
-import kotlinx.html.h1
-import kotlinx.html.h2
-import kotlinx.html.head
-import kotlinx.html.id
-import kotlinx.html.p
-import kotlinx.html.pre
-import kotlinx.html.span
-import kotlinx.html.title
 import io.github.youndie.katcher.feature.app.App
 import io.github.youndie.katcher.feature.app.AppOverview
 import io.github.youndie.katcher.feature.app.AppsResource
@@ -33,6 +17,22 @@ import io.github.youndie.katcher.ui.commonHead
 import io.github.youndie.katcher.ui.fragmentSlot
 import io.github.youndie.katcher.ui.toastSlot
 import io.github.youndie.katcher.ui.uiButton
+import io.ktor.htmx.HxSwap
+import io.ktor.htmx.html.hx
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.resources.href
+import kotlinx.html.FlowContent
+import kotlinx.html.HTML
+import kotlinx.html.body
+import kotlinx.html.div
+import kotlinx.html.h1
+import kotlinx.html.h2
+import kotlinx.html.head
+import kotlinx.html.id
+import kotlinx.html.p
+import kotlinx.html.pre
+import kotlinx.html.span
+import kotlinx.html.title
 
 context(call: ApplicationCall)
 fun HTML.appErrorsPage(

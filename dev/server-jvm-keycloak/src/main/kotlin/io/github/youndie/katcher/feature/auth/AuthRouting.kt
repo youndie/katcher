@@ -1,6 +1,7 @@
 package io.github.youndie.katcher.feature.auth
 
 import com.auth0.jwt.JWT
+import io.github.youndie.katcher.feature.user.UserRepository
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.OAuthAccessTokenResponse
 import io.ktor.server.auth.authenticate
@@ -13,7 +14,6 @@ import io.ktor.server.sessions.clear
 import io.ktor.server.sessions.sessions
 import io.ktor.server.sessions.set
 import org.koin.ktor.ext.inject
-import io.github.youndie.katcher.feature.user.UserRepository
 
 fun Route.authRoute() {
     val userRepository by inject<UserRepository>()

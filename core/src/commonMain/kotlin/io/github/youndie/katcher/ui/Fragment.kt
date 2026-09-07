@@ -1,13 +1,13 @@
 package io.github.youndie.katcher.ui
 
+import io.github.youndie.katcher.ui.Icons.check
+import io.github.youndie.katcher.ui.Icons.spinner
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.id
 import kotlinx.html.span
-import io.github.youndie.katcher.ui.Icons.check
-import io.github.youndie.katcher.ui.Icons.spinner
 
 /**
  * A slot a fragment loads itself into.

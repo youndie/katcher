@@ -7,7 +7,9 @@ import io.github.smyrgeorge.sqlx4k.ValueEncoderRegistry
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
-import kotlinx.coroutines.test.runTest
+import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
+import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
+import io.github.youndie.katcher.db.UsersCrudRepositoryImpl
 import io.github.youndie.katcher.feature.app.AppRepository
 import io.github.youndie.katcher.feature.app.AppType
 import io.github.youndie.katcher.feature.app.data.AppRepositoryImpl
@@ -18,9 +20,7 @@ import io.github.youndie.katcher.feature.error.data.ErrorGroupRepositoryImpl
 import io.github.youndie.katcher.feature.error.data.ErrorGroupViewedRepositoryImpl
 import io.github.youndie.katcher.feature.user.UserRepository
 import io.github.youndie.katcher.feature.user.data.UserRepositoryImpl
-import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
-import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
-import io.github.youndie.katcher.db.UsersCrudRepositoryImpl
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertNotNull

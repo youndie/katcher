@@ -1,9 +1,9 @@
 package io.github.youndie.katcher.data
 
-import kotlinx.coroutines.test.runTest
+import io.github.youndie.katcher.db.UsersCrudRepositoryImpl
 import io.github.youndie.katcher.feature.user.UserRepository
 import io.github.youndie.katcher.feature.user.data.UserRepositoryImpl
-import io.github.youndie.katcher.db.UsersCrudRepositoryImpl
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

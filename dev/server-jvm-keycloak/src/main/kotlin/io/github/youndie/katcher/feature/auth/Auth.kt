@@ -1,5 +1,6 @@
 package io.github.youndie.katcher.feature.auth
 
+import io.github.youndie.katcher.DEFAULT_SECURITY_SCHEME
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.http.HttpMethod
@@ -14,7 +15,6 @@ import io.ktor.server.response.respond
 import io.ktor.server.sessions.SessionStorageMemory
 import io.ktor.server.sessions.Sessions
 import io.ktor.server.sessions.cookie
-import io.github.youndie.katcher.DEFAULT_SECURITY_SCHEME
 
 fun Application.configureSessions() {
     install(Sessions) {

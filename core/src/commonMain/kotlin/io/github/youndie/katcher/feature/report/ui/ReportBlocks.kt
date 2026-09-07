@@ -1,10 +1,10 @@
 package io.github.youndie.katcher.feature.report.ui
 
+import io.github.youndie.katcher.feature.report.Report
+import io.github.youndie.katcher.utils.human
 import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.span
-import io.github.youndie.katcher.feature.report.Report
-import io.github.youndie.katcher.utils.human
 
 /**
  * The context a report carried, as a table of keys and values.

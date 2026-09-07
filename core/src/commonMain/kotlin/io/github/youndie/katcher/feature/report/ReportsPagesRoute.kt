@@ -1,5 +1,12 @@
 package io.github.youndie.katcher.feature.report
 
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.feature.error.ErrorGroupRepository
+import io.github.youndie.katcher.feature.report.ui.groupStatusFragment
+import io.github.youndie.katcher.feature.report.ui.reportDetailsPage
+import io.github.youndie.katcher.feature.report.ui.reportRow
+import io.github.youndie.katcher.feature.report.ui.reportsTableFragment
+import io.github.youndie.katcher.ui.toast
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.http.HttpStatusCode
@@ -12,13 +19,6 @@ import io.ktor.server.routing.Route
 import io.ktor.server.routing.RoutingContext
 import kotlinx.html.body
 import kotlinx.html.span
-import io.github.youndie.katcher.feature.app.AppsResource
-import io.github.youndie.katcher.feature.error.ErrorGroupRepository
-import io.github.youndie.katcher.feature.report.ui.groupStatusFragment
-import io.github.youndie.katcher.feature.report.ui.reportDetailsPage
-import io.github.youndie.katcher.feature.report.ui.reportRow
-import io.github.youndie.katcher.feature.report.ui.reportsTableFragment
-import io.github.youndie.katcher.ui.toast
 
 fun Route.reportsPagesRoute(
     errorGroupRepository: ErrorGroupRepository,

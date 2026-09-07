@@ -1,11 +1,11 @@
 package io.github.youndie.katcher.feature.auth
 
+import io.github.youndie.katcher.DEFAULT_SECURITY_SCHEME
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.auth.principal
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.routing.RoutingContext
 import io.ktor.server.sessions.sessions
-import io.github.youndie.katcher.DEFAULT_SECURITY_SCHEME
 
 suspend inline fun RoutingContext.withUserId(block: suspend (Int) -> Unit) {
     val identity =

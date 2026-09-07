@@ -1,7 +1,7 @@
 package io.github.youndie.katcher.feature.error.data
 
-import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import io.github.youndie.katcher.feature.app.data.Apps
+import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 
 object ErrorGroups : LongIdTable("error_groups") {
     val appId = reference("app_id", Apps)

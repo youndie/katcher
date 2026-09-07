@@ -1,5 +1,15 @@
 package io.github.youndie.katcher.feature.app.ui
 
+import io.github.youndie.katcher.feature.app.App
+import io.github.youndie.katcher.feature.app.AppKey
+import io.github.youndie.katcher.feature.app.AppOverview
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.ui.ButtonVariant
+import io.github.youndie.katcher.ui.Icons.cloud
+import io.github.youndie.katcher.ui.Icons.logo
+import io.github.youndie.katcher.ui.commonHead
+import io.github.youndie.katcher.ui.toastSlot
+import io.github.youndie.katcher.ui.uiButton
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
@@ -17,16 +27,6 @@ import kotlinx.html.id
 import kotlinx.html.p
 import kotlinx.html.span
 import kotlinx.html.title
-import io.github.youndie.katcher.feature.app.App
-import io.github.youndie.katcher.feature.app.AppKey
-import io.github.youndie.katcher.feature.app.AppOverview
-import io.github.youndie.katcher.feature.app.AppsResource
-import io.github.youndie.katcher.ui.ButtonVariant
-import io.github.youndie.katcher.ui.Icons.cloud
-import io.github.youndie.katcher.ui.Icons.logo
-import io.github.youndie.katcher.ui.commonHead
-import io.github.youndie.katcher.ui.toastSlot
-import io.github.youndie.katcher.ui.uiButton
 
 context(call: ApplicationCall)
 fun HTML.appsPage(

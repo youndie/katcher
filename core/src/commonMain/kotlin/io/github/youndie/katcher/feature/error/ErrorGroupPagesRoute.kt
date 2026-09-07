@@ -1,5 +1,11 @@
 package io.github.youndie.katcher.feature.error
 
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.feature.auth.withUserId
+import io.github.youndie.katcher.feature.error.ui.errorsTableFragment
+import io.github.youndie.katcher.feature.error.ui.stackTracePanel
+import io.github.youndie.katcher.feature.report.ReportRepository
+import io.github.youndie.katcher.feature.report.ui.errorGroupPage
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -12,12 +18,6 @@ import io.ktor.server.response.respondText
 import io.ktor.server.routing.Route
 import kotlinx.html.body
 import kotlinx.serialization.json.Json
-import io.github.youndie.katcher.feature.app.AppsResource
-import io.github.youndie.katcher.feature.auth.withUserId
-import io.github.youndie.katcher.feature.error.ui.errorsTableFragment
-import io.github.youndie.katcher.feature.error.ui.stackTracePanel
-import io.github.youndie.katcher.feature.report.ReportRepository
-import io.github.youndie.katcher.feature.report.ui.errorGroupPage
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 

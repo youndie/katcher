@@ -1,6 +1,7 @@
 package io.github.youndie.katcher.data
 
-import kotlinx.coroutines.test.runTest
+import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
+import io.github.youndie.katcher.db.SymbolMapCrudRepositoryImpl
 import io.github.youndie.katcher.feature.app.AppRepository
 import io.github.youndie.katcher.feature.app.AppType
 import io.github.youndie.katcher.feature.app.data.AppRepositoryImpl
@@ -8,8 +9,7 @@ import io.github.youndie.katcher.feature.symbolication.MappingType
 import io.github.youndie.katcher.feature.symbolication.SymbolMap
 import io.github.youndie.katcher.feature.symbolication.SymbolMapRepository
 import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryImpl
-import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
-import io.github.youndie.katcher.db.SymbolMapCrudRepositoryImpl
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

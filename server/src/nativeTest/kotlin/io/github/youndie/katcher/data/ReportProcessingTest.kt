@@ -2,7 +2,9 @@ package io.github.youndie.katcher.data
 
 import io.github.smyrgeorge.sqlx4k.Statement
 import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
-import kotlinx.coroutines.test.runTest
+import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
+import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
+import io.github.youndie.katcher.db.SymbolMapCrudRepositoryImpl
 import io.github.youndie.katcher.feature.app.AppRepository
 import io.github.youndie.katcher.feature.app.AppType
 import io.github.youndie.katcher.feature.app.data.AppRepositoryImpl
@@ -15,10 +17,8 @@ import io.github.youndie.katcher.feature.report.ReportRepository
 import io.github.youndie.katcher.feature.report.data.ReportRepositoryImpl
 import io.github.youndie.katcher.feature.symbolication.SymbolicationService
 import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryImpl
-import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
-import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
-import io.github.youndie.katcher.db.SymbolMapCrudRepositoryImpl
 import io.github.youndie.katcher.retrace.MappingFileStorageOkio
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

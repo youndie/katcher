@@ -1,7 +1,7 @@
 package io.github.youndie.katcher.feature.error.data
 
-import org.jetbrains.exposed.v1.core.dao.id.CompositeIdTable
 import io.github.youndie.katcher.feature.user.data.Users
+import org.jetbrains.exposed.v1.core.dao.id.CompositeIdTable
 
 object UserErrorGroupViewed : CompositeIdTable("user_error_group_viewed") {
     val groupId = reference("group_id", ErrorGroups)

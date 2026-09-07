@@ -1,5 +1,7 @@
 package io.github.youndie.katcher.feature.app.data
 
+import io.github.youndie.katcher.feature.app.AppKey
+import io.github.youndie.katcher.feature.app.AppKeyRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -11,8 +13,6 @@ import org.jetbrains.exposed.v1.jdbc.insertAndGetId
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
-import io.github.youndie.katcher.feature.app.AppKey
-import io.github.youndie.katcher.feature.app.AppKeyRepository
 import java.util.UUID
 
 class AppKeyRepositoryImpl : AppKeyRepository {

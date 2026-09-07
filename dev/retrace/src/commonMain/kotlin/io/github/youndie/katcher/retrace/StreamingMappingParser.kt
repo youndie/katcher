@@ -1,9 +1,9 @@
 package io.github.youndie.katcher.retrace
 
-import okio.BufferedSource
 import io.github.youndie.katcher.retrace.ClassMapping
 import io.github.youndie.katcher.retrace.MappingStore
 import io.github.youndie.katcher.retrace.MethodMapping
+import okio.BufferedSource
 
 object StreamingMappingParser {
     fun parse(

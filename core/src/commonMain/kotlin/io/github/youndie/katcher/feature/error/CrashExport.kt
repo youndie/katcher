@@ -1,10 +1,10 @@
 package io.github.youndie.katcher.feature.error
 
+import io.github.youndie.katcher.feature.report.Report
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.serialization.Serializable
-import io.github.youndie.katcher.feature.report.Report
 
 /**
  * A crash handed to an external AI fixer. The consumer downloads this file and commits it

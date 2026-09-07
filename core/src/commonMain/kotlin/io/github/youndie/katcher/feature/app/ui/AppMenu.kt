@@ -1,5 +1,6 @@
 package io.github.youndie.katcher.feature.app.ui
 
+import io.github.youndie.katcher.feature.app.AppsResource
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
@@ -8,7 +9,6 @@ import kotlinx.html.FlowContent
 import kotlinx.html.button
 import kotlinx.html.div
 import kotlinx.html.span
-import io.github.youndie.katcher.feature.app.AppsResource
 
 /**
  * The ⋯ menu of a card: rename, reveal, reissue, delete.

@@ -1,3 +1,4 @@
+import io.github.youndie.katcher.module
 import io.ktor.network.selector.SelectorManager
 import io.ktor.network.sockets.InetSocketAddress
 import io.ktor.network.sockets.aSocket
@@ -6,7 +7,6 @@ import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import io.github.youndie.katcher.module
 
 private const val PORT = 8080
 private const val HOST = "0.0.0.0"

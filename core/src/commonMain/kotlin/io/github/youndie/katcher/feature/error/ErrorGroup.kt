@@ -1,10 +1,10 @@
 package io.github.youndie.katcher.feature.error
 
-import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.Serializable
 import io.github.youndie.katcher.feature.report.ErrorGroupFilter
 import io.github.youndie.katcher.feature.report.ErrorGroupSort
 import io.github.youndie.katcher.feature.report.ErrorGroupSortOrder
+import kotlinx.datetime.LocalDateTime
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class ErrorGroupsPaginated(

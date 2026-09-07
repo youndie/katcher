@@ -1,13 +1,13 @@
 package io.github.youndie.katcher.feature.auth
 
+import io.github.youndie.katcher.feature.user.User
+import io.github.youndie.katcher.feature.user.UserRepository
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.AuthenticationConfig
 import io.ktor.server.auth.AuthenticationContext
 import io.ktor.server.auth.AuthenticationFailedCause
 import io.ktor.server.auth.AuthenticationProvider
 import io.ktor.server.response.respond
-import io.github.youndie.katcher.feature.user.User
-import io.github.youndie.katcher.feature.user.UserRepository
 
 const val HEADER_USER_AUTH = "header-user-auth"
 

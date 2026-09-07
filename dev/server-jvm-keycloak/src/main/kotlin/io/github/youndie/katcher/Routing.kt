@@ -1,5 +1,9 @@
 package io.github.youndie.katcher
 
+import io.github.youndie.katcher.feature.auth.authRoute
+import io.github.youndie.katcher.feature.report.reportRoute
+import io.github.youndie.katcher.feature.symbolication.symbolMapRouting
+import io.github.youndie.katcher.ui.Icons
 import io.ktor.http.ContentType
 import io.ktor.server.application.Application
 import io.ktor.server.http.content.staticResources
@@ -8,10 +12,6 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import org.koin.ktor.ext.get
-import io.github.youndie.katcher.feature.auth.authRoute
-import io.github.youndie.katcher.feature.report.reportRoute
-import io.github.youndie.katcher.feature.symbolication.symbolMapRouting
-import io.github.youndie.katcher.ui.Icons
 
 fun Application.configureRouting() =
     routing {

@@ -1,5 +1,12 @@
 package io.github.youndie.katcher.feature.error.ui
 
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.feature.error.ErrorGroupWithViewed
+import io.github.youndie.katcher.feature.report.GroupActivity
+import io.github.youndie.katcher.ui.Icons.check
+import io.github.youndie.katcher.ui.Spark.sparkLine
+import io.github.youndie.katcher.utils.ageWords
+import io.github.youndie.katcher.utils.epochMillis
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
@@ -8,13 +15,6 @@ import kotlinx.html.FlowContent
 import kotlinx.html.div
 import kotlinx.html.id
 import kotlinx.html.span
-import io.github.youndie.katcher.feature.app.AppsResource
-import io.github.youndie.katcher.feature.error.ErrorGroupWithViewed
-import io.github.youndie.katcher.feature.report.GroupActivity
-import io.github.youndie.katcher.ui.Icons.check
-import io.github.youndie.katcher.ui.Spark.sparkLine
-import io.github.youndie.katcher.utils.ageWords
-import io.github.youndie.katcher.utils.epochMillis
 
 /**
  * The states one row can be in, most urgent first. Nothing here is colour-only: the edge

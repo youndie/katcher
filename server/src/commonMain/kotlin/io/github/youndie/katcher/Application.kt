@@ -3,15 +3,11 @@ package io.github.youndie.katcher
 import io.github.smyrgeorge.sqlx4k.ConnectionPool
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 import io.github.smyrgeorge.sqlx4k.sqlite.sqlite
-import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import io.ktor.server.auth.Authentication
-import io.ktor.server.plugins.di.dependencies
-import io.ktor.server.plugins.di.resolve
-import kotlinx.coroutines.runBlocking
-import okio.FileSystem
-import okio.Path.Companion.toPath
-import okio.SYSTEM
+import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
+import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
+import io.github.youndie.katcher.db.SymbolMapCrudRepositoryImpl
+import io.github.youndie.katcher.db.UsersCrudRepositoryImpl
+import io.github.youndie.katcher.db.migrateDb
 import io.github.youndie.katcher.feature.app.AppKeyRepository
 import io.github.youndie.katcher.feature.app.AppOverviewRepository
 import io.github.youndie.katcher.feature.app.AppRepository
@@ -35,16 +31,20 @@ import io.github.youndie.katcher.feature.symbolication.SymbolicationService
 import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryImpl
 import io.github.youndie.katcher.feature.user.UserRepository
 import io.github.youndie.katcher.feature.user.data.UserRepositoryImpl
-import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
-import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
-import io.github.youndie.katcher.db.SymbolMapCrudRepositoryImpl
-import io.github.youndie.katcher.db.UsersCrudRepositoryImpl
-import io.github.youndie.katcher.db.migrateDb
 import io.github.youndie.katcher.mcp.KatcherMcpServer
 import io.github.youndie.katcher.mcp.installMcp
-import ru.workinprogress.metrik.agent.Metrik
 import io.github.youndie.katcher.retrace.MappingFileStorage
 import io.github.youndie.katcher.retrace.MappingFileStorageOkio
+import io.ktor.server.application.Application
+import io.ktor.server.application.install
+import io.ktor.server.auth.Authentication
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.plugins.di.resolve
+import kotlinx.coroutines.runBlocking
+import okio.FileSystem
+import okio.Path.Companion.toPath
+import okio.SYSTEM
+import ru.workinprogress.metrik.agent.Metrik
 
 suspend fun Application.module() {
     val config = getServerConfig()

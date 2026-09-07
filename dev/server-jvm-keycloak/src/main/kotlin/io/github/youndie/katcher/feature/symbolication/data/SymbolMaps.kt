@@ -1,9 +1,9 @@
 package io.github.youndie.katcher.feature.symbolication.data
 
-import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import io.github.youndie.katcher.feature.app.data.Apps
 import io.github.youndie.katcher.feature.symbolication.MappingType
 import io.github.youndie.katcher.feature.symbolication.data.SymbolMaps.TABLE_NAME
+import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 
 object SymbolMaps : LongIdTable(TABLE_NAME) {
     val appId = reference(COLUMN_APP_ID, Apps)

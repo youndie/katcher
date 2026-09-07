@@ -1,9 +1,9 @@
 package io.github.youndie.katcher.feature.app
 
-import io.ktor.resources.Resource
 import io.github.youndie.katcher.feature.report.ErrorGroupFilter
 import io.github.youndie.katcher.feature.report.ErrorGroupSort
 import io.github.youndie.katcher.feature.report.ErrorGroupSortOrder
+import io.ktor.resources.Resource
 
 @Resource("apps")
 class AppsResource {

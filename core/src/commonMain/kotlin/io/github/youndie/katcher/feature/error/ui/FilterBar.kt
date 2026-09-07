@@ -1,5 +1,9 @@
 package io.github.youndie.katcher.feature.error.ui
 
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.feature.error.ErrorGroupFilterOptions
+import io.github.youndie.katcher.feature.error.ErrorGroupsPaginated
+import io.github.youndie.katcher.feature.report.ErrorGroupFilter
 import io.ktor.htmx.HxSwap
 import io.ktor.htmx.html.hx
 import io.ktor.server.application.ApplicationCall
@@ -11,10 +15,6 @@ import kotlinx.html.input
 import kotlinx.html.option
 import kotlinx.html.select
 import kotlinx.html.span
-import io.github.youndie.katcher.feature.app.AppsResource
-import io.github.youndie.katcher.feature.error.ErrorGroupFilterOptions
-import io.github.youndie.katcher.feature.error.ErrorGroupsPaginated
-import io.github.youndie.katcher.feature.report.ErrorGroupFilter
 
 /**
  * Search, environment, release, period, unresolved.

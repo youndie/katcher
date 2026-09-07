@@ -1,7 +1,7 @@
 package io.github.youndie.katcher.jvm
 
-import kotlinx.coroutines.CoroutineExceptionHandler
 import io.github.youndie.katcher.Katcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 

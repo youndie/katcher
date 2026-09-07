@@ -1,9 +1,9 @@
 package io.github.youndie.katcher.feature.error
 
-import org.kotlincrypto.hash.sha2.SHA256
 import io.github.youndie.katcher.feature.report.CreateReportParams
 import io.github.youndie.katcher.feature.report.ReportRepository
 import io.github.youndie.katcher.feature.symbolication.SymbolicationService
+import org.kotlincrypto.hash.sha2.SHA256
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 

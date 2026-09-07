@@ -1,18 +1,5 @@
 package io.github.youndie.katcher.feature.app.ui
 
-import io.ktor.htmx.HxSwap
-import io.ktor.htmx.html.hx
-import io.ktor.server.application.ApplicationCall
-import io.ktor.server.resources.href
-import kotlinx.html.ButtonType
-import kotlinx.html.FlowContent
-import kotlinx.html.InputType
-import kotlinx.html.div
-import kotlinx.html.form
-import kotlinx.html.input
-import kotlinx.html.onClick
-import kotlinx.html.p
-import kotlinx.html.span
 import io.github.youndie.katcher.feature.app.App
 import io.github.youndie.katcher.feature.app.AppContents
 import io.github.youndie.katcher.feature.app.AppKey
@@ -28,6 +15,19 @@ import io.github.youndie.katcher.ui.uiDialogTitle
 import io.github.youndie.katcher.ui.uiInputField
 import io.github.youndie.katcher.utils.ageWords
 import io.github.youndie.katcher.utils.maskKey
+import io.ktor.htmx.HxSwap
+import io.ktor.htmx.html.hx
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.resources.href
+import kotlinx.html.ButtonType
+import kotlinx.html.FlowContent
+import kotlinx.html.InputType
+import kotlinx.html.div
+import kotlinx.html.form
+import kotlinx.html.input
+import kotlinx.html.onClick
+import kotlinx.html.p
+import kotlinx.html.span
 
 context(call: ApplicationCall)
 fun FlowContent.appRenameModal(app: App) {

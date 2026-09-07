@@ -1,6 +1,7 @@
 package io.github.youndie.katcher.data
 
-import kotlinx.coroutines.test.runTest
+import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
+import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
 import io.github.youndie.katcher.feature.app.AppRepository
 import io.github.youndie.katcher.feature.app.AppType
 import io.github.youndie.katcher.feature.app.data.AppRepositoryImpl
@@ -10,8 +11,7 @@ import io.github.youndie.katcher.feature.error.data.ErrorGroupRepositoryImpl
 import io.github.youndie.katcher.feature.report.CreateReportParams
 import io.github.youndie.katcher.feature.report.ReportRepository
 import io.github.youndie.katcher.feature.report.data.ReportRepositoryImpl
-import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
-import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals

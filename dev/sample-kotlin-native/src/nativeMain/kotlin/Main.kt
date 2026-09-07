@@ -1,11 +1,11 @@
 @file:OptIn(ExperimentalForeignApi::class)
 
+import io.github.youndie.katcher.Katcher
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toKString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import platform.posix.getenv
-import io.github.youndie.katcher.Katcher
 
 private fun env(
     name: String,

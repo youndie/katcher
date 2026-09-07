@@ -7,9 +7,9 @@ import io.github.smyrgeorge.sqlx4k.annotation.Query
 import io.github.smyrgeorge.sqlx4k.annotation.Repository
 import io.github.smyrgeorge.sqlx4k.annotation.Table
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
+import io.github.youndie.katcher.db.UserDbAutoRowMapper
 import io.github.youndie.katcher.feature.user.User
 import io.github.youndie.katcher.feature.user.UserRepository
-import io.github.youndie.katcher.db.UserDbAutoRowMapper
 
 @Table("users")
 data class UserDb(
