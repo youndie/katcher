@@ -21,14 +21,6 @@
   // match takes effect.
   packageRules: [
     {
-      // BROADER THAN THE PRESET, which refuses `-0.6.x-compat` by name. A `-compat` build is the
-      // new version compiled against an OLD API; it sorts as newer and is never an upgrade,
-      // whichever line it is published for. Kept so the next such line is refused too.
-      description: "kotlinx-datetime publishes `-compat` builds for consumers pinned to an older line. They sort as newer and are not upgrades",
-      matchPackageNames: ["org.jetbrains.kotlinx:kotlinx-datetime"],
-      allowedVersions: "!/-compat$/",
-    },
-    {
       description: "AGP and KSP are pinned to the Kotlin version — look at them together, not as two PRs for one number",
       matchPackageNames: ["/^com\\.android[:.]/", "/^com\\.google\\.devtools\\.ksp[:.]/"],
       groupName: "android build tooling",
