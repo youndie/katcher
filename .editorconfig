@@ -54,20 +54,3 @@ ktlint = disabled
 # and the plugin's own `filter` does not reach KMP source sets.
 [**/build/generated/**.{kt,kts}]
 ktlint = disabled
-
-# KAPKAN'S TWO FAILURE RULES, DEFERRED -- NOT DECLINED.
-#
-# They arrived with sborka 0.3.0 and this repository has never been read against them. They are
-# right about the 37 places it names here: every one is a judgement about whether a time has to agree with somebody
-# else's, or whether a failure is worth a line in a log, and those are decisions to make one at a
-# time rather than under a build that will not go green.
-#
-# Turned off HERE, below the shared rules, so the reference above stays the prefix that
-# `checkEditorconfig` demands and this deferral is visible in the file rather than remembered.
-# `foreign-import-in-common` and `suppression-needs-a-reason` stay on: they are not firing, and a
-# blanket `ktlint_kapkan = disabled` would take them down with the two that are.
-#
-# Delete these two lines and read what they name.
-[**.{kt,kts}]
-ktlint_kapkan_wall-clock = disabled
-ktlint_kapkan_swallowed-failure = disabled

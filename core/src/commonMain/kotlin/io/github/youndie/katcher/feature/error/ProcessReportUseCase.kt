@@ -18,6 +18,10 @@ class ProcessReportUseCase(
     private val reportRepository: ReportRepository,
     private val visitedRepository: ErrorGroupViewedRepository,
 ) {
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "время приёма отчёта ставит сервер: клиентские часы для порядка групп не годятся",
+    )
     suspend fun process(
         createReportParams: CreateReportParams,
         appId: Int,

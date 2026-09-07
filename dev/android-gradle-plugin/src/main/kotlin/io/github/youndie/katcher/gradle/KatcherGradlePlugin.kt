@@ -22,6 +22,10 @@ abstract class KatcherExtension {
 }
 
 class KatcherGradlePlugin : Plugin<Project> {
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "задачи может не быть в этом варианте сборки — причина уже пишется в лог рядом",
+    )
     override fun apply(project: Project) {
         val extension = project.extensions.create("katcher", KatcherExtension::class.java)
 

@@ -44,6 +44,10 @@ class ErrorGroupRepositoryImpl(
             crudRepository.findOneByFingerprint(this, appId, fingerprint).getOrNull()?.toDomain()
         }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "firstSeen/lastSeen ставит сервер своими часами — по ним группы и упорядочены",
+    )
     override suspend fun insert(newGroup: CreateErrorGroupParams): ErrorGroup =
         TransactionContext.withCurrent(db) {
             crudRepository
@@ -71,6 +75,10 @@ class ErrorGroupRepositoryImpl(
             crudRepository.findOneById(this, groupId).getOrNull()?.toDomain()
         }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "firstSeen/lastSeen ставит сервер своими часами — по ним группы и упорядочены",
+    )
     override suspend fun updateOccurrences(id: Long) {
         TransactionContext.withCurrent(db) {
             execute(
@@ -305,6 +313,10 @@ class ErrorGroupRepositoryImpl(
 class ErrorGroupViewedRepositoryImpl(
     private val db: ISQLite,
 ) : ErrorGroupViewedRepository {
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "сервер ставит собственную метку хранения — сравнивать её будут с ней же",
+    )
     override suspend fun updateVisitedAt(
         errorGroupId: Long,
         forUserId: Int,

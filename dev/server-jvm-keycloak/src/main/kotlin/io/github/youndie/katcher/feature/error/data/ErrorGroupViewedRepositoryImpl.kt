@@ -14,6 +14,10 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class ErrorGroupViewedRepositoryImpl : ErrorGroupViewedRepository {
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "отметка «просмотрено» ставится сервером и читается им же",
+    )
     override suspend fun updateVisitedAt(
         errorGroupId: Long,
         forUserId: Int,

@@ -11,6 +11,10 @@ import kotlin.native.terminateWithUnhandledException
 private val previousHook = atomic<ReportUnhandledExceptionHook?>(null)
 private val hookInstalled = atomic(false)
 
+@Suppress(
+    "ktlint:kapkan:swallowed-failure",
+    "сообщение о краше не имеет права уронить приложение, о котором сообщает",
+)
 @OptIn(ExperimentalNativeApi::class)
 internal actual fun setupPlatformHandler() {
     if (!hookInstalled.compareAndSet(expect = false, update = true)) return

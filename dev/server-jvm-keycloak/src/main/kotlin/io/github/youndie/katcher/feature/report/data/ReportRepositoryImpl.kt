@@ -24,6 +24,10 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class ReportRepositoryImpl : ReportRepository {
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "сервер ставит собственную метку хранения — сравнивать её будут с ней же",
+    )
     override suspend fun insert(
         appId: Int,
         groupId: Long,

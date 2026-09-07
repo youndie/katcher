@@ -255,6 +255,10 @@ class KatcherMcpServer(
         return server
     }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "сервер отвечает по своим часам",
+    )
     @OptIn(ExperimentalTime::class)
     private suspend fun linkFix(
         groupId: Long,

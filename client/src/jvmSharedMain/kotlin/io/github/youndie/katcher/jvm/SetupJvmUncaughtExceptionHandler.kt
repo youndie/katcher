@@ -2,6 +2,10 @@ package io.github.youndie.katcher.jvm
 
 import io.github.youndie.katcher.Katcher
 
+@Suppress(
+    "ktlint:kapkan:swallowed-failure",
+    "это обработчик необработанных исключений: бросить отсюда — потерять и краш, и отчёт",
+)
 public fun setupJvmUncaughtExceptionHandler() {
     val currentHandler = Thread.getDefaultUncaughtExceptionHandler()
 

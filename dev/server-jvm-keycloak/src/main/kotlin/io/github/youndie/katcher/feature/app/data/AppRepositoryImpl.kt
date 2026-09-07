@@ -106,6 +106,10 @@ class AppRepositoryImpl : AppRepository {
             }
         }
 
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "отсутствие записи — обычное состояние, а не отказ",
+    )
     private fun rowToApp(row: ResultRow): App? =
         try {
             App(

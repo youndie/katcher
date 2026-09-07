@@ -33,6 +33,10 @@ import kotlin.time.ExperimentalTime
  * The use case with real repositories behind it. A repository test would prove the update
  * statement works; only this proves anybody calls it.
  */
+@Suppress(
+    "ktlint:kapkan:wall-clock",
+    "фикстура теста строит момент относительно сейчас",
+)
 class ReportProcessingTest : RepositoryTest() {
     private lateinit var useCase: ProcessReportUseCase
     private lateinit var groupRepository: ErrorGroupRepository

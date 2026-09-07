@@ -37,6 +37,10 @@ abstract class UploadMappingTask : DefaultTask() {
     @get:OutputFile
     abstract val outputMarker: RegularFileProperty
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "отметка времени сборки в маркерном файле — её читает человек, а не сверяет машина",
+    )
     @TaskAction
     fun upload() {
         if (!mappingFile.isPresent) {
@@ -75,6 +79,10 @@ abstract class UploadMappingTask : DefaultTask() {
         markerFile.writeText(content)
     }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "отметка времени сборки в маркерном файле — её читает человек, а не сверяет машина",
+    )
     private fun uploadMultipart(
         url: URL,
         file: File,
@@ -151,6 +159,10 @@ abstract class UploadMappingTask : DefaultTask() {
         if (responseCode in 200..299) {
             return
         } else {
+            @Suppress(
+                "ktlint:kapkan:swallowed-failure",
+                "выгрузка карты символов не должна валить сборку приложения",
+            )
             val errorBody =
                 try {
                     connection.errorStream?.bufferedReader()?.use { it.readText() }
