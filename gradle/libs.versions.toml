@@ -12,7 +12,7 @@ metrikAgent = "0.2.16"
 sqlx4k = "1.13.0"
 ksp = "2.3.11"
 ktlint = "14.2.0"
-okio = "3.18.1"
+okio = "3.18.2"
 
 [libraries]
 
