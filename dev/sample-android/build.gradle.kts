@@ -2,7 +2,7 @@ plugins {
     // Every module was linted through the `subprojects { }` block in the root. That block is gone,
     // so the linter is named per module — including here, or removing the block would have quietly
     // dropped two modules out of the gate.
-    id("ru.workinprogress.sborka.lint")
+    id("io.github.youndie.sborka.lint")
     id("com.android.application")
 }
 
