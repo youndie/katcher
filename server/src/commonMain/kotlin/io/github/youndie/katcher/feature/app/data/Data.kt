@@ -35,6 +35,10 @@ data class AppDb(
     val type: String,
 )
 
+@Suppress(
+    "ktlint:kapkan:wall-clock",
+    "firstSeen/lastSeen ставит сервер своими часами — по ним группы и упорядочены",
+)
 object AppRowMapper : RowMapper<AppDb> {
     override fun map(
         row: ResultSet.Row,
@@ -66,6 +70,10 @@ class AppRepositoryImpl(
                 .toDomain()
         }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "firstSeen/lastSeen ставит сервер своими часами — по ним группы и упорядочены",
+    )
     override suspend fun rename(
         id: Int,
         name: String,
@@ -238,6 +246,10 @@ class AppOverviewRepositoryImpl(
     }
 }
 
+@Suppress(
+    "ktlint:kapkan:wall-clock",
+    "firstSeen/lastSeen ставит сервер своими часами — по ним группы и упорядочены",
+)
 @OptIn(ExperimentalUuidApi::class)
 class AppKeyRepositoryImpl(
     private val db: ISQLite,
@@ -303,6 +315,10 @@ class AppKeyRepositoryImpl(
                 .toAppKey()
         }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "firstSeen/lastSeen ставит сервер своими часами — по ним группы и упорядочены",
+    )
     override suspend fun revoke(
         id: Long,
         at: Long,

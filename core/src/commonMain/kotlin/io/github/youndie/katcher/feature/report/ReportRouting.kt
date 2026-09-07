@@ -10,6 +10,10 @@ import io.ktor.server.routing.Route
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@Suppress(
+    "ktlint:kapkan:wall-clock",
+    "время приёма отчёта ставит сервер, а не отправитель",
+)
 @OptIn(ExperimentalTime::class)
 fun Route.reportRoute(
     appKeyRepository: AppKeyRepository,

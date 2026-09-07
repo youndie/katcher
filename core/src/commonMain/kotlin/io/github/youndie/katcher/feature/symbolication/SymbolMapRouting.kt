@@ -20,6 +20,10 @@ import okio.use
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@Suppress(
+    "ktlint:kapkan:swallowed-failure",
+    "карта символов не разобралась — отчёт останется нерасшифрованным, но дойдёт",
+)
 fun Route.symbolMapRouting(
     appKeyRepository: AppKeyRepository,
     fileStorage: MappingFileStorage,
@@ -95,6 +99,10 @@ fun Route.symbolMapRouting(
                         println("SymbolMapRouting - Mapping file written successfully")
 
                         println("SymbolMapRouting - Saving symbol map to repository")
+                        @Suppress(
+                            "ktlint:kapkan:wall-clock",
+                            "сервер ставит время загрузки карты символов своими часами",
+                        )
                         val id =
                             symbolMapRepository.save(
                                 SymbolMap(

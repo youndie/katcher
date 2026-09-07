@@ -135,6 +135,10 @@ public object Katcher {
         }
     }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "часы устройства — единственные, что есть у SDK; время прихода сервер ставит сам",
+    )
     public fun addBreadcrumb(
         message: String,
         type: String = "info",

@@ -17,7 +17,11 @@ import java.util.TimeZone
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
-@Suppress("unused")
+@Suppress(
+    "unused",
+    "ktlint:kapkan:wall-clock",
+    "часы устройства — единственные, что есть у SDK; время прихода сервер ставит сам",
+)
 public object Katcher {
     private const val TAG = "Katcher"
     private const val CRASH_DIR = "katcher_crashes"
@@ -67,6 +71,10 @@ public object Katcher {
         public val appKey: String?
             get() = getStringField("KATCHER_APP_KEY")
 
+        @Suppress(
+            "ktlint:kapkan:swallowed-failure",
+            "сообщение о краше не имеет права уронить приложение, о котором сообщает",
+        )
         private fun getStringField(fieldName: String): String? {
             val cls = clazz ?: return null
             return try {
@@ -131,6 +139,10 @@ public object Katcher {
         }
     }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "часы устройства — единственные, что есть у SDK; время прихода сервер ставит сам",
+    )
     private fun handleCrash(
         context: Context,
         throwable: Throwable,
@@ -248,6 +260,10 @@ public object Katcher {
         }
     }
 
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "сообщение о краше не имеет права уронить приложение, о котором сообщает",
+    )
     private fun deleteCrashFile(
         context: Context,
         filename: String,

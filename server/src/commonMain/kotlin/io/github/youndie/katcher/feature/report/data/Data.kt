@@ -52,6 +52,10 @@ object ReportRowMapper : RowMapper<Report> {
 class ReportRepositoryImpl(
     private val db: ISQLite,
 ) : ReportRepository {
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "время приёма отчёта ставит сервер, а не отправитель",
+    )
     override suspend fun insert(
         appId: Int,
         groupId: Long,

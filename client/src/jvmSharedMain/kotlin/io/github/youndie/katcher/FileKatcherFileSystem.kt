@@ -23,6 +23,10 @@ internal open class FileKatcherFileSystem(
         }
     }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "отметка файла в локальном хранилище отчётов — читается тем же процессом",
+    )
     override fun saveReport(params: CreateReportParams) {
         val dir = cacheDir()
         enforceLimit(dir)
@@ -30,6 +34,10 @@ internal open class FileKatcherFileSystem(
         File(dir, fileName).writeText(Katcher.json.encodeToString(params))
     }
 
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "хранилище отчётов работает по возможности: потерянный отчёт лучше упавшего приложения",
+    )
     override fun getReports(): List<StoredReport> =
         reportFiles(cacheDir())
             .mapNotNull { file ->

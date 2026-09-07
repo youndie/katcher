@@ -44,6 +44,10 @@ public class NativeKatcherFileSystem(
     private val cacheDir: Path = DEFAULT_CACHE_DIR,
     private val fs: FileSystem = FileSystem.SYSTEM,
 ) : KatcherFileSystem {
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "хранилище отчётов работает по возможности: потерянный отчёт лучше упавшего приложения",
+    )
     override fun prepare() {
         fs.createDirectories(cacheDir)
 
@@ -57,6 +61,10 @@ public class NativeKatcherFileSystem(
         }
     }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "отметка файла в локальном хранилище отчётов — читается тем же процессом",
+    )
     override fun saveReport(params: CreateReportParams) {
         fs.createDirectories(cacheDir)
         enforceLimit()
@@ -69,6 +77,10 @@ public class NativeKatcherFileSystem(
         }
     }
 
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "хранилище отчётов работает по возможности: потерянный отчёт лучше упавшего приложения",
+    )
     override fun getReports(): List<StoredReport> =
         reportFiles()
             .mapNotNull { path ->
@@ -104,6 +116,10 @@ public class NativeKatcherFileSystem(
             emptyList()
         }
 
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "хранилище отчётов работает по возможности: потерянный отчёт лучше упавшего приложения",
+    )
     private fun delete(path: Path) {
         runCatching { fs.delete(path, mustExist = false) }
     }

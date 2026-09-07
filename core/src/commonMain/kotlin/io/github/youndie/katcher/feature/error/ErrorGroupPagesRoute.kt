@@ -30,6 +30,10 @@ private const val GROUP_TREND_DAYS = 14
 /** Releases shown on the group page; the tail is noise once the top few are visible. */
 private const val MAX_RELEASES = 4
 
+@Suppress(
+    "ktlint:kapkan:wall-clock",
+    "сервер отдаёт страницу по своим часам — они и есть порядок для трекера",
+)
 @OptIn(ExperimentalTime::class)
 fun Route.errorGroupPagesRoute(
     errorGroupRepository: ErrorGroupRepository,

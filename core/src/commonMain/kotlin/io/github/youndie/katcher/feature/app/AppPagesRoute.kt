@@ -28,6 +28,10 @@ import kotlinx.html.id
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
+@Suppress(
+    "ktlint:kapkan:wall-clock",
+    "сервер отдаёт страницу по своим часам — они и есть порядок для трекера",
+)
 @OptIn(ExperimentalTime::class)
 fun Route.appPagesRoute(
     appRepository: AppRepository,

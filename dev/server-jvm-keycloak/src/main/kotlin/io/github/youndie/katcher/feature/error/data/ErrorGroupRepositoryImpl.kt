@@ -66,6 +66,10 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
             }
         }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "сервер ставит собственную метку хранения — сравнивать её будут с ней же",
+    )
     override suspend fun updateOccurrences(id: Long) {
         withContext(Dispatchers.IO) {
             transaction {
@@ -135,10 +139,18 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
         }
     }
 
+    @Suppress(
+        "ktlint:kapkan:wall-clock",
+        "сервер ставит собственную метку хранения — сравнивать её будут с ней же",
+    )
     override suspend fun insert(newGroup: CreateErrorGroupParams): ErrorGroup =
         runCatching {
             withContext(Dispatchers.IO) {
                 transaction {
+                    @Suppress(
+                        "ktlint:kapkan:wall-clock",
+                        "сервер ставит собственную метку хранения — сравнивать её будут с ней же",
+                    )
                     val id =
                         ErrorGroups.insertAndGetId {
                             it[appId] = newGroup.appId
