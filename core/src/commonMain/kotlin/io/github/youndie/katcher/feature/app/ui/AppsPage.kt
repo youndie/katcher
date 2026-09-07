@@ -1,0 +1,183 @@
+package io.github.youndie.katcher.feature.app.ui
+
+import io.github.youndie.katcher.feature.app.App
+import io.github.youndie.katcher.feature.app.AppKey
+import io.github.youndie.katcher.feature.app.AppOverview
+import io.github.youndie.katcher.feature.app.AppsResource
+import io.github.youndie.katcher.ui.ButtonVariant
+import io.github.youndie.katcher.ui.Icons.cloud
+import io.github.youndie.katcher.ui.Icons.logo
+import io.github.youndie.katcher.ui.commonHead
+import io.github.youndie.katcher.ui.toastSlot
+import io.github.youndie.katcher.ui.uiButton
+import io.ktor.htmx.HxSwap
+import io.ktor.htmx.html.hx
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.resources.href
+import kotlinx.html.FlowContent
+import kotlinx.html.HTML
+import kotlinx.html.body
+import kotlinx.html.classes
+import kotlinx.html.code
+import kotlinx.html.div
+import kotlinx.html.h1
+import kotlinx.html.h2
+import kotlinx.html.head
+import kotlinx.html.id
+import kotlinx.html.p
+import kotlinx.html.span
+import kotlinx.html.title
+
+context(call: ApplicationCall)
+fun HTML.appsPage(
+    apps: List<App>,
+    overviews: Map<Int, AppOverview>,
+    keys: Map<Int, List<AppKey>>,
+    now: Long,
+) {
+    head {
+        title("Katcher – Apps")
+        commonHead()
+    }
+
+    body(classes = "min-h-screen bg-background text-foreground") {
+        div { id = "modal-root" }
+        toastSlot()
+
+        div(classes = "max-w-5xl mx-auto p-6 space-y-4 lg:pt-16") {
+            div(classes = "flex justify-between mb-8 items-center gap-3 flex-wrap") {
+                div(classes = "flex items-center space-x-4 lg:space-x-6") {
+                    logo()
+                    h1(classes = "text-2xl lg:text-3xl font-semibold") { +"katcher" }
+
+                    appsSummaryFragment(apps, overviews)
+                }
+
+                uiButton(variant = ButtonVariant.Outline) {
+                    attributes.hx {
+                        get =
+                            call.application.href(
+                                AppsResource.Form(),
+                            )
+                        target = "#modal-root"
+                        swap = HxSwap.innerHtml
+                    }
+                    +"Add app"
+                }
+            }
+
+            div {
+                id = "apps-grid"
+                classes =
+                    setOf(
+                        "grid",
+                        "grid-cols-1",
+                        "lg:grid-cols-2",
+                        "gap-4",
+                    )
+
+                apps.forEach { app ->
+                    appCard(
+                        app = app,
+                        overview = overviews[app.id] ?: AppOverview.silent(app.id),
+                        keys = keys[app.id].orEmpty(),
+                        now = now,
+                    )
+                }
+            }
+
+            if (apps.isEmpty()) {
+                emptyAppsView()
+            }
+        }
+    }
+}
+
+context(call: ApplicationCall)
+fun FlowContent.onAppCreated(
+    app: App,
+    keys: List<AppKey>,
+    now: Long,
+) {
+    div {
+        attributes.hx {
+            swapOob = "beforeend:#apps-grid"
+        }
+
+        // A card created a second ago has nothing behind it yet; the silent overview is the
+        // honest one, and it renders as "never reported".
+        appCard(app, AppOverview.silent(app.id), keys, now)
+    }
+
+    div {
+        attributes.hx { swapOob = "true" }
+        id = "empty-view"
+    }
+
+    div {
+        id = "modal-root"
+        attributes.hx { swapOob = "true" }
+    }
+}
+
+context(call: ApplicationCall)
+private fun FlowContent.emptyAppsView() {
+    div(classes = "flex flex-col items-center justify-center py-20 text-center space-y-6") {
+        id = "empty-view"
+
+        div(
+            classes = "w-16 h-16 p-4 rounded-full bg-muted flex items-center justify-center",
+        ) {
+            cloud()
+        }
+
+        h2(classes = "text-xl font-semibold") {
+            +"No apps yet"
+        }
+
+        p(classes = "text-muted-foreground max-w-sm") {
+            +"Create an app to get a key. The key goes into "
+            code(classes = "font-mono text-foreground") { +"Katcher.start { }" }
+            +", and crashes start arriving."
+        }
+
+        uiButton(variant = ButtonVariant.Default) {
+            attributes.hx {
+                get = call.application.href(AppsResource.Form())
+                target = "#modal-root"
+                swap = HxSwap.innerHtml
+            }
+            +"Add app"
+        }
+    }
+}
+
+/**
+ * The line next to the logo, as a fragment: deleting an app changes the count, and the count
+ * lives outside the card that went away, so the answer corrects it out of band.
+ */
+fun FlowContent.appsSummaryFragment(
+    apps: List<App>,
+    overviews: Map<Int, AppOverview>,
+) {
+    span(classes = "text-[13px] font-mono text-muted-foreground pt-1") {
+        id = "apps-summary"
+        attributes.hx { swapOob = "true" }
+
+        if (apps.isNotEmpty()) +appsSummary(apps, overviews)
+    }
+}
+
+/**
+ * Quiet is counted, not coloured: it belongs in the same sentence as the total, so a list of
+ * silent apps reads as a fact rather than as an alarm.
+ */
+private fun appsSummary(
+    apps: List<App>,
+    overviews: Map<Int, AppOverview>,
+): String {
+    val quiet = apps.count { app -> (overviews[app.id]?.crashes24h ?: 0) == 0 }
+    val appsWord = if (apps.size == 1) "1 app" else "${apps.size} apps"
+
+    return if (quiet == 0) appsWord else "$appsWord · $quiet quiet"
+}

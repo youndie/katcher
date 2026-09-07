@@ -1,0 +1,26 @@
+package io.github.youndie.katcher.feature.symbolication
+
+import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryImpl
+import io.github.youndie.katcher.retrace.MappingFileStorage
+import io.github.youndie.katcher.retrace.MappingFileStorageOkio
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+val symbolicationModule =
+    module {
+        single<Symbolicator>(named("android")) { AndroidR8Symbolicator() }
+        singleOf(::SymbolMapRepositoryImpl).bind<SymbolMapRepository>()
+        single<MappingFileStorage> { MappingFileStorageOkio }
+        single {
+            SymbolicationService(
+                symbolMapRepository = get(),
+                fileStorage = get(),
+                strategies =
+                    mapOf(
+                        MappingType.ANDROID_PROGUARD to get(named("android")),
+                    ),
+            )
+        }
+    }

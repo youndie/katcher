@@ -1,0 +1,417 @@
+@file:OptIn(ExperimentalTime::class)
+
+package io.github.youndie.katcher.feature.error.data
+
+import io.github.smyrgeorge.sqlx4k.CrudRepository
+import io.github.smyrgeorge.sqlx4k.QueryExecutor
+import io.github.smyrgeorge.sqlx4k.ResultSet.Row
+import io.github.smyrgeorge.sqlx4k.RowMapper
+import io.github.smyrgeorge.sqlx4k.Statement
+import io.github.smyrgeorge.sqlx4k.ValueEncoderRegistry
+import io.github.smyrgeorge.sqlx4k.annotation.Id
+import io.github.smyrgeorge.sqlx4k.annotation.Query
+import io.github.smyrgeorge.sqlx4k.annotation.Repository
+import io.github.smyrgeorge.sqlx4k.annotation.Table
+import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
+import io.github.smyrgeorge.sqlx4k.impl.extensions.asInt
+import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
+import io.github.youndie.katcher.db.ErrorGroupDbAutoRowMapper
+import io.github.youndie.katcher.feature.error.CreateErrorGroupParams
+import io.github.youndie.katcher.feature.error.ErrorGroup
+import io.github.youndie.katcher.feature.error.ErrorGroupFilterOptions
+import io.github.youndie.katcher.feature.error.ErrorGroupRepository
+import io.github.youndie.katcher.feature.error.ErrorGroupViewedRepository
+import io.github.youndie.katcher.feature.error.ErrorGroupWithViewed
+import io.github.youndie.katcher.feature.error.ErrorGroupsPaginated
+import io.github.youndie.katcher.feature.report.ErrorGroupFilter
+import io.github.youndie.katcher.feature.report.ErrorGroupSort
+import io.github.youndie.katcher.feature.report.ErrorGroupSortOrder
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+class ErrorGroupRepositoryImpl(
+    private val db: ISQLite,
+    private val crudRepository: ErrorGroupCrudRepository,
+) : ErrorGroupRepository {
+    override suspend fun findByFingerprint(
+        appId: Int,
+        fingerprint: String,
+    ): ErrorGroup? =
+        TransactionContext.withCurrent(db) {
+            crudRepository.findOneByFingerprint(this, appId, fingerprint).getOrNull()?.toDomain()
+        }
+
+    override suspend fun insert(newGroup: CreateErrorGroupParams): ErrorGroup =
+        TransactionContext.withCurrent(db) {
+            crudRepository
+                .insert(
+                    this,
+                    ErrorGroupDb(
+                        id = 0,
+                        appId = newGroup.appId,
+                        fingerprint = newGroup.fingerprint,
+                        title = newGroup.title,
+                        occurrences = 0,
+                        firstSeen = Clock.System.now().toEpochMilliseconds(),
+                        lastSeen = Clock.System.now().toEpochMilliseconds(),
+                        resolved = false,
+                        exceptionType = newGroup.exceptionType,
+                        message = newGroup.message,
+                        location = newGroup.location,
+                    ),
+                ).getOrThrow()
+                .toDomain()
+        }
+
+    override suspend fun findById(groupId: Long): ErrorGroup? =
+        TransactionContext.withCurrent(db) {
+            crudRepository.findOneById(this, groupId).getOrNull()?.toDomain()
+        }
+
+    override suspend fun updateOccurrences(id: Long) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        "UPDATE error_groups SET occurrences = occurrences + 1 WHERE id = :id",
+                    ).apply {
+                        bind("id", id)
+                    },
+            )
+            execute(
+                Statement
+                    .create(
+                        "UPDATE error_groups SET last_seen = :lastSeen WHERE id = :id",
+                    ).apply {
+                        bind("id", id)
+                        bind("lastSeen", Clock.System.now().toEpochMilliseconds())
+                    },
+            )
+        }
+    }
+
+    override suspend fun resolve(groupId: Long) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        "UPDATE error_groups SET resolved = :resolved WHERE id = :id",
+                    ).apply {
+                        bind("id", groupId)
+                        bind("resolved", true)
+                    },
+            )
+        }
+    }
+
+    override suspend fun reopen(groupId: Long) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create("UPDATE error_groups SET resolved = :resolved WHERE id = :id")
+                    .apply {
+                        bind("id", groupId)
+                        bind("resolved", false)
+                    },
+            )
+        }
+    }
+
+    override suspend fun markRegressed(
+        groupId: Long,
+        release: String?,
+        at: Long,
+    ) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        """
+                        UPDATE error_groups
+                        SET resolved = :resolved, regressed_at = :at, regressed_release = :release
+                        WHERE id = :id
+                        """.trimIndent(),
+                    ).apply {
+                        bind("id", groupId)
+                        bind("resolved", false)
+                        bind("at", at)
+                        bind("release", release)
+                    },
+            )
+        }
+    }
+
+    override suspend fun linkFix(
+        groupId: Long,
+        fixUrl: String,
+        linkedAt: Long,
+    ) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        "UPDATE error_groups SET fix_url = :fixUrl, fix_linked_at = :linkedAt WHERE id = :id",
+                    ).apply {
+                        bind("id", groupId)
+                        bind("fixUrl", fixUrl)
+                        bind("linkedAt", linkedAt)
+                    },
+            )
+        }
+    }
+
+    override suspend fun findByAppId(
+        appId: Int,
+        userId: Int,
+        page: Int,
+        pageSize: Int,
+        sortBy: ErrorGroupSort,
+        sortOrder: ErrorGroupSortOrder,
+        filter: ErrorGroupFilter,
+        now: Long,
+    ): ErrorGroupsPaginated =
+        TransactionContext.withCurrent(db) {
+            val safePageSize = pageSize.coerceIn(1, 100)
+            val safePage = page.coerceAtLeast(1)
+            val offset = (safePage - 1) * safePageSize
+
+            val sortField =
+                when (sortBy) {
+                    ErrorGroupSort.id -> "id"
+                    ErrorGroupSort.title -> "title"
+                    ErrorGroupSort.occurrences -> "occurrences"
+                    ErrorGroupSort.lastSeen -> "last_seen"
+                }
+
+            val order =
+                when (sortOrder) {
+                    ErrorGroupSortOrder.asc -> "ASC"
+                    ErrorGroupSortOrder.desc -> "DESC"
+                }
+
+            // Built as text and bound as values: the shape of the query depends on which
+            // controls are set, the contents never do.
+            val conditions = mutableListOf("g.app_id = :appId")
+            if (filter.unresolvedOnly) conditions += "g.resolved = 0"
+            if (filter.days != null) conditions += "g.last_seen >= :since"
+            if (!filter.query.isNullOrBlank()) {
+                conditions +=
+                    """(
+                        LOWER(COALESCE(g.exception_type, '')) LIKE :query
+                        OR LOWER(COALESCE(g.message, '')) LIKE :query
+                        OR LOWER(COALESCE(g.location, '')) LIKE :query
+                        OR LOWER(g.title) LIKE :query
+                    )"""
+            }
+            if (filter.environment != null) {
+                conditions +=
+                    "EXISTS (SELECT 1 FROM reports r WHERE r.group_id = g.id AND r.environment = :environment)"
+            }
+            if (filter.release != null) {
+                conditions += "EXISTS (SELECT 1 FROM reports r WHERE r.group_id = g.id AND r.release = :release)"
+            }
+
+            val where = conditions.joinToString(" AND ")
+
+            fun Statement.bindFilter(): Statement {
+                bind("appId", appId)
+                filter.days?.let { days -> bind("since", now - days * DAY_MILLIS) }
+                filter.query?.takeIf { it.isNotBlank() }?.let { query ->
+                    bind("query", "%" + query.lowercase() + "%")
+                }
+                filter.environment?.let { environment -> bind("environment", environment) }
+                filter.release?.let { release -> bind("release", release) }
+                return this
+            }
+
+            val selectSql =
+                """
+                SELECT 
+                    g.*,
+                    CASE WHEN v.viewed_at IS NOT NULL THEN 1 ELSE 0 END AS viewed
+                FROM error_groups g
+                LEFT JOIN user_error_group_viewed v
+                    ON v.group_id = g.id AND v.user_id = :userId
+                WHERE $where
+                ORDER BY $sortField $order
+                LIMIT $safePageSize OFFSET $offset
+                """.trimIndent()
+
+            val items =
+                fetchAll(
+                    Statement.create(selectSql).apply {
+                        bindFilter()
+                        bind("userId", userId)
+                    },
+                    ErrorGroupWithViewedRowMapper,
+                ).getOrThrow()
+
+            val total =
+                fetchAll(
+                    Statement.create("SELECT COUNT(*) AS c FROM error_groups g WHERE $where").apply { bindFilter() },
+                ).getOrThrow()
+                    .rows
+                    .first()
+                    .get("c")
+                    .asInt()
+
+            val totalUnfiltered = crudRepository.countByAppId(this, appId).getOrThrow().toInt()
+
+            ErrorGroupsPaginated(
+                items = items,
+                page = safePage,
+                totalPages = ((total + safePageSize - 1) / safePageSize),
+                sortBy = sortBy,
+                sortOrder = sortOrder,
+                total = total,
+                totalUnfiltered = totalUnfiltered,
+                filter = filter,
+            )
+        }
+
+    override suspend fun filterOptions(appId: Int): ErrorGroupFilterOptions =
+        TransactionContext.withCurrent(db) {
+            suspend fun distinct(column: String): List<String> =
+                fetchAll(
+                    Statement
+                        .create(
+                            """
+                            SELECT DISTINCT $column AS value
+                            FROM reports
+                            WHERE app_id = :appId AND $column IS NOT NULL
+                            ORDER BY value DESC
+                            LIMIT $MAX_FILTER_OPTIONS
+                            """.trimIndent(),
+                        ).apply { bind("appId", appId) },
+                ).getOrThrow()
+                    .rows
+                    .mapNotNull { row -> row.get("value").asStringOrNull() }
+
+            ErrorGroupFilterOptions(environments = distinct("environment"), releases = distinct("release"))
+        }
+
+    private companion object {
+        const val DAY_MILLIS = 24L * 60 * 60 * 1000
+
+        /** A select is a list somebody reads, not a dump of every release ever shipped. */
+        const val MAX_FILTER_OPTIONS = 20
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+class ErrorGroupViewedRepositoryImpl(
+    private val db: ISQLite,
+) : ErrorGroupViewedRepository {
+    override suspend fun updateVisitedAt(
+        errorGroupId: Long,
+        forUserId: Int,
+    ) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        """
+                        INSERT INTO user_error_group_viewed(group_id, user_id, viewed_at) 
+                        VALUES (:groupId, :userId, :viewedAt)
+                        ON CONFLICT(group_id, user_id) DO UPDATE SET 
+                            viewed_at = excluded.viewed_at
+                        """.trimIndent(),
+                    ).apply {
+                        bind("groupId", errorGroupId)
+                        bind("userId", forUserId)
+                        bind("viewedAt", Clock.System.now().toEpochMilliseconds())
+                    },
+            )
+        }
+    }
+
+    override suspend fun removeVisits(errorGroupId: Long) {
+        TransactionContext.withCurrent(db) {
+            execute(
+                Statement
+                    .create(
+                        "DELETE FROM user_error_group_viewed WHERE group_id = :groupId",
+                    ).apply {
+                        bind("groupId", errorGroupId)
+                    },
+            )
+        }
+    }
+}
+
+@Table("error_groups")
+data class ErrorGroupDb(
+    @Id(insert = false)
+    val id: Long,
+    val appId: Int,
+    val fingerprint: String,
+    val title: String,
+    val occurrences: Int,
+    val firstSeen: Long,
+    val lastSeen: Long,
+    val resolved: Boolean,
+    val fixUrl: String? = null,
+    val fixLinkedAt: Long? = null,
+    val exceptionType: String? = null,
+    val message: String? = null,
+    val location: String? = null,
+    val regressedAt: Long? = null,
+    val regressedRelease: String? = null,
+)
+
+fun ErrorGroupDb.toDomain() =
+    ErrorGroup(
+        id,
+        appId,
+        fingerprint,
+        title,
+        Instant.fromEpochMilliseconds(firstSeen).toLocalDateTime(TimeZone.currentSystemDefault()),
+        Instant.fromEpochMilliseconds(lastSeen).toLocalDateTime(TimeZone.currentSystemDefault()),
+        occurrences,
+        resolved,
+        fixUrl,
+        exceptionType,
+        message,
+        location,
+        regressedAt,
+        regressedRelease,
+    )
+
+object ErrorGroupWithViewedRowMapper : RowMapper<ErrorGroupWithViewed> {
+    override fun map(
+        row: Row,
+        converters: ValueEncoderRegistry,
+    ): ErrorGroupWithViewed {
+        val group = ErrorGroupDbAutoRowMapper.map(row, converters).toDomain()
+        val viewed = row.get("viewed").asInt() == 1
+        return ErrorGroupWithViewed(
+            errorGroup = group,
+            viewed = viewed,
+        )
+    }
+}
+
+@Repository(mapper = ErrorGroupDbAutoRowMapper::class)
+interface ErrorGroupCrudRepository : CrudRepository<ErrorGroupDb> {
+    @Query("SELECT * FROM error_groups WHERE id = :id LIMIT 1")
+    suspend fun findOneById(
+        context: QueryExecutor,
+        id: Long,
+    ): Result<ErrorGroupDb?>
+
+    @Query("SELECT * FROM error_groups WHERE app_id = :appId AND fingerprint = :fingerprint LIMIT 1")
+    suspend fun findOneByFingerprint(
+        context: QueryExecutor,
+        appId: Int,
+        fingerprint: String,
+    ): Result<ErrorGroupDb?>
+
+    @Query("SELECT COUNT(*) AS c FROM error_groups WHERE app_id = :appId")
+    suspend fun countByAppId(
+        context: QueryExecutor,
+        appId: Int,
+    ): Result<Long>
+}

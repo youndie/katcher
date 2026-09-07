@@ -1,0 +1,70 @@
+package io.github.youndie.katcher.data
+
+import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
+import io.github.youndie.katcher.db.SymbolMapCrudRepositoryImpl
+import io.github.youndie.katcher.feature.app.AppRepository
+import io.github.youndie.katcher.feature.app.AppType
+import io.github.youndie.katcher.feature.app.data.AppRepositoryImpl
+import io.github.youndie.katcher.feature.symbolication.MappingType
+import io.github.youndie.katcher.feature.symbolication.SymbolMap
+import io.github.youndie.katcher.feature.symbolication.SymbolMapRepository
+import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryImpl
+import kotlinx.coroutines.test.runTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+
+class SymbolMapRepositoryTest : RepositoryTest() {
+    private lateinit var repository: SymbolMapRepository
+    private lateinit var appRepository: AppRepository
+
+    private var appId = 0
+
+    @BeforeTest
+    fun setup() =
+        runTest {
+            setupSchema()
+
+            appRepository = AppRepositoryImpl(db, AppsCrudRepositoryImpl)
+            repository = SymbolMapRepositoryImpl(db, SymbolMapCrudRepositoryImpl)
+
+            val app = appRepository.create("test-app", AppType.ANDROID)
+            appId = app.id
+        }
+
+    @Test
+    fun `test save and find`() =
+        runTest {
+            val symbolMap =
+                SymbolMap(
+                    id = 0,
+                    appId = appId,
+                    buildUuid = "test-uuid",
+                    type = MappingType.ANDROID_PROGUARD,
+                    filePath = "/path/to/mapping.txt",
+                    versionName = "1.0.0",
+                    createdAt = 123456789L,
+                )
+
+            val id = repository.save(symbolMap)
+            assertEquals(1L, id)
+
+            val found = repository.find(appId, "test-uuid")
+            assertNotNull(found)
+            assertEquals(appId, found.appId)
+            assertEquals("test-uuid", found.buildUuid)
+            assertEquals(MappingType.ANDROID_PROGUARD, found.type)
+            assertEquals("/path/to/mapping.txt", found.filePath)
+            assertEquals("1.0.0", found.versionName)
+            assertEquals(123456789L, found.createdAt)
+        }
+
+    @Test
+    fun `test find not found`() =
+        runTest {
+            val found = repository.find(appId, "non-existent")
+            assertNull(found)
+        }
+}

@@ -11,11 +11,11 @@ plugins {
 
 // NOT PUBLISHED ANY MORE, AND THAT IS THE POINT.
 //
-// This module used to publish `ru.workinprogress.katcher:client-android` (0.4.92 the last one).
+// This module used to publish `io.github.youndie.katcher:client-android` (0.4.92 the last one).
 // That coordinate now belongs to the android variant of the multiplatform `client`: both declared
-// `object Katcher` in package `ru.workinprogress.katcher`, so an application that needed the
+// `object Katcher` in package `io.github.youndie.katcher`, so an application that needed the
 // multiplatform client on Android could not have them both on one classpath — it got
-// "Duplicate class ru.workinprogress.katcher.Katcher" (#27).
+// "Duplicate class io.github.youndie.katcher.Katcher" (#27).
 //
 // The module stays here as the single-platform Android implementation it always was — readable,
 // buildable, and the thing `dev/sample-android` runs against. Consumers take the multiplatform
@@ -26,7 +26,7 @@ kotlin {
     withSourcesJar()
 
     android {
-        namespace = "ru.workinprogress.katcher.client.android"
+        namespace = "io.github.youndie.katcher.client.android"
         compileSdk = 36
         minSdk = 24
 

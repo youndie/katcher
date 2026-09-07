@@ -267,7 +267,7 @@ the URL and the key you pass to `Katcher.start { }`.
 same `object Katcher` in the same package as the multiplatform client, so the two could not sit on one
 classpath, and the name `client-android` now belongs to the multiplatform client's android variant,
 published as `io.github.youndie.katcher:client-android`. The module stays in the repository as a
-source-level example; `ru.workinprogress.katcher:client-android:0.4.92` remains the last release of
+source-level example; `io.github.youndie.katcher:client-android:0.4.92` remains the last release of
 it, under the group this repository published before 0.7.
 
 ## Sending Errors From Your Application (Kotlin Client)

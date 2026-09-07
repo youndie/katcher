@@ -22,7 +22,7 @@ gradlePlugin {
     plugins {
         register("katcherPlugin") {
             id = "io.github.youndie.katcher.gradle.plugin"
-            implementationClass = "ru.workinprogress.katcher.gradle.KatcherGradlePlugin"
+            implementationClass = "io.github.youndie.katcher.gradle.KatcherGradlePlugin"
         }
     }
 }

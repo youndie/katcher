@@ -4,8 +4,8 @@
 > the android variant of the multiplatform client (`io.github.youndie.katcher:client`),
 > which covers Android with the same `Katcher.start { }` API as every other platform, keeps reports in
 > `Context.cacheDir` and reads the same `KATCHER_BUILD_UUID` from `BuildConfig`. Both libraries declared
-> `object Katcher` in `ru.workinprogress.katcher`, so an application that needed the multiplatform client
-> could not have them both on one classpath — see issue #27. `ru.workinprogress.katcher:client-android:0.4.92`
+> `object Katcher` in `io.github.youndie.katcher`, so an application that needed the multiplatform client
+> could not have them both on one classpath — see issue #27. `io.github.youndie.katcher:client-android:0.4.92`
 > is the last release of this module, under the group this repository published before 0.7;
 > the sources stay here, and `dev/sample-android` still builds against them.
 

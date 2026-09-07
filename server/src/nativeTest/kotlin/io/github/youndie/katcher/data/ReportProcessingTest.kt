@@ -1,0 +1,211 @@
+package io.github.youndie.katcher.data
+
+import io.github.smyrgeorge.sqlx4k.Statement
+import io.github.smyrgeorge.sqlx4k.impl.coroutines.TransactionContext
+import io.github.youndie.katcher.db.AppsCrudRepositoryImpl
+import io.github.youndie.katcher.db.ErrorGroupCrudRepositoryImpl
+import io.github.youndie.katcher.db.SymbolMapCrudRepositoryImpl
+import io.github.youndie.katcher.feature.app.AppRepository
+import io.github.youndie.katcher.feature.app.AppType
+import io.github.youndie.katcher.feature.app.data.AppRepositoryImpl
+import io.github.youndie.katcher.feature.error.ErrorGroupRepository
+import io.github.youndie.katcher.feature.error.ProcessReportUseCase
+import io.github.youndie.katcher.feature.error.data.ErrorGroupRepositoryImpl
+import io.github.youndie.katcher.feature.error.data.ErrorGroupViewedRepositoryImpl
+import io.github.youndie.katcher.feature.report.CreateReportParams
+import io.github.youndie.katcher.feature.report.ReportRepository
+import io.github.youndie.katcher.feature.report.data.ReportRepositoryImpl
+import io.github.youndie.katcher.feature.symbolication.SymbolicationService
+import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryImpl
+import io.github.youndie.katcher.retrace.MappingFileStorageOkio
+import kotlinx.coroutines.test.runTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+
+/**
+ * The use case with real repositories behind it. A repository test would prove the update
+ * statement works; only this proves anybody calls it.
+ */
+class ReportProcessingTest : RepositoryTest() {
+    private lateinit var useCase: ProcessReportUseCase
+    private lateinit var groupRepository: ErrorGroupRepository
+    private lateinit var appRepository: AppRepository
+    private lateinit var reportRepository: ReportRepository
+
+    private var appId = 0
+
+    private val stacktrace =
+        """
+        java.lang.IllegalStateException: account not found
+        	at com.acme.billing.AccountRepository.load(AccountRepository.kt:64)
+        	at com.acme.billing.AccountService.charge(AccountService.kt:88)
+        	at java.base/java.lang.Thread.run(Thread.java:1583)
+        """.trimIndent()
+
+    @BeforeTest
+    fun setup() =
+        runTest {
+            setupSchema()
+
+            appRepository = AppRepositoryImpl(db, AppsCrudRepositoryImpl)
+            groupRepository = ErrorGroupRepositoryImpl(db, ErrorGroupCrudRepositoryImpl)
+            reportRepository = ReportRepositoryImpl(db)
+
+            useCase =
+                ProcessReportUseCase(
+                    symbolicationService =
+                        SymbolicationService(
+                            symbolMapRepository = SymbolMapRepositoryImpl(db, SymbolMapCrudRepositoryImpl),
+                            fileStorage = MappingFileStorageOkio,
+                            strategies = emptyMap(),
+                        ),
+                    errorGroupRepository = groupRepository,
+                    reportRepository = reportRepository,
+                    visitedRepository = ErrorGroupViewedRepositoryImpl(db),
+                )
+
+            appId = appRepository.create("billing", AppType.JVM).id
+        }
+
+    @Test
+    fun `a new group is stored with a composed title`() =
+        runTest {
+            useCase.process(report(release = "1.4.2"), appId)
+
+            val group = groupRepository.findByFingerprint(appId, fingerprint())
+            assertNotNull(group)
+            assertEquals("IllegalStateException", group.exceptionType)
+            assertEquals("account not found", group.message)
+            assertEquals("AccountRepository.kt:64", group.location)
+        }
+
+    @Test
+    fun `a report on a resolved group reopens it and records the release it came back in`() =
+        runTest {
+            useCase.process(report(release = "1.4.1"), appId)
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+            groupRepository.resolve(group.id)
+            assertTrue(assertNotNull(groupRepository.findById(group.id)).resolved)
+
+            useCase.process(report(release = "1.4.2"), appId)
+
+            val reopened = assertNotNull(groupRepository.findById(group.id))
+            assertFalse(reopened.resolved, "a bug that came back is not fixed")
+            assertTrue(reopened.regressed)
+            assertEquals("1.4.2", reopened.regressedRelease)
+            assertEquals(2, reopened.occurrences)
+        }
+
+    @Test
+    fun `a group nobody resolved is not marked as a regression`() =
+        runTest {
+            useCase.process(report(release = "1.4.1"), appId)
+            useCase.process(report(release = "1.4.2"), appId)
+
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+            assertNull(group.regressedAt)
+            assertFalse(group.regressed)
+        }
+
+    @Test
+    fun `activity reports the day buckets and the release range of a group`() =
+        runTest {
+            useCase.process(report(release = "1.4.1"), appId)
+            useCase.process(report(release = "1.4.2"), appId)
+
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+            val activity = reportRepository.activity(listOf(group.id), currentMillis(), 7).getValue(group.id)
+
+            assertEquals(7, activity.dailyCrashes.size)
+            assertEquals(2, activity.dailyCrashes.last(), "both reports arrived in the running day")
+            assertEquals("production", activity.environment)
+            assertEquals("1.4.1 – 1.4.2", activity.releases)
+        }
+
+    @Test
+    fun `an environment that is not the same in every report is left unsaid`() =
+        runTest {
+            useCase.process(report(release = "1.4.2", environment = "production"), appId)
+            useCase.process(report(release = "1.4.2", environment = "staging"), appId)
+
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+            val activity = reportRepository.activity(listOf(group.id), currentMillis(), 7).getValue(group.id)
+
+            assertNull(activity.environment)
+            assertEquals("1.4.2", activity.releases)
+        }
+
+    @Test
+    fun `releases are counted per release with the busiest first`() =
+        runTest {
+            repeat(3) { useCase.process(report(release = "1.4.2"), appId) }
+            useCase.process(report(release = "1.4.1"), appId)
+
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+            val releases = reportRepository.releases(group.id, 4)
+
+            assertEquals(listOf("1.4.2" to 3, "1.4.1" to 1), releases.map { it.release to it.count })
+        }
+
+    @Test
+    fun `reopening clears the flag without claiming a regression`() =
+        runTest {
+            useCase.process(report(release = "1.4.2"), appId)
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+            groupRepository.resolve(group.id)
+
+            groupRepository.reopen(group.id)
+
+            val reopened = assertNotNull(groupRepository.findById(group.id))
+            assertFalse(reopened.resolved)
+            assertNull(reopened.regressedAt, "nothing happened in the application, only in somebody's mind")
+        }
+
+    @Test
+    fun `a report with unreadable breadcrumbs is still listed without them`() =
+        runTest {
+            useCase.process(report(release = "1.4.2"), appId)
+            val group = assertNotNull(groupRepository.findByFingerprint(appId, fingerprint()))
+
+            // What a client of an older shape could have written.
+            TransactionContext.withCurrent(db) {
+                execute(
+                    Statement
+                        .create("UPDATE reports SET breadcrumbs = :broken WHERE group_id = :groupId")
+                        .apply {
+                            bind("groupId", group.id)
+                            bind("broken", "[{\"message\": \"no timestamp, no type\"}]")
+                        },
+                )
+            }
+
+            val reports = reportRepository.findByGroup(group.id, 1, 15)
+
+            assertEquals(1, reports.items.size, "one unreadable field must not hide the report")
+            assertNull(reports.items.single().breadcrumbs)
+            assertEquals(stacktrace, reports.items.single().stacktrace)
+        }
+
+    private fun fingerprint() = ProcessReportUseCase.generateFingerprint(stacktrace)
+
+    @OptIn(ExperimentalTime::class)
+    private fun currentMillis() = Clock.System.now().toEpochMilliseconds()
+
+    private fun report(
+        release: String,
+        environment: String = "production",
+    ) = CreateReportParams(
+        appKey = "unused-here",
+        message = "account not found",
+        stacktrace = stacktrace,
+        release = release,
+        environment = environment,
+    )
+}

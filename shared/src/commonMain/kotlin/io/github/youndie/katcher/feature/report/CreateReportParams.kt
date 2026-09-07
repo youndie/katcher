@@ -1,0 +1,14 @@
+package io.github.youndie.katcher.feature.report
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+public data class CreateReportParams(
+    val appKey: String,
+    val message: String,
+    val stacktrace: String,
+    val context: Map<String, String>? = null,
+    val breadcrumbs: List<Breadcrumb>? = null,
+    val release: String? = null,
+    val environment: String? = null,
+)
