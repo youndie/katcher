@@ -3,7 +3,7 @@ kotlin = "2.4.10"
 exposed = "1.4.0"
 logback = "1.6.2"
 koinBom = "4.2.2"
-slf4jApi = "2.0.18"
+slf4jApi = "2.0.19"
 sqliteJdbc = "3.53.2.1"
 jib = "3.5.4"
 
