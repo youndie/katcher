@@ -16,7 +16,7 @@ kotlin {
 }
 
 ksp {
-    arg("output-package", "ru.workinprogress.katcher.db")
+    arg("output-package", "io.github.youndie.katcher.db")
 }
 
 kotlin {

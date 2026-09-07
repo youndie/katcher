@@ -5,7 +5,7 @@ import kotlinx.cinterop.toKString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import platform.posix.getenv
-import ru.workinprogress.katcher.Katcher
+import io.github.youndie.katcher.Katcher
 
 private fun env(
     name: String,

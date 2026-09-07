@@ -15,7 +15,7 @@ kotlin {
     jvm()
 
     android {
-        namespace = "ru.workinprogress.katcher.client"
+        namespace = "io.github.youndie.katcher.client"
         compileSdk = 36
         minSdk = 24
 

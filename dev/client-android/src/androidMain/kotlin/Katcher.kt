@@ -1,4 +1,4 @@
-package ru.workinprogress.katcher
+package io.github.youndie.katcher
 
 import android.content.Context
 import android.os.Build

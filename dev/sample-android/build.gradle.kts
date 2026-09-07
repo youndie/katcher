@@ -9,11 +9,11 @@ plugins {
 // No `repositories { }` here either — see `dev/client-android`.
 
 android {
-    namespace = "ru.workinprogress.katcher.sample"
+    namespace = "io.github.youndie.katcher.sample"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "ru.workinprogress.katcher.sample"
+        applicationId = "io.github.youndie.katcher.sample"
         minSdk = 24
         targetSdk = 36
         versionCode = 1

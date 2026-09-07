@@ -6,7 +6,7 @@ import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import ru.workinprogress.katcher.module
+import io.github.youndie.katcher.module
 
 private const val PORT = 8080
 private const val HOST = "0.0.0.0"

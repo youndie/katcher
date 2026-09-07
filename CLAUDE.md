@@ -10,7 +10,7 @@ required in production). Client is a KMP library apps embed to capture and uploa
   `UserRepository`, `ReportRepository`) used by `server/`.
 - `server/` — Ktor application. `commonMain` has routing/app wiring; `jvmMain`/`nativeMain` hold
   platform-specific `ServerConfig`. Native is the real deployment target; JVM exists for dev/testing.
-  Feature packages under `ru.workinprogress.feature.<name>/data` (auth, app, user, report, error,
+  Feature packages under `io.github.youndie.katcher.feature.<name>/data` (auth, app, user, report, error,
   symbolication) each hold their own Exposed/sqlx4k data access.
 - `shared/` — DTOs shared between client and server (`CreateReportParams`, `Breadcrumb`,
   `ReportResource`, `ErrorGroupSort`).
@@ -27,7 +27,7 @@ required in production). Client is a KMP library apps embed to capture and uploa
   `Thread.setDefaultUncaughtExceptionHandler` install, `FileKatcherFileSystem`), and each of the two
   supplies only its cache directory and its system attributes. Its publication is
   `io.github.youndie.katcher:client-android` — the name `dev/client-android` used until 0.4.92 (as
-  `ru.workinprogress.katcher:client-android`, the group this repository published before 0.7), which
+  `io.github.youndie.katcher:client-android`, the group this repository published before 0.7), which
   is why that module no longer publishes anything (#27).
 - `dev/` — sample/dogfooding apps (`sample-kotlin-jvm`, `client-android`, `android-gradle-plugin`,
   `server-jvm-keycloak`, `retrace`) — not shipped, used for manual testing.
@@ -35,7 +35,7 @@ required in production). Client is a KMP library apps embed to capture and uploa
 
 ## Client crash-capture model (important, non-obvious)
 
-`Katcher.catch()` (`client/src/commonMain/kotlin/ru/workinprogress/katcher/Katcher.kt`) is **not fully
+`Katcher.catch()` (`client/src/commonMain/kotlin/io/github/youndie/katcher/Katcher.kt`) is **not fully
 synchronous**: it synchronously writes the report to disk via `fileSystem.saveReport()`, then only
 *signals* an upload — the actual HTTP POST happens later on a `Dispatchers.IO`-backed `CoroutineScope`
 (`processQueue()`). On JVM, `Dispatchers.IO` threads are daemons, so if the crash happens on the last
@@ -44,7 +44,7 @@ the upload ever fires — the crash report never reaches the server on that boot
 delivered on a *later* boot's `processQueue()` pass, and only if the on-disk cache directory survived
 the process/container restart.
 
-`JvmKatcherFileSystem` (`client/src/jvmMain/kotlin/ru/workinprogress/katcher/JvmKatcherFileSystem.kt`)
+`JvmKatcherFileSystem` (`client/src/jvmMain/kotlin/io/github/youndie/katcher/JvmKatcherFileSystem.kt`)
 stores pending reports at `System.getProperty("user.dir")/.katcher_cache` — this is **not** guaranteed
 to be a persistent path. Consumers deploying on Kubernetes/containers must mount a persistent volume at
 that path (`user.dir` for a Jib-built image is typically `/app`) or reports from startup-time crashes

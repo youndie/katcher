@@ -16,7 +16,7 @@ plugins {
 version = "0.1.0"
 
 application {
-    mainClass.set("ru.workinprogress.katcher.ApplicationKt")
+    mainClass.set("io.github.youndie.katcher.ApplicationKt")
 }
 
 kotlin {

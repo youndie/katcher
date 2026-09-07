@@ -1,6 +1,6 @@
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
-import ru.workinprogress.katcher.Katcher
+import io.github.youndie.katcher.Katcher
 import kotlin.time.Duration.Companion.milliseconds
 
 suspend fun main() =
