@@ -12,12 +12,11 @@ pluginManagement {
         maven("https://reposilite.kotlin.website/snapshots") {
             name = "wip-snapshots"
             content {
-                // Both groups on purpose. The portfolio is moving to `io.github.youndie` and sborka
-                // is already there — the plugin marker and the jar behind it are under the new one.
-                // The old one is held by the library versions published before the move: they are
-                // still on the server and resolve as before.
+                // One group, and it is the only one there can be. The portfolio's move to
+                // `io.github.youndie` is finished: nothing this build resolves is under
+                // `ru.workinprogress` any more, and a filter naming a group the server is never asked
+                // about reads as a dependency that is still there.
                 includeGroupByRegex("io\\.github\\.youndie.*")
-                includeGroupByRegex("ru\\.workinprogress.*")
             }
         }
     }
