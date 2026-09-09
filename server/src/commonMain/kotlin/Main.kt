@@ -33,6 +33,10 @@ fun main() {
  * Binding here first turns that into a wait. It is not a fix for whatever killed the previous
  * process; it is the difference between a blip and an outage.
  */
+@Suppress(
+    "ktlint:kapkan:cancellation-swallowed",
+    "the broad catch rethrows everything except AddressAlreadyInUse, a cancellation with it",
+)
 private suspend fun awaitPort() {
     // Default, not IO: on native IO is internal, and this selector lives for one bind test.
     val selector = SelectorManager(kotlinx.coroutines.Dispatchers.Default)
@@ -44,6 +48,8 @@ private suspend fun awaitPort() {
             selector.close()
             return
         } catch (cause: Throwable) {
+            // Everything that is not AddressAlreadyInUse leaves on the next line, a cancellation
+            // included -- the rule reads the shape of the catch and cannot see a conditional rethrow.
             if (cause::class.simpleName != "AddressAlreadyInUseException") throw cause
             println("port $PORT still held, waiting (${attempt + 1}/$BIND_ATTEMPTS)")
             delay(BIND_RETRY_MILLIS)

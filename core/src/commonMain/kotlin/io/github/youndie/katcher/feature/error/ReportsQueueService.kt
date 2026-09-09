@@ -21,10 +21,21 @@ class ReportsQueueService(
         appId: Int,
     ): Boolean = queue.trySend(params to appId).isSuccess
 
+    @Suppress(
+        "ktlint:kapkan:swallowed-failure",
+        "a report that cannot be processed must not stop the queue -- that is what this loop is for",
+    )
     suspend fun work() {
         for ((params, appId) in queue) {
-            runCatching { processReportUseCase.process(params, appId) }
-                .onFailure { if (it is CancellationException) throw it }
+            // `try` and not `runCatching`: the cancellation was already rethrown, but from inside
+            // `onFailure`, which is a shape neither a reader nor a rule can check at a glance.
+            try {
+                processReportUseCase.process(params, appId)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (_: Throwable) {
+                // A report that cannot be processed must not stop the queue.
+            }
         }
     }
 }
