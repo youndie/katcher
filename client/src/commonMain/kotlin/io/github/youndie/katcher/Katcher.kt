@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Clock
 
 internal expect fun setupPlatformHandler()
@@ -194,6 +195,10 @@ public object Katcher {
                 if (config.isDebug) println("$LOGO Server rejected: ${response.status}")
                 false
             }
+        } catch (e: CancellationException) {
+            // A cancelled send is not a report the server refused. Answering `false` here tells the
+            // caller the transmission failed, and the crash it was carrying is dropped on that word.
+            throw e
         } catch (e: Exception) {
             if (config.isDebug) println("$LOGO Transmission failed: ${e.message}")
             false

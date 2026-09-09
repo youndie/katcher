@@ -142,6 +142,8 @@ class ErrorGroupRepositoryImpl : ErrorGroupRepository {
     @Suppress(
         "ktlint:kapkan:wall-clock",
         "сервер ставит собственную метку хранения — сравнивать её будут с ней же",
+        "ktlint:kapkan:cancellation-swallowed",
+        "every failure is rethrown below and getOrThrow rethrows the rest: nothing is kept here",
     )
     override suspend fun insert(newGroup: CreateErrorGroupParams): ErrorGroup =
         runCatching {
