@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("io.github.youndie.sborka.kmp")
     id("io.github.youndie.sborka.lint")
+    id("io.github.youndie.sborka.parity")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
 }
@@ -13,6 +14,14 @@ plugins {
 // spelled-out public API to be spelled out for.
 kotlin {
     explicitApi = null
+}
+
+// WHERE THE PLATFORM PROBE LOOKS. `localhost` is the name it resolves; the port is bound by the test
+// itself, so the suite needs nothing running beside it. See `PlatformTest` for what that covers and
+// what it does not.
+parityProbe {
+    host = "localhost"
+    port = 0
 }
 
 ksp {

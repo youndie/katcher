@@ -31,6 +31,7 @@ okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
 [plugins]
 sborkaKmp = { id = "io.github.youndie.sborka.kmp", version.ref = "sborka" }
+sborkaParity = { id = "io.github.youndie.sborka.parity", version.ref = "sborka" }
 sborkaJvm = { id = "io.github.youndie.sborka.jvm", version.ref = "sborka" }
 sborkaLint = { id = "io.github.youndie.sborka.lint", version.ref = "sborka" }
 sborkaPublish = { id = "io.github.youndie.sborka.publish", version.ref = "sborka" }
