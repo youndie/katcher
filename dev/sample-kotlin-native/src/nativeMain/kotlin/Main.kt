@@ -6,6 +6,7 @@ import kotlinx.cinterop.toKString
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import platform.posix.getenv
+import kotlin.time.Duration.Companion.seconds
 
 private fun env(
     name: String,
@@ -16,15 +17,17 @@ private fun env(
  * Dogfooding app for the Kotlin/Native client. Modes:
  *  - catch (default) — Katcher.catch() on a handled exception, then wait for the uploader.
  *  - crash           — throw an uncaught exception so the unhandled exception hook fires.
- *  - flush           — start only, so the queue on disk gets drained.
+ *  - flush           — start only, then hand the queue to Katcher.flush() and print its answer.
  */
 fun main(args: Array<String>) {
     val mode = args.firstOrNull() ?: "catch"
     val host = env("KATCHER_HOST", "http://host.docker.internal:8080")
     val appKey = env("KATCHER_APP_KEY", "")
     val waitSeconds = env("KATCHER_WAIT_SECONDS", "6").toIntOrNull() ?: 6
+    val graceSeconds = env("KATCHER_GRACE_SECONDS", "5").toIntOrNull() ?: 5
+    val cacheDirectory = env("KATCHER_CACHE_DIR", "")
 
-    println("[sample] mode=$mode host=$host appKey=${appKey.take(8)}... wait=${waitSeconds}s")
+    println("[sample] mode=$mode host=$host appKey=${appKey.take(8)}... wait=${waitSeconds}s grace=${graceSeconds}s")
 
     Katcher.start {
         this.appKey = appKey
@@ -32,6 +35,10 @@ fun main(args: Array<String>) {
         isDebug = true
         environment = "docker-native"
         release = "native-sample-1.0.0"
+        // Серверный бинарник: следующего запуска на этой файловой системе может не быть, поэтому
+        // каталог указывает на смонтированный том, а фатальный краш ждёт отправки.
+        cacheDir = cacheDirectory.takeIf { it.isNotEmpty() }
+        crashUploadGrace = graceSeconds.seconds
     }
 
     Katcher.addBreadcrumb("process started", type = "info", data = mapOf("mode" to mode))
@@ -44,7 +51,8 @@ fun main(args: Array<String>) {
         }
 
         "flush" -> {
-            println("[sample] flush mode: only draining the on-disk queue")
+            val delivered = runBlocking { Katcher.flush(graceSeconds.seconds) }
+            println("[sample] flush mode: queue empty = $delivered")
         }
 
         else -> {
@@ -52,9 +60,9 @@ fun main(args: Array<String>) {
                 RuntimeException("Handled crash from Kotlin/Native sample"),
                 mapOf("mode" to mode),
             )
+            runBlocking { delay(waitSeconds * 1000L) }
         }
     }
 
-    runBlocking { delay(waitSeconds * 1000L) }
     println("[sample] done")
 }

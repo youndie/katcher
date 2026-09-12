@@ -13,7 +13,8 @@ import kotlin.native.Platform
 import kotlin.random.Random
 import kotlin.time.Clock
 
-internal actual val fileSystem: KatcherFileSystem = NativeKatcherFileSystem()
+internal actual fun createFileSystem(cacheDir: String?): KatcherFileSystem =
+    NativeKatcherFileSystem(cacheDir?.toPath() ?: defaultCacheDir())
 
 /**
  * На Apple рабочий каталог процесса — не то место, куда можно писать: у приложения на iOS это

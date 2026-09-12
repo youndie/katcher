@@ -21,7 +21,7 @@ internal actual fun setupPlatformHandler() {
 
     previousHook.value =
         setUnhandledExceptionHook { throwable ->
-            runCatching { Katcher.catch(throwable) }
+            runCatching { Katcher.catchFatal(throwable) }
 
             val previous = previousHook.value
             if (previous != null) {

@@ -306,6 +306,11 @@ macOS, `.katcher_cache` next to the working directory on the JVM, Linux and Wind
 cannot be created or written to, `Katcher.start { }` says so and does not start — a reporter that cannot
 store a report is worth an error at startup rather than a silent one at crash time.
 
+Those defaults assume there will be a next launch on the same file system — true for an app, not for a
+server binary in a container, where the working directory lives in a writable layer that dies with the
+pod. Such a host names the directory itself (`cacheDir`) and points it at a volume that outlives the
+container. See [Shutting down](#shutting-down-servers-and-other-hosts-without-a-next-launch).
+
 ### Configuration
 
 Configuration
@@ -326,6 +331,13 @@ fun main() {
 
         // Enable detailed logs in console (useful for debugging integration)
         isDebug = true
+
+        // Where unsent reports wait. null (the default) means the platform directory above.
+        cacheDir = null
+
+        // How long a fatal crash may hold the dying thread waiting for the upload.
+        // Zero (the default) means "do not wait" — write to disk, deliver on the next launch.
+        crashUploadGrace = Duration.ZERO
     }
 
     // Your app logic...
@@ -364,6 +376,46 @@ Two things are worth knowing before you rely on it:
 
 The server symbolicates Android R8 mappings; an iOS stack trace arrives the way Kotlin/Native prints it,
 with no dSYM step.
+
+### Shutting down: servers and other hosts without a next launch
+
+`Katcher.catch()` writes the report to disk and only *signals* the upload — the POST happens on a
+`Dispatchers.IO` coroutine. For an app that is the right design: a crash at launch is delivered on the
+next launch instead of being lost. A server binary in a container may not get a next launch on the same
+file system, and then the report is written to a layer that dies with the pod.
+
+Two settings and one call answer that, and a host that needs one usually needs all three:
+
+```kotlin
+fun main() {
+    Katcher.start {
+        remoteHost = "https://katcher.example.com"
+        appKey = "<YOUR_APP_KEY>"
+
+        // A volume that outlives the container, not the working directory.
+        cacheDir = "/var/lib/myservice/katcher"
+
+        // A crash that kills the process has nowhere else to wait: hold the dying thread this long
+        // while the report leaves. Zero (the default) does not wait at all.
+        crashUploadGrace = 5.seconds
+    }
+
+    // ... run the service ...
+
+    // Last in your own shutdown group: hand over whatever is still on disk.
+    val delivered = Katcher.flush(3.seconds)
+    if (!delivered) log.warn("crash reports stayed on disk")
+}
+```
+
+`flush` answers whether the queue is now empty. `false` means the network refused or the grace ran
+out — the reports are still on disk, and will go out on a later start if that disk is still there.
+`flush` before `start` answers `true`: there is nothing to hand over.
+
+`crashUploadGrace` bounds only the fatal path — the platform's uncaught-exception handler.
+`Katcher.catch()` stays non-blocking whatever it is set to, so a handled error never holds a thread.
+
+Mobile clients want neither: leave both at their defaults and let the next launch deliver.
 
 ### Breadcrumbs (Activity Tracking)
 

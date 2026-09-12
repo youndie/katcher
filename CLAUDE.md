@@ -36,19 +36,36 @@ required in production). Client is a KMP library apps embed to capture and uploa
 ## Client crash-capture model (important, non-obvious)
 
 `Katcher.catch()` (`client/src/commonMain/kotlin/io/github/youndie/katcher/Katcher.kt`) is **not fully
-synchronous**: it synchronously writes the report to disk via `fileSystem.saveReport()`, then only
-*signals* an upload — the actual HTTP POST happens later on a `Dispatchers.IO`-backed `CoroutineScope`
-(`processQueue()`). On JVM, `Dispatchers.IO` threads are daemons, so if the crash happens on the last
-non-daemon thread (e.g. a startup-time crash before any server threads exist), the JVM can exit before
-the upload ever fires — the crash report never reaches the server on that boot. It will only get
-delivered on a *later* boot's `processQueue()` pass, and only if the on-disk cache directory survived
-the process/container restart.
+synchronous**: it synchronously writes the report to disk via `saveReport()`, then only *signals* an
+upload — the actual HTTP POST happens later on a `Dispatchers.IO`-backed `CoroutineScope`
+(`ReportUploader.work()`). On JVM, `Dispatchers.IO` threads are daemons, so if the crash happens on the
+last non-daemon thread (e.g. a startup-time crash before any server threads exist), the JVM can exit
+before the upload ever fires; on Kotlin/Native the hook terminates the process right after it returns,
+which is the same story without the "can". The report is then delivered by a *later* start, and only if
+the on-disk cache directory survived the restart.
 
-`JvmKatcherFileSystem` (`client/src/jvmMain/kotlin/io/github/youndie/katcher/JvmKatcherFileSystem.kt`)
-stores pending reports at `System.getProperty("user.dir")/.katcher_cache` — this is **not** guaranteed
-to be a persistent path. Consumers deploying on Kubernetes/containers must mount a persistent volume at
-that path (`user.dir` for a Jib-built image is typically `/app`) or reports from startup-time crashes
-are lost on container restart before ever being retried.
+A host that has no later start says so, and three things answer it (#50):
+
+- `KatcherConfig.cacheDir` — the directory reports wait in, `null` meaning the platform default.
+  `createFileSystem(cacheDir)` is the `expect` that builds the storage; the old `expect val fileSystem`
+  was a fixed singleton, which is why the directory could not be repointed before.
+- `KatcherConfig.crashUploadGrace` — how long `Katcher.catchFatal()` blocks the dying thread waiting for
+  the upload (`ReportUploader.flushBlocking`). `Duration.ZERO` by default: mobile wants the next launch,
+  not a held thread. **Only the fatal path waits** — public `catch()` never blocks.
+- `Katcher.flush(grace)` — suspending, for the host's own shutdown group; answers whether the queue is
+  now empty.
+
+The `runBlocking` in `ReportUploader.flushBlocking` sits in `commonMain` because the client declares
+neither a JS nor a Wasm target — `:shared` does declare `wasmJs`, so that is where the pressure will
+come from. Adding such a target to `:client` means moving `flushBlocking` behind an `expect`.
+
+Before #50 the JVM handler slept `50 ms` and hoped. Against `connectTimeoutMillis = 3_000` and two
+retries that was a lottery, and it is gone.
+
+Platform defaults for the cache directory are **not** persistent paths. Consumers deploying on
+Kubernetes/containers either mount a volume at the default (`user.dir` for a Jib-built image is
+typically `/app`) or set `cacheDir` to one — otherwise reports from startup-time crashes are lost on
+container restart before ever being retried.
 
 On Android the directory comes from `Context.cacheDir` — `user.dir` there is `/`, which is not writable,
 and an application cannot repoint it either (`System.setProperty("user.dir", …)` is refused by the runtime
@@ -63,7 +80,7 @@ no-op afterwards. Before that, an unwritable directory only showed up as a caugh
 `Katcher.catch` at crash time — which prints a line and never signals the upload, i.e. a reporter that
 says "Storage ready" and reports nothing (#27).
 
-On Kotlin/Native the cache directory is chosen at runtime from `Platform.osFamily`
+On Kotlin/Native the default cache directory is chosen at runtime from `Platform.osFamily`
 (`client/src/nativeMain/.../NativeKatcherFileSystem.kt`, `defaultCacheDir()`): `$HOME/Library/Caches/katcher_cache`
 on Apple targets, `.katcher_cache` next to the working directory everywhere else. The working directory of an
 iOS app is the read-only bundle, so the relative path would turn every `saveReport()` inside the crash handler

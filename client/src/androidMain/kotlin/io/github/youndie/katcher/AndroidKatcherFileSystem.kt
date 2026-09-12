@@ -2,9 +2,11 @@ package io.github.youndie.katcher
 
 import java.io.File
 
-internal actual val fileSystem: KatcherFileSystem = AndroidKatcherFileSystem()
+internal actual fun createFileSystem(cacheDir: String?): KatcherFileSystem = AndroidKatcherFileSystem(cacheDir)
 
-internal class AndroidKatcherFileSystem : FileKatcherFileSystem(::androidCacheDir, ::getSystemAttributes)
+internal class AndroidKatcherFileSystem(
+    cacheDir: String? = null,
+) : FileKatcherFileSystem({ cacheDir?.let(::File) ?: androidCacheDir() }, ::getSystemAttributes)
 
 /**
  * `user.dir` на Android — это `/`, писать туда нельзя, и подменить свойство приложение тоже не может:
