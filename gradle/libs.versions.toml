@@ -1,7 +1,7 @@
 [versions]
 # The shared build conventions. One number: every sborka plugin below takes its version from here.
 sborka = "0.4.0.58"
-androidGradlePlugin = "9.3.1"
+androidGradlePlugin = "9.4.0"
 atomicfu = "0.33.0"
 kotlin = "2.4.10"
 kotlinxCoroutinesCore = "1.11.0"
@@ -10,7 +10,7 @@ kotlinxSerializationJson = "1.11.0"
 mcpKotlinSdk = "0.15.0"
 metrikAgent = "0.2.16"
 sqlx4k = "1.13.0"
-ksp = "2.3.11"
+ksp = "2.3.12"
 ktlint = "14.2.0"
 okio = "3.18.1"
 
