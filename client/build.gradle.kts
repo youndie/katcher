@@ -49,21 +49,19 @@ kotlin {
                 implementation(libs.okio)
             }
         }
-        named("nativeTest") {
-            dependencies {
-                implementation(kotlin("test"))
-            }
-        }
-        named("jvmTest") {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+        // Один kotlin("test") на все таргеты: набор общий, а jvmTest и nativeTest получают свой
+        // вариант от KMP-плагина.
+        commonTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }
 
 dependencies {
     commonMainApi(projects.shared)
+    // Клиент зовёт корутины сам — очередь отчётов, её мьютекс и `runBlocking` в фатальном пути,
+    // — а не только через ktor, поэтому зависимость объявлена, а не взята транзитивно.
+    commonMainImplementation(libs.kotlinx.coroutines.core)
     commonMainImplementation(ktorLibs.client.core)
     commonMainImplementation(ktorLibs.client.contentNegotiation)
     commonMainImplementation(ktorLibs.serialization.kotlinx.json)

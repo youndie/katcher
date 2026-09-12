@@ -21,13 +21,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Clock
+import kotlin.time.Duration
 
 internal expect fun setupPlatformHandler()
 
@@ -39,10 +40,13 @@ public object Katcher {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val _breadcrumbs = atomic(emptyList<Breadcrumb>())
 
+    // Хранилище и очередь появляются в start(): каталог известен только из конфигурации, а до неё
+    // писать всё равно некуда — catch() без start() и раньше ничего не делал.
+    private val fileSystem = atomic<KatcherFileSystem?>(null)
+    private val uploader = atomic<ReportUploader?>(null)
+
     public val breadcrumbs: List<Breadcrumb>
         get() = _breadcrumbs.value
-
-    private val uploadSignal = Channel<Unit>(Channel.CONFLATED)
 
     internal val json =
         Json {
@@ -84,21 +88,29 @@ public object Katcher {
         // Каталог отчётов проверяется здесь, а не при первом краше. Проверка при краше попадает
         // в catch внутри `catch()`, печатает строчку и не сигналит выгрузку: снаружи это выглядит
         // как настроенный репортер, которому нечего отправлять.
-        val storage = runCatching { fileSystem.prepare() }
-        storage.exceptionOrNull()?.let { failure ->
+        val storage = createFileSystem(newConfig.cacheDir)
+        val prepared = runCatching { storage.prepare() }
+        prepared.exceptionOrNull()?.let { failure ->
             println("$LOGO Storage error: ${failure.message}. Reports cannot be stored, Katcher is not started.")
             return
         }
 
         config = newConfig
+        fileSystem.value = storage
+        val queue = ReportUploader(storage, ::debugLog, ::sendReport)
+        uploader.value = queue
+
         setupPlatformHandler()
         clearBreadcrumbs()
 
+        // Повторный start() оставил бы прежнего работника на прежнем канале: он больше никогда не
+        // получит сигнала, а значит просто занял бы поток до конца процесса.
+        scope.coroutineContext.cancelChildren()
         scope.launch {
-            processQueue()
+            queue.work()
         }
 
-        uploadSignal.trySend(Unit)
+        queue.requestUpload()
 
         if (config.isDebug) println("$LOGO Katcher initialized. Storage ready.")
     }
@@ -107,34 +119,18 @@ public object Katcher {
         throwable: Throwable,
         context: Map<String, String> = emptyMap(),
     ) {
-        if (config.appKey.isEmpty()) return
-
-        val first = isCrashing.compareAndSet(expect = false, update = true)
-        if (!first) return
-
-        try {
-            val params =
-                CreateReportParams(
-                    appKey = config.appKey,
-                    message = throwable.message.toString(),
-                    stacktrace = throwable.stackTraceToString(),
-                    release = config.release,
-                    environment = config.environment,
-                    context = context,
-                    breadcrumbs = breadcrumbs,
-                )
-
-            fileSystem.saveReport(params)
-
-            if (config.isDebug) println("$LOGO Report saved to disk. Signal sent.")
-
-            uploadSignal.trySend(Unit)
-        } catch (e: Exception) {
-            println("$LOGO Failed to save crash report: ${e.message}")
-        } finally {
-            isCrashing.value = false
-        }
+        record(throwable, context)
     }
+
+    /**
+     * Отдаёт всё, что лежит на диске, и отвечает, пуста ли очередь. Для хоста, который выключается
+     * и знает, что следующего запуска на этой файловой системе может не быть: зовётся последним
+     * в группе телеметрии, ограничен сверху [grace].
+     *
+     * `false` — либо сеть отказала, либо кончился [grace]; отчёт остался на диске. `true` до
+     * [start] означает ровно «отдавать нечего»: каталог ещё не выбран.
+     */
+    public suspend fun flush(grace: Duration): Boolean = uploader.value?.flush(grace) ?: true
 
     @Suppress(
         "ktlint:kapkan:wall-clock",
@@ -163,23 +159,59 @@ public object Katcher {
         _breadcrumbs.value = emptyList()
     }
 
-    private suspend fun processQueue() {
-        for (signal in uploadSignal) {
-            if (config.isDebug) println("$LOGO Worker woke up. Checking disk...")
+    /**
+     * Путь падения, которое убивает процесс: обработчики платформы зовут его вместо [catch].
+     * Отличие одно — здесь отправку ждут, потому что ждать её больше негде: воркер живёт на
+     * [Dispatchers.IO] и до следующего своего шага не доживёт.
+     */
+    internal fun catchFatal(throwable: Throwable) {
+        record(throwable, emptyMap())
 
-            val reports = fileSystem.getReports()
+        val grace = config.crashUploadGrace
+        if (grace <= Duration.ZERO) return
 
-            for (report in reports) {
-                val success = sendReport(report.params)
-
-                if (success) {
-                    fileSystem.deleteReport(report.fileName)
-                } else {
-                    if (config.isDebug) println("$LOGO Network error. Retrying later.")
-                    break
-                }
-            }
+        val delivered = uploader.value?.flushBlocking(grace) ?: return
+        if (!delivered && config.isDebug) {
+            println("$LOGO Crash report did not leave the process within $grace. It stays on disk.")
         }
+    }
+
+    private fun record(
+        throwable: Throwable,
+        context: Map<String, String>,
+    ) {
+        if (config.appKey.isEmpty()) return
+        val storage = fileSystem.value ?: return
+
+        val first = isCrashing.compareAndSet(expect = false, update = true)
+        if (!first) return
+
+        try {
+            val params =
+                CreateReportParams(
+                    appKey = config.appKey,
+                    message = throwable.message.toString(),
+                    stacktrace = throwable.stackTraceToString(),
+                    release = config.release,
+                    environment = config.environment,
+                    context = context,
+                    breadcrumbs = breadcrumbs,
+                )
+
+            storage.saveReport(params)
+
+            if (config.isDebug) println("$LOGO Report saved to disk. Signal sent.")
+
+            uploader.value?.requestUpload()
+        } catch (e: Exception) {
+            println("$LOGO Failed to save crash report: ${e.message}")
+        } finally {
+            isCrashing.value = false
+        }
+    }
+
+    private fun debugLog(message: String) {
+        if (config.isDebug) println("$LOGO $message")
     }
 
     private suspend fun sendReport(params: CreateReportParams): Boolean =

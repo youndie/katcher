@@ -2,7 +2,11 @@ package io.github.youndie.katcher
 
 import io.github.youndie.katcher.feature.report.CreateReportParams
 
-internal expect val fileSystem: KatcherFileSystem
+/**
+ * Хранилище отчётов для настроенного каталога. `cacheDir` — то, что попросил хост
+ * ([KatcherConfig.cacheDir]); `null` означает каталог платформы по умолчанию.
+ */
+internal expect fun createFileSystem(cacheDir: String?): KatcherFileSystem
 
 internal interface KatcherFileSystem {
     /**
