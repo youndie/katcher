@@ -3,7 +3,7 @@
 Research into katcher's edit→link loop and its PR / release pipeline. The subject is the
 Kotlin/Native server binary, because that binary is the shipped artifact.
 
-**Status: RQ0 green, RQ1 green and adopted, RQ2 next.** Every metric is attributed; the CI and
+**Status: RQ0 green, RQ1 green and adopted, RQ2 open.** Every metric is attributed; the CI and
 image sides needed a `--profile` change first (#65). `kotlin.incremental.native=true` takes the
 debug edit-link loop down 45.5%.
 
@@ -14,6 +14,7 @@ debug edit-link loop down 45.5%.
 | [baseline.md](baseline.md) | RQ0's "facts, not experiments", and every number measured so far with its provenance |
 | [rq0-attribution.md](rq0-attribution.md) | Where the time actually goes, phase by phase, and the RQ0 verdict |
 | [rq1-compiler-caches.md](rq1-compiler-caches.md) | RQ1: the lever that worked, the control that could not be read, and why the noise gate is wrong |
+| [rq2-jvm-sizing.md](rq2-jvm-sizing.md) | RQ2: the premise checked before the measurement, and what it cost |
 | [retractions.md](retractions.md) | Claims made in this research and later withdrawn |
 | [raw/](raw/) | The logs the tables were derived from, and the scripts that derive them |
 

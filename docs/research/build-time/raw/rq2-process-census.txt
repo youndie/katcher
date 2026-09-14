@@ -1,0 +1,6 @@
+=== FULL census of java/konan/cinterop processes (no head) ===
+pid=260090 rss_kb=4958560 xmx=-Xmx5g main=org.gradle.launcher.daemon.bootstrap.GradleDaemon
+pid=268222 rss_kb=127520 xmx=-Xmx64m main=?
+pid=268268 rss_kb=3126780 xmx=-Xmx5g main=org.gradle.launcher.daemon.bootstrap.GradleDaemon
+=== count ===
+4
