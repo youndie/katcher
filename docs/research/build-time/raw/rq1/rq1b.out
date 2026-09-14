@@ -1,0 +1,16 @@
+=== A
+1	incr_dbg	9193	ok	r1-incr_dbg.log
+2	incr_dbg	7768	ok	r2-incr_dbg.log
+3	incr_dbg	8301	ok	r3-incr_dbg.log
+=== B
+1	incr_dbg	5386	ok	r1-incr_dbg.log
+2	incr_dbg	4305	ok	r2-incr_dbg.log
+3	incr_dbg	3779	ok	r3-incr_dbg.log
+=== C
+1	incr_dbg	8340	ok	r1-incr_dbg.log
+2	incr_dbg	10305	ok	r2-incr_dbg.log
+3	incr_dbg	8200	ok	r3-incr_dbg.log
+--- did the property reach Gradle? ---
+A args='' config-invalidated=0
+B args='-Pkotlin.incremental.native=true' config-invalidated=1
+C args='-Pkotlin.native.cacheKind=none' config-invalidated=1

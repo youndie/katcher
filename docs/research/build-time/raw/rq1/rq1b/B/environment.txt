@@ -1,0 +1,12 @@
+# repository   /Users/youndie/Documents/GitHub/katcher @ 578645d
+# subject      server/src/commonMain/kotlin/Main.kt
+# started      2026-09-15T00:30:42+02:00
+# reps         3
+# metrics      incr_dbg
+# gradle args  -Pkotlin.incremental.native=true
+# profile      0
+# box cores    20
+# box memory   15991 MiB total, 7642 MiB used
+# box loadavg  2.05 1.09 0.85
+# box kernel   6.6.87.2-microsoft-standard-WSL2
+# finished     2026-09-15T00:31:01+02:00

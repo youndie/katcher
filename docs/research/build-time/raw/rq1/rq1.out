@@ -1,0 +1,20 @@
+round 1 variant A -> 20520 ok
+round 1 variant B -> 8185 ok
+round 1 variant C -> 7615 ok
+round 2 variant A -> 9839 ok
+round 2 variant B -> 3831 ok
+round 2 variant C -> 8109 ok
+round 3 variant A -> 10892 ok
+round 3 variant B -> 4855 ok
+round 3 variant C -> 7696 ok
+--- results ---
+round	variant	metric	ms	verdict
+1	A	incr_dbg	20520	ok
+1	B	incr_dbg	8185	ok
+1	C	incr_dbg	7615	ok
+2	A	incr_dbg	9839	ok
+2	B	incr_dbg	3831	ok
+2	C	incr_dbg	8109	ok
+3	A	incr_dbg	10892	ok
+3	B	incr_dbg	4855	ok
+3	C	incr_dbg	7696	ok

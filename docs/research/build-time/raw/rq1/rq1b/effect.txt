@@ -1,0 +1,3 @@
+A args='' config-invalidated=0
+B args='-Pkotlin.incremental.native=true' config-invalidated=1
+C args='-Pkotlin.native.cacheKind=none' config-invalidated=1

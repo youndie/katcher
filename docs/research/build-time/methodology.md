@@ -42,9 +42,33 @@ that can link linuxX64:
   margin under it.
 - **It is not idle.** It also hosts a self-hosted Actions runner and other syncs. Background
   load at the time of a measurement is part of the measurement and goes in the log beside it.
-- **Consequence for the protocol.** Variants are interleaved (A B A B A B), never run in blocks,
-  and the reported figure is a median of three per variant with the full spread printed. A
-  difference inside the spread is reported as inconclusive, not as a small win.
+- **Consequence for the protocol.** The reported figure is a median per variant with the full
+  spread printed, and a difference inside the spread is inconclusive rather than a small win.
+  Whether variants are interleaved or blocked depends on what the variant *is* — see below.
+
+## Interleave or block: it depends on what the variant is
+
+- **A variant that does not touch the build's configuration is interleaved** (A B A B A B), so a
+  thermal ramp lands on every variant rather than on whichever went last.
+- **A variant that is a Gradle property is blocked**, with a throwaway run after each switch.
+  Switching one invalidates the configuration cache — `configuration cache cannot be reused
+  because Gradle property '…' has changed` — and alternating puts that rebuild inside the timed
+  window, a cost no real edit loop pays. This is the reverse of the rule above and was learned by
+  publishing an impossible ordering; see retractions.md.
+- **Daemons are left running.** A real edit loop runs against a warm daemon, so `./gradlew --stop`
+  before a campaign measures start-up rather than work. Warm up instead, and declare the
+  warm-up/measure cut *before* the run rather than choosing the split that flatters the result.
+
+## The noise gate, and what it gets wrong
+
+§2 refuses a metric at CV > 15%. Applied to a **difference between variants of different
+magnitude, it penalises success**: the absolute jitter on this box is about the same number of
+milliseconds either way — roughly what one Gradle invocation varies by — so a variant that halves
+the metric doubles its own CV. RQ1's winner failed the gate for having worked.
+
+Judge the difference against the absolute spread instead: RQ1's two medians are 3754 ms apart,
+3.3× the larger standard deviation. The CV gate still applies to a metric reported on its own
+rather than as a difference.
 - **Measured, 2026-09-14: build wall-clock on this box does not swing like that.** Three
   interleaved reps gave CV of 1.2% (`T_incr_rel`), 3.0% (`T_incr_dbg`) and 6.6% (`T_warm`) — well
   inside the gate. The ±15% is a *throughput* observation and does not transfer to a
