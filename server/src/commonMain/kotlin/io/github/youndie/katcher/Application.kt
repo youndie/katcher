@@ -39,6 +39,7 @@ import io.github.youndie.kore.generated.KoreBuildIdentity
 import io.github.youndie.kore.ktor.installKoreProbes
 import io.github.youndie.kore.ktor.installKoreVersion
 import io.github.youndie.kore.ktor.installShutdownRefusal
+import io.github.youndie.metrik.agent.Metrik
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
@@ -48,7 +49,6 @@ import kotlinx.coroutines.runBlocking
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import okio.SYSTEM
-import ru.workinprogress.metrik.agent.Metrik
 
 /**
  * Everything this server is, given a database that is already open and the gates that answer for it.
