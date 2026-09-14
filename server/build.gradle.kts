@@ -98,6 +98,33 @@ kotlin {
             executable {
                 entryPoint = "main"
 
+                // 16 KiB PAGES INSTEAD OF THE DEFAULT 256, AND THIS IS WHAT KEEPS THE PROCESS ALIVE
+                // UNDER ITS MEMORY LIMIT (#58). Kotlin/Native's `CustomAllocator` is per-thread:
+                // every thread that touches a block-size class keeps a page of that class for as
+                // long as it lives, occupied or not, so the resident set tracks the THREAD COUNT
+                // rather than the live heap — and `Dispatchers.IO` grows threads on demand under
+                // concurrency. No GC setting bounds it, because these are pages, not objects.
+                //
+                // Measured here, on this service, in the image the chart deploys, under
+                // `--memory=192m --cpus=1` and fifty concurrent navigators over `/apps` and the
+                // error pages:
+                //
+                //                 idle RSS      peak RSS at 1 GiB     survived 192Mi
+                //   default       56–68 MB        252–329 MB               0 / 8
+                //   this          22–26 MB         47–62 MB                8 / 8
+                //   allocator=std 21–22 MB         85–161 MB               3 / 3
+                //
+                // The default is not marginal at 192Mi — it is killed, `exit=137`, in every run,
+                // at 50 and at 100 connections. This build survived 128Mi and 96Mi too. Paired A/B
+                // with the order alternated put this ahead of the default on throughput and p95 in
+                // 5 pairs out of 5; the absolute numbers are not quoted because the box was shared
+                // with other builds and they moved by 5× between rounds.
+                //
+                // `-Xallocator=std` was the other candidate and is rejected on the same evidence:
+                // on a service with SQLite on the request path its peak was HIGHER than this one's,
+                // which is the opposite of what it did on the study service that had no database.
+                binaryOption("fixedBlockPageSize", "16")
+
                 if (staticLinux) {
                     linkerOpts("-static", "--no-dynamic-linker", "-L/usr/lib/x86_64-linux-gnu")
                     freeCompilerArgs +=

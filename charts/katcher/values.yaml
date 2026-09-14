@@ -17,9 +17,19 @@ server:
       memory: "32Mi"
     limits:
       cpu: "1"
-      # 64Mi held at rest with room to spare, but it left nothing for a burst of concurrent
-      # queries — and an allocation that fails inside the native driver is not an exception
-      # this process survives. Raised while the crash under fast navigation is unexplained.
+      # THE CRASH UNDER FAST NAVIGATION IS NO LONGER UNEXPLAINED, and this number is no longer a
+      # guess with a note attached. Kotlin/Native's allocator keeps a 256 KiB page per block-size
+      # class PER THREAD, `Dispatchers.IO` grows threads under concurrency, and the resident set
+      # follows the thread count rather than the live heap. The default build, in this image, at
+      # this limit, was killed with `exit=137` in every run of fifty concurrent navigators — peak
+      # 252–329 MB where the limit permits it. `fixedBlockPageSize=16` in `server/build.gradle.kts`
+      # is what fixes it: 22–26 MB at rest, 47–62 MB under the same load, and it survived down to
+      # 96Mi (#58).
+      #
+      # The limit stays at 192Mi anyway. The measured peak leaves it 3× of headroom, and the
+      # production crash this began with was never reproduced in its own shape — only a load that
+      # produces the same kill. Lowering it is a separate change with production evidence behind
+      # it, not a victory lap on a synthetic one.
       memory: "192Mi"
 
 # Bearer token for the MCP endpoint, which coding agents use to read crashes.
