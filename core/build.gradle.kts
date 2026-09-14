@@ -11,6 +11,19 @@ kotlin {
     explicitApi = null
 }
 
+// `katcher-core`, NOT `core`, and the reason is a collision rather than taste. A distribution puts
+// every jar in one flat `lib/` directory under its file name, and `org.kotlincrypto.core:core-jvm`
+// is on the same classpath through `:dev:server-jvm-keycloak`. At version 0.8.0 — which is this
+// repository's head and, separately, kotlincrypto's — both artefacts are called `core-jvm-0.8.0.jar`
+// and `distTar` refuses the build.
+//
+// The refusal is the good outcome. `duplicatesStrategy` would resolve it by dropping one of two
+// different jars with the same name, which is a `NoClassDefFoundError` at run time instead of a
+// failure at build time. A module named `core` in a flat directory is what has to give.
+base {
+    archivesName = "katcher-core"
+}
+
 kotlin {
     compilerOptions {
         // `-Xcontext-parameters` is gone: context parameters are on by default at language version
