@@ -1,0 +1,796 @@
+image	UNKNOWN STEP	﻿2026-09-14T19:51:57.1867794Z Current runner version: '2.337.0'
+image	UNKNOWN STEP	2026-09-14T19:51:57.1890549Z ##[group]Runner Image Provisioner
+image	UNKNOWN STEP	2026-09-14T19:51:57.1891644Z Hosted Compute Agent
+image	UNKNOWN STEP	2026-09-14T19:51:57.1892190Z Version: 20260828.587
+image	UNKNOWN STEP	2026-09-14T19:51:57.1892850Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+image	UNKNOWN STEP	2026-09-14T19:51:57.1893530Z Build Date: 2026-08-28T16:44:25Z
+image	UNKNOWN STEP	2026-09-14T19:51:57.1894223Z Worker ID: {8fae3a70-52e6-4e6e-9020-16d4ed12ea91}
+image	UNKNOWN STEP	2026-09-14T19:51:57.1894958Z Azure Region: westcentralus
+image	UNKNOWN STEP	2026-09-14T19:51:57.1895545Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.1896792Z ##[group]Operating System
+image	UNKNOWN STEP	2026-09-14T19:51:57.1897365Z Ubuntu
+image	UNKNOWN STEP	2026-09-14T19:51:57.1897865Z 24.04.5
+image	UNKNOWN STEP	2026-09-14T19:51:57.1898386Z LTS
+image	UNKNOWN STEP	2026-09-14T19:51:57.1898869Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.1899400Z ##[group]Runner Image
+image	UNKNOWN STEP	2026-09-14T19:51:57.1899955Z Image: ubuntu-24.04
+image	UNKNOWN STEP	2026-09-14T19:51:57.1900472Z Version: 20260907.300.1
+image	UNKNOWN STEP	2026-09-14T19:51:57.1901939Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+image	UNKNOWN STEP	2026-09-14T19:51:57.1903395Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+image	UNKNOWN STEP	2026-09-14T19:51:57.1904283Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.1905435Z ##[group]GITHUB_TOKEN Permissions
+image	UNKNOWN STEP	2026-09-14T19:51:57.1907314Z Contents: read
+image	UNKNOWN STEP	2026-09-14T19:51:57.1907904Z Metadata: read
+image	UNKNOWN STEP	2026-09-14T19:51:57.1908448Z Packages: read
+image	UNKNOWN STEP	2026-09-14T19:51:57.1908973Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.1911248Z Secret source: Actions
+image	UNKNOWN STEP	2026-09-14T19:51:57.1912286Z Cache mode: write
+image	UNKNOWN STEP	2026-09-14T19:51:57.1913070Z Prepare workflow directory
+image	UNKNOWN STEP	2026-09-14T19:51:57.2227379Z Prepare all required actions
+image	UNKNOWN STEP	2026-09-14T19:51:57.2274514Z Getting action download info
+image	UNKNOWN STEP	2026-09-14T19:51:57.5363178Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+image	UNKNOWN STEP	2026-09-14T19:51:57.7291390Z Complete job name: image
+image	UNKNOWN STEP	2026-09-14T19:51:57.7964530Z ##[group]Run actions/checkout@v7
+image	UNKNOWN STEP	2026-09-14T19:51:57.7965431Z with:
+image	UNKNOWN STEP	2026-09-14T19:51:57.7965948Z   repository: youndie/katcher
+image	UNKNOWN STEP	2026-09-14T19:51:57.7969958Z   token: ***
+image	UNKNOWN STEP	2026-09-14T19:51:57.7970448Z   ssh-strict: true
+image	UNKNOWN STEP	2026-09-14T19:51:57.7971203Z   ssh-user: git
+image	UNKNOWN STEP	2026-09-14T19:51:57.7971782Z   persist-credentials: true
+image	UNKNOWN STEP	2026-09-14T19:51:57.7972337Z   clean: true
+image	UNKNOWN STEP	2026-09-14T19:51:57.7972893Z   sparse-checkout-cone-mode: true
+image	UNKNOWN STEP	2026-09-14T19:51:57.7973526Z   fetch-depth: 1
+image	UNKNOWN STEP	2026-09-14T19:51:57.7974018Z   fetch-tags: false
+image	UNKNOWN STEP	2026-09-14T19:51:57.7974553Z   show-progress: true
+image	UNKNOWN STEP	2026-09-14T19:51:57.7975254Z   lfs: false
+image	UNKNOWN STEP	2026-09-14T19:51:57.7975761Z   submodules: false
+image	UNKNOWN STEP	2026-09-14T19:51:57.7976287Z   set-safe-directory: true
+image	UNKNOWN STEP	2026-09-14T19:51:57.7976856Z   allow-unsafe-pr-checkout: false
+image	UNKNOWN STEP	2026-09-14T19:51:57.7977626Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.8960398Z Syncing repository: youndie/katcher
+image	UNKNOWN STEP	2026-09-14T19:51:57.8963536Z ##[group]Getting Git version info
+image	UNKNOWN STEP	2026-09-14T19:51:57.8964496Z Working directory is '/home/runner/work/katcher/katcher'
+image	UNKNOWN STEP	2026-09-14T19:51:57.8965889Z [command]/usr/bin/git version
+image	UNKNOWN STEP	2026-09-14T19:51:57.9028289Z git version 2.55.0
+image	UNKNOWN STEP	2026-09-14T19:51:57.9045610Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.9057084Z Temporarily overriding HOME='/home/runner/work/_temp/923db18d-303b-438f-ae88-eb63416dc1c7' before making global git config changes
+image	UNKNOWN STEP	2026-09-14T19:51:57.9059105Z Adding repository directory to the temporary git global config as a safe directory
+image	UNKNOWN STEP	2026-09-14T19:51:57.9071699Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/katcher/katcher
+image	UNKNOWN STEP	2026-09-14T19:51:57.9117011Z Deleting the contents of '/home/runner/work/katcher/katcher'
+image	UNKNOWN STEP	2026-09-14T19:51:57.9120652Z ##[group]Determining repository object format
+image	UNKNOWN STEP	2026-09-14T19:51:57.9122274Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.9123722Z ##[group]Initializing the repository
+image	UNKNOWN STEP	2026-09-14T19:51:57.9127282Z [command]/usr/bin/git init /home/runner/work/katcher/katcher
+image	UNKNOWN STEP	2026-09-14T19:51:57.9219347Z hint: Using 'master' as the name for the initial branch. This default branch name
+image	UNKNOWN STEP	2026-09-14T19:51:57.9222251Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+image	UNKNOWN STEP	2026-09-14T19:51:57.9224151Z hint: to use in all of your new repositories, which will suppress this warning,
+image	UNKNOWN STEP	2026-09-14T19:51:57.9225445Z hint: call:
+image	UNKNOWN STEP	2026-09-14T19:51:57.9226158Z hint:
+image	UNKNOWN STEP	2026-09-14T19:51:57.9227055Z hint: 	git config --global init.defaultBranch <name>
+image	UNKNOWN STEP	2026-09-14T19:51:57.9227890Z hint:
+image	UNKNOWN STEP	2026-09-14T19:51:57.9229005Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+image	UNKNOWN STEP	2026-09-14T19:51:57.9230445Z hint: 'development'. The just-created branch can be renamed via this command:
+image	UNKNOWN STEP	2026-09-14T19:51:57.9231699Z hint:
+image	UNKNOWN STEP	2026-09-14T19:51:57.9232553Z hint: 	git branch -m <name>
+image	UNKNOWN STEP	2026-09-14T19:51:57.9233337Z hint:
+image	UNKNOWN STEP	2026-09-14T19:51:57.9234376Z hint: Disable this message with "git config set advice.defaultBranchName false"
+image	UNKNOWN STEP	2026-09-14T19:51:57.9235793Z Initialized empty Git repository in /home/runner/work/katcher/katcher/.git/
+image	UNKNOWN STEP	2026-09-14T19:51:57.9239529Z [command]/usr/bin/git remote add origin https://github.com/youndie/katcher
+image	UNKNOWN STEP	2026-09-14T19:51:57.9281158Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.9282530Z ##[group]Disabling automatic garbage collection
+image	UNKNOWN STEP	2026-09-14T19:51:57.9283930Z [command]/usr/bin/git config --local gc.auto 0
+image	UNKNOWN STEP	2026-09-14T19:51:57.9311616Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:57.9313196Z ##[group]Setting up auth
+image	UNKNOWN STEP	2026-09-14T19:51:57.9315291Z Removing SSH command configuration
+image	UNKNOWN STEP	2026-09-14T19:51:57.9316711Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	UNKNOWN STEP	2026-09-14T19:51:57.9344211Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	UNKNOWN STEP	2026-09-14T19:51:57.9646077Z Removing HTTP extra header
+image	UNKNOWN STEP	2026-09-14T19:51:57.9652352Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	UNKNOWN STEP	2026-09-14T19:51:57.9694665Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	UNKNOWN STEP	2026-09-14T19:51:57.9886115Z Removing includeIf entries pointing to credentials config files
+image	UNKNOWN STEP	2026-09-14T19:51:57.9891294Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+image	UNKNOWN STEP	2026-09-14T19:51:57.9918994Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+image	UNKNOWN STEP	2026-09-14T19:51:58.0105520Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+image	UNKNOWN STEP	2026-09-14T19:51:58.0139339Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/katcher/katcher/.git.path /home/runner/work/_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config
+image	UNKNOWN STEP	2026-09-14T19:51:58.0165315Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/katcher/katcher/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config
+image	UNKNOWN STEP	2026-09-14T19:51:58.0194822Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config
+image	UNKNOWN STEP	2026-09-14T19:51:58.0222781Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config
+image	UNKNOWN STEP	2026-09-14T19:51:58.0248509Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:58.0249725Z ##[group]Fetching the repository
+image	UNKNOWN STEP	2026-09-14T19:51:58.0256143Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4bd7c941ea7bb082c2e5dc567a9692985523db4f:refs/remotes/pull/62/merge
+image	UNKNOWN STEP	2026-09-14T19:51:59.3164688Z From https://github.com/youndie/katcher
+image	UNKNOWN STEP	2026-09-14T19:51:59.3166411Z  * [new ref]         4bd7c941ea7bb082c2e5dc567a9692985523db4f -> pull/62/merge
+image	UNKNOWN STEP	2026-09-14T19:51:59.3170615Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:59.3172345Z ##[group]Determining the checkout info
+image	UNKNOWN STEP	2026-09-14T19:51:59.3173567Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:59.3183996Z [command]/usr/bin/git sparse-checkout disable
+image	UNKNOWN STEP	2026-09-14T19:51:59.3232358Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+image	UNKNOWN STEP	2026-09-14T19:51:59.3261124Z ##[group]Checking out the ref
+image	UNKNOWN STEP	2026-09-14T19:51:59.3265687Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/62/merge
+image	UNKNOWN STEP	2026-09-14T19:51:59.4359073Z Note: switching to 'refs/remotes/pull/62/merge'.
+image	UNKNOWN STEP	2026-09-14T19:51:59.4360593Z 
+image	UNKNOWN STEP	2026-09-14T19:51:59.4362059Z You are in 'detached HEAD' state. You can look around, make experimental
+image	UNKNOWN STEP	2026-09-14T19:51:59.4363995Z changes and commit them, and you can discard any commits you make in this
+image	UNKNOWN STEP	2026-09-14T19:51:59.4365923Z state without impacting any branches by switching back to a branch.
+image	UNKNOWN STEP	2026-09-14T19:51:59.4367286Z 
+image	UNKNOWN STEP	2026-09-14T19:51:59.4368270Z If you want to create a new branch to retain commits you create, you may
+image	UNKNOWN STEP	2026-09-14T19:51:59.4370180Z do so (now or later) by using -c with the switch command. Example:
+image	UNKNOWN STEP	2026-09-14T19:51:59.4371408Z 
+image	UNKNOWN STEP	2026-09-14T19:51:59.4372429Z   git switch -c <new-branch-name>
+image	UNKNOWN STEP	2026-09-14T19:51:59.4373227Z 
+image	UNKNOWN STEP	2026-09-14T19:51:59.4373800Z Or undo this operation with:
+image	UNKNOWN STEP	2026-09-14T19:51:59.4374671Z 
+image	UNKNOWN STEP	2026-09-14T19:51:59.4375154Z   git switch -
+image	UNKNOWN STEP	2026-09-14T19:51:59.4375724Z 
+image	UNKNOWN STEP	2026-09-14T19:51:59.4376567Z Turn off this advice by setting config variable advice.detachedHead to false
+image	UNKNOWN STEP	2026-09-14T19:51:59.4377679Z 
+image	UNKNOWN STEP	2026-09-14T19:51:59.4379093Z HEAD is now at 4bd7c94 Merge a543c52aad97b44b6cc5c978b29ea9d375c04a30 into 0c3e56306601ec0c28973ff581f64d53fd1454f1
+image	UNKNOWN STEP	2026-09-14T19:51:59.4384011Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:51:59.4413118Z [command]/usr/bin/git log -1 --format=%H
+image	UNKNOWN STEP	2026-09-14T19:51:59.4438545Z 4bd7c941ea7bb082c2e5dc567a9692985523db4f
+image	UNKNOWN STEP	2026-09-14T19:51:59.4689646Z ##[group]Run docker build --file server/Dockerfile --tag katcher:ci .
+image	UNKNOWN STEP	2026-09-14T19:51:59.4692281Z ^[[36;1mdocker build --file server/Dockerfile --tag katcher:ci .^[[0m
+image	UNKNOWN STEP	2026-09-14T19:51:59.4722084Z shell: /usr/bin/bash -e {0}
+image	UNKNOWN STEP	2026-09-14T19:51:59.4723560Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:52:00.0108680Z #0 building with "default" instance using docker driver
+image	UNKNOWN STEP	2026-09-14T19:52:00.0109247Z 
+image	UNKNOWN STEP	2026-09-14T19:52:00.0109443Z #1 [internal] load build definition from Dockerfile
+image	UNKNOWN STEP	2026-09-14T19:52:00.0109971Z #1 transferring dockerfile: 4.93kB done
+image	UNKNOWN STEP	2026-09-14T19:52:00.0110772Z #1 WARN: FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value "linux/amd64" (line 2)
+image	UNKNOWN STEP	2026-09-14T19:52:00.0111810Z #1 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:52:00.0111992Z 
+image	UNKNOWN STEP	2026-09-14T19:52:00.0112276Z #2 [internal] load metadata for docker.io/library/gradle:9.7.1-jdk25-noble
+image	UNKNOWN STEP	2026-09-14T19:52:00.1841271Z #2 ...
+image	UNKNOWN STEP	2026-09-14T19:52:00.1841895Z 
+image	UNKNOWN STEP	2026-09-14T19:52:00.1842356Z #3 [auth] library/gradle:pull token for registry-1.docker.io
+image	UNKNOWN STEP	2026-09-14T19:52:00.1842877Z #3 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:52:00.3338158Z 
+image	UNKNOWN STEP	2026-09-14T19:52:00.3339299Z #2 [internal] load metadata for docker.io/library/gradle:9.7.1-jdk25-noble
+image	UNKNOWN STEP	2026-09-14T19:52:00.6937042Z #2 DONE 0.8s
+image	UNKNOWN STEP	2026-09-14T19:52:00.8163804Z 
+image	UNKNOWN STEP	2026-09-14T19:52:00.8166447Z #4 [internal] load .dockerignore
+image	UNKNOWN STEP	2026-09-14T19:52:00.8201961Z #4 transferring context: 1.26kB done
+image	UNKNOWN STEP	2026-09-14T19:52:00.8203237Z #4 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:52:00.8207803Z 
+image	UNKNOWN STEP	2026-09-14T19:52:00.8215096Z #5 [stage-1 1/7] WORKDIR /app
+image	UNKNOWN STEP	2026-09-14T19:52:00.8217727Z #5 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:52:00.8218315Z 
+image	UNKNOWN STEP	2026-09-14T19:52:00.8221072Z #6 [build 1/5] FROM docker.io/library/gradle:9.7.1-jdk25-noble@sha256:411e7a44b6874a7108295337a1582f86efd928dcc0d7dfe7137a3624e70d677c
+image	UNKNOWN STEP	2026-09-14T19:52:00.8223416Z #6 resolve docker.io/library/gradle:9.7.1-jdk25-noble@sha256:411e7a44b6874a7108295337a1582f86efd928dcc0d7dfe7137a3624e70d677c done
+image	UNKNOWN STEP	2026-09-14T19:52:00.8224771Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 0B / 92.75MB 0.1s
+image	UNKNOWN STEP	2026-09-14T19:52:00.8226060Z #6 sha256:0fca3f6d130817921fb38bb267255672e4de8ac1055b8ec6b125e35a350f0270 10.86kB / 10.86kB done
+image	UNKNOWN STEP	2026-09-14T19:52:00.8227099Z #6 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 0B / 29.76MB 0.1s
+image	UNKNOWN STEP	2026-09-14T19:52:00.8228230Z #6 sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c 0B / 17.42MB 0.1s
+image	UNKNOWN STEP	2026-09-14T19:52:01.0149786Z #6 ...
+image	UNKNOWN STEP	2026-09-14T19:52:01.0150756Z 
+image	UNKNOWN STEP	2026-09-14T19:52:01.0151181Z #7 [internal] load build context
+image	UNKNOWN STEP	2026-09-14T19:52:01.0151858Z #7 transferring context: 25.36MB 0.2s done
+image	UNKNOWN STEP	2026-09-14T19:52:01.0152383Z #7 DONE 0.2s
+image	UNKNOWN STEP	2026-09-14T19:52:01.0152637Z 
+image	UNKNOWN STEP	2026-09-14T19:52:01.0153241Z #6 [build 1/5] FROM docker.io/library/gradle:9.7.1-jdk25-noble@sha256:411e7a44b6874a7108295337a1582f86efd928dcc0d7dfe7137a3624e70d677c
+image	UNKNOWN STEP	2026-09-14T19:52:01.0154447Z #6 sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c 11.53MB / 17.42MB 0.3s
+image	UNKNOWN STEP	2026-09-14T19:52:01.0155612Z #6 sha256:411e7a44b6874a7108295337a1582f86efd928dcc0d7dfe7137a3624e70d677c 6.51kB / 6.51kB done
+image	UNKNOWN STEP	2026-09-14T19:52:01.0156632Z #6 sha256:f533d3281bf12fe6c855b968cb34a643f6b7b8ac7057402c151e42a0734e1a6c 2.89kB / 2.89kB done
+image	UNKNOWN STEP	2026-09-14T19:52:01.1154955Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 5.24MB / 92.75MB 0.4s
+image	UNKNOWN STEP	2026-09-14T19:52:01.1155782Z #6 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 9.44MB / 29.76MB 0.4s
+image	UNKNOWN STEP	2026-09-14T19:52:01.1156592Z #6 sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c 17.42MB / 17.42MB 0.4s
+image	UNKNOWN STEP	2026-09-14T19:52:01.3150633Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 92.75MB / 92.75MB 0.6s
+image	UNKNOWN STEP	2026-09-14T19:52:01.3151792Z #6 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 29.76MB / 29.76MB 0.6s
+image	UNKNOWN STEP	2026-09-14T19:52:01.3152521Z #6 sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c 17.42MB / 17.42MB 0.4s done
+image	UNKNOWN STEP	2026-09-14T19:52:01.3154872Z #6 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.6s
+image	UNKNOWN STEP	2026-09-14T19:52:01.7155226Z #6 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 29.76MB / 29.76MB 0.9s done
+image	UNKNOWN STEP	2026-09-14T19:52:01.9139832Z #6 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 1.0s done
+image	UNKNOWN STEP	2026-09-14T19:52:01.9141458Z #6 extracting sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58
+image	UNKNOWN STEP	2026-09-14T19:52:02.0147634Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 92.75MB / 92.75MB 1.2s done
+image	UNKNOWN STEP	2026-09-14T19:52:02.0148835Z #6 sha256:0911b38078c56c8cb4151646d7660cbad15cd1eb9d6df3e6279459fda092f87f 2.46kB / 2.46kB 1.3s done
+image	UNKNOWN STEP	2026-09-14T19:52:02.0149843Z #6 sha256:a9b037b36d1feda2a06a2166a886fc92401960cd37521ccc3685cfa94f45585f 1.29kB / 1.29kB 1.3s
+image	UNKNOWN STEP	2026-09-14T19:52:02.0151370Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 0B / 66.98MB 1.3s
+image	UNKNOWN STEP	2026-09-14T19:52:02.1268451Z #6 sha256:a9b037b36d1feda2a06a2166a886fc92401960cd37521ccc3685cfa94f45585f 1.29kB / 1.29kB 1.4s done
+image	UNKNOWN STEP	2026-09-14T19:52:02.1272337Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 24.12MB / 66.98MB 1.4s
+image	UNKNOWN STEP	2026-09-14T19:52:02.1274349Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 0B / 151.35MB 1.4s
+image	UNKNOWN STEP	2026-09-14T19:52:02.2449430Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 62.91MB / 66.98MB 1.5s
+image	UNKNOWN STEP	2026-09-14T19:52:02.2450620Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 20.97MB / 151.35MB 1.5s
+image	UNKNOWN STEP	2026-09-14T19:52:02.4033078Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 66.98MB / 66.98MB 1.6s
+image	UNKNOWN STEP	2026-09-14T19:52:02.4034449Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 37.75MB / 151.35MB 1.6s
+image	UNKNOWN STEP	2026-09-14T19:52:02.6114650Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 47.19MB / 151.35MB 1.8s
+image	UNKNOWN STEP	2026-09-14T19:52:02.6117136Z #6 sha256:d85ab33a2ddcefcda1bbd908fbedf69b2723921bc8876de5fdbc468eb90df38f 0B / 25.61kB 1.8s
+image	UNKNOWN STEP	2026-09-14T19:52:02.7147849Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 118.49MB / 151.35MB 2.0s
+image	UNKNOWN STEP	2026-09-14T19:52:02.9149229Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 151.35MB / 151.35MB 2.2s
+image	UNKNOWN STEP	2026-09-14T19:52:02.9151406Z #6 sha256:d85ab33a2ddcefcda1bbd908fbedf69b2723921bc8876de5fdbc468eb90df38f 25.61kB / 25.61kB 2.1s
+image	UNKNOWN STEP	2026-09-14T19:52:03.5155452Z #6 extracting sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 1.5s done
+image	UNKNOWN STEP	2026-09-14T19:52:03.5156575Z #6 sha256:d85ab33a2ddcefcda1bbd908fbedf69b2723921bc8876de5fdbc468eb90df38f 25.61kB / 25.61kB 2.5s done
+image	UNKNOWN STEP	2026-09-14T19:52:03.7048381Z #6 extracting sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c
+image	UNKNOWN STEP	2026-09-14T19:52:03.8051235Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 66.98MB / 66.98MB 3.0s done
+image	UNKNOWN STEP	2026-09-14T19:52:03.8052825Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 151.35MB / 151.35MB 3.0s done
+image	UNKNOWN STEP	2026-09-14T19:52:04.3732763Z #6 extracting sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c 0.5s done
+image	UNKNOWN STEP	2026-09-14T19:52:11.0847628Z #6 extracting sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5
+image	UNKNOWN STEP	2026-09-14T19:52:12.4445135Z #6 extracting sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 1.2s done
+image	UNKNOWN STEP	2026-09-14T19:52:13.8722341Z #6 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+image	UNKNOWN STEP	2026-09-14T19:52:14.0525697Z #6 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 done
+image	UNKNOWN STEP	2026-09-14T19:52:14.0526587Z #6 extracting sha256:0911b38078c56c8cb4151646d7660cbad15cd1eb9d6df3e6279459fda092f87f done
+image	UNKNOWN STEP	2026-09-14T19:52:14.0527332Z #6 extracting sha256:a9b037b36d1feda2a06a2166a886fc92401960cd37521ccc3685cfa94f45585f done
+image	UNKNOWN STEP	2026-09-14T19:52:14.0528081Z #6 extracting sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 0.1s
+image	UNKNOWN STEP	2026-09-14T19:52:15.9891737Z #6 extracting sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 1.9s done
+image	UNKNOWN STEP	2026-09-14T19:52:17.3603539Z #6 extracting sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8
+image	UNKNOWN STEP	2026-09-14T19:52:18.4112404Z #6 extracting sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 0.9s done
+image	UNKNOWN STEP	2026-09-14T19:52:19.3490526Z #6 extracting sha256:d85ab33a2ddcefcda1bbd908fbedf69b2723921bc8876de5fdbc468eb90df38f
+image	UNKNOWN STEP	2026-09-14T19:52:19.5429070Z #6 extracting sha256:d85ab33a2ddcefcda1bbd908fbedf69b2723921bc8876de5fdbc468eb90df38f done
+image	UNKNOWN STEP	2026-09-14T19:52:19.5429933Z #6 DONE 18.7s
+image	UNKNOWN STEP	2026-09-14T19:52:19.5430213Z 
+image	UNKNOWN STEP	2026-09-14T19:52:19.5430723Z #8 [build 2/5] RUN apt-get update     && apt-get install -y --no-install-recommends g++     && rm -rf /var/lib/apt/lists/*
+image	UNKNOWN STEP	2026-09-14T19:52:19.7689244Z #8 0.376 Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:19.9600564Z #8 0.568 Get:2 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:20.1333692Z #8 0.665 Get:3 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [50.0 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:20.1334957Z #8 0.741 Get:4 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1,242 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:20.4341536Z #8 1.042 Get:5 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1,531 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:20.5471032Z #8 1.155 Get:6 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1,796 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:20.8212125Z #8 1.429 Get:7 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:21.0308528Z #8 1.638 Get:8 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:21.2412065Z #8 1.849 Get:9 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:21.4465956Z #8 1.904 Get:10 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1,808 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:21.8877761Z #8 2.495 Get:11 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+image	UNKNOWN STEP	2026-09-14T19:52:22.8267353Z #8 3.434 Get:12 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:22.9275537Z #8 3.436 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1,913 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:22.9276898Z #8 3.461 Get:14 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2,152 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:22.9278434Z #8 3.535 Get:15 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [55.8 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:23.0991156Z #8 3.535 Get:16 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1,565 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:23.7112822Z #8 3.556 Get:17 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+image	UNKNOWN STEP	2026-09-14T19:52:23.7113953Z #8 3.556 Get:18 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [48.9 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:23.7114875Z #8 3.556 Get:19 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [35.9 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:23.7115535Z #8 4.319 Fetched 32.6 MB in 4s (7,788 kB/s)
+image	UNKNOWN STEP	2026-09-14T19:52:24.4602175Z #8 4.319 Reading package lists...
+image	UNKNOWN STEP	2026-09-14T19:52:25.2088892Z #8 5.086 Reading package lists...
+image	UNKNOWN STEP	2026-09-14T19:52:25.3805911Z #8 5.829 Building dependency tree...
+image	UNKNOWN STEP	2026-09-14T19:52:25.3806786Z #8 5.988 Reading state information...
+image	UNKNOWN STEP	2026-09-14T19:52:25.5667672Z #8 6.174 The following additional packages will be installed:
+image	UNKNOWN STEP	2026-09-14T19:52:25.5668896Z #8 6.174   cpp cpp-13 cpp-13-x86-64-linux-gnu cpp-x86-64-linux-gnu g++-13
+image	UNKNOWN STEP	2026-09-14T19:52:25.5669804Z #8 6.174   g++-13-x86-64-linux-gnu g++-x86-64-linux-gnu gcc gcc-13 gcc-13-base
+image	UNKNOWN STEP	2026-09-14T19:52:25.7805525Z #8 6.174   gcc-13-x86-64-linux-gnu gcc-x86-64-linux-gnu libasan8 libatomic1 libc-bin
+image	UNKNOWN STEP	2026-09-14T19:52:25.7806358Z #8 6.175   libc-dev-bin libc6 libc6-dev libcc1-0 libcrypt-dev libgcc-13-dev libgomp1
+image	UNKNOWN STEP	2026-09-14T19:52:25.7807023Z #8 6.175   libhwasan0 libisl23 libitm1 liblsan0 libmpc3 libmpfr6 libquadmath0
+image	UNKNOWN STEP	2026-09-14T19:52:25.7808126Z #8 6.176   libstdc++-13-dev libtsan2 libubsan1 linux-libc-dev locales rpcsvc-proto
+image	UNKNOWN STEP	2026-09-14T19:52:25.7808632Z #8 6.176 Suggested packages:
+image	UNKNOWN STEP	2026-09-14T19:52:25.7809130Z #8 6.176   cpp-doc gcc-13-locales cpp-13-doc g++-multilib g++-13-multilib gcc-13-doc
+image	UNKNOWN STEP	2026-09-14T19:52:25.7809790Z #8 6.176   gcc-multilib manpages-dev autoconf automake libtool flex bison gdb gcc-doc
+image	UNKNOWN STEP	2026-09-14T19:52:25.7810390Z #8 6.176   gcc-13-multilib gdb-x86-64-linux-gnu manpages glibc-doc libnss-nis
+image	UNKNOWN STEP	2026-09-14T19:52:25.7811127Z #8 6.176   libnss-nisplus libstdc++-13-doc
+image	UNKNOWN STEP	2026-09-14T19:52:25.7811594Z #8 6.176 Recommended packages:
+image	UNKNOWN STEP	2026-09-14T19:52:25.7811952Z #8 6.176   manpages manpages-dev libc-devtools
+image	UNKNOWN STEP	2026-09-14T19:52:25.7812365Z #8 6.235 The following NEW packages will be installed:
+image	UNKNOWN STEP	2026-09-14T19:52:25.7812851Z #8 6.235   cpp cpp-13 cpp-13-x86-64-linux-gnu cpp-x86-64-linux-gnu g++ g++-13
+image	UNKNOWN STEP	2026-09-14T19:52:25.7813420Z #8 6.235   g++-13-x86-64-linux-gnu g++-x86-64-linux-gnu gcc gcc-13 gcc-13-base
+image	UNKNOWN STEP	2026-09-14T19:52:25.7813936Z #8 6.235   gcc-13-x86-64-linux-gnu gcc-x86-64-linux-gnu libasan8 libatomic1
+image	UNKNOWN STEP	2026-09-14T19:52:25.7814460Z #8 6.235   libc-dev-bin libc6-dev libcc1-0 libcrypt-dev libgcc-13-dev libgomp1
+image	UNKNOWN STEP	2026-09-14T19:52:25.7815083Z #8 6.236   libhwasan0 libisl23 libitm1 liblsan0 libmpc3 libmpfr6 libquadmath0
+image	UNKNOWN STEP	2026-09-14T19:52:25.7815731Z #8 6.236   libstdc++-13-dev libtsan2 libubsan1 linux-libc-dev rpcsvc-proto
+image	UNKNOWN STEP	2026-09-14T19:52:25.7816338Z #8 6.237 The following packages will be upgraded:
+image	UNKNOWN STEP	2026-09-14T19:52:25.7816805Z #8 6.237   libc-bin libc6 locales
+image	UNKNOWN STEP	2026-09-14T19:52:25.9073714Z #8 6.515 3 upgraded, 33 newly installed, 0 to remove and 6 not upgraded.
+image	UNKNOWN STEP	2026-09-14T19:52:25.9074376Z #8 6.515 Need to get 73.1 MB of archives.
+image	UNKNOWN STEP	2026-09-14T19:52:25.9074914Z #8 6.515 After this operation, 227 MB of additional disk space will be used.
+image	UNKNOWN STEP	2026-09-14T19:52:25.9075690Z #8 6.515 Get:1 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc6 amd64 2.39-0ubuntu8.9 [3,264 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:26.6203427Z #8 7.228 Get:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc-bin amd64 2.39-0ubuntu8.9 [682 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:26.7565343Z #8 7.241 Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 locales all 2.39-0ubuntu8.9 [4,232 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:26.7567018Z #8 7.364 Get:4 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13-base amd64 13.3.0-6ubuntu2~24.04.1 [51.6 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:26.8988904Z #8 7.365 Get:5 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libisl23 amd64 0.26-3build1.1 [680 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:26.8990556Z #8 7.372 Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libmpfr6 amd64 4.2.1-1build1.1 [353 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:26.8991957Z #8 7.376 Get:7 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libmpc3 amd64 1.3.1-1build1.1 [54.6 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:26.8993183Z #8 7.377 Get:8 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 cpp-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [10.7 MB]
+image	UNKNOWN STEP	2026-09-14T19:52:26.8994547Z #8 7.506 Get:9 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 cpp-13 amd64 13.3.0-6ubuntu2~24.04.1 [1,042 B]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0169447Z #8 7.506 Get:10 http://archive.ubuntu.com/ubuntu noble/main amd64 cpp-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [5,326 B]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0171026Z #8 7.506 Get:11 http://archive.ubuntu.com/ubuntu noble/main amd64 cpp amd64 4:13.2.0-7ubuntu1 [22.4 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0172393Z #8 7.507 Get:12 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libcc1-0 amd64 14.2.0-4ubuntu2~24.04.1 [48.0 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0173645Z #8 7.507 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libgomp1 amd64 14.2.0-4ubuntu2~24.04.1 [148 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0174486Z #8 7.509 Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libitm1 amd64 14.2.0-4ubuntu2~24.04.1 [29.7 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0175231Z #8 7.509 Get:15 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libatomic1 amd64 14.2.0-4ubuntu2~24.04.1 [10.5 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0176282Z #8 7.509 Get:16 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libasan8 amd64 14.2.0-4ubuntu2~24.04.1 [3,027 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0177039Z #8 7.544 Get:17 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 liblsan0 amd64 14.2.0-4ubuntu2~24.04.1 [1,322 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0177800Z #8 7.567 Get:18 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libtsan2 amd64 14.2.0-4ubuntu2~24.04.1 [2,772 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0178610Z #8 7.588 Get:19 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libubsan1 amd64 14.2.0-4ubuntu2~24.04.1 [1,184 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0179351Z #8 7.595 Get:20 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libhwasan0 amd64 14.2.0-4ubuntu2~24.04.1 [1,641 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0180163Z #8 7.605 Get:21 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libquadmath0 amd64 14.2.0-4ubuntu2~24.04.1 [153 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.0181138Z #8 7.625 Get:22 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libgcc-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [2,681 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.1743667Z #8 7.650 Get:23 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [21.1 MB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.1744753Z #8 7.782 Get:24 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13 amd64 13.3.0-6ubuntu2~24.04.1 [494 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3062164Z #8 7.785 Get:25 http://archive.ubuntu.com/ubuntu noble/main amd64 gcc-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [1,212 B]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3063700Z #8 7.785 Get:26 http://archive.ubuntu.com/ubuntu noble/main amd64 gcc amd64 4:13.2.0-7ubuntu1 [5,018 B]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3066151Z #8 7.785 Get:27 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc-dev-bin amd64 2.39-0ubuntu8.9 [20.4 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3067503Z #8 7.786 Get:28 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 linux-libc-dev amd64 6.8.0-139.139 [1,527 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3068768Z #8 7.795 Get:29 http://archive.ubuntu.com/ubuntu noble/main amd64 libcrypt-dev amd64 1:4.4.36-4build1 [112 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3069776Z #8 7.796 Get:30 http://archive.ubuntu.com/ubuntu noble/main amd64 rpcsvc-proto amd64 1.4.2-0ubuntu7 [67.4 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3070801Z #8 7.796 Get:31 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc6-dev amd64 2.39-0ubuntu8.9 [2,126 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3072107Z #8 7.812 Get:32 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libstdc++-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [2,420 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3160290Z #8 7.842 Get:33 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [12.2 MB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.3161812Z #8 7.914 Get:34 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13 amd64 13.3.0-6ubuntu2~24.04.1 [16.0 kB]
+image	UNKNOWN STEP	2026-09-14T19:52:27.4300042Z #8 7.914 Get:35 http://archive.ubuntu.com/ubuntu noble/main amd64 g++-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [964 B]
+image	UNKNOWN STEP	2026-09-14T19:52:27.4301388Z #8 7.914 Get:36 http://archive.ubuntu.com/ubuntu noble/main amd64 g++ amd64 4:13.2.0-7ubuntu1 [1,100 B]
+image	UNKNOWN STEP	2026-09-14T19:52:27.4302144Z #8 8.038 debconf: delaying package configuration, since apt-utils is not installed
+image	UNKNOWN STEP	2026-09-14T19:52:27.5385836Z #8 8.063 Fetched 73.1 MB in 2s (43.8 MB/s)
+image	UNKNOWN STEP	2026-09-14T19:52:27.5386733Z #8 8.080 (Reading database ... 
+image	UNKNOWN STEP	2026-09-14T19:52:27.5387623Z (Reading database ... 5%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5388277Z (Reading database ... 10%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5389032Z (Reading database ... 15%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5389703Z (Reading database ... 20%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5390330Z (Reading database ... 25%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5391050Z (Reading database ... 30%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5391589Z (Reading database ... 35%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5392141Z (Reading database ... 40%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5392696Z (Reading database ... 45%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5393226Z (Reading database ... 50%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5393740Z (Reading database ... 55%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5394221Z (Reading database ... 60%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5394796Z (Reading database ... 65%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5395233Z (Reading database ... 70%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5395981Z (Reading database ... 75%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5396472Z (Reading database ... 80%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5396885Z (Reading database ... 85%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5397431Z (Reading database ... 90%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5397870Z (Reading database ... 95%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5398263Z (Reading database ... 100%
+image	UNKNOWN STEP	2026-09-14T19:52:27.5399529Z (Reading database ... 12725 files and directories currently installed.)
+image	UNKNOWN STEP	2026-09-14T19:52:27.5400379Z #8 8.088 Preparing to unpack .../libc6_2.39-0ubuntu8.9_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:27.5401386Z #8 8.146 debconf: unable to initialize frontend: Dialog
+image	UNKNOWN STEP	2026-09-14T19:52:27.5402103Z #8 8.146 debconf: (TERM is not set, so the dialog frontend is not usable.)
+image	UNKNOWN STEP	2026-09-14T19:52:27.5402786Z #8 8.146 debconf: falling back to frontend: Readline
+image	UNKNOWN STEP	2026-09-14T19:52:27.7304776Z #8 8.152 debconf: unable to initialize frontend: Readline
+image	UNKNOWN STEP	2026-09-14T19:52:27.7305730Z #8 8.152 debconf: (This frontend requires a controlling tty.)
+image	UNKNOWN STEP	2026-09-14T19:52:27.7306205Z #8 8.152 debconf: falling back to frontend: Teletype
+image	UNKNOWN STEP	2026-09-14T19:52:27.7306674Z #8 8.188 Unpacking libc6:amd64 (2.39-0ubuntu8.9) over (2.39-0ubuntu8.8) ...
+image	UNKNOWN STEP	2026-09-14T19:52:28.0231159Z #8 8.631 Setting up libc6:amd64 (2.39-0ubuntu8.9) ...
+image	UNKNOWN STEP	2026-09-14T19:52:28.2336706Z #8 8.686 debconf: unable to initialize frontend: Dialog
+image	UNKNOWN STEP	2026-09-14T19:52:28.2337579Z #8 8.686 debconf: (TERM is not set, so the dialog frontend is not usable.)
+image	UNKNOWN STEP	2026-09-14T19:52:28.2338117Z #8 8.686 debconf: falling back to frontend: Readline
+image	UNKNOWN STEP	2026-09-14T19:52:28.2338556Z #8 8.691 debconf: unable to initialize frontend: Readline
+image	UNKNOWN STEP	2026-09-14T19:52:28.2339060Z #8 8.691 debconf: (This frontend requires a controlling tty.)
+image	UNKNOWN STEP	2026-09-14T19:52:28.2339479Z #8 8.691 debconf: falling back to frontend: Teletype
+image	UNKNOWN STEP	2026-09-14T19:52:29.2357906Z #8 9.732 (Reading database ... 
+image	UNKNOWN STEP	2026-09-14T19:52:29.2358463Z (Reading database ... 5%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2358806Z (Reading database ... 10%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2359126Z (Reading database ... 15%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2359474Z (Reading database ... 20%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2359809Z (Reading database ... 25%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2360148Z (Reading database ... 30%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2360456Z (Reading database ... 35%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2360758Z (Reading database ... 40%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2361419Z (Reading database ... 45%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2361752Z (Reading database ... 50%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2362282Z (Reading database ... 55%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2362615Z (Reading database ... 60%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2362915Z (Reading database ... 65%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2363216Z (Reading database ... 70%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2363630Z (Reading database ... 75%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2364040Z (Reading database ... 80%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2364812Z (Reading database ... 85%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2365693Z (Reading database ... 90%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2366243Z (Reading database ... 95%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2367052Z (Reading database ... 100%
+image	UNKNOWN STEP	2026-09-14T19:52:29.2367805Z (Reading database ... 12725 files and directories currently installed.)
+image	UNKNOWN STEP	2026-09-14T19:52:29.2368734Z #8 9.739 Preparing to unpack .../libc-bin_2.39-0ubuntu8.9_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:29.2369523Z #8 9.742 Unpacking libc-bin (2.39-0ubuntu8.9) over (2.39-0ubuntu8.8) ...
+image	UNKNOWN STEP	2026-09-14T19:52:29.2370133Z #8 9.810 Setting up libc-bin (2.39-0ubuntu8.9) ...
+image	UNKNOWN STEP	2026-09-14T19:52:29.3988962Z #8 9.843 (Reading database ... 
+image	UNKNOWN STEP	2026-09-14T19:52:29.3989543Z (Reading database ... 5%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3990167Z (Reading database ... 10%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3990566Z (Reading database ... 15%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3991216Z (Reading database ... 20%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3991746Z (Reading database ... 25%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3992083Z (Reading database ... 30%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3992442Z (Reading database ... 35%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3992826Z (Reading database ... 40%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3993144Z (Reading database ... 45%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3993492Z (Reading database ... 50%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3993794Z (Reading database ... 55%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3994107Z (Reading database ... 60%
+image	UNKNOWN STEP	2026-09-14T19:52:29.3994409Z (Reading database ... 65%
+image	UNKNOWN STEP	2026-09-14T19:52:29.4012839Z (Reading database ... 70%
+image	UNKNOWN STEP	2026-09-14T19:52:29.4013253Z (Reading database ... 75%
+image	UNKNOWN STEP	2026-09-14T19:52:29.4013552Z (Reading database ... 80%
+image	UNKNOWN STEP	2026-09-14T19:52:29.4013849Z (Reading database ... 85%
+image	UNKNOWN STEP	2026-09-14T19:52:29.4014206Z (Reading database ... 90%
+image	UNKNOWN STEP	2026-09-14T19:52:29.4014490Z (Reading database ... 95%
+image	UNKNOWN STEP	2026-09-14T19:52:29.4014846Z (Reading database ... 100%
+image	UNKNOWN STEP	2026-09-14T19:52:29.4015259Z (Reading database ... 12725 files and directories currently installed.)
+image	UNKNOWN STEP	2026-09-14T19:52:29.4015965Z #8 9.852 Preparing to unpack .../00-locales_2.39-0ubuntu8.9_all.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:29.4016468Z #8 9.856 Unpacking locales (2.39-0ubuntu8.9) over (2.39-0ubuntu8.8) ...
+image	UNKNOWN STEP	2026-09-14T19:52:29.9728275Z #8 10.58 Selecting previously unselected package gcc-13-base:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.1666257Z #8 10.58 Preparing to unpack .../01-gcc-13-base_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1667365Z #8 10.58 Unpacking gcc-13-base:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1668274Z #8 10.60 Selecting previously unselected package libisl23:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.1669239Z #8 10.60 Preparing to unpack .../02-libisl23_0.26-3build1.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1670292Z #8 10.60 Unpacking libisl23:amd64 (0.26-3build1.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1671206Z #8 10.62 Selecting previously unselected package libmpfr6:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.1672038Z #8 10.62 Preparing to unpack .../03-libmpfr6_4.2.1-1build1.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1672860Z #8 10.62 Unpacking libmpfr6:amd64 (4.2.1-1build1.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1673666Z #8 10.64 Selecting previously unselected package libmpc3:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.1674760Z #8 10.64 Preparing to unpack .../04-libmpc3_1.3.1-1build1.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1675436Z #8 10.64 Unpacking libmpc3:amd64 (1.3.1-1build1.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1676192Z #8 10.65 Selecting previously unselected package cpp-13-x86-64-linux-gnu.
+image	UNKNOWN STEP	2026-09-14T19:52:30.1677022Z #8 10.65 Preparing to unpack .../05-cpp-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1677611Z #8 10.65 Unpacking cpp-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.1678092Z #8 10.77 Selecting previously unselected package cpp-13.
+image	UNKNOWN STEP	2026-09-14T19:52:30.2671613Z #8 10.78 Preparing to unpack .../06-cpp-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2672814Z #8 10.78 Unpacking cpp-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2673567Z #8 10.79 Selecting previously unselected package cpp-x86-64-linux-gnu.
+image	UNKNOWN STEP	2026-09-14T19:52:30.2674257Z #8 10.79 Preparing to unpack .../07-cpp-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2675047Z #8 10.79 Unpacking cpp-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2675552Z #8 10.80 Selecting previously unselected package cpp.
+image	UNKNOWN STEP	2026-09-14T19:52:30.2676030Z #8 10.80 Preparing to unpack .../08-cpp_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2676518Z #8 10.81 Unpacking cpp (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2677026Z #8 10.84 Selecting previously unselected package libcc1-0:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.2677617Z #8 10.84 Preparing to unpack .../09-libcc1-0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2678127Z #8 10.84 Unpacking libcc1-0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2678800Z #8 10.86 Selecting previously unselected package libgomp1:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.2679508Z #8 10.86 Preparing to unpack .../10-libgomp1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2680623Z #8 10.86 Unpacking libgomp1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.2681358Z #8 10.87 Selecting previously unselected package libitm1:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.2682058Z #8 10.87 Preparing to unpack .../11-libitm1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.3800034Z #8 10.88 Unpacking libitm1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.3800755Z #8 10.89 Selecting previously unselected package libatomic1:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.3802369Z #8 10.89 Preparing to unpack .../12-libatomic1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.3802928Z #8 10.89 Unpacking libatomic1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.3803482Z #8 10.90 Selecting previously unselected package libasan8:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.3804165Z #8 10.90 Preparing to unpack .../13-libasan8_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.3804667Z #8 10.91 Unpacking libasan8:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.3805133Z #8 10.96 Selecting previously unselected package liblsan0:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.3805620Z #8 10.96 Preparing to unpack .../14-liblsan0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.3806193Z #8 10.96 Unpacking liblsan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.3806900Z #8 10.99 Selecting previously unselected package libtsan2:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.4914894Z #8 10.99 Preparing to unpack .../15-libtsan2_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.4916058Z #8 10.99 Unpacking libtsan2:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.4917016Z #8 11.04 Selecting previously unselected package libubsan1:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.4917841Z #8 11.04 Preparing to unpack .../16-libubsan1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.4918659Z #8 11.04 Unpacking libubsan1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.4919490Z #8 11.06 Selecting previously unselected package libhwasan0:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.4920264Z #8 11.07 Preparing to unpack .../17-libhwasan0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.4921789Z #8 11.07 Unpacking libhwasan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.4923273Z #8 11.10 Selecting previously unselected package libquadmath0:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.7299044Z #8 11.10 Preparing to unpack .../18-libquadmath0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.7300033Z #8 11.10 Unpacking libquadmath0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.7301096Z #8 11.12 Selecting previously unselected package libgcc-13-dev:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.7302048Z #8 11.12 Preparing to unpack .../19-libgcc-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.7302753Z #8 11.12 Unpacking libgcc-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.7303457Z #8 11.18 Selecting previously unselected package gcc-13-x86-64-linux-gnu.
+image	UNKNOWN STEP	2026-09-14T19:52:30.7304547Z #8 11.19 Preparing to unpack .../20-gcc-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.7305513Z #8 11.19 Unpacking gcc-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.8166787Z #8 11.42 Selecting previously unselected package gcc-13.
+image	UNKNOWN STEP	2026-09-14T19:52:30.9848005Z #8 11.43 Preparing to unpack .../21-gcc-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9848743Z #8 11.43 Unpacking gcc-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9849554Z #8 11.44 Selecting previously unselected package gcc-x86-64-linux-gnu.
+image	UNKNOWN STEP	2026-09-14T19:52:30.9850451Z #8 11.44 Preparing to unpack .../22-gcc-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9851325Z #8 11.44 Unpacking gcc-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9851942Z #8 11.46 Selecting previously unselected package gcc.
+image	UNKNOWN STEP	2026-09-14T19:52:30.9852519Z #8 11.46 Preparing to unpack .../23-gcc_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9853056Z #8 11.46 Unpacking gcc (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9853664Z #8 11.47 Selecting previously unselected package libc-dev-bin.
+image	UNKNOWN STEP	2026-09-14T19:52:30.9854318Z #8 11.47 Preparing to unpack .../24-libc-dev-bin_2.39-0ubuntu8.9_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9854926Z #8 11.47 Unpacking libc-dev-bin (2.39-0ubuntu8.9) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9855484Z #8 11.49 Selecting previously unselected package linux-libc-dev:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:30.9856098Z #8 11.49 Preparing to unpack .../25-linux-libc-dev_6.8.0-139.139_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9856752Z #8 11.49 Unpacking linux-libc-dev:amd64 (6.8.0-139.139) ...
+image	UNKNOWN STEP	2026-09-14T19:52:30.9857583Z #8 11.59 Selecting previously unselected package libcrypt-dev:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:31.1345376Z #8 11.59 Preparing to unpack .../26-libcrypt-dev_1%3a4.4.36-4build1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.1346158Z #8 11.60 Unpacking libcrypt-dev:amd64 (1:4.4.36-4build1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.1346731Z #8 11.63 Selecting previously unselected package rpcsvc-proto.
+image	UNKNOWN STEP	2026-09-14T19:52:31.1347321Z #8 11.63 Preparing to unpack .../27-rpcsvc-proto_1.4.2-0ubuntu7_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.1347909Z #8 11.64 Unpacking rpcsvc-proto (1.4.2-0ubuntu7) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.1348442Z #8 11.65 Selecting previously unselected package libc6-dev:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:31.1349053Z #8 11.65 Preparing to unpack .../28-libc6-dev_2.39-0ubuntu8.9_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.1349604Z #8 11.65 Unpacking libc6-dev:amd64 (2.39-0ubuntu8.9) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.1350122Z #8 11.74 Selecting previously unselected package libstdc++-13-dev:amd64.
+image	UNKNOWN STEP	2026-09-14T19:52:31.2615973Z #8 11.74 Preparing to unpack .../29-libstdc++-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.2616618Z #8 11.74 Unpacking libstdc++-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.2617220Z #8 11.87 Selecting previously unselected package g++-13-x86-64-linux-gnu.
+image	UNKNOWN STEP	2026-09-14T19:52:31.4009373Z #8 11.87 Preparing to unpack .../30-g++-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.4010429Z #8 11.87 Unpacking g++-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.4011610Z #8 12.01 Selecting previously unselected package g++-13.
+image	UNKNOWN STEP	2026-09-14T19:52:31.5287446Z #8 12.01 Preparing to unpack .../31-g++-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5288556Z #8 12.03 Unpacking g++-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5289235Z #8 12.04 Selecting previously unselected package g++-x86-64-linux-gnu.
+image	UNKNOWN STEP	2026-09-14T19:52:31.5289930Z #8 12.05 Preparing to unpack .../32-g++-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5290599Z #8 12.05 Unpacking g++-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5291322Z #8 12.06 Selecting previously unselected package g++.
+image	UNKNOWN STEP	2026-09-14T19:52:31.5291940Z #8 12.06 Preparing to unpack .../33-g++_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5292518Z #8 12.06 Unpacking g++ (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5293011Z #8 12.08 Setting up linux-libc-dev:amd64 (6.8.0-139.139) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5293836Z #8 12.08 Setting up libgomp1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5294335Z #8 12.08 Setting up locales (2.39-0ubuntu8.9) ...
+image	UNKNOWN STEP	2026-09-14T19:52:31.5294831Z #8 12.14 debconf: unable to initialize frontend: Dialog
+image	UNKNOWN STEP	2026-09-14T19:52:31.5295356Z #8 12.14 debconf: (TERM is not set, so the dialog frontend is not usable.)
+image	UNKNOWN STEP	2026-09-14T19:52:31.5295927Z #8 12.14 debconf: falling back to frontend: Readline
+image	UNKNOWN STEP	2026-09-14T19:52:31.6843192Z #8 12.14 debconf: unable to initialize frontend: Readline
+image	UNKNOWN STEP	2026-09-14T19:52:31.6843927Z #8 12.14 debconf: (This frontend requires a controlling tty.)
+image	UNKNOWN STEP	2026-09-14T19:52:31.6844753Z #8 12.14 debconf: falling back to frontend: Teletype
+image	UNKNOWN STEP	2026-09-14T19:52:31.8527094Z #8 12.46 Generating locales (this might take a while)...
+image	UNKNOWN STEP	2026-09-14T19:52:32.9566921Z #8 12.47   en_US.UTF-8... done
+image	UNKNOWN STEP	2026-09-14T19:52:33.0568497Z #8 13.56 Generation complete.
+image	UNKNOWN STEP	2026-09-14T19:52:33.0569039Z #8 13.58 Setting up rpcsvc-proto (1.4.2-0ubuntu7) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0570025Z #8 13.58 Setting up gcc-13-base:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0570623Z #8 13.58 Setting up libmpfr6:amd64 (4.2.1-1build1.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0571508Z #8 13.58 Setting up libquadmath0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0572196Z #8 13.59 Setting up libmpc3:amd64 (1.3.1-1build1.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0572986Z #8 13.59 Setting up libatomic1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0573475Z #8 13.59 Setting up libubsan1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0574057Z #8 13.59 Setting up libhwasan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0574801Z #8 13.60 Setting up libcrypt-dev:amd64 (1:4.4.36-4build1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0575368Z #8 13.60 Setting up libasan8:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0575807Z #8 13.61 Setting up libtsan2:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0576523Z #8 13.61 Setting up libisl23:amd64 (0.26-3build1.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0577119Z #8 13.63 Setting up libc-dev-bin (2.39-0ubuntu8.9) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0577636Z #8 13.64 Setting up libcc1-0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0578100Z #8 13.64 Setting up liblsan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0578712Z #8 13.64 Setting up libitm1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0579186Z #8 13.64 Setting up cpp-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0579891Z #8 13.65 Setting up libgcc-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0580581Z #8 13.65 Setting up libc6-dev:amd64 (2.39-0ubuntu8.9) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0581433Z #8 13.65 Setting up libstdc++-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0582033Z #8 13.65 Setting up cpp-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0582548Z #8 13.66 Setting up cpp-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0583099Z #8 13.66 Setting up gcc-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0583575Z #8 13.66 Setting up gcc-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.0583980Z #8 13.66 Setting up cpp (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.2397924Z #8 13.67 Setting up g++-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.2398719Z #8 13.68 Setting up gcc-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.2399400Z #8 13.68 Setting up gcc (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.2399920Z #8 13.69 Setting up g++-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.2400349Z #8 13.69 Setting up g++-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.2400723Z #8 13.69 Setting up g++ (4:13.2.0-7ubuntu1) ...
+image	UNKNOWN STEP	2026-09-14T19:52:33.2401525Z #8 13.69 update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+image	UNKNOWN STEP	2026-09-14T19:52:33.2402395Z #8 13.69 update-alternatives: warning: skip creation of /usr/share/man/man1/c++.1.gz because associated file /usr/share/man/man1/g++.1.gz (of link group c++) doesn't exist
+image	UNKNOWN STEP	2026-09-14T19:52:33.2403401Z #8 13.70 Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+image	UNKNOWN STEP	2026-09-14T19:52:34.4766230Z #8 DONE 15.1s
+image	UNKNOWN STEP	2026-09-14T19:52:34.6482858Z 
+image	UNKNOWN STEP	2026-09-14T19:52:34.6484243Z #9 [build 3/5] WORKDIR /app
+image	UNKNOWN STEP	2026-09-14T19:52:34.6485003Z #9 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:52:34.6485190Z 
+image	UNKNOWN STEP	2026-09-14T19:52:34.6485313Z #10 [build 4/5] COPY . .
+image	UNKNOWN STEP	2026-09-14T19:52:34.7401738Z #10 DONE 0.2s
+image	UNKNOWN STEP	2026-09-14T19:52:34.8921679Z 
+image	UNKNOWN STEP	2026-09-14T19:52:34.8923184Z #11 [build 5/5] RUN gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace
+image	UNKNOWN STEP	2026-09-14T19:52:35.4594665Z #11 0.716 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+image	UNKNOWN STEP	2026-09-14T19:52:36.5080621Z #11 1.616 Daemon will be stopped at the end of the build 
+image	UNKNOWN STEP	2026-09-14T19:52:37.8575599Z #11 3.116 Calculating task graph as no cached configuration is available for tasks: :server:linkReleaseExecutableNative
+image	UNKNOWN STEP	2026-09-14T19:52:55.6576451Z #11 20.92 Type-safe project accessors is an incubating feature.
+image	UNKNOWN STEP	2026-09-14T19:53:38.8584565Z #11 64.12 
+image	UNKNOWN STEP	2026-09-14T19:53:39.0112414Z #11 64.12 > Configure project :client
+image	UNKNOWN STEP	2026-09-14T19:53:39.0115479Z #11 64.12 w: file:///app/client/build.gradle.kts:33:5: 'fun macosX64(): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	UNKNOWN STEP	2026-09-14T19:53:39.5570629Z #11 64.82 WARNING: The 'commonTest' source directory exists, but android host tests are not enabled. To enable android host tests, add `withHostTest {}` to your android target configuration in the Gradle build file.
+image	UNKNOWN STEP	2026-09-14T19:53:39.5572604Z #11 64.82 Add android.sync.suppressAgpWarnings=GENERIC to the gradle.properties file to suppress this warning.
+image	UNKNOWN STEP	2026-09-14T19:53:40.7573921Z #11 66.02 
+image	UNKNOWN STEP	2026-09-14T19:53:40.9078231Z #11 66.02 > Configure project :core
+image	UNKNOWN STEP	2026-09-14T19:53:40.9079969Z #11 66.02 w: file:///app/core/build.gradle.kts:46:57: 'fun macosX64(name: String): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	UNKNOWN STEP	2026-09-14T19:53:42.6571849Z #11 67.92 
+image	UNKNOWN STEP	2026-09-14T19:53:42.6572950Z #11 67.92 > Configure project :server
+image	UNKNOWN STEP	2026-09-14T19:53:42.8075507Z #11 67.92 w: file:///app/server/build.gradle.kts:53:57: 'fun macosX64(name: String): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	UNKNOWN STEP	2026-09-14T19:53:43.5568720Z #11 68.82 
+image	UNKNOWN STEP	2026-09-14T19:53:43.7074070Z #11 68.82 > Configure project :shared
+image	UNKNOWN STEP	2026-09-14T19:53:43.7075400Z #11 68.82 w: file:///app/shared/build.gradle.kts:21:5: 'fun macosX64(): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	UNKNOWN STEP	2026-09-14T19:53:48.1575034Z #11 73.42 
+image	UNKNOWN STEP	2026-09-14T19:53:48.1581434Z #11 73.42 > Configure project :dev:android-gradle-plugin
+image	UNKNOWN STEP	2026-09-14T19:53:48.1582268Z #11 73.42 WARNING: Unsupported Kotlin plugin version.
+image	UNKNOWN STEP	2026-09-14T19:53:48.3117180Z #11 73.42 The `embedded-kotlin` and `kotlin-dsl` plugins rely on features of Kotlin `2.4.0` that might work differently than in the requested version `2.4.10`.
+image	UNKNOWN STEP	2026-09-14T19:53:48.3119021Z #11 73.42 Using the `kotlin-dsl` plugin together with a different Kotlin version (for example, by using the Kotlin Gradle plugin (`kotlin(jvm)`)) in the same project is not recommended.
+image	UNKNOWN STEP	2026-09-14T19:53:48.3120162Z #11 73.42 
+image	UNKNOWN STEP	2026-09-14T19:53:48.3121647Z #11 73.42 See https://docs.gradle.org/9.7.1/userguide/kotlin_dsl.html#sec:kotlin-dsl_plugin for more details on how the `kotlin-dsl` plugin works (same applies to `embedded-kotlin`).
+image	UNKNOWN STEP	2026-09-14T19:53:48.3123261Z #11 73.42 It applies a certain version of the `org.jetbrains.kotlin.jvm` plugin and also add a dependency on the Kotlin Standard Library.
+image	UNKNOWN STEP	2026-09-14T19:53:48.3124256Z #11 73.42 
+image	UNKNOWN STEP	2026-09-14T19:53:48.3125400Z #11 73.42 Applying other version of the `org.jetbrains.kotlin.jvm` plugin in the build and/or adding dependencies to different versions of the Kotlin Standard Library can cause incompatibilities.
+image	UNKNOWN STEP	2026-09-14T19:53:48.3127211Z #11 73.42 See https://docs.gradle.org/9.7.1/userguide/kotlin_dsl.html#sec:kotlin
+image	UNKNOWN STEP	2026-09-14T19:53:54.9576410Z #11 80.22 
+image	UNKNOWN STEP	2026-09-14T19:53:54.9577362Z #11 80.22 > Configure project :dev:client-android
+image	UNKNOWN STEP	2026-09-14T19:53:54.9578673Z #11 80.22 w: ⚠️ Unused Kotlin Source Sets
+image	UNKNOWN STEP	2026-09-14T19:53:55.1130695Z #11 80.22 The Kotlin source set commonTest was configured but not added to any Kotlin compilation.
+image	UNKNOWN STEP	2026-09-14T19:53:55.1132339Z #11 80.22 Solution: You can add a source set to a target's compilation by connecting it with the compilation's default source set using 'dependsOn'.
+image	UNKNOWN STEP	2026-09-14T19:53:55.1133866Z #11 80.22 See https://kotl.in/connecting-source-sets
+image	UNKNOWN STEP	2026-09-14T19:53:55.1134596Z #11 80.22 
+image	UNKNOWN STEP	2026-09-14T19:53:55.3569444Z #11 80.62 
+image	UNKNOWN STEP	2026-09-14T19:53:55.5076484Z #11 80.62 > Configure project :dev:retrace
+image	UNKNOWN STEP	2026-09-14T19:53:55.5078323Z #11 80.62 w: file:///app/dev/retrace/build.gradle.kts:20:57: 'fun macosX64(name: String): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	UNKNOWN STEP	2026-09-14T19:53:57.6568400Z #11 82.92 
+image	UNKNOWN STEP	2026-09-14T19:53:57.8113440Z #11 82.92 > Configure project :dev:sample-kotlin-native
+image	UNKNOWN STEP	2026-09-14T19:53:57.8115340Z #11 82.92 w: file:///app/dev/sample-kotlin-native/build.gradle.kts:18:57: 'fun macosX64(name: String): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	UNKNOWN STEP	2026-09-14T19:55:01.3576435Z #11 146.6 
+image	UNKNOWN STEP	2026-09-14T19:55:01.6074526Z #11 146.6 > Task :core:kmpPartiallyResolvedDependenciesChecker
+image	UNKNOWN STEP	2026-09-14T19:55:01.6075359Z #11 146.6 > Task :shared:kmpPartiallyResolvedDependenciesChecker
+image	UNKNOWN STEP	2026-09-14T19:55:01.6075918Z #11 146.6 > Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+image	UNKNOWN STEP	2026-09-14T19:55:01.6076538Z #11 146.6 > Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+image	UNKNOWN STEP	2026-09-14T19:55:01.6077223Z #11 146.6 > Task :dev:retrace:kmpPartiallyResolvedDependenciesChecker
+image	UNKNOWN STEP	2026-09-14T19:55:01.6077791Z #11 146.6 > Task :dev:retrace:checkKotlinGradlePluginConfigurationErrors SKIPPED
+image	UNKNOWN STEP	2026-09-14T19:55:01.6078804Z #11 146.6 > Task :shared:exportCrossCompilationMetadataForLinuxX64ApiElements
+image	UNKNOWN STEP	2026-09-14T19:55:01.6079807Z #11 146.7 > Task :dev:retrace:exportCrossCompilationMetadataForNativeApiElements
+image	UNKNOWN STEP	2026-09-14T19:55:01.6080692Z #11 146.7 > Task :server:kmpPartiallyResolvedDependenciesChecker
+image	UNKNOWN STEP	2026-09-14T19:55:01.6083372Z #11 146.7 > Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+image	UNKNOWN STEP	2026-09-14T19:55:01.6084222Z #11 146.7 > Task :core:exportCrossCompilationMetadataForNativeApiElements
+image	UNKNOWN STEP	2026-09-14T19:55:03.2568711Z #11 148.5 
+image	UNKNOWN STEP	2026-09-14T19:55:03.4074748Z #11 148.5 > Task :shared:downloadKotlinNativeDistribution
+image	UNKNOWN STEP	2026-09-14T19:55:03.4076247Z #11 148.5 Kotlin/Native bundle directory /root/.konan/kotlin-native-prebuilt-linux-x86_64-2.4.10 is not empty. Native bundle files will be overwritten.
+image	UNKNOWN STEP	2026-09-14T19:55:14.4569908Z #11 159.7 Downloading native dependencies (LLVM, sysroot etc). This is a one-time action performed only on the first run of the compiler.
+image	UNKNOWN STEP	2026-09-14T19:55:14.4572166Z #11 159.7 Downloading dependency https://download.jetbrains.com/kotlin/native/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2.tar.gz to /root/.konan/dependencies/cache/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2.tar.gz
+image	UNKNOWN STEP	2026-09-14T19:55:14.7569174Z #11 160.0 Done.
+image	UNKNOWN STEP	2026-09-14T19:55:14.9074680Z #11 160.0 Extracting dependency: /root/.konan/dependencies/cache/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2.tar.gz into /root/.konan/dependencies
+image	UNKNOWN STEP	2026-09-14T19:55:16.4569392Z #11 161.7 Downloading dependency https://download.jetbrains.com/kotlin/native/qemu-aarch64-static-5.1.0-linux-2.tar.gz to /root/.konan/dependencies/cache/qemu-aarch64-static-5.1.0-linux-2.tar.gz
+image	UNKNOWN STEP	2026-09-14T19:55:16.6569365Z #11 161.9 Done.
+image	UNKNOWN STEP	2026-09-14T19:55:16.7571077Z #11 161.9 Extracting dependency: /root/.konan/dependencies/cache/qemu-aarch64-static-5.1.0-linux-2.tar.gz into /root/.konan/dependencies
+image	UNKNOWN STEP	2026-09-14T19:55:16.7574721Z #11 162.0 Downloading native dependencies (LLVM, sysroot etc). This is a one-time action performed only on the first run of the compiler.
+image	UNKNOWN STEP	2026-09-14T19:55:16.9130096Z #11 162.0 Downloading dependency https://download.jetbrains.com/kotlin/native/msys2-mingw-w64-x86_64-2.tar.gz to /root/.konan/dependencies/cache/msys2-mingw-w64-x86_64-2.tar.gz
+image	UNKNOWN STEP	2026-09-14T19:55:16.9131311Z #11 162.0 
+image	UNKNOWN STEP	2026-09-14T19:55:16.9131937Z #11 162.0 > Task :core:downloadKotlinNativeDistribution
+image	UNKNOWN STEP	2026-09-14T19:55:16.9132472Z #11 162.0 > Task :dev:retrace:downloadKotlinNativeDistribution
+image	UNKNOWN STEP	2026-09-14T19:55:16.9132953Z #11 162.0 
+image	UNKNOWN STEP	2026-09-14T19:55:16.9133498Z #11 162.0 > Task :server:downloadKotlinNativeDistribution
+image	UNKNOWN STEP	2026-09-14T19:55:16.9134172Z #11 162.0 Downloading native dependencies (LLVM, sysroot etc). This is a one-time action performed only on the first run of the compiler.
+image	UNKNOWN STEP	2026-09-14T19:55:16.9135432Z #11 162.0 Downloading dependency https://download.jetbrains.com/kotlin/native/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2.tar.gz to /root/.konan/dependencies/cache/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2.tar.gz
+image	UNKNOWN STEP	2026-09-14T19:55:16.9136457Z #11 162.0 Done.
+image	UNKNOWN STEP	2026-09-14T19:55:16.9137103Z #11 162.0 Extracting dependency: /root/.konan/dependencies/cache/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2.tar.gz into /root/.konan/dependencies
+image	UNKNOWN STEP	2026-09-14T19:55:16.9138154Z #11 162.0 Downloading dependency https://download.jetbrains.com/kotlin/native/lldb-4-linux.tar.gz to /root/.konan/dependencies/cache/lldb-4-linux.tar.gz
+image	UNKNOWN STEP	2026-09-14T19:55:16.9138804Z #11 162.0 Done.
+image	UNKNOWN STEP	2026-09-14T19:55:16.9139589Z #11 162.0 Extracting dependency: /root/.konan/dependencies/cache/lldb-4-linux.tar.gz into /root/.konan/dependencies
+image	UNKNOWN STEP	2026-09-14T19:55:16.9140692Z #11 162.0 Downloading dependency https://download.jetbrains.com/kotlin/native/resources/llvm/21-x86_64-linux/llvm-21-x86_64-linux-essentials-116.tar.gz to /root/.konan/dependencies/cache/llvm-21-x86_64-linux-essentials-116.tar.gz
+image	UNKNOWN STEP	2026-09-14T19:55:16.9142325Z #11 162.0 Done.
+image	UNKNOWN STEP	2026-09-14T19:55:16.9143274Z #11 162.0 Extracting dependency: /root/.konan/dependencies/cache/llvm-21-x86_64-linux-essentials-116.tar.gz into /root/.konan/dependencies
+image	UNKNOWN STEP	2026-09-14T19:55:16.9144305Z #11 162.0 Downloading dependency https://download.jetbrains.com/kotlin/native/libffi-3.2.1-2-linux-x86-64.tar.gz to /root/.konan/dependencies/cache/libffi-3.2.1-2-linux-x86-64.tar.gz
+image	UNKNOWN STEP	2026-09-14T19:55:16.9145066Z #11 162.0 Done.
+image	UNKNOWN STEP	2026-09-14T19:55:16.9145601Z #11 162.0 Extracting dependency: /root/.konan/dependencies/cache/libffi-3.2.1-2-linux-x86-64.tar.gz into /root/.konan/dependencies
+image	UNKNOWN STEP	2026-09-14T19:55:17.1569778Z #11 162.4 
+image	UNKNOWN STEP	2026-09-14T19:55:17.3101763Z #11 162.4 > Task :server:generateKoreBuildIdentity
+image	UNKNOWN STEP	2026-09-14T19:55:17.8571268Z #11 163.1 > Task :shared:transformCommonMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:18.7570183Z #11 164.0 
+image	UNKNOWN STEP	2026-09-14T19:55:18.7571259Z #11 164.0 > Task :shared:downloadKotlinNativeDistribution
+image	UNKNOWN STEP	2026-09-14T19:55:18.7571922Z #11 164.0 Done.
+image	UNKNOWN STEP	2026-09-14T19:55:18.7572796Z #11 164.0 Extracting dependency: /root/.konan/dependencies/cache/msys2-mingw-w64-x86_64-2.tar.gz into /root/.konan/dependencies
+image	UNKNOWN STEP	2026-09-14T19:55:26.7571149Z #11 172.0 
+image	UNKNOWN STEP	2026-09-14T19:55:26.7572261Z #11 172.0 > Task :shared:compileCommonMainKotlinMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:26.7573112Z #11 172.0 > Task :shared:metadataCommonMainProcessResources NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:26.7573848Z #11 172.0 > Task :shared:metadataCommonMainClasses
+image	UNKNOWN STEP	2026-09-14T19:55:26.9571715Z #11 172.2 > Task :shared:transformNativeMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:26.9573209Z #11 172.2 > Task :shared:metadataNativeMainProcessResources NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:26.9574414Z #11 172.2 > Task :shared:transformLinuxMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:27.0587482Z #11 172.3 > Task :shared:generateProjectStructureMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:27.1605261Z #11 172.3 > Task :shared:metadataLinuxMainProcessResources NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:27.1606379Z #11 172.3 > Task :shared:transformAppleMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:27.1607870Z #11 172.3 > Task :shared:metadataAppleMainProcessResources NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:27.1608978Z #11 172.4 > Task :shared:transformIosMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:27.4096154Z #11 172.5 > Task :shared:transformMacosMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:27.4097338Z #11 172.5 > Task :shared:metadataIosMainProcessResources NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:27.4098592Z #11 172.5 > Task :shared:metadataMacosMainProcessResources NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:27.7101162Z #11 172.8 > Task :dev:retrace:transformCommonMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:29.5611472Z #11 174.7 > Task :dev:retrace:compileCommonMainKotlinMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:29.5612593Z #11 174.7 > Task :dev:retrace:generateProjectStructureMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:29.5613533Z #11 174.7 > Task :dev:retrace:metadataCommonMainProcessResources NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:29.5614577Z #11 174.7 > Task :dev:retrace:metadataCommonMainClasses
+image	UNKNOWN STEP	2026-09-14T19:55:29.5615378Z #11 174.7 > Task :dev:retrace:allMetadataJar
+image	UNKNOWN STEP	2026-09-14T19:55:29.5616354Z #11 174.8 > Task :dev:retrace:exportCommonSourceSetsMetadataLocationsForMetadataApiElements
+image	UNKNOWN STEP	2026-09-14T19:55:29.7108492Z #11 174.8 > Task :shared:exportRootPublicationCoordinatesForMetadataApiElements
+image	UNKNOWN STEP	2026-09-14T19:55:29.7109559Z #11 174.8 > Task :dev:retrace:exportRootPublicationCoordinatesForMetadataApiElements
+image	UNKNOWN STEP	2026-09-14T19:55:29.7110610Z #11 174.8 > Task :core:generateProjectStructureMetadata
+image	UNKNOWN STEP	2026-09-14T19:55:29.7111723Z #11 174.8 > Task :core:metadataCommonMainProcessResources NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:31.2570642Z #11 176.5 > Task :dev:retrace:compileKotlinNative
+image	UNKNOWN STEP	2026-09-14T19:55:47.1792497Z #11 192.4 > Task :shared:commonizeNativeDistribution
+image	UNKNOWN STEP	2026-09-14T19:55:50.8571721Z #11 196.1 > Task :shared:compileKotlinLinuxX64
+image	UNKNOWN STEP	2026-09-14T19:55:59.2582552Z #11 204.5 > Task :shared:compileNativeMainKotlinMetadata NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:59.2584795Z #11 204.5 > Task :shared:metadataNativeMainClasses UP-TO-DATE
+image	UNKNOWN STEP	2026-09-14T19:55:59.2585704Z #11 204.5 > Task :shared:compileAppleMainKotlinMetadata NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:59.2586372Z #11 204.5 > Task :shared:compileLinuxMainKotlinMetadata NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:59.2587041Z #11 204.5 > Task :shared:metadataLinuxMainClasses UP-TO-DATE
+image	UNKNOWN STEP	2026-09-14T19:55:59.2587724Z #11 204.5 > Task :shared:metadataAppleMainClasses UP-TO-DATE
+image	UNKNOWN STEP	2026-09-14T19:55:59.2588364Z #11 204.5 > Task :shared:compileMacosMainKotlinMetadata NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:59.2589130Z #11 204.5 > Task :shared:metadataMacosMainClasses UP-TO-DATE
+image	UNKNOWN STEP	2026-09-14T19:55:59.2589745Z #11 204.5 > Task :shared:compileIosMainKotlinMetadata NO-SOURCE
+image	UNKNOWN STEP	2026-09-14T19:55:59.4104167Z #11 204.5 > Task :shared:metadataIosMainClasses UP-TO-DATE
+image	UNKNOWN STEP	2026-09-14T19:55:59.4105210Z #11 204.5 > Task :shared:exportCommonSourceSetsMetadataLocationsForMetadataApiElements
+image	UNKNOWN STEP	2026-09-14T19:55:59.4106247Z #11 204.5 > Task :shared:linuxX64MetadataElements
+image	UNKNOWN STEP	2026-09-14T19:55:59.4106856Z #11 204.5 > Task :shared:allMetadataJar
+image	UNKNOWN STEP	2026-09-14T19:56:00.0078456Z #11 205.1 > Task :core:transformCommonMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:56:08.9571245Z #11 214.2 > Task :core:compileCommonMainKotlinMetadata
+image	UNKNOWN STEP	2026-09-14T19:56:08.9572021Z #11 214.2 > Task :core:metadataCommonMainClasses
+image	UNKNOWN STEP	2026-09-14T19:56:09.2089774Z #11 214.3 > Task :core:exportCommonSourceSetsMetadataLocationsForMetadataApiElements
+image	UNKNOWN STEP	2026-09-14T19:56:09.2091041Z #11 214.3 > Task :core:allMetadataJar
+image	UNKNOWN STEP	2026-09-14T19:56:09.7078768Z #11 214.8 > Task :server:transformCommonMainDependenciesMetadata
+image	UNKNOWN STEP	2026-09-14T19:56:11.9077245Z #11 217.0 > Task :core:compileKotlinNative
+image	UNKNOWN STEP	2026-09-14T19:56:16.1571161Z #11 221.4 > Task :server:kspCommonMainKotlinMetadata
+image	UNKNOWN STEP	2026-09-14T19:56:16.4092580Z #11 221.5 > Task :server:kspKotlinNative
+image	UNKNOWN STEP	2026-09-14T19:56:20.2569791Z #11 225.5 > Task :server:compileKotlinNative
+image	UNKNOWN STEP	2026-09-14T19:56:50.2571577Z #11 255.5 > Task :server:linkReleaseExecutableNative
+image	UNKNOWN STEP	2026-09-14T19:58:39.2570417Z #11 364.5 
+image	UNKNOWN STEP	2026-09-14T19:58:39.2571645Z #11 364.5 [Incubating] Problems report is available at: file:///app/build/reports/problems/problems-report.html
+image	UNKNOWN STEP	2026-09-14T19:58:39.2572639Z #11 364.5 
+image	UNKNOWN STEP	2026-09-14T19:58:39.2573069Z #11 364.5 BUILD SUCCESSFUL in 6m 4s
+image	UNKNOWN STEP	2026-09-14T19:58:39.2573479Z #11 364.5 44 actionable tasks: 44 executed
+image	UNKNOWN STEP	2026-09-14T19:58:39.2573939Z #11 364.5 Configuration cache entry stored.
+image	UNKNOWN STEP	2026-09-14T19:58:39.9848499Z #11 DONE 365.2s
+image	UNKNOWN STEP	2026-09-14T19:58:40.1199695Z 
+image	UNKNOWN STEP	2026-09-14T19:58:40.1200796Z #12 [stage-1 2/7] COPY --from=build /etc/ld.so.cache /etc/ld.so.cache
+image	UNKNOWN STEP	2026-09-14T19:58:40.1203210Z #12 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:58:40.1203628Z 
+image	UNKNOWN STEP	2026-09-14T19:58:40.1204130Z #13 [stage-1 3/7] COPY --from=build /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+image	UNKNOWN STEP	2026-09-14T19:58:40.2388742Z #13 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:58:40.2389096Z 
+image	UNKNOWN STEP	2026-09-14T19:58:40.2389835Z #14 [stage-1 4/7] COPY --from=build /lib/x86_64-linux-gnu/libc.so.6 /lib/x86_64-linux-gnu/libc.so.6
+image	UNKNOWN STEP	2026-09-14T19:58:40.2390603Z #14 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:58:40.2391083Z 
+image	UNKNOWN STEP	2026-09-14T19:58:40.2391469Z #15 [stage-1 5/7] COPY --from=build /usr/lib/x86_64-linux-gnu/gconv /usr/lib/x86_64-linux-gnu/gconv
+image	UNKNOWN STEP	2026-09-14T19:58:40.2392128Z #15 DONE 0.1s
+image	UNKNOWN STEP	2026-09-14T19:58:40.3837764Z 
+image	UNKNOWN STEP	2026-09-14T19:58:40.3838664Z #16 [stage-1 6/7] COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
+image	UNKNOWN STEP	2026-09-14T19:58:40.3839780Z #16 DONE 0.0s
+image	UNKNOWN STEP	2026-09-14T19:58:40.3839988Z 
+image	UNKNOWN STEP	2026-09-14T19:58:40.3840521Z #17 [stage-1 7/7] COPY --from=build /app/server/build/bin/native/releaseExecutable/server.kexe /app/server
+image	UNKNOWN STEP	2026-09-14T19:58:40.3841380Z #17 DONE 0.1s
+image	UNKNOWN STEP	2026-09-14T19:58:40.5357023Z 
+image	UNKNOWN STEP	2026-09-14T19:58:40.5357916Z #18 exporting to image
+image	UNKNOWN STEP	2026-09-14T19:58:40.5358504Z #18 exporting layers
+image	UNKNOWN STEP	2026-09-14T19:58:41.0182242Z #18 exporting layers 0.6s done
+image	UNKNOWN STEP	2026-09-14T19:58:41.0376575Z #18 writing image sha256:c507eda6d0a4330173763619ca94cab0c4fceaa3c51a187a7b95d8deaa0e7d86 done
+image	UNKNOWN STEP	2026-09-14T19:58:41.0377264Z #18 naming to docker.io/library/katcher:ci done
+image	UNKNOWN STEP	2026-09-14T19:58:41.0377741Z #18 DONE 0.6s
+image	UNKNOWN STEP	2026-09-14T19:58:41.0382526Z 
+image	UNKNOWN STEP	2026-09-14T19:58:41.0383755Z  ^[[33m1 warning found (use docker --debug to expand):
+image	UNKNOWN STEP	2026-09-14T19:58:41.0385057Z ^[[0m - FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value "linux/amd64" (line 2)
+image	UNKNOWN STEP	2026-09-14T19:58:41.0470295Z ##[group]Run docker run --detach --name katcher-ci --publish 8080:8080 katcher:ci
+image	UNKNOWN STEP	2026-09-14T19:58:41.0471355Z ^[[36;1mdocker run --detach --name katcher-ci --publish 8080:8080 katcher:ci^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.0471869Z ^[[36;1m./dev/image-smoke.sh http://localhost:8080^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.0498119Z shell: /usr/bin/bash -e {0}
+image	UNKNOWN STEP	2026-09-14T19:58:41.0498458Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:58:41.0926109Z f7cb369a65301acfbfca5e343a715c60640f75c241b7bb0c1d0d50ca2eceb0ef
+image	UNKNOWN STEP	2026-09-14T19:58:41.2364989Z smoke: waiting for http://localhost:8080
+image	UNKNOWN STEP	2026-09-14T19:58:41.3107117Z smoke: rendered 2026-09-14 19:58
+image	UNKNOWN STEP	2026-09-14T19:58:41.3148252Z ##[group]Run docker stop --timeout 40 katcher-ci
+image	UNKNOWN STEP	2026-09-14T19:58:41.3148751Z ^[[36;1mdocker stop --timeout 40 katcher-ci^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3149139Z ^[[36;1mlog=$(docker logs katcher-ci 2>&1)^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3149591Z ^[[36;1mprintf '%s\n' "$log" | grep -E 'ANNOUNCE|DRAIN|RELEASE_POOLS|EXIT' || true^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3150190Z ^[[36;1mfor stage in SIGNAL ANNOUNCE DRAIN RELEASE_CONSUMERS RELEASE_POOLS EXIT; do^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3150714Z ^[[36;1m  if ! printf '%s\n' "$log" | grep -q "$stage COMPLETED"; then^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3151594Z ^[[36;1m    echo "the shutdown transcript has no completed $stage stage" >&2^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3152047Z ^[[36;1m    printf '%s\n' "$log" | tail -40 >&2^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3152408Z ^[[36;1m    exit 1^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3152719Z ^[[36;1m  fi^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3152992Z ^[[36;1mdone^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:41.3177916Z shell: /usr/bin/bash -e {0}
+image	UNKNOWN STEP	2026-09-14T19:58:41.3178249Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:58:43.4788181Z katcher-ci
+image	UNKNOWN STEP	2026-09-14T19:58:43.4965446Z ANNOUNCE COMPLETED in 2.000174166s
+image	UNKNOWN STEP	2026-09-14T19:58:43.4966254Z DRAIN COMPLETED in 586.815us
+image	UNKNOWN STEP	2026-09-14T19:58:43.4966958Z RELEASE_POOLS COMPLETED in 5.041308ms
+image	UNKNOWN STEP	2026-09-14T19:58:43.4967659Z EXIT COMPLETED in 640ns
+image	UNKNOWN STEP	2026-09-14T19:58:43.5087237Z ##[group]Run docker image inspect katcher:ci --format '{{json .Config.Env}}' | grep -q 'MALLOC_ARENA_MAX=2' \
+image	UNKNOWN STEP	2026-09-14T19:58:43.5088016Z ^[[36;1mdocker image inspect katcher:ci --format '{{json .Config.Env}}' | grep -q 'MALLOC_ARENA_MAX=2' \^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:43.5088616Z ^[[36;1m  || { echo "the image lost MALLOC_ARENA_MAX=2" >&2; exit 1; }^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:43.5111990Z shell: /usr/bin/bash -e {0}
+image	UNKNOWN STEP	2026-09-14T19:58:43.5112331Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:58:43.5325460Z ##[group]Run docker image inspect katcher:ci --format 'unpacked on this runner {{.Size}} bytes (not pull bytes, see the workflow comment)'
+image	UNKNOWN STEP	2026-09-14T19:58:43.5326671Z ^[[36;1mdocker image inspect katcher:ci --format 'unpacked on this runner {{.Size}} bytes (not pull bytes, see the workflow comment)'^[[0m
+image	UNKNOWN STEP	2026-09-14T19:58:43.5348154Z shell: /usr/bin/bash -e {0}
+image	UNKNOWN STEP	2026-09-14T19:58:43.5348582Z ##[endgroup]
+image	UNKNOWN STEP	2026-09-14T19:58:43.5505768Z unpacked on this runner 27928956 bytes (not pull bytes, see the workflow comment)
+image	UNKNOWN STEP	2026-09-14T19:58:43.5628724Z Post job cleanup.
+image	UNKNOWN STEP	2026-09-14T19:58:43.6426737Z [command]/usr/bin/git version
+image	UNKNOWN STEP	2026-09-14T19:58:43.6463944Z git version 2.55.0
+image	UNKNOWN STEP	2026-09-14T19:58:43.6494737Z Temporarily overriding HOME='/home/runner/work/_temp/8803a2a6-51d4-40f4-8fc7-1d59f0d32cf1' before making global git config changes
+image	UNKNOWN STEP	2026-09-14T19:58:43.6496207Z Adding repository directory to the temporary git global config as a safe directory
+image	UNKNOWN STEP	2026-09-14T19:58:43.6500506Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/katcher/katcher
+image	UNKNOWN STEP	2026-09-14T19:58:43.6531663Z Removing SSH command configuration
+image	UNKNOWN STEP	2026-09-14T19:58:43.6537253Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	UNKNOWN STEP	2026-09-14T19:58:43.6573281Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	UNKNOWN STEP	2026-09-14T19:58:43.6772364Z Removing HTTP extra header
+image	UNKNOWN STEP	2026-09-14T19:58:43.6777996Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	UNKNOWN STEP	2026-09-14T19:58:43.6807616Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	UNKNOWN STEP	2026-09-14T19:58:43.7014802Z Removing includeIf entries pointing to credentials config files
+image	UNKNOWN STEP	2026-09-14T19:58:43.7026868Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+image	UNKNOWN STEP	2026-09-14T19:58:43.7054687Z includeif.gitdir:/home/runner/work/katcher/katcher/.git.path
+image	UNKNOWN STEP	2026-09-14T19:58:43.7055970Z includeif.gitdir:/home/runner/work/katcher/katcher/.git/worktrees/*.path
+image	UNKNOWN STEP	2026-09-14T19:58:43.7056881Z includeif.gitdir:/github/workspace/.git.path
+image	UNKNOWN STEP	2026-09-14T19:58:43.7057766Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+image	UNKNOWN STEP	2026-09-14T19:58:43.7072386Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/katcher/katcher/.git.path
+image	UNKNOWN STEP	2026-09-14T19:58:43.7093694Z /home/runner/work/_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config
+image	UNKNOWN STEP	2026-09-14T19:58:43.7105661Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/katcher/katcher/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-7936b09e\-35de\-46f7\-a7f7\-f639fd3fb021\.config
+image	UNKNOWN STEP	2026-09-14T19:58:43.7142300Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/katcher/katcher/.git/worktrees/*.path
+image	UNKNOWN STEP	2026-09-14T19:58:43.7166398Z /home/runner/work/_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config
+image	UNKNOWN STEP	2026-09-14T19:58:43.7174135Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/katcher/katcher/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-7936b09e\-35de\-46f7\-a7f7\-f639fd3fb021\.config
+image	UNKNOWN STEP	2026-09-14T19:58:43.7203043Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+image	UNKNOWN STEP	2026-09-14T19:58:43.7223704Z /github/runner_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config
+image	UNKNOWN STEP	2026-09-14T19:58:43.7230504Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-7936b09e\-35de\-46f7\-a7f7\-f639fd3fb021\.config
+image	UNKNOWN STEP	2026-09-14T19:58:43.7261715Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+image	UNKNOWN STEP	2026-09-14T19:58:43.7280628Z /github/runner_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config
+image	UNKNOWN STEP	2026-09-14T19:58:43.7288197Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-7936b09e\-35de\-46f7\-a7f7\-f639fd3fb021\.config
+image	UNKNOWN STEP	2026-09-14T19:58:43.7327063Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+image	UNKNOWN STEP	2026-09-14T19:58:43.7525233Z Removing credentials config '/home/runner/work/_temp/git-credentials-7936b09e-35de-46f7-a7f7-f639fd3fb021.config'
+image	UNKNOWN STEP	2026-09-14T19:58:43.7651575Z Cleaning up orphan processes

@@ -155,8 +155,20 @@ runs at its default while the Gradle daemon and the Kotlin daemon are sized. RQ6
 the other end: `org.gradle.caching`, `org.gradle.parallel` and `org.gradle.configuration-cache`
 are already on, so its A/B is a disabling, not an enabling.
 
+## Measured: the local metrics
+
+Taken on the Linux box, three interleaved reps, all nine passing the harness guard. Medians,
+spread and the phase-by-phase breakdown are in [rq0-attribution.md](rq0-attribution.md):
+
+| metric | median | CV |
+|---|---|---|
+| `T_warm` | 0.87 s | 6.6% |
+| `T_incr_dbg` | 12.81 s | 3.0% |
+| `T_incr_rel` | 132.01 s | 1.2% |
+
 ## Not yet measured
 
-Every local metric: `T_cold`, `T_warm`, `T_incr_dbg`, `T_incr_rel`. The mutagen session that
-makes them possible was only confirmed working on 2026-09-14; no clean-checkout run has been
-taken on the box.
+`T_cold` — a clean checkout with empty `~/.gradle` and `~/.konan`. It is deliberately not taken by
+wiping those directories: they are shared with the thirty other projects synced to that box, and a
+measurement that costs every other build its caches is not one to run casually. It needs an
+isolated `GRADLE_USER_HOME` and `KONAN_DATA_DIR`, which the harness does not do yet.

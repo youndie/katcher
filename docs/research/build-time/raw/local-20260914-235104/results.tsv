@@ -1,0 +1,10 @@
+rep	metric	ms	verdict	log
+1	warm	777	ok	r1-warm.log
+1	incr_dbg	12809	ok	r1-incr_dbg.log
+1	incr_rel	134123	ok	r1-incr_rel.log
+2	warm	912	ok	r2-warm.log
+2	incr_dbg	12288	ok	r2-incr_dbg.log
+2	incr_rel	130363	ok	r2-incr_rel.log
+3	warm	870	ok	r3-warm.log
+3	incr_dbg	13210	ok	r3-incr_dbg.log
+3	incr_rel	132010	ok	r3-incr_rel.log

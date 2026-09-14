@@ -1,0 +1,76 @@
+Reusing configuration cache.
+> Task :dev:retrace:kmpPartiallyResolvedDependenciesChecker
+> Task :server:kmpPartiallyResolvedDependenciesChecker
+> Task :core:exportCrossCompilationMetadataForNativeApiElements UP-TO-DATE
+> Task :shared:metadataCommonMainProcessResources NO-SOURCE
+> Task :core:kmpPartiallyResolvedDependenciesChecker
+> Task :dev:retrace:exportCrossCompilationMetadataForNativeApiElements UP-TO-DATE
+> Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:exportCrossCompilationMetadataForLinuxX64ApiElements UP-TO-DATE
+> Task :shared:kmpPartiallyResolvedDependenciesChecker
+> Task :shared:metadataNativeMainProcessResources NO-SOURCE
+> Task :shared:commonizeNativeDistribution UP-TO-DATE
+> Task :shared:generateProjectStructureMetadata UP-TO-DATE
+> Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :dev:retrace:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:metadataMacosMainProcessResources NO-SOURCE
+> Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :shared:metadataLinuxMainProcessResources NO-SOURCE
+> Task :shared:metadataAppleMainProcessResources NO-SOURCE
+> Task :dev:retrace:metadataCommonMainProcessResources NO-SOURCE
+> Task :shared:metadataIosMainProcessResources NO-SOURCE
+> Task :dev:retrace:generateProjectStructureMetadata UP-TO-DATE
+> Task :core:metadataCommonMainProcessResources NO-SOURCE
+> Task :server:generateKoreBuildIdentity
+> Task :shared:exportRootPublicationCoordinatesForMetadataApiElements UP-TO-DATE
+> Task :dev:retrace:exportRootPublicationCoordinatesForMetadataApiElements UP-TO-DATE
+> Task :server:downloadKotlinNativeDistribution UP-TO-DATE
+> Task :dev:retrace:downloadKotlinNativeDistribution UP-TO-DATE
+> Task :core:generateProjectStructureMetadata UP-TO-DATE
+> Task :core:downloadKotlinNativeDistribution UP-TO-DATE
+> Task :shared:transformCommonMainDependenciesMetadata UP-TO-DATE
+> Task :dev:retrace:transformCommonMainDependenciesMetadata UP-TO-DATE
+> Task :shared:downloadKotlinNativeDistribution UP-TO-DATE
+> Task :shared:transformNativeMainDependenciesMetadata UP-TO-DATE
+> Task :shared:compileCommonMainKotlinMetadata UP-TO-DATE
+> Task :shared:metadataCommonMainClasses UP-TO-DATE
+> Task :shared:transformAppleMainDependenciesMetadata UP-TO-DATE
+> Task :shared:transformLinuxMainDependenciesMetadata UP-TO-DATE
+> Task :shared:compileNativeMainKotlinMetadata NO-SOURCE
+> Task :shared:metadataNativeMainClasses UP-TO-DATE
+> Task :dev:retrace:compileCommonMainKotlinMetadata UP-TO-DATE
+> Task :dev:retrace:metadataCommonMainClasses UP-TO-DATE
+> Task :shared:compileLinuxMainKotlinMetadata NO-SOURCE
+> Task :shared:transformMacosMainDependenciesMetadata UP-TO-DATE
+> Task :shared:transformIosMainDependenciesMetadata UP-TO-DATE
+> Task :shared:compileAppleMainKotlinMetadata NO-SOURCE
+> Task :dev:retrace:allMetadataJar UP-TO-DATE
+> Task :shared:metadataLinuxMainClasses UP-TO-DATE
+> Task :shared:metadataAppleMainClasses UP-TO-DATE
+> Task :dev:retrace:exportCommonSourceSetsMetadataLocationsForMetadataApiElements UP-TO-DATE
+> Task :shared:allMetadataJar UP-TO-DATE
+> Task :dev:retrace:compileKotlinNative UP-TO-DATE
+> Task :shared:compileIosMainKotlinMetadata NO-SOURCE
+> Task :shared:compileMacosMainKotlinMetadata NO-SOURCE
+> Task :shared:compileKotlinLinuxX64 UP-TO-DATE
+> Task :shared:metadataIosMainClasses UP-TO-DATE
+> Task :shared:metadataMacosMainClasses UP-TO-DATE
+> Task :shared:exportCommonSourceSetsMetadataLocationsForMetadataApiElements UP-TO-DATE
+> Task :shared:linuxX64MetadataElements UP-TO-DATE
+> Task :core:compileKotlinNative UP-TO-DATE
+> Task :core:transformCommonMainDependenciesMetadata UP-TO-DATE
+> Task :core:compileCommonMainKotlinMetadata UP-TO-DATE
+> Task :core:metadataCommonMainClasses UP-TO-DATE
+> Task :core:allMetadataJar UP-TO-DATE
+> Task :core:exportCommonSourceSetsMetadataLocationsForMetadataApiElements UP-TO-DATE
+> Task :server:transformCommonMainDependenciesMetadata UP-TO-DATE
+> Task :server:kspCommonMainKotlinMetadata UP-TO-DATE
+> Task :server:kspKotlinNative UP-TO-DATE
+> Task :server:compileKotlinNative UP-TO-DATE
+> Task :server:linkReleaseExecutableNative UP-TO-DATE
+
+BUILD SUCCESSFUL in 840ms
+44 actionable tasks: 5 executed, 39 up-to-date
+Configuration cache entry reused.
+ELAPSED_MS=912
+EXIT=0

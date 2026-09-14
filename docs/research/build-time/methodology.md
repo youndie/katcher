@@ -42,10 +42,30 @@ that can link linuxX64:
   margin under it.
 - **It is not idle.** It also hosts a self-hosted Actions runner and other syncs. Background
   load at the time of a measurement is part of the measurement and goes in the log beside it.
-- **Consequence for the protocol.** "Median of 3 consecutive runs" is not enough here. Variants
-  are interleaved (A B A B A B), never run in blocks, and the reported figure is a median of
-  three per variant with the full spread printed. A difference inside the spread is reported as
-  inconclusive, not as a small win.
+- **Consequence for the protocol.** Variants are interleaved (A B A B A B), never run in blocks,
+  and the reported figure is a median of three per variant with the full spread printed. A
+  difference inside the spread is reported as inconclusive, not as a small win.
+- **Measured, 2026-09-14: build wall-clock on this box does not swing like that.** Three
+  interleaved reps gave CV of 1.2% (`T_incr_rel`), 3.0% (`T_incr_dbg`) and 6.6% (`T_warm`) — well
+  inside the gate. The ±15% is a *throughput* observation and does not transfer to a
+  mostly-serial, allocator-and-IO-bound build. The caution above stands for any rps-shaped
+  measurement and is withdrawn for these three.
+
+## What a measurement of this loop has to survive
+
+Three harness faults produced plausible numbers before being caught; each is written up in
+[retractions.md](retractions.md). The rules they leave behind:
+
+- **The source edit is made on the mac, never on the replica.** The mutagen daemon watches the
+  beta side and reverts an edit there within seconds — before the compiler reads it.
+- **The edit must change the klib, not just the file.** A comment recompiles the source and
+  produces byte-identical output, so the link task's inputs do not move and the build cache
+  answers for it. The probe appends a top-level `val`.
+- **Every timed incremental run asserts that the compile AND the link executed.** Not
+  `UP-TO-DATE`, not `FROM-CACHE`. A run that fails the assertion is printed as `void:<reason>`,
+  never as a number.
+- **BuildKit's `#N <seconds>` prefixes are flush marks, not line marks.** They cannot resolve
+  phases inside a quiet stretch.
 
 ## What the replica is and is not
 
