@@ -59,6 +59,22 @@ COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
 
 COPY --from=build /app/server/build/bin/native/releaseExecutable/server.kexe /app/server
 
+# THE ALLOCATOR, CAPPED. glibc gives a thread an arena of its own whenever the one it wants is
+# locked, up to eight per core — and it counts the *host's* cores, not the container's CPU quota, so
+# a `--cpus=1` container on a twenty-core runner may grow sixteen times what it looks like it can.
+# An arena returns pages only from its top, so the resident set becomes the sum of every arena's
+# high-water mark rather than the live heap.
+#
+# MEASURED IN TRACY, NOT HERE: same stack, same `scratch` image, an A/B with the container's own
+# environment read back — a third less anonymous memory for identical work (tracy M-137). katcher
+# runs the same binary shape with a two-connection pool and about fifteen threads, so the ceiling it
+# removes is lower; the saving here has not been measured and the number above must not be read as
+# this service's.
+#
+# The price is contention on the malloc lock, which a service that waits on SQLite and the disk does
+# not pay. A workload that allocates hard in parallel would have to re-measure before keeping this.
+ENV MALLOC_ARENA_MAX=2
+
 EXPOSE 8080
 
 ENTRYPOINT ["/app/server"]
