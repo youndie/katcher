@@ -1,12 +1,14 @@
 <!-- This is the brief as written, with two edits, both invited by the brief itself.
      §2: the task the metrics name does not exist in this repository — see
      "The task is not called what the brief called it" in methodology.md.
-     §9: filled from the repository. Two rows are still open and are marked so.
+     §9: filled from the repository; the last two rows were filled on 2026-09-15 from a
+     decision, not from the repository, and say so.
+     §5: kill criterion 4 struck, as a consequence of there being no time box.
      The green/red thresholds are UNCHANGED and therefore stand. -->
 
 # Research brief: katcher build time, local and CI
 
-**Status:** §9 filled except the time box and the RQ8 subject; RQ0 open
+**Status:** §9 filled. RQ0 answered — see [rq0-attribution.md](rq0-attribution.md); it is red on the CI side, so the instrumentation change comes before any RQ1–RQ7 lever.
 **Subject:** `youndie/katcher` — Kotlin/Native `linuxX64` server binary plus a multiplatform client
 **Deliverables:**
 
@@ -23,6 +25,7 @@ Reference read: Swiggy, *Scaling Android CI: 44 → 10 minutes* (Jul 2026). Trea
 - The native binary is the shipped artifact (`ghcr.io/youndie/katcher`, Helm chart), so link time is on the commit→deploy path.
 - No Compose, no AGP, no cinterop to system libraries in the server path; sqlx4k ships its own binaries. Fewer confounders than `mani`.
 - metrik and tracy have the same shape, so the recipe has an immediate second and third application (RQ8).
+  *(Checked 2026-09-15: tracy does — `server/Dockerfile` and an `image.yml`, plain `docker build`. metrik does not, quite: it publishes through `docker/build-push-action` with buildx cache reuse across two calls, so on the RQ4/RQ5 axis it starts ahead of katcher rather than level with it.)*
 - The repo carries its own DAG bloat to study: a client published for 10 targets, `dev/` modules, `tailwind/`, `kotlin-js-store/wasm`.
 
 ## 2. Metrics
@@ -116,7 +119,7 @@ Does LLVM phase time track binary size? Use razves to rank dependencies by contr
 
 ### RQ8 — Transferability
 
-Apply the recipe to metrik or tracy with **no repo-specific edits**, measure `T_incr_dbg` and `T_pr` before/after.
+Apply the recipe to **tracy** (chosen in §9) with **no repo-specific edits**, measure `T_incr_dbg` and `T_pr` before/after.
 
 - **Green:** ≥ 50% of the relative gain seen on katcher reproduces.
 - **Red:** < 25% → the skill is labelled "katcher-derived, not validated elsewhere" and the generic claims are removed from it.
@@ -128,7 +131,11 @@ Stop the project and publish the negative result if any of these holds after RQ0
 1. **Nothing to win.** Baseline `T_incr_dbg` ≤ 20 s and `T_pr` ≤ 5 min. The loop is already fast enough; the recipe becomes "here is what a fast baseline looks like" and the project ends at RQ0.
 2. **LLVM ceiling.** ≥ 70% of `T_incr_rel` is LLVM opt/codegen and no lever in RQ1–RQ7 moves it ≥ 10%. Document the ceiling with phase numbers and stop; do not chase it with compiler flags.
 3. **Unreducible noise.** CV > 15% on the primary metrics after removing obvious sources (thermal, other processes, shared runners). Numbers that cannot be trusted are not published as gains.
-4. **Budget.** Time box in §9 exhausted with RQ0–RQ3 not all closed.
+4. ~~**Budget.** Time box in §9 exhausted with RQ0–RQ3 not all closed.~~ **Struck 2026-09-15.**
+   §9 sets no time box, so this criterion has nothing to fire on. It is crossed out rather than
+   deleted: a kill criterion that quietly stops being checked is worse than one that is openly
+   withdrawn. The study now stops only on 1, 2 or 3 — nothing to win, the LLVM ceiling, or
+   unreducible noise.
 
 ## 6. Non-goals
 
@@ -169,7 +176,7 @@ The skill is not written until RQ8 is closed.
 | Local machine (Linux native, or Docker on macOS) | Linux native: Ubuntu 24.04 under WSL2, 20 cores, 15 GiB, via the `katcher` mutagen session and `wsl-run`. The mac links macosArm64 and is not a measurement host |
 | CI runner (GitHub-hosted ubuntu size, or self-hosted) and billing model | `ubuntu-latest`, GitHub-hosted, standard size. Public repository → free; no billing model |
 | Pinned Kotlin / Gradle / JDK versions (README badge shows Kotlin 2.4.10 — verify in `libs.versions.toml`) | Kotlin 2.4.10 (badge verified against the catalog), Gradle 9.7.1, JDK toolchain 25. Also: KSP 2.3.11, AGP 9.3.1 |
-| Time box | **open** |
-| Second subject for RQ8 (metrik or tracy) | **open** |
+| Time box | **none** — the study runs until a kill criterion fires. Decided 2026-09-15; see the note under §5 |
+| Second subject for RQ8 (metrik or tracy) | **tracy** — `server/Dockerfile` plus an `image.yml`, the same shape as katcher, and a plain `docker build` with no cache, so RQ4 is a genuine before/after there. metrik was the other candidate and is **not** the subject: it already builds through `docker/build-push-action` with buildx cache reuse, which makes it a source of answers rather than a test of transfer |
 
 The green/red thresholds above are proposals. Edit them here, before RQ0 runs, or they stand.
