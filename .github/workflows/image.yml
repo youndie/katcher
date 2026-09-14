@@ -83,6 +83,12 @@ jobs:
         if: failure()
         run: docker logs katcher-ci || true
 
+      # WHAT THIS NUMBER IS DEPENDS ON THE HOST, and the field does not say so. With the classic
+      # overlay2 storage driver — what a GitHub runner has — `.Size` is the UNPACKED size on disk;
+      # with the containerd snapshotter it is the compressed content, i.e. what a `pull` transfers.
+      # The same image measured 27 918 036 here and 9 569 623 on a machine with the snapshotter, so
+      # the figures in `server/Dockerfile` (pull bytes) and this line are not comparable and are not
+      # meant to be. This one is a trend line for this job: it moves when the image does.
       - name: Size
         if: always()
-        run: docker image inspect katcher:ci --format 'on-disk size {{.Size}} bytes'
+        run: docker image inspect katcher:ci --format 'unpacked on this runner {{.Size}} bytes (not pull bytes, see the workflow comment)'
