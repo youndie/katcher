@@ -1,0 +1,71 @@
+name: Image
+
+# CI builds and tests the code; until this job, nothing ever ran the thing that gets deployed. The
+# runtime image is distroless — no shell, no `ls`, nothing to `kubectl exec` into — so what it does
+# or does not contain cannot be asked; it can only be exercised. Two changes in the last month were
+# about exactly that (#52, the library the binary never calls), and both were checked by hand.
+#
+# It runs the application far enough to RENDER A DATE rather than far enough to answer a status
+# code. Every page that formats a timestamp sits behind authentication, so a smoke test that stops
+# at `/` meets the `401` and reports success about a server it never entered. That distinction is
+# not hypothetical: it is what a `scratch` base image passed and what it failed (#55).
+#
+# Path-filtered because it costs about ten minutes, and a change to the client cannot affect it.
+
+# The two lists are the same list, written twice: GitHub's workflow parser does not resolve YAML
+# anchors, and one that silently expands to nothing would turn the filter into "never run".
+on:
+  pull_request:
+    paths:
+      - server/**
+      - core/**
+      - shared/**
+      - dev/retrace/**
+      - dev/image-smoke.sh
+      - gradle/**
+      - build.gradle.kts
+      - settings.gradle.kts
+      - gradle.properties
+      - .dockerignore
+      - .github/workflows/image.yml
+  push:
+    branches: [main]
+    paths:
+      - server/**
+      - core/**
+      - shared/**
+      - dev/retrace/**
+      - dev/image-smoke.sh
+      - gradle/**
+      - build.gradle.kts
+      - settings.gradle.kts
+      - gradle.properties
+      - .dockerignore
+      - .github/workflows/image.yml
+
+concurrency:
+  group: image-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Build the runtime image
+        run: docker build --file server/Dockerfile --tag katcher:ci .
+
+      - name: The image runs, and a page renders a timestamp
+        run: |
+          docker run --detach --name katcher-ci --publish 8080:8080 katcher:ci
+          ./dev/image-smoke.sh http://localhost:8080
+
+      # The container has no shell, so this is the only account of what went wrong.
+      - name: What it said, if it did not
+        if: failure()
+        run: docker logs katcher-ci || true
+
+      - name: Size
+        if: always()
+        run: docker image inspect katcher:ci --format 'on-disk size {{.Size}} bytes'
