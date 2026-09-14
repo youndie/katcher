@@ -26,11 +26,14 @@ server:
       # is what fixes it: 22–26 MB at rest, 47–62 MB under the same load, and it survived down to
       # 96Mi (#58).
       #
-      # The limit stays at 192Mi anyway. The measured peak leaves it 3× of headroom, and the
-      # production crash this began with was never reproduced in its own shape — only a load that
-      # produces the same kill. Lowering it is a separate change with production evidence behind
-      # it, not a victory lap on a synthetic one.
-      memory: "192Mi"
+      # 128Mi, DOWN FROM THE 192Mi THE UNEXPLAINED CRASH BOUGHT. The same measurement that found
+      # the cause ran this build at 128Mi and at 96Mi under fifty concurrent navigators and it
+      # survived both, peaking at 42–67 MB — so this is twice the observed peak rather than a round
+      # number. What it is not is production evidence: the original crash was never reproduced in
+      # its own shape, only a load that produces the same kill, and a synthetic peak is a floor for
+      # the real one. If a pod is OOM-killed here, that is the thing this number was too tight for,
+      # and 192Mi is where it goes back to.
+      memory: "128Mi"
 
 # Bearer token for the MCP endpoint, which coding agents use to read crashes.
 # Empty means the endpoint is not mounted at all — the feature is off, not open.
