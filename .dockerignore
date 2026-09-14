@@ -1,14 +1,19 @@
 # WHAT THE IMAGE BUILD MUST NOT CARRY. `server/Dockerfile` does `COPY . .`, so everything here is
 # sent to the daemon on every build; a checkout on a machine that has built once holds ~600 MB of
-# `build/` directories, against ~30 MB of actual sources. CI never noticed — a fresh checkout has
+# `build/` directories, against ~28 MB of everything else. CI never noticed — a fresh checkout has
 # none of them — which is exactly why this file is easy to forget and only bites locally.
 #
-# `.git` IS DELIBERATELY NOT HERE. Nothing in the build reads it today, but a build-identity plugin
-# that stamps the commit into the binary does, and it is 8 MB.
+# NOTHING GIT TRACKS MAY BE LISTED HERE, and that is not tidiness. The build context is a working
+# tree as far as git is concerned: the `io.github.youndie.kore.build` plugin runs `git status` in it
+# to decide the `dirty` flag it compiles into `/version`, and an excluded tracked file reads as a
+# deleted one. The first published 0.8.0 image reported `commit: 8108f2f7f461-dirty` from a clean
+# merge commit, because this file excluded `*.iml`, `kotlin-js-store/` and `**/node_modules/` — all
+# three of which this repository tracks, `tailwind/node_modules` at 497 files. A flag that is always
+# on is a flag that says nothing.
+#
+# So the list is only what git ignores anyway. `.git` IS DELIBERATELY ABSENT: without it the commit
+# in `/version` is `unknown`, and it is 8 MB.
 **/build/
 .gradle/
 .kotlin/
-kotlin-js-store/
-**/node_modules/
 local.properties
-*.iml
