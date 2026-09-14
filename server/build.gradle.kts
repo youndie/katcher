@@ -125,6 +125,16 @@ kotlin {
                 // which is the opposite of what it did on the study service that had no database.
                 binaryOption("fixedBlockPageSize", "16")
 
+                // INSTRUMENTATION, OFF UNLESS ASKED FOR: `-Pkatcher.profilePhases`. RQ0 of the
+                // build-time study needs the link broken down by compiler phase, and there is no
+                // way to get that after the fact — the flag has to be on when the link runs. It is
+                // gated rather than always on because profiling perturbs what it measures, so a
+                // number taken with it is not comparable to one taken without.
+                // See docs/research/build-time/rq0-attribution.md.
+                if (project.hasProperty("katcher.profilePhases")) {
+                    freeCompilerArgs += "-Xprofile-phases"
+                }
+
                 if (staticLinux) {
                     linkerOpts("-static", "--no-dynamic-linker", "-L/usr/lib/x86_64-linux-gnu")
                     freeCompilerArgs +=

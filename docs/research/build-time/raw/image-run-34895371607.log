@@ -1,0 +1,790 @@
+image	Set up job	﻿2026-09-14T20:51:05.1696080Z Current runner version: '2.337.0'
+image	Set up job	2026-09-14T20:51:05.1730477Z ##[group]Runner Image Provisioner
+image	Set up job	2026-09-14T20:51:05.1731621Z Hosted Compute Agent
+image	Set up job	2026-09-14T20:51:05.1732323Z Version: 20260828.587
+image	Set up job	2026-09-14T20:51:05.1733198Z Commit: abac92662cab4cc7352de4f9f9d2e2419aad9c29
+image	Set up job	2026-09-14T20:51:05.1734161Z Build Date: 2026-08-28T16:44:25Z
+image	Set up job	2026-09-14T20:51:05.1735104Z Worker ID: {9eb70a11-c353-49cf-ac21-b40d9ee6627c}
+image	Set up job	2026-09-14T20:51:05.1736078Z Azure Region: eastus
+image	Set up job	2026-09-14T20:51:05.1736775Z ##[endgroup]
+image	Set up job	2026-09-14T20:51:05.1738675Z ##[group]Operating System
+image	Set up job	2026-09-14T20:51:05.1740071Z Ubuntu
+image	Set up job	2026-09-14T20:51:05.1740946Z 24.04.5
+image	Set up job	2026-09-14T20:51:05.1741569Z LTS
+image	Set up job	2026-09-14T20:51:05.1742168Z ##[endgroup]
+image	Set up job	2026-09-14T20:51:05.1742894Z ##[group]Runner Image
+image	Set up job	2026-09-14T20:51:05.1743616Z Image: ubuntu-24.04
+image	Set up job	2026-09-14T20:51:05.1744349Z Version: 20260907.300.1
+image	Set up job	2026-09-14T20:51:05.1745666Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260907.300/images/ubuntu/Ubuntu2404-Readme.md
+image	Set up job	2026-09-14T20:51:05.1747971Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260907.300
+image	Set up job	2026-09-14T20:51:05.1749167Z ##[endgroup]
+image	Set up job	2026-09-14T20:51:05.1751014Z ##[group]GITHUB_TOKEN Permissions
+image	Set up job	2026-09-14T20:51:05.1753375Z Contents: read
+image	Set up job	2026-09-14T20:51:05.1754210Z Metadata: read
+image	Set up job	2026-09-14T20:51:05.1754888Z Packages: read
+image	Set up job	2026-09-14T20:51:05.1755576Z ##[endgroup]
+image	Set up job	2026-09-14T20:51:05.1758262Z Secret source: Actions
+image	Set up job	2026-09-14T20:51:05.1759723Z Cache mode: write
+image	Set up job	2026-09-14T20:51:05.1760615Z Prepare workflow directory
+image	Set up job	2026-09-14T20:51:05.2156774Z Prepare all required actions
+image	Set up job	2026-09-14T20:51:05.2216299Z Getting action download info
+image	Set up job	2026-09-14T20:51:05.4673400Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+image	Set up job	2026-09-14T20:51:05.7806765Z Complete job name: image
+image	Run actions/checkout@v7	﻿2026-09-14T20:51:05.8758518Z ##[group]Run actions/checkout@v7
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8759827Z with:
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8760365Z   repository: youndie/katcher
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8765395Z   token: ***
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8765923Z   ssh-strict: true
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8766452Z   ssh-user: git
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8766985Z   persist-credentials: true
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8767574Z   clean: true
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8768096Z   sparse-checkout-cone-mode: true
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8768729Z   fetch-depth: 1
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8769383Z   fetch-tags: false
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8769938Z   show-progress: true
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8770481Z   lfs: false
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8770977Z   submodules: false
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8771522Z   set-safe-directory: true
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8772136Z   allow-unsafe-pr-checkout: false
+image	Run actions/checkout@v7	2026-09-14T20:51:05.8773039Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0093894Z Syncing repository: youndie/katcher
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0097290Z ##[group]Getting Git version info
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0098698Z Working directory is '/home/runner/work/katcher/katcher'
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0101217Z [command]/usr/bin/git version
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0216690Z git version 2.55.0
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0283521Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0299890Z Temporarily overriding HOME='/home/runner/work/_temp/0bc296a1-2ba1-4c1e-9b45-1dd058f4f4a4' before making global git config changes
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0304064Z Adding repository directory to the temporary git global config as a safe directory
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0311675Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/katcher/katcher
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0385741Z Deleting the contents of '/home/runner/work/katcher/katcher'
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0393286Z ##[group]Determining repository object format
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0395321Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0397023Z ##[group]Initializing the repository
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0402378Z [command]/usr/bin/git init /home/runner/work/katcher/katcher
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0574747Z hint: Using 'master' as the name for the initial branch. This default branch name
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0580241Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0583949Z hint: to use in all of your new repositories, which will suppress this warning,
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0587138Z hint: call:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0588605Z hint:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0590624Z hint: 	git config --global init.defaultBranch <name>
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0592414Z hint:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0594043Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0596326Z hint: 'development'. The just-created branch can be renamed via this command:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0598354Z hint:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0599857Z hint: 	git branch -m <name>
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0601016Z hint:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0602499Z hint: Disable this message with "git config set advice.defaultBranchName false"
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0604929Z Initialized empty Git repository in /home/runner/work/katcher/katcher/.git/
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0620124Z [command]/usr/bin/git remote add origin https://github.com/youndie/katcher
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0711742Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0714133Z ##[group]Disabling automatic garbage collection
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0716346Z [command]/usr/bin/git config --local gc.auto 0
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0773962Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0776740Z ##[group]Setting up auth
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0778257Z Removing SSH command configuration
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0783619Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	Run actions/checkout@v7	2026-09-14T20:51:06.0848399Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	Run actions/checkout@v7	2026-09-14T20:51:06.1365049Z Removing HTTP extra header
+image	Run actions/checkout@v7	2026-09-14T20:51:06.1375290Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	Run actions/checkout@v7	2026-09-14T20:51:06.1434045Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	Run actions/checkout@v7	2026-09-14T20:51:06.1746354Z Removing includeIf entries pointing to credentials config files
+image	Run actions/checkout@v7	2026-09-14T20:51:06.1756260Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.1823692Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+image	Run actions/checkout@v7	2026-09-14T20:51:06.2145293Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+image	Run actions/checkout@v7	2026-09-14T20:51:06.2207794Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/katcher/katcher/.git.path /home/runner/work/_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config
+image	Run actions/checkout@v7	2026-09-14T20:51:06.2275465Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/katcher/katcher/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config
+image	Run actions/checkout@v7	2026-09-14T20:51:06.2336037Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config
+image	Run actions/checkout@v7	2026-09-14T20:51:06.2406954Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config
+image	Run actions/checkout@v7	2026-09-14T20:51:06.2443518Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.2445778Z ##[group]Fetching the repository
+image	Run actions/checkout@v7	2026-09-14T20:51:06.2454259Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4928352d0f6a80d0809d11a1ca670a60828079cd:refs/remotes/pull/63/merge
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7261789Z From https://github.com/youndie/katcher
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7291609Z  * [new ref]         4928352d0f6a80d0809d11a1ca670a60828079cd -> pull/63/merge
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7301431Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7303829Z ##[group]Determining the checkout info
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7306804Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7309030Z [command]/usr/bin/git sparse-checkout disable
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7364229Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7417124Z ##[group]Checking out the ref
+image	Run actions/checkout@v7	2026-09-14T20:51:06.7424448Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/63/merge
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8688848Z Note: switching to 'refs/remotes/pull/63/merge'.
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8692417Z 
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8694856Z You are in 'detached HEAD' state. You can look around, make experimental
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8697655Z changes and commit them, and you can discard any commits you make in this
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8700974Z state without impacting any branches by switching back to a branch.
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8703192Z 
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8705286Z If you want to create a new branch to retain commits you create, you may
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8708759Z do so (now or later) by using -c with the switch command. Example:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8710527Z 
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8711419Z   git switch -c <new-branch-name>
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8712978Z 
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8713906Z Or undo this operation with:
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8715260Z 
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8716185Z   git switch -
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8717020Z 
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8718387Z Turn off this advice by setting config variable advice.detachedHead to false
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8720544Z 
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8722840Z HEAD is now at 4928352 Merge df5ade353dd1dc96d35866b5591c5995dcb76863 into 2e7234c415429efa677a4155d9f76e8c34d2fa7b
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8729952Z ##[endgroup]
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8790361Z [command]/usr/bin/git log -1 --format=%H
+image	Run actions/checkout@v7	2026-09-14T20:51:06.8833346Z 4928352d0f6a80d0809d11a1ca670a60828079cd
+image	Build the runtime image	﻿2026-09-14T20:51:06.9181531Z ##[group]Run docker build --file server/Dockerfile --tag katcher:ci .
+image	Build the runtime image	2026-09-14T20:51:06.9183912Z ^[[36;1mdocker build --file server/Dockerfile --tag katcher:ci .^[[0m
+image	Build the runtime image	2026-09-14T20:51:06.9239022Z shell: /usr/bin/bash -e {0}
+image	Build the runtime image	2026-09-14T20:51:06.9240799Z ##[endgroup]
+image	Build the runtime image	2026-09-14T20:51:07.6486835Z #0 building with "default" instance using docker driver
+image	Build the runtime image	2026-09-14T20:51:07.6488295Z 
+image	Build the runtime image	2026-09-14T20:51:07.6488884Z #1 [internal] load build definition from Dockerfile
+image	Build the runtime image	2026-09-14T20:51:07.6490700Z #1 transferring dockerfile: 4.93kB done
+image	Build the runtime image	2026-09-14T20:51:07.6492352Z #1 WARN: FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value "linux/amd64" (line 2)
+image	Build the runtime image	2026-09-14T20:51:07.6493690Z #1 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:51:07.6494008Z 
+image	Build the runtime image	2026-09-14T20:51:07.6494416Z #2 [auth] library/gradle:pull token for registry-1.docker.io
+image	Build the runtime image	2026-09-14T20:51:07.6495315Z #2 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:51:07.6495662Z 
+image	Build the runtime image	2026-09-14T20:51:07.6496163Z #3 [internal] load metadata for docker.io/library/gradle:9.7.1-jdk25-noble
+image	Build the runtime image	2026-09-14T20:51:07.8202795Z #3 DONE 0.4s
+image	Build the runtime image	2026-09-14T20:51:07.9492693Z 
+image	Build the runtime image	2026-09-14T20:51:07.9494956Z #4 [internal] load .dockerignore
+image	Build the runtime image	2026-09-14T20:51:07.9496627Z #4 transferring context: 1.26kB done
+image	Build the runtime image	2026-09-14T20:51:07.9497746Z #4 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:51:07.9498203Z 
+image	Build the runtime image	2026-09-14T20:51:07.9498680Z #5 [stage-1 1/7] WORKDIR /app
+image	Build the runtime image	2026-09-14T20:51:07.9499768Z #5 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:51:07.9500089Z 
+image	Build the runtime image	2026-09-14T20:51:07.9501250Z #6 [build 1/5] FROM docker.io/library/gradle:9.7.1-jdk25-noble@sha256:411e7a44b6874a7108295337a1582f86efd928dcc0d7dfe7137a3624e70d677c
+image	Build the runtime image	2026-09-14T20:51:07.9503211Z #6 resolve docker.io/library/gradle:9.7.1-jdk25-noble@sha256:411e7a44b6874a7108295337a1582f86efd928dcc0d7dfe7137a3624e70d677c done
+image	Build the runtime image	2026-09-14T20:51:07.9504996Z #6 sha256:411e7a44b6874a7108295337a1582f86efd928dcc0d7dfe7137a3624e70d677c 6.51kB / 6.51kB done
+image	Build the runtime image	2026-09-14T20:51:07.9506618Z #6 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 4.19MB / 29.76MB 0.1s
+image	Build the runtime image	2026-09-14T20:51:07.9508211Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 3.15MB / 92.75MB 0.1s
+image	Build the runtime image	2026-09-14T20:51:08.0533023Z #6 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 22.02MB / 29.76MB 0.2s
+image	Build the runtime image	2026-09-14T20:51:08.0536841Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 18.87MB / 92.75MB 0.2s
+image	Build the runtime image	2026-09-14T20:51:08.0540976Z #6 sha256:f533d3281bf12fe6c855b968cb34a643f6b7b8ac7057402c151e42a0734e1a6c 2.89kB / 2.89kB done
+image	Build the runtime image	2026-09-14T20:51:08.0542955Z #6 sha256:0fca3f6d130817921fb38bb267255672e4de8ac1055b8ec6b125e35a350f0270 10.86kB / 10.86kB done
+image	Build the runtime image	2026-09-14T20:51:08.0545462Z #6 sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c 17.42MB / 17.42MB 0.1s done
+image	Build the runtime image	2026-09-14T20:51:08.0547482Z #6 sha256:0911b38078c56c8cb4151646d7660cbad15cd1eb9d6df3e6279459fda092f87f 2.46kB / 2.46kB 0.2s done
+image	Build the runtime image	2026-09-14T20:51:08.0549546Z #6 sha256:a9b037b36d1feda2a06a2166a886fc92401960cd37521ccc3685cfa94f45585f 0B / 1.29kB 0.2s
+image	Build the runtime image	2026-09-14T20:51:08.0551546Z #6 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.1s done
+image	Build the runtime image	2026-09-14T20:51:08.1555674Z #6 sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 29.76MB / 29.76MB 0.3s done
+image	Build the runtime image	2026-09-14T20:51:08.1560878Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 47.19MB / 92.75MB 0.3s
+image	Build the runtime image	2026-09-14T20:51:08.1562096Z #6 sha256:a9b037b36d1feda2a06a2166a886fc92401960cd37521ccc3685cfa94f45585f 1.29kB / 1.29kB 0.2s done
+image	Build the runtime image	2026-09-14T20:51:08.1566235Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 2.10MB / 151.35MB 0.3s
+image	Build the runtime image	2026-09-14T20:51:08.1567247Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 3.15MB / 66.98MB 0.3s
+image	Build the runtime image	2026-09-14T20:51:08.3291826Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 62.91MB / 92.75MB 0.4s
+image	Build the runtime image	2026-09-14T20:51:08.3316336Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 17.83MB / 151.35MB 0.4s
+image	Build the runtime image	2026-09-14T20:51:08.3340016Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 9.44MB / 66.98MB 0.4s
+image	Build the runtime image	2026-09-14T20:51:08.3370917Z #6 extracting sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58
+image	Build the runtime image	2026-09-14T20:51:08.4430323Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 81.79MB / 92.75MB 0.5s
+image	Build the runtime image	2026-09-14T20:51:08.4461186Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 33.55MB / 151.35MB 0.5s
+image	Build the runtime image	2026-09-14T20:51:08.4478832Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 24.12MB / 66.98MB 0.5s
+image	Build the runtime image	2026-09-14T20:51:08.5451853Z #6 ...
+image	Build the runtime image	2026-09-14T20:51:08.5452725Z 
+image	Build the runtime image	2026-09-14T20:51:08.5453212Z #7 [internal] load build context
+image	Build the runtime image	2026-09-14T20:51:08.5454360Z #7 transferring context: 25.36MB 0.6s done
+image	Build the runtime image	2026-09-14T20:51:08.5455239Z #7 DONE 0.6s
+image	Build the runtime image	2026-09-14T20:51:08.5455488Z 
+image	Build the runtime image	2026-09-14T20:51:08.5456280Z #6 [build 1/5] FROM docker.io/library/gradle:9.7.1-jdk25-noble@sha256:411e7a44b6874a7108295337a1582f86efd928dcc0d7dfe7137a3624e70d677c
+image	Build the runtime image	2026-09-14T20:51:08.5458166Z #6 sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 92.75MB / 92.75MB 0.6s done
+image	Build the runtime image	2026-09-14T20:51:08.5460012Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 54.53MB / 151.35MB 0.6s
+image	Build the runtime image	2026-09-14T20:51:08.5461521Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 47.19MB / 66.98MB 0.6s
+image	Build the runtime image	2026-09-14T20:51:08.5463039Z #6 sha256:d85ab33a2ddcefcda1bbd908fbedf69b2723921bc8876de5fdbc468eb90df38f 25.61kB / 25.61kB 0.6s done
+image	Build the runtime image	2026-09-14T20:51:08.6462634Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 136.31MB / 151.35MB 0.8s
+image	Build the runtime image	2026-09-14T20:51:08.6465293Z #6 sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 66.98MB / 66.98MB 0.7s done
+image	Build the runtime image	2026-09-14T20:51:08.7467085Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 151.35MB / 151.35MB 0.9s
+image	Build the runtime image	2026-09-14T20:51:08.9631932Z #6 sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 151.35MB / 151.35MB 1.0s done
+image	Build the runtime image	2026-09-14T20:51:09.6508288Z #6 extracting sha256:e51aee9c82ec5dd5ba2add49c45c6d85d460512757e2615b69bcdf9469c7cb58 1.2s done
+image	Build the runtime image	2026-09-14T20:51:09.6510987Z #6 extracting sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c
+image	Build the runtime image	2026-09-14T20:51:10.5324001Z #6 extracting sha256:e218a9dbcb884c4349520bac86979d339e975a68cbf31df6a3020270df429a0c 0.7s done
+image	Build the runtime image	2026-09-14T20:51:10.7343524Z #6 extracting sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5
+image	Build the runtime image	2026-09-14T20:51:11.8827849Z #6 extracting sha256:9c52eaa0e70ec157753e0fc8dbf5863c5155ab1daf51d111837e29f459ca72a5 1.1s done
+image	Build the runtime image	2026-09-14T20:51:12.3156032Z #6 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1
+image	Build the runtime image	2026-09-14T20:51:12.4882027Z #6 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 done
+image	Build the runtime image	2026-09-14T20:51:12.4883890Z #6 extracting sha256:0911b38078c56c8cb4151646d7660cbad15cd1eb9d6df3e6279459fda092f87f done
+image	Build the runtime image	2026-09-14T20:51:12.4885105Z #6 extracting sha256:a9b037b36d1feda2a06a2166a886fc92401960cd37521ccc3685cfa94f45585f done
+image	Build the runtime image	2026-09-14T20:51:12.4886188Z #6 extracting sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 0.1s
+image	Build the runtime image	2026-09-14T20:51:15.1118429Z #6 extracting sha256:3666dd4b5c0c716b3769ef1242147dd2501a8051d5d1b47f3ea8fc284b6297c8 2.7s done
+image	Build the runtime image	2026-09-14T20:51:15.4638750Z #6 extracting sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8
+image	Build the runtime image	2026-09-14T20:51:16.5432158Z #6 extracting sha256:c1ea870940407c5a04394fc77a3a478ecb78e1ea0608928deaddba68d570f8f8 0.9s done
+image	Build the runtime image	2026-09-14T20:51:16.5565967Z #6 extracting sha256:d85ab33a2ddcefcda1bbd908fbedf69b2723921bc8876de5fdbc468eb90df38f
+image	Build the runtime image	2026-09-14T20:51:16.7558052Z #6 extracting sha256:d85ab33a2ddcefcda1bbd908fbedf69b2723921bc8876de5fdbc468eb90df38f done
+image	Build the runtime image	2026-09-14T20:51:16.7559480Z #6 DONE 8.8s
+image	Build the runtime image	2026-09-14T20:51:16.7580039Z 
+image	Build the runtime image	2026-09-14T20:51:16.7601537Z #8 [build 2/5] RUN apt-get update     && apt-get install -y --no-install-recommends g++     && rm -rf /var/lib/apt/lists/*
+image	Build the runtime image	2026-09-14T20:51:17.0452843Z #8 0.440 Get:1 http://security.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+image	Build the runtime image	2026-09-14T20:51:17.2083504Z #8 0.603 Get:2 http://archive.ubuntu.com/ubuntu noble InRelease [256 kB]
+image	Build the runtime image	2026-09-14T20:51:17.6277636Z #8 1.023 Get:3 http://security.ubuntu.com/ubuntu noble-security/multiverse amd64 Packages [50.0 kB]
+image	Build the runtime image	2026-09-14T20:51:17.7875359Z #8 1.182 Get:4 http://security.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1,796 kB]
+image	Build the runtime image	2026-09-14T20:51:17.9753616Z #8 1.219 Get:5 http://archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+image	Build the runtime image	2026-09-14T20:51:17.9756061Z #8 1.370 Get:6 http://archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+image	Build the runtime image	2026-09-14T20:51:18.1276814Z #8 1.522 Get:7 http://archive.ubuntu.com/ubuntu noble/restricted amd64 Packages [117 kB]
+image	Build the runtime image	2026-09-14T20:51:18.3184714Z #8 1.562 Get:8 http://archive.ubuntu.com/ubuntu noble/main amd64 Packages [1,808 kB]
+image	Build the runtime image	2026-09-14T20:51:18.5151255Z #8 1.910 Get:9 http://security.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1,531 kB]
+image	Build the runtime image	2026-09-14T20:51:18.7265192Z #8 1.987 Get:10 http://archive.ubuntu.com/ubuntu noble/universe amd64 Packages [19.3 MB]
+image	Build the runtime image	2026-09-14T20:51:18.7267680Z #8 2.121 Get:11 http://security.ubuntu.com/ubuntu noble-security/main amd64 Packages [1,242 kB]
+image	Build the runtime image	2026-09-14T20:51:19.2678362Z #8 2.662 Get:12 http://archive.ubuntu.com/ubuntu noble/multiverse amd64 Packages [331 kB]
+image	Build the runtime image	2026-09-14T20:51:19.5048557Z #8 2.664 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/multiverse amd64 Packages [55.8 kB]
+image	Build the runtime image	2026-09-14T20:51:19.5051698Z #8 2.666 Get:14 http://archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [2,152 kB]
+image	Build the runtime image	2026-09-14T20:51:19.5053646Z #8 2.716 Get:15 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1,565 kB]
+image	Build the runtime image	2026-09-14T20:51:19.5055399Z #8 2.730 Get:16 http://archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1,913 kB]
+image	Build the runtime image	2026-09-14T20:51:19.5056840Z #8 2.748 Get:17 http://archive.ubuntu.com/ubuntu noble-backports/universe amd64 Packages [35.9 kB]
+image	Build the runtime image	2026-09-14T20:51:19.5058231Z #8 2.749 Get:18 http://archive.ubuntu.com/ubuntu noble-backports/main amd64 Packages [48.9 kB]
+image	Build the runtime image	2026-09-14T20:51:19.5059842Z #8 2.750 Get:19 http://archive.ubuntu.com/ubuntu noble-backports/multiverse amd64 Packages [671 B]
+image	Build the runtime image	2026-09-14T20:51:20.1474737Z #8 3.542 Fetched 32.6 MB in 3s (9,761 kB/s)
+image	Build the runtime image	2026-09-14T20:51:21.1970575Z #8 3.542 Reading package lists...
+image	Build the runtime image	2026-09-14T20:51:22.2533695Z #8 4.618 Reading package lists...
+image	Build the runtime image	2026-09-14T20:51:22.6375589Z #8 5.663 Building dependency tree...
+image	Build the runtime image	2026-09-14T20:51:22.7882356Z #8 6.032 Reading state information...
+image	Build the runtime image	2026-09-14T20:51:23.1074858Z #8 6.502 The following additional packages will be installed:
+image	Build the runtime image	2026-09-14T20:51:23.1076016Z #8 6.502   cpp cpp-13 cpp-13-x86-64-linux-gnu cpp-x86-64-linux-gnu g++-13
+image	Build the runtime image	2026-09-14T20:51:23.1077136Z #8 6.502   g++-13-x86-64-linux-gnu g++-x86-64-linux-gnu gcc gcc-13 gcc-13-base
+image	Build the runtime image	2026-09-14T20:51:23.2125538Z #8 6.503   gcc-13-x86-64-linux-gnu gcc-x86-64-linux-gnu libasan8 libatomic1 libc-bin
+image	Build the runtime image	2026-09-14T20:51:23.2127991Z #8 6.503   libc-dev-bin libc6 libc6-dev libcc1-0 libcrypt-dev libgcc-13-dev libgomp1
+image	Build the runtime image	2026-09-14T20:51:23.2130157Z #8 6.504   libhwasan0 libisl23 libitm1 liblsan0 libmpc3 libmpfr6 libquadmath0
+image	Build the runtime image	2026-09-14T20:51:23.2132378Z #8 6.505   libstdc++-13-dev libtsan2 libubsan1 linux-libc-dev locales rpcsvc-proto
+image	Build the runtime image	2026-09-14T20:51:23.2133691Z #8 6.507 Suggested packages:
+image	Build the runtime image	2026-09-14T20:51:23.2134595Z #8 6.507   cpp-doc gcc-13-locales cpp-13-doc g++-multilib g++-13-multilib gcc-13-doc
+image	Build the runtime image	2026-09-14T20:51:23.2135845Z #8 6.507   gcc-multilib manpages-dev autoconf automake libtool flex bison gdb gcc-doc
+image	Build the runtime image	2026-09-14T20:51:23.2136780Z #8 6.507   gcc-13-multilib gdb-x86-64-linux-gnu manpages glibc-doc libnss-nis
+image	Build the runtime image	2026-09-14T20:51:23.2137517Z #8 6.507   libnss-nisplus libstdc++-13-doc
+image	Build the runtime image	2026-09-14T20:51:23.2138049Z #8 6.507 Recommended packages:
+image	Build the runtime image	2026-09-14T20:51:23.2138558Z #8 6.507   manpages manpages-dev libc-devtools
+image	Build the runtime image	2026-09-14T20:51:23.2139529Z #8 6.607 The following NEW packages will be installed:
+image	Build the runtime image	2026-09-14T20:51:23.3706984Z #8 6.607   cpp cpp-13 cpp-13-x86-64-linux-gnu cpp-x86-64-linux-gnu g++ g++-13
+image	Build the runtime image	2026-09-14T20:51:23.3709611Z #8 6.607   g++-13-x86-64-linux-gnu g++-x86-64-linux-gnu gcc gcc-13 gcc-13-base
+image	Build the runtime image	2026-09-14T20:51:23.3711041Z #8 6.608   gcc-13-x86-64-linux-gnu gcc-x86-64-linux-gnu libasan8 libatomic1
+image	Build the runtime image	2026-09-14T20:51:23.3712646Z #8 6.609   libc-dev-bin libc6-dev libcc1-0 libcrypt-dev libgcc-13-dev libgomp1
+image	Build the runtime image	2026-09-14T20:51:23.3714393Z #8 6.610   libhwasan0 libisl23 libitm1 liblsan0 libmpc3 libmpfr6 libquadmath0
+image	Build the runtime image	2026-09-14T20:51:23.3715500Z #8 6.611   libstdc++-13-dev libtsan2 libubsan1 linux-libc-dev rpcsvc-proto
+image	Build the runtime image	2026-09-14T20:51:23.3716406Z #8 6.613 The following packages will be upgraded:
+image	Build the runtime image	2026-09-14T20:51:23.3717107Z #8 6.615   libc-bin libc6 locales
+image	Build the runtime image	2026-09-14T20:51:23.4403405Z #8 6.835 3 upgraded, 33 newly installed, 0 to remove and 6 not upgraded.
+image	Build the runtime image	2026-09-14T20:51:23.4404426Z #8 6.835 Need to get 73.1 MB of archives.
+image	Build the runtime image	2026-09-14T20:51:23.4405306Z #8 6.835 After this operation, 227 MB of additional disk space will be used.
+image	Build the runtime image	2026-09-14T20:51:23.4406809Z #8 6.835 Get:1 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc6 amd64 2.39-0ubuntu8.9 [3,264 kB]
+image	Build the runtime image	2026-09-14T20:51:23.6050980Z #8 6.999 Get:2 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc-bin amd64 2.39-0ubuntu8.9 [682 kB]
+image	Build the runtime image	2026-09-14T20:51:23.7180373Z #8 7.004 Get:3 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 locales all 2.39-0ubuntu8.9 [4,232 kB]
+image	Build the runtime image	2026-09-14T20:51:23.7189925Z #8 7.039 Get:4 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13-base amd64 13.3.0-6ubuntu2~24.04.1 [51.6 kB]
+image	Build the runtime image	2026-09-14T20:51:23.7192244Z #8 7.040 Get:5 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libisl23 amd64 0.26-3build1.1 [680 kB]
+image	Build the runtime image	2026-09-14T20:51:23.7193590Z #8 7.045 Get:6 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libmpfr6 amd64 4.2.1-1build1.1 [353 kB]
+image	Build the runtime image	2026-09-14T20:51:23.7195665Z #8 7.047 Get:7 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libmpc3 amd64 1.3.1-1build1.1 [54.6 kB]
+image	Build the runtime image	2026-09-14T20:51:23.7196860Z #8 7.048 Get:8 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 cpp-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [10.7 MB]
+image	Build the runtime image	2026-09-14T20:51:23.7199161Z #8 7.112 Get:9 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 cpp-13 amd64 13.3.0-6ubuntu2~24.04.1 [1,042 B]
+image	Build the runtime image	2026-09-14T20:51:23.9276361Z #8 7.113 Get:10 http://archive.ubuntu.com/ubuntu noble/main amd64 cpp-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [5,326 B]
+image	Build the runtime image	2026-09-14T20:51:23.9279907Z #8 7.113 Get:11 http://archive.ubuntu.com/ubuntu noble/main amd64 cpp amd64 4:13.2.0-7ubuntu1 [22.4 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9282903Z #8 7.114 Get:12 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libcc1-0 amd64 14.2.0-4ubuntu2~24.04.1 [48.0 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9286312Z #8 7.114 Get:13 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libgomp1 amd64 14.2.0-4ubuntu2~24.04.1 [148 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9289918Z #8 7.115 Get:14 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libitm1 amd64 14.2.0-4ubuntu2~24.04.1 [29.7 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9291531Z #8 7.116 Get:15 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libatomic1 amd64 14.2.0-4ubuntu2~24.04.1 [10.5 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9292945Z #8 7.116 Get:16 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libasan8 amd64 14.2.0-4ubuntu2~24.04.1 [3,027 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9294356Z #8 7.135 Get:17 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 liblsan0 amd64 14.2.0-4ubuntu2~24.04.1 [1,322 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9296020Z #8 7.144 Get:18 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libtsan2 amd64 14.2.0-4ubuntu2~24.04.1 [2,772 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9297264Z #8 7.161 Get:19 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libubsan1 amd64 14.2.0-4ubuntu2~24.04.1 [1,184 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9298797Z #8 7.169 Get:20 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libhwasan0 amd64 14.2.0-4ubuntu2~24.04.1 [1,641 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9300951Z #8 7.179 Get:21 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libquadmath0 amd64 14.2.0-4ubuntu2~24.04.1 [153 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9305007Z #8 7.180 Get:22 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libgcc-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [2,681 kB]
+image	Build the runtime image	2026-09-14T20:51:23.9307937Z #8 7.197 Get:23 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [21.1 MB]
+image	Build the runtime image	2026-09-14T20:51:23.9310861Z #8 7.322 Get:24 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 gcc-13 amd64 13.3.0-6ubuntu2~24.04.1 [494 kB]
+image	Build the runtime image	2026-09-14T20:51:24.0434003Z #8 7.326 Get:25 http://archive.ubuntu.com/ubuntu noble/main amd64 gcc-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [1,212 B]
+image	Build the runtime image	2026-09-14T20:51:24.0435909Z #8 7.326 Get:26 http://archive.ubuntu.com/ubuntu noble/main amd64 gcc amd64 4:13.2.0-7ubuntu1 [5,018 B]
+image	Build the runtime image	2026-09-14T20:51:24.0437580Z #8 7.327 Get:27 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc-dev-bin amd64 2.39-0ubuntu8.9 [20.4 kB]
+image	Build the runtime image	2026-09-14T20:51:24.0439665Z #8 7.327 Get:28 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 linux-libc-dev amd64 6.8.0-139.139 [1,527 kB]
+image	Build the runtime image	2026-09-14T20:51:24.0441361Z #8 7.337 Get:29 http://archive.ubuntu.com/ubuntu noble/main amd64 libcrypt-dev amd64 1:4.4.36-4build1 [112 kB]
+image	Build the runtime image	2026-09-14T20:51:24.0442638Z #8 7.338 Get:30 http://archive.ubuntu.com/ubuntu noble/main amd64 rpcsvc-proto amd64 1.4.2-0ubuntu7 [67.4 kB]
+image	Build the runtime image	2026-09-14T20:51:24.0444019Z #8 7.339 Get:31 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libc6-dev amd64 2.39-0ubuntu8.9 [2,126 kB]
+image	Build the runtime image	2026-09-14T20:51:24.0445672Z #8 7.351 Get:32 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 libstdc++-13-dev amd64 13.3.0-6ubuntu2~24.04.1 [2,420 kB]
+image	Build the runtime image	2026-09-14T20:51:24.0447622Z #8 7.366 Get:33 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13-x86-64-linux-gnu amd64 13.3.0-6ubuntu2~24.04.1 [12.2 MB]
+image	Build the runtime image	2026-09-14T20:51:24.0449875Z #8 7.438 Get:34 http://archive.ubuntu.com/ubuntu noble-updates/main amd64 g++-13 amd64 13.3.0-6ubuntu2~24.04.1 [16.0 kB]
+image	Build the runtime image	2026-09-14T20:51:24.1939927Z #8 7.438 Get:35 http://archive.ubuntu.com/ubuntu noble/main amd64 g++-x86-64-linux-gnu amd64 4:13.2.0-7ubuntu1 [964 B]
+image	Build the runtime image	2026-09-14T20:51:24.1943633Z #8 7.438 Get:36 http://archive.ubuntu.com/ubuntu noble/main amd64 g++ amd64 4:13.2.0-7ubuntu1 [1,100 B]
+image	Build the runtime image	2026-09-14T20:51:24.2679563Z #8 7.663 debconf: delaying package configuration, since apt-utils is not installed
+image	Build the runtime image	2026-09-14T20:51:24.3684249Z #8 7.729 Fetched 73.1 MB in 1s (90.3 MB/s)
+image	Build the runtime image	2026-09-14T20:51:24.3685554Z #8 7.751 (Reading database ... 
+image	Build the runtime image	2026-09-14T20:51:24.3686542Z (Reading database ... 5%
+image	Build the runtime image	2026-09-14T20:51:24.3687237Z (Reading database ... 10%
+image	Build the runtime image	2026-09-14T20:51:24.3687824Z (Reading database ... 15%
+image	Build the runtime image	2026-09-14T20:51:24.3688419Z (Reading database ... 20%
+image	Build the runtime image	2026-09-14T20:51:24.3688993Z (Reading database ... 25%
+image	Build the runtime image	2026-09-14T20:51:24.3689782Z (Reading database ... 30%
+image	Build the runtime image	2026-09-14T20:51:24.3690339Z (Reading database ... 35%
+image	Build the runtime image	2026-09-14T20:51:24.3690887Z (Reading database ... 40%
+image	Build the runtime image	2026-09-14T20:51:24.3691432Z (Reading database ... 45%
+image	Build the runtime image	2026-09-14T20:51:24.3691978Z (Reading database ... 50%
+image	Build the runtime image	2026-09-14T20:51:24.3692553Z (Reading database ... 55%
+image	Build the runtime image	2026-09-14T20:51:24.3693060Z (Reading database ... 60%
+image	Build the runtime image	2026-09-14T20:51:24.3693604Z (Reading database ... 65%
+image	Build the runtime image	2026-09-14T20:51:24.3694281Z (Reading database ... 70%
+image	Build the runtime image	2026-09-14T20:51:24.3695125Z (Reading database ... 75%
+image	Build the runtime image	2026-09-14T20:51:24.3695815Z (Reading database ... 80%
+image	Build the runtime image	2026-09-14T20:51:24.3696411Z (Reading database ... 85%
+image	Build the runtime image	2026-09-14T20:51:24.3697002Z (Reading database ... 90%
+image	Build the runtime image	2026-09-14T20:51:24.3697831Z (Reading database ... 95%
+image	Build the runtime image	2026-09-14T20:51:24.3698311Z (Reading database ... 100%
+image	Build the runtime image	2026-09-14T20:51:24.3699353Z (Reading database ... 12725 files and directories currently installed.)
+image	Build the runtime image	2026-09-14T20:51:24.5117334Z #8 7.765 Preparing to unpack .../libc6_2.39-0ubuntu8.9_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:24.5118306Z #8 7.845 debconf: unable to initialize frontend: Dialog
+image	Build the runtime image	2026-09-14T20:51:24.5119140Z #8 7.845 debconf: (TERM is not set, so the dialog frontend is not usable.)
+image	Build the runtime image	2026-09-14T20:51:24.5120256Z #8 7.845 debconf: falling back to frontend: Readline
+image	Build the runtime image	2026-09-14T20:51:24.5121381Z #8 7.853 debconf: unable to initialize frontend: Readline
+image	Build the runtime image	2026-09-14T20:51:24.5122131Z #8 7.853 debconf: (This frontend requires a controlling tty.)
+image	Build the runtime image	2026-09-14T20:51:24.5122847Z #8 7.853 debconf: falling back to frontend: Teletype
+image	Build the runtime image	2026-09-14T20:51:24.5123627Z #8 7.907 Unpacking libc6:amd64 (2.39-0ubuntu8.9) over (2.39-0ubuntu8.8) ...
+image	Build the runtime image	2026-09-14T20:51:24.8530073Z #8 8.248 Setting up libc6:amd64 (2.39-0ubuntu8.9) ...
+image	Build the runtime image	2026-09-14T20:51:25.0854282Z #8 8.322 debconf: unable to initialize frontend: Dialog
+image	Build the runtime image	2026-09-14T20:51:25.0855461Z #8 8.322 debconf: (TERM is not set, so the dialog frontend is not usable.)
+image	Build the runtime image	2026-09-14T20:51:25.0856396Z #8 8.322 debconf: falling back to frontend: Readline
+image	Build the runtime image	2026-09-14T20:51:25.0857191Z #8 8.330 debconf: unable to initialize frontend: Readline
+image	Build the runtime image	2026-09-14T20:51:25.0858043Z #8 8.330 debconf: (This frontend requires a controlling tty.)
+image	Build the runtime image	2026-09-14T20:51:25.0858858Z #8 8.330 debconf: falling back to frontend: Teletype
+image	Build the runtime image	2026-09-14T20:51:26.1322441Z #8 9.388 (Reading database ... 
+image	Build the runtime image	2026-09-14T20:51:26.1324036Z (Reading database ... 5%
+image	Build the runtime image	2026-09-14T20:51:26.1325042Z (Reading database ... 10%
+image	Build the runtime image	2026-09-14T20:51:26.1326115Z (Reading database ... 15%
+image	Build the runtime image	2026-09-14T20:51:26.1326940Z (Reading database ... 20%
+image	Build the runtime image	2026-09-14T20:51:26.1327774Z (Reading database ... 25%
+image	Build the runtime image	2026-09-14T20:51:26.1328531Z (Reading database ... 30%
+image	Build the runtime image	2026-09-14T20:51:26.1329904Z (Reading database ... 35%
+image	Build the runtime image	2026-09-14T20:51:26.1330533Z (Reading database ... 40%
+image	Build the runtime image	2026-09-14T20:51:26.1331209Z (Reading database ... 45%
+image	Build the runtime image	2026-09-14T20:51:26.1331856Z (Reading database ... 50%
+image	Build the runtime image	2026-09-14T20:51:26.1332494Z (Reading database ... 55%
+image	Build the runtime image	2026-09-14T20:51:26.1333133Z (Reading database ... 60%
+image	Build the runtime image	2026-09-14T20:51:26.1333709Z (Reading database ... 65%
+image	Build the runtime image	2026-09-14T20:51:26.1334259Z (Reading database ... 70%
+image	Build the runtime image	2026-09-14T20:51:26.1334882Z (Reading database ... 75%
+image	Build the runtime image	2026-09-14T20:51:26.1335652Z (Reading database ... 80%
+image	Build the runtime image	2026-09-14T20:51:26.1336111Z (Reading database ... 85%
+image	Build the runtime image	2026-09-14T20:51:26.1336585Z (Reading database ... 90%
+image	Build the runtime image	2026-09-14T20:51:26.1337051Z (Reading database ... 95%
+image	Build the runtime image	2026-09-14T20:51:26.1337519Z (Reading database ... 100%
+image	Build the runtime image	2026-09-14T20:51:26.1338202Z (Reading database ... 12725 files and directories currently installed.)
+image	Build the runtime image	2026-09-14T20:51:26.1339172Z #8 9.402 Preparing to unpack .../libc-bin_2.39-0ubuntu8.9_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:26.1340947Z #8 9.405 Unpacking libc-bin (2.39-0ubuntu8.9) over (2.39-0ubuntu8.8) ...
+image	Build the runtime image	2026-09-14T20:51:26.1341832Z #8 9.474 Setting up libc-bin (2.39-0ubuntu8.9) ...
+image	Build the runtime image	2026-09-14T20:51:26.2991821Z #8 9.527 (Reading database ... 
+image	Build the runtime image	2026-09-14T20:51:26.2992662Z (Reading database ... 5%
+image	Build the runtime image	2026-09-14T20:51:26.2993379Z (Reading database ... 10%
+image	Build the runtime image	2026-09-14T20:51:26.2993975Z (Reading database ... 15%
+image	Build the runtime image	2026-09-14T20:51:26.2994431Z (Reading database ... 20%
+image	Build the runtime image	2026-09-14T20:51:26.2994885Z (Reading database ... 25%
+image	Build the runtime image	2026-09-14T20:51:26.2995482Z (Reading database ... 30%
+image	Build the runtime image	2026-09-14T20:51:26.2995933Z (Reading database ... 35%
+image	Build the runtime image	2026-09-14T20:51:26.2996675Z (Reading database ... 40%
+image	Build the runtime image	2026-09-14T20:51:26.2997474Z (Reading database ... 45%
+image	Build the runtime image	2026-09-14T20:51:26.2998342Z (Reading database ... 50%
+image	Build the runtime image	2026-09-14T20:51:26.2999115Z (Reading database ... 55%
+image	Build the runtime image	2026-09-14T20:51:26.3000158Z (Reading database ... 60%
+image	Build the runtime image	2026-09-14T20:51:26.3000958Z (Reading database ... 65%
+image	Build the runtime image	2026-09-14T20:51:26.3001766Z (Reading database ... 70%
+image	Build the runtime image	2026-09-14T20:51:26.3002391Z (Reading database ... 75%
+image	Build the runtime image	2026-09-14T20:51:26.3002879Z (Reading database ... 80%
+image	Build the runtime image	2026-09-14T20:51:26.3003440Z (Reading database ... 85%
+image	Build the runtime image	2026-09-14T20:51:26.3004000Z (Reading database ... 90%
+image	Build the runtime image	2026-09-14T20:51:26.3004407Z (Reading database ... 95%
+image	Build the runtime image	2026-09-14T20:51:26.3004818Z (Reading database ... 100%
+image	Build the runtime image	2026-09-14T20:51:26.3005414Z (Reading database ... 12725 files and directories currently installed.)
+image	Build the runtime image	2026-09-14T20:51:26.3006396Z #8 9.539 Preparing to unpack .../00-locales_2.39-0ubuntu8.9_all.deb ...
+image	Build the runtime image	2026-09-14T20:51:26.3007508Z #8 9.544 Unpacking locales (2.39-0ubuntu8.9) over (2.39-0ubuntu8.8) ...
+image	Build the runtime image	2026-09-14T20:51:26.8078341Z #8 10.20 Selecting previously unselected package gcc-13-base:amd64.
+image	Build the runtime image	2026-09-14T20:51:26.9094234Z #8 10.20 Preparing to unpack .../01-gcc-13-base_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:26.9095827Z #8 10.21 Unpacking gcc-13-base:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:26.9097197Z #8 10.22 Selecting previously unselected package libisl23:amd64.
+image	Build the runtime image	2026-09-14T20:51:26.9098501Z #8 10.23 Preparing to unpack .../02-libisl23_0.26-3build1.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:26.9099816Z #8 10.23 Unpacking libisl23:amd64 (0.26-3build1.1) ...
+image	Build the runtime image	2026-09-14T20:51:26.9100828Z #8 10.26 Selecting previously unselected package libmpfr6:amd64.
+image	Build the runtime image	2026-09-14T20:51:26.9101966Z #8 10.26 Preparing to unpack .../03-libmpfr6_4.2.1-1build1.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:26.9103011Z #8 10.26 Unpacking libmpfr6:amd64 (4.2.1-1build1.1) ...
+image	Build the runtime image	2026-09-14T20:51:26.9103996Z #8 10.28 Selecting previously unselected package libmpc3:amd64.
+image	Build the runtime image	2026-09-14T20:51:26.9105021Z #8 10.29 Preparing to unpack .../04-libmpc3_1.3.1-1build1.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:26.9106100Z #8 10.29 Unpacking libmpc3:amd64 (1.3.1-1build1.1) ...
+image	Build the runtime image	2026-09-14T20:51:26.9107320Z #8 10.30 Selecting previously unselected package cpp-13-x86-64-linux-gnu.
+image	Build the runtime image	2026-09-14T20:51:27.0638467Z #8 10.31 Preparing to unpack .../05-cpp-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.0639706Z #8 10.31 Unpacking cpp-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.0878323Z #8 10.48 Selecting previously unselected package cpp-13.
+image	Build the runtime image	2026-09-14T20:51:27.1938497Z #8 10.49 Preparing to unpack .../06-cpp-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.1939854Z #8 10.49 Unpacking cpp-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.1940667Z #8 10.50 Selecting previously unselected package cpp-x86-64-linux-gnu.
+image	Build the runtime image	2026-09-14T20:51:27.1941736Z #8 10.50 Preparing to unpack .../07-cpp-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.1942715Z #8 10.51 Unpacking cpp-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:27.1943462Z #8 10.52 Selecting previously unselected package cpp.
+image	Build the runtime image	2026-09-14T20:51:27.1944267Z #8 10.52 Preparing to unpack .../08-cpp_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.1945005Z #8 10.53 Unpacking cpp (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:27.1945697Z #8 10.55 Selecting previously unselected package libcc1-0:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.1946584Z #8 10.55 Preparing to unpack .../09-libcc1-0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.1947794Z #8 10.55 Unpacking libcc1-0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.1948576Z #8 10.57 Selecting previously unselected package libgomp1:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.1949730Z #8 10.57 Preparing to unpack .../10-libgomp1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.1950527Z #8 10.57 Unpacking libgomp1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.1951138Z #8 10.59 Selecting previously unselected package libitm1:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.3063217Z #8 10.59 Preparing to unpack .../11-libitm1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.3064553Z #8 10.59 Unpacking libitm1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.3065965Z #8 10.61 Selecting previously unselected package libatomic1:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.3067498Z #8 10.61 Preparing to unpack .../12-libatomic1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.3068832Z #8 10.61 Unpacking libatomic1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.3070523Z #8 10.63 Selecting previously unselected package libasan8:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.3071921Z #8 10.63 Preparing to unpack .../13-libasan8_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.3073054Z #8 10.63 Unpacking libasan8:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.3074108Z #8 10.70 Selecting previously unselected package liblsan0:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.4108765Z #8 10.70 Preparing to unpack .../14-liblsan0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.4110482Z #8 10.71 Unpacking liblsan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.4111330Z #8 10.74 Selecting previously unselected package libtsan2:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.4112610Z #8 10.74 Preparing to unpack .../15-libtsan2_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.4113436Z #8 10.75 Unpacking libtsan2:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.4114164Z #8 10.81 Selecting previously unselected package libubsan1:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.5213538Z #8 10.81 Preparing to unpack .../16-libubsan1_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.5214604Z #8 10.81 Unpacking libubsan1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.5215448Z #8 10.85 Selecting previously unselected package libhwasan0:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.5216387Z #8 10.85 Preparing to unpack .../17-libhwasan0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.5217322Z #8 10.85 Unpacking libhwasan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.5218164Z #8 10.89 Selecting previously unselected package libquadmath0:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.5219122Z #8 10.90 Preparing to unpack .../18-libquadmath0_14.2.0-4ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.5221225Z #8 10.90 Unpacking libquadmath0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.5222136Z #8 10.92 Selecting previously unselected package libgcc-13-dev:amd64.
+image	Build the runtime image	2026-09-14T20:51:27.6275119Z #8 10.92 Preparing to unpack .../19-libgcc-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.6276884Z #8 10.92 Unpacking libgcc-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.6278042Z #8 11.02 Selecting previously unselected package gcc-13-x86-64-linux-gnu.
+image	Build the runtime image	2026-09-14T20:51:27.7821641Z #8 11.03 Preparing to unpack .../20-gcc-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:27.7822719Z #8 11.03 Unpacking gcc-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:27.9653150Z #8 11.36 Selecting previously unselected package gcc-13.
+image	Build the runtime image	2026-09-14T20:51:28.2074606Z #8 11.36 Preparing to unpack .../21-gcc-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.2075784Z #8 11.36 Unpacking gcc-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:28.2076745Z #8 11.39 Selecting previously unselected package gcc-x86-64-linux-gnu.
+image	Build the runtime image	2026-09-14T20:51:28.2077923Z #8 11.39 Preparing to unpack .../22-gcc-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.2079007Z #8 11.39 Unpacking gcc-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:28.2080633Z #8 11.41 Selecting previously unselected package gcc.
+image	Build the runtime image	2026-09-14T20:51:28.2081528Z #8 11.41 Preparing to unpack .../23-gcc_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.2082428Z #8 11.41 Unpacking gcc (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:28.2083218Z #8 11.43 Selecting previously unselected package libc-dev-bin.
+image	Build the runtime image	2026-09-14T20:51:28.2084210Z #8 11.43 Preparing to unpack .../24-libc-dev-bin_2.39-0ubuntu8.9_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.2085165Z #8 11.43 Unpacking libc-dev-bin (2.39-0ubuntu8.9) ...
+image	Build the runtime image	2026-09-14T20:51:28.2086055Z #8 11.45 Selecting previously unselected package linux-libc-dev:amd64.
+image	Build the runtime image	2026-09-14T20:51:28.2087080Z #8 11.45 Preparing to unpack .../25-linux-libc-dev_6.8.0-139.139_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.2088090Z #8 11.45 Unpacking linux-libc-dev:amd64 (6.8.0-139.139) ...
+image	Build the runtime image	2026-09-14T20:51:28.2699074Z #8 11.66 Selecting previously unselected package libcrypt-dev:amd64.
+image	Build the runtime image	2026-09-14T20:51:28.4800302Z #8 11.67 Preparing to unpack .../26-libcrypt-dev_1%3a4.4.36-4build1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.4801427Z #8 11.67 Unpacking libcrypt-dev:amd64 (1:4.4.36-4build1) ...
+image	Build the runtime image	2026-09-14T20:51:28.4802378Z #8 11.69 Selecting previously unselected package rpcsvc-proto.
+image	Build the runtime image	2026-09-14T20:51:28.4803348Z #8 11.70 Preparing to unpack .../27-rpcsvc-proto_1.4.2-0ubuntu7_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.4804712Z #8 11.70 Unpacking rpcsvc-proto (1.4.2-0ubuntu7) ...
+image	Build the runtime image	2026-09-14T20:51:28.4805603Z #8 11.72 Selecting previously unselected package libc6-dev:amd64.
+image	Build the runtime image	2026-09-14T20:51:28.4806666Z #8 11.72 Preparing to unpack .../28-libc6-dev_2.39-0ubuntu8.9_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.4807465Z #8 11.72 Unpacking libc6-dev:amd64 (2.39-0ubuntu8.9) ...
+image	Build the runtime image	2026-09-14T20:51:28.4825224Z #8 11.88 Selecting previously unselected package libstdc++-13-dev:amd64.
+image	Build the runtime image	2026-09-14T20:51:28.6382188Z #8 11.88 Preparing to unpack .../29-libstdc++-13-dev_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.6383689Z #8 11.88 Unpacking libstdc++-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:28.7152252Z #8 12.11 Selecting previously unselected package g++-13-x86-64-linux-gnu.
+image	Build the runtime image	2026-09-14T20:51:28.8708425Z #8 12.11 Preparing to unpack .../30-g++-13-x86-64-linux-gnu_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:28.8710191Z #8 12.12 Unpacking g++-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:28.9175169Z #8 12.31 Selecting previously unselected package g++-13.
+image	Build the runtime image	2026-09-14T20:51:29.0723615Z #8 12.32 Preparing to unpack .../31-g++-13_13.3.0-6ubuntu2~24.04.1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:29.0724804Z #8 12.32 Unpacking g++-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:29.0725637Z #8 12.33 Selecting previously unselected package g++-x86-64-linux-gnu.
+image	Build the runtime image	2026-09-14T20:51:29.0727317Z #8 12.34 Preparing to unpack .../32-g++-x86-64-linux-gnu_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:29.0728293Z #8 12.34 Unpacking g++-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:29.0729051Z #8 12.35 Selecting previously unselected package g++.
+image	Build the runtime image	2026-09-14T20:51:29.0730626Z #8 12.36 Preparing to unpack .../33-g++_4%3a13.2.0-7ubuntu1_amd64.deb ...
+image	Build the runtime image	2026-09-14T20:51:29.0731666Z #8 12.36 Unpacking g++ (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:29.0732806Z #8 12.38 Setting up linux-libc-dev:amd64 (6.8.0-139.139) ...
+image	Build the runtime image	2026-09-14T20:51:29.0733870Z #8 12.39 Setting up libgomp1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:29.0734968Z #8 12.39 Setting up locales (2.39-0ubuntu8.9) ...
+image	Build the runtime image	2026-09-14T20:51:29.0735960Z #8 12.47 debconf: unable to initialize frontend: Dialog
+image	Build the runtime image	2026-09-14T20:51:29.0737078Z #8 12.47 debconf: (TERM is not set, so the dialog frontend is not usable.)
+image	Build the runtime image	2026-09-14T20:51:29.0737996Z #8 12.47 debconf: falling back to frontend: Readline
+image	Build the runtime image	2026-09-14T20:51:29.2308810Z #8 12.48 debconf: unable to initialize frontend: Readline
+image	Build the runtime image	2026-09-14T20:51:29.2310193Z #8 12.48 debconf: (This frontend requires a controlling tty.)
+image	Build the runtime image	2026-09-14T20:51:29.2311086Z #8 12.48 debconf: falling back to frontend: Teletype
+image	Build the runtime image	2026-09-14T20:51:29.5657101Z #8 12.96 Generating locales (this might take a while)...
+image	Build the runtime image	2026-09-14T20:51:31.0413150Z #8 12.97   en_US.UTF-8... done
+image	Build the runtime image	2026-09-14T20:51:31.1456208Z #8 14.44 Generation complete.
+image	Build the runtime image	2026-09-14T20:51:31.1457004Z #8 14.45 Setting up rpcsvc-proto (1.4.2-0ubuntu7) ...
+image	Build the runtime image	2026-09-14T20:51:31.1457780Z #8 14.45 Setting up gcc-13-base:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1458623Z #8 14.46 Setting up libmpfr6:amd64 (4.2.1-1build1.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1459674Z #8 14.46 Setting up libquadmath0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1460626Z #8 14.46 Setting up libmpc3:amd64 (1.3.1-1build1.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1461410Z #8 14.47 Setting up libatomic1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1462366Z #8 14.47 Setting up libubsan1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1463146Z #8 14.47 Setting up libhwasan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1463891Z #8 14.48 Setting up libcrypt-dev:amd64 (1:4.4.36-4build1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1464561Z #8 14.48 Setting up libasan8:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1465170Z #8 14.49 Setting up libtsan2:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1465739Z #8 14.49 Setting up libisl23:amd64 (0.26-3build1.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1466277Z #8 14.49 Setting up libc-dev-bin (2.39-0ubuntu8.9) ...
+image	Build the runtime image	2026-09-14T20:51:31.1466829Z #8 14.50 Setting up libcc1-0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1467510Z #8 14.50 Setting up liblsan0:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1468095Z #8 14.50 Setting up libitm1:amd64 (14.2.0-4ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1468743Z #8 14.51 Setting up cpp-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1470281Z #8 14.51 Setting up libgcc-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1470916Z #8 14.51 Setting up libc6-dev:amd64 (2.39-0ubuntu8.9) ...
+image	Build the runtime image	2026-09-14T20:51:31.1471548Z #8 14.51 Setting up libstdc++-13-dev:amd64 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1472387Z #8 14.52 Setting up cpp-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1472994Z #8 14.52 Setting up cpp-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1473617Z #8 14.52 Setting up gcc-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1474275Z #8 14.53 Setting up gcc-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1474760Z #8 14.53 Setting up cpp (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:31.1475317Z #8 14.54 Setting up g++-13-x86-64-linux-gnu (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.3284474Z #8 14.54 Setting up gcc-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:31.3285878Z #8 14.55 Setting up gcc (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:31.3287245Z #8 14.56 Setting up g++-x86-64-linux-gnu (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:31.3288409Z #8 14.56 Setting up g++-13 (13.3.0-6ubuntu2~24.04.1) ...
+image	Build the runtime image	2026-09-14T20:51:31.3290021Z #8 14.57 Setting up g++ (4:13.2.0-7ubuntu1) ...
+image	Build the runtime image	2026-09-14T20:51:31.3291359Z #8 14.57 update-alternatives: using /usr/bin/g++ to provide /usr/bin/c++ (c++) in auto mode
+image	Build the runtime image	2026-09-14T20:51:31.3293961Z #8 14.57 update-alternatives: warning: skip creation of /usr/share/man/man1/c++.1.gz because associated file /usr/share/man/man1/g++.1.gz (of link group c++) doesn't exist
+image	Build the runtime image	2026-09-14T20:51:31.3296165Z #8 14.57 Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+image	Build the runtime image	2026-09-14T20:51:31.5530088Z #8 DONE 14.9s
+image	Build the runtime image	2026-09-14T20:51:31.7172888Z 
+image	Build the runtime image	2026-09-14T20:51:31.7174051Z #9 [build 3/5] WORKDIR /app
+image	Build the runtime image	2026-09-14T20:51:31.7174747Z #9 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:51:31.7175022Z 
+image	Build the runtime image	2026-09-14T20:51:31.7175214Z #10 [build 4/5] COPY . .
+image	Build the runtime image	2026-09-14T20:51:31.7431089Z #10 DONE 0.2s
+image	Build the runtime image	2026-09-14T20:51:31.8948458Z 
+image	Build the runtime image	2026-09-14T20:51:31.8950124Z #11 [build 5/5] RUN gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace
+image	Build the runtime image	2026-09-14T20:51:32.7965583Z #11 1.051 To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/9.7.1/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+image	Build the runtime image	2026-09-14T20:51:34.0918883Z #11 2.348 Daemon will be stopped at the end of the build 
+image	Build the runtime image	2026-09-14T20:51:35.9926777Z #11 4.248 Calculating task graph as no cached configuration is available for tasks: :server:linkReleaseExecutableNative
+image	Build the runtime image	2026-09-14T20:51:56.4899839Z #11 24.75 Type-safe project accessors is an incubating feature.
+image	Build the runtime image	2026-09-14T20:52:36.4910257Z #11 64.75 
+image	Build the runtime image	2026-09-14T20:52:36.6444243Z #11 64.75 > Configure project :client
+image	Build the runtime image	2026-09-14T20:52:36.6448062Z #11 64.75 w: file:///app/client/build.gradle.kts:33:5: 'fun macosX64(): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	Build the runtime image	2026-09-14T20:52:37.5904046Z #11 65.85 WARNING: The 'commonTest' source directory exists, but android host tests are not enabled. To enable android host tests, add `withHostTest {}` to your android target configuration in the Gradle build file.
+image	Build the runtime image	2026-09-14T20:52:37.5907140Z #11 65.85 Add android.sync.suppressAgpWarnings=GENERIC to the gradle.properties file to suppress this warning.
+image	Build the runtime image	2026-09-14T20:52:39.6913803Z #11 67.95 
+image	Build the runtime image	2026-09-14T20:52:39.8414493Z #11 67.95 > Configure project :core
+image	Build the runtime image	2026-09-14T20:52:39.8431174Z #11 67.95 w: file:///app/core/build.gradle.kts:46:57: 'fun macosX64(name: String): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	Build the runtime image	2026-09-14T20:52:41.9901266Z #11 70.25 
+image	Build the runtime image	2026-09-14T20:52:41.9901757Z #11 70.25 > Configure project :server
+image	Build the runtime image	2026-09-14T20:52:41.9903094Z #11 70.25 w: file:///app/server/build.gradle.kts:53:57: 'fun macosX64(name: String): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	Build the runtime image	2026-09-14T20:52:43.8898019Z #11 72.15 
+image	Build the runtime image	2026-09-14T20:52:44.0402730Z #11 72.15 > Configure project :shared
+image	Build the runtime image	2026-09-14T20:52:44.0404479Z #11 72.15 w: file:///app/shared/build.gradle.kts:21:5: 'fun macosX64(): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	Build the runtime image	2026-09-14T20:52:48.3898041Z #11 76.65 
+image	Build the runtime image	2026-09-14T20:52:48.5430162Z #11 76.65 > Configure project :dev:android-gradle-plugin
+image	Build the runtime image	2026-09-14T20:52:48.5431408Z #11 76.65 WARNING: Unsupported Kotlin plugin version.
+image	Build the runtime image	2026-09-14T20:52:48.5433170Z #11 76.65 The `embedded-kotlin` and `kotlin-dsl` plugins rely on features of Kotlin `2.4.0` that might work differently than in the requested version `2.4.10`.
+image	Build the runtime image	2026-09-14T20:52:48.5435540Z #11 76.65 Using the `kotlin-dsl` plugin together with a different Kotlin version (for example, by using the Kotlin Gradle plugin (`kotlin(jvm)`)) in the same project is not recommended.
+image	Build the runtime image	2026-09-14T20:52:48.5437227Z #11 76.65 
+image	Build the runtime image	2026-09-14T20:52:48.5438765Z #11 76.65 See https://docs.gradle.org/9.7.1/userguide/kotlin_dsl.html#sec:kotlin-dsl_plugin for more details on how the `kotlin-dsl` plugin works (same applies to `embedded-kotlin`).
+image	Build the runtime image	2026-09-14T20:52:48.5441324Z #11 76.65 It applies a certain version of the `org.jetbrains.kotlin.jvm` plugin and also add a dependency on the Kotlin Standard Library.
+image	Build the runtime image	2026-09-14T20:52:48.5442652Z #11 76.65 
+image	Build the runtime image	2026-09-14T20:52:48.5444215Z #11 76.65 Applying other version of the `org.jetbrains.kotlin.jvm` plugin in the build and/or adding dependencies to different versions of the Kotlin Standard Library can cause incompatibilities.
+image	Build the runtime image	2026-09-14T20:52:48.5446268Z #11 76.65 See https://docs.gradle.org/9.7.1/userguide/kotlin_dsl.html#sec:kotlin
+image	Build the runtime image	2026-09-14T20:52:56.1904263Z #11 84.45 
+image	Build the runtime image	2026-09-14T20:52:56.3415330Z #11 84.45 > Configure project :dev:client-android
+image	Build the runtime image	2026-09-14T20:52:56.3417008Z #11 84.45 w: ⚠️ Unused Kotlin Source Sets
+image	Build the runtime image	2026-09-14T20:52:56.3418251Z #11 84.45 The Kotlin source set commonTest was configured but not added to any Kotlin compilation.
+image	Build the runtime image	2026-09-14T20:52:56.3420337Z #11 84.45 Solution: You can add a source set to a target's compilation by connecting it with the compilation's default source set using 'dependsOn'.
+image	Build the runtime image	2026-09-14T20:52:56.3421349Z #11 84.45 See https://kotl.in/connecting-source-sets
+image	Build the runtime image	2026-09-14T20:52:56.3422333Z #11 84.45 
+image	Build the runtime image	2026-09-14T20:52:56.7904147Z #11 85.05 
+image	Build the runtime image	2026-09-14T20:52:56.7904874Z #11 85.05 > Configure project :dev:retrace
+image	Build the runtime image	2026-09-14T20:52:56.7906602Z #11 85.05 w: file:///app/dev/retrace/build.gradle.kts:20:57: 'fun macosX64(name: String): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	Build the runtime image	2026-09-14T20:53:00.5911590Z #11 88.85 
+image	Build the runtime image	2026-09-14T20:53:00.5913047Z #11 88.85 > Configure project :dev:sample-kotlin-native
+image	Build the runtime image	2026-09-14T20:53:00.5915969Z #11 88.85 w: file:///app/dev/sample-kotlin-native/build.gradle.kts:18:57: 'fun macosX64(name: String): KotlinNativeTargetWithHostTests' is deprecated. Target will be removed in a future release. See: https://kotl.in/native-targets-tiers.
+image	Build the runtime image	2026-09-14T20:53:41.6908551Z #11 129.9 
+image	Build the runtime image	2026-09-14T20:53:41.6910175Z #11 129.9 > Task :shared:kmpPartiallyResolvedDependenciesChecker
+image	Build the runtime image	2026-09-14T20:53:41.6911327Z #11 129.9 > Task :core:kmpPartiallyResolvedDependenciesChecker
+image	Build the runtime image	2026-09-14T20:53:41.6912586Z #11 129.9 > Task :core:checkKotlinGradlePluginConfigurationErrors SKIPPED
+image	Build the runtime image	2026-09-14T20:53:41.6913796Z #11 129.9 > Task :shared:checkKotlinGradlePluginConfigurationErrors SKIPPED
+image	Build the runtime image	2026-09-14T20:53:41.6914971Z #11 129.9 > Task :dev:retrace:kmpPartiallyResolvedDependenciesChecker
+image	Build the runtime image	2026-09-14T20:53:41.6916111Z #11 129.9 > Task :dev:retrace:checkKotlinGradlePluginConfigurationErrors SKIPPED
+image	Build the runtime image	2026-09-14T20:53:41.7910711Z #11 130.0 > Task :shared:exportCrossCompilationMetadataForLinuxX64ApiElements
+image	Build the runtime image	2026-09-14T20:53:41.7912250Z #11 130.0 > Task :dev:retrace:exportCrossCompilationMetadataForNativeApiElements
+image	Build the runtime image	2026-09-14T20:53:41.9423116Z #11 130.0 > Task :server:kmpPartiallyResolvedDependenciesChecker
+image	Build the runtime image	2026-09-14T20:53:41.9425027Z #11 130.0 > Task :server:checkKotlinGradlePluginConfigurationErrors SKIPPED
+image	Build the runtime image	2026-09-14T20:53:41.9426293Z #11 130.0 > Task :core:exportCrossCompilationMetadataForNativeApiElements
+image	Build the runtime image	2026-09-14T20:53:43.6896734Z #11 131.9 
+image	Build the runtime image	2026-09-14T20:53:43.8413207Z #11 131.9 > Task :shared:downloadKotlinNativeDistribution
+image	Build the runtime image	2026-09-14T20:53:43.8415305Z #11 131.9 Kotlin/Native bundle directory /root/.konan/kotlin-native-prebuilt-linux-x86_64-2.4.10 is not empty. Native bundle files will be overwritten.
+image	Build the runtime image	2026-09-14T20:53:47.2898805Z #11 135.5 Downloading native dependencies (LLVM, sysroot etc). This is a one-time action performed only on the first run of the compiler.
+image	Build the runtime image	2026-09-14T20:53:47.4406662Z #11 135.5 Downloading dependency https://download.jetbrains.com/kotlin/native/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2.tar.gz to /root/.konan/dependencies/cache/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2.tar.gz
+image	Build the runtime image	2026-09-14T20:53:47.8896517Z #11 136.1 Done.
+image	Build the runtime image	2026-09-14T20:53:48.0410554Z #11 136.1 Extracting dependency: /root/.konan/dependencies/cache/aarch64-unknown-linux-gnu-gcc-8.3.0-glibc-2.25-kernel-4.9-2.tar.gz into /root/.konan/dependencies
+image	Build the runtime image	2026-09-14T20:53:50.1901265Z #11 138.4 Downloading dependency https://download.jetbrains.com/kotlin/native/resources/llvm/21-x86_64-linux/llvm-21-x86_64-linux-essentials-116.tar.gz to /root/.konan/dependencies/cache/llvm-21-x86_64-linux-essentials-116.tar.gz
+image	Build the runtime image	2026-09-14T20:53:50.8908945Z #11 139.1 Done.
+image	Build the runtime image	2026-09-14T20:53:51.0420762Z #11 139.1 Extracting dependency: /root/.konan/dependencies/cache/llvm-21-x86_64-linux-essentials-116.tar.gz into /root/.konan/dependencies
+image	Build the runtime image	2026-09-14T20:53:54.7901122Z #11 143.0 Downloading dependency https://download.jetbrains.com/kotlin/native/libffi-3.2.1-2-linux-x86-64.tar.gz to /root/.konan/dependencies/cache/libffi-3.2.1-2-linux-x86-64.tar.gz
+image	Build the runtime image	2026-09-14T20:53:54.8904529Z #11 143.1 Done.
+image	Build the runtime image	2026-09-14T20:53:54.8906273Z #11 143.1 Extracting dependency: /root/.konan/dependencies/cache/libffi-3.2.1-2-linux-x86-64.tar.gz into /root/.konan/dependencies
+image	Build the runtime image	2026-09-14T20:53:54.8908003Z #11 143.1 Downloading dependency https://download.jetbrains.com/kotlin/native/qemu-aarch64-static-5.1.0-linux-2.tar.gz to /root/.konan/dependencies/cache/qemu-aarch64-static-5.1.0-linux-2.tar.gz
+image	Build the runtime image	2026-09-14T20:53:55.1406611Z #11 143.2 Done.
+image	Build the runtime image	2026-09-14T20:53:55.1408595Z #11 143.2 Extracting dependency: /root/.konan/dependencies/cache/qemu-aarch64-static-5.1.0-linux-2.tar.gz into /root/.konan/dependencies
+image	Build the runtime image	2026-09-14T20:53:58.6949211Z #11 147.0 
+image	Build the runtime image	2026-09-14T20:53:58.6950270Z #11 147.0 > Task :dev:retrace:downloadKotlinNativeDistribution
+image	Build the runtime image	2026-09-14T20:53:58.6951583Z #11 147.0 Downloading native dependencies (LLVM, sysroot etc). This is a one-time action performed only on the first run of the compiler.
+image	Build the runtime image	2026-09-14T20:53:58.6954221Z #11 147.0 Downloading dependency https://download.jetbrains.com/kotlin/native/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2.tar.gz to /root/.konan/dependencies/cache/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2.tar.gz
+image	Build the runtime image	2026-09-14T20:53:58.6956371Z #11 147.0 Done.
+image	Build the runtime image	2026-09-14T20:53:58.6965796Z #11 147.0 Extracting dependency: /root/.konan/dependencies/cache/x86_64-unknown-linux-gnu-gcc-8.3.0-glibc-2.19-kernel-4.9-2.tar.gz into /root/.konan/dependencies
+image	Build the runtime image	2026-09-14T20:53:58.6968206Z #11 147.0 Downloading dependency https://download.jetbrains.com/kotlin/native/lldb-4-linux.tar.gz to /root/.konan/dependencies/cache/lldb-4-linux.tar.gz
+image	Build the runtime image	2026-09-14T20:53:58.6970307Z #11 147.0 Done.
+image	Build the runtime image	2026-09-14T20:53:58.6971371Z #11 147.0 Extracting dependency: /root/.konan/dependencies/cache/lldb-4-linux.tar.gz into /root/.konan/dependencies
+image	Build the runtime image	2026-09-14T20:53:58.6972459Z #11 147.0 
+image	Build the runtime image	2026-09-14T20:53:58.6972944Z #11 147.0 > Task :core:downloadKotlinNativeDistribution
+image	Build the runtime image	2026-09-14T20:53:58.6973595Z #11 147.0 > Task :server:downloadKotlinNativeDistribution
+image	Build the runtime image	2026-09-14T20:53:58.6974225Z #11 147.0 
+image	Build the runtime image	2026-09-14T20:53:58.8490087Z #11 147.0 > Task :shared:downloadKotlinNativeDistribution
+image	Build the runtime image	2026-09-14T20:53:58.8491613Z #11 147.0 Downloading native dependencies (LLVM, sysroot etc). This is a one-time action performed only on the first run of the compiler.
+image	Build the runtime image	2026-09-14T20:53:58.8494053Z #11 147.0 Downloading dependency https://download.jetbrains.com/kotlin/native/msys2-mingw-w64-x86_64-2.tar.gz to /root/.konan/dependencies/cache/msys2-mingw-w64-x86_64-2.tar.gz
+image	Build the runtime image	2026-09-14T20:53:58.8902319Z #11 147.1 
+image	Build the runtime image	2026-09-14T20:53:59.0418375Z #11 147.1 > Task :server:generateKoreBuildIdentity
+image	Build the runtime image	2026-09-14T20:53:59.9897008Z #11 148.2 > Task :shared:transformCommonMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:54:00.7900297Z #11 149.0 
+image	Build the runtime image	2026-09-14T20:54:00.9422870Z #11 149.0 > Task :shared:downloadKotlinNativeDistribution
+image	Build the runtime image	2026-09-14T20:54:00.9424045Z #11 149.0 Done.
+image	Build the runtime image	2026-09-14T20:54:00.9425432Z #11 149.0 Extracting dependency: /root/.konan/dependencies/cache/msys2-mingw-w64-x86_64-2.tar.gz into /root/.konan/dependencies
+image	Build the runtime image	2026-09-14T20:54:11.6900405Z #11 159.9 
+image	Build the runtime image	2026-09-14T20:54:11.8455116Z #11 159.9 > Task :shared:compileCommonMainKotlinMetadata
+image	Build the runtime image	2026-09-14T20:54:11.8457470Z #11 159.9 > Task :shared:metadataCommonMainProcessResources NO-SOURCE
+image	Build the runtime image	2026-09-14T20:54:11.8458743Z #11 160.0 > Task :shared:metadataCommonMainClasses
+image	Build the runtime image	2026-09-14T20:54:12.1433252Z #11 160.2 > Task :shared:transformNativeMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:54:12.1436363Z #11 160.2 > Task :shared:metadataNativeMainProcessResources NO-SOURCE
+image	Build the runtime image	2026-09-14T20:54:12.3436426Z #11 160.4 > Task :shared:transformLinuxMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:54:12.3438919Z #11 160.4 > Task :shared:generateProjectStructureMetadata
+image	Build the runtime image	2026-09-14T20:54:12.3440289Z #11 160.4 > Task :shared:metadataLinuxMainProcessResources NO-SOURCE
+image	Build the runtime image	2026-09-14T20:54:12.4938457Z #11 160.6 > Task :shared:transformAppleMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:54:12.4940390Z #11 160.6 > Task :shared:metadataAppleMainProcessResources NO-SOURCE
+image	Build the runtime image	2026-09-14T20:54:12.4941802Z #11 160.6 > Task :shared:transformIosMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:54:12.6470835Z #11 160.7 > Task :shared:transformMacosMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:54:12.6473024Z #11 160.8 > Task :shared:metadataIosMainProcessResources NO-SOURCE
+image	Build the runtime image	2026-09-14T20:54:12.6474074Z #11 160.8 > Task :shared:metadataMacosMainProcessResources NO-SOURCE
+image	Build the runtime image	2026-09-14T20:54:13.0408521Z #11 161.1 > Task :dev:retrace:transformCommonMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:54:16.6921841Z #11 164.8 > Task :dev:retrace:compileCommonMainKotlinMetadata
+image	Build the runtime image	2026-09-14T20:54:16.6924113Z #11 164.8 > Task :dev:retrace:generateProjectStructureMetadata
+image	Build the runtime image	2026-09-14T20:54:16.6925268Z #11 164.8 > Task :dev:retrace:metadataCommonMainProcessResources NO-SOURCE
+image	Build the runtime image	2026-09-14T20:54:16.6926208Z #11 164.8 > Task :dev:retrace:metadataCommonMainClasses
+image	Build the runtime image	2026-09-14T20:54:16.8444070Z #11 164.9 > Task :dev:retrace:allMetadataJar
+image	Build the runtime image	2026-09-14T20:54:16.8445924Z #11 164.9 > Task :dev:retrace:exportCommonSourceSetsMetadataLocationsForMetadataApiElements
+image	Build the runtime image	2026-09-14T20:54:16.8447664Z #11 164.9 > Task :shared:exportRootPublicationCoordinatesForMetadataApiElements
+image	Build the runtime image	2026-09-14T20:54:16.8448949Z #11 164.9 > Task :dev:retrace:exportRootPublicationCoordinatesForMetadataApiElements
+image	Build the runtime image	2026-09-14T20:54:16.8450455Z #11 164.9 > Task :core:generateProjectStructureMetadata
+image	Build the runtime image	2026-09-14T20:54:16.8451742Z #11 164.9 > Task :core:metadataCommonMainProcessResources NO-SOURCE
+image	Build the runtime image	2026-09-14T20:54:17.9907168Z #11 166.2 > Task :dev:retrace:compileKotlinNative
+image	Build the runtime image	2026-09-14T20:54:28.8903128Z #11 177.1 > Task :shared:commonizeNativeDistribution
+image	Build the runtime image	2026-09-14T20:54:34.5900877Z #11 182.8 > Task :shared:compileKotlinLinuxX64
+image	Build the runtime image	2026-09-14T20:55:00.3467794Z #11 208.4 > Task :shared:compileNativeMainKotlinMetadata NO-SOURCE
+image	Build the runtime image	2026-09-14T20:55:00.3473993Z #11 208.4 > Task :shared:metadataNativeMainClasses UP-TO-DATE
+image	Build the runtime image	2026-09-14T20:55:00.3475418Z #11 208.4 > Task :shared:compileLinuxMainKotlinMetadata NO-SOURCE
+image	Build the runtime image	2026-09-14T20:55:00.3476825Z #11 208.5 > Task :shared:compileAppleMainKotlinMetadata NO-SOURCE
+image	Build the runtime image	2026-09-14T20:55:00.3478175Z #11 208.5 > Task :shared:metadataLinuxMainClasses UP-TO-DATE
+image	Build the runtime image	2026-09-14T20:55:00.3479143Z #11 208.5 > Task :shared:metadataAppleMainClasses UP-TO-DATE
+image	Build the runtime image	2026-09-14T20:55:00.3481234Z #11 208.5 > Task :shared:compileIosMainKotlinMetadata NO-SOURCE
+image	Build the runtime image	2026-09-14T20:55:00.3482254Z #11 208.5 > Task :shared:metadataIosMainClasses UP-TO-DATE
+image	Build the runtime image	2026-09-14T20:55:00.3483163Z #11 208.5 > Task :shared:compileMacosMainKotlinMetadata NO-SOURCE
+image	Build the runtime image	2026-09-14T20:55:00.3484121Z #11 208.5 > Task :shared:metadataMacosMainClasses UP-TO-DATE
+image	Build the runtime image	2026-09-14T20:55:00.3485399Z #11 208.5 > Task :shared:exportCommonSourceSetsMetadataLocationsForMetadataApiElements
+image	Build the runtime image	2026-09-14T20:55:00.3486515Z #11 208.5 > Task :shared:linuxX64MetadataElements
+image	Build the runtime image	2026-09-14T20:55:00.3487277Z #11 208.5 > Task :shared:allMetadataJar
+image	Build the runtime image	2026-09-14T20:55:01.0900923Z #11 209.3 > Task :core:transformCommonMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:55:15.2900735Z #11 223.5 > Task :core:compileCommonMainKotlinMetadata
+image	Build the runtime image	2026-09-14T20:55:15.3903791Z #11 223.5 > Task :core:metadataCommonMainClasses
+image	Build the runtime image	2026-09-14T20:55:15.3906240Z #11 223.5 > Task :core:exportCommonSourceSetsMetadataLocationsForMetadataApiElements
+image	Build the runtime image	2026-09-14T20:55:15.3907670Z #11 223.6 > Task :core:allMetadataJar
+image	Build the runtime image	2026-09-14T20:55:16.4463274Z #11 224.5 > Task :server:transformCommonMainDependenciesMetadata
+image	Build the runtime image	2026-09-14T20:55:19.9418632Z #11 228.0 > Task :core:compileKotlinNative
+image	Build the runtime image	2026-09-14T20:55:25.6407806Z #11 233.6 > Task :server:kspCommonMainKotlinMetadata
+image	Build the runtime image	2026-09-14T20:55:25.6409844Z #11 233.7 > Task :server:kspKotlinNative
+image	Build the runtime image	2026-09-14T20:55:31.4410672Z #11 239.5 > Task :server:compileKotlinNative
+image	Build the runtime image	2026-09-14T20:56:01.2896799Z #11 269.5 > Task :server:linkReleaseExecutableNative
+image	Build the runtime image	2026-09-14T20:58:58.7911462Z #11 447.0 
+image	Build the runtime image	2026-09-14T20:58:58.7916254Z #11 447.0 [Incubating] Problems report is available at: file:///app/build/reports/problems/problems-report.html
+image	Build the runtime image	2026-09-14T20:58:58.7917190Z #11 447.0 
+image	Build the runtime image	2026-09-14T20:58:59.0305826Z #11 447.0 BUILD SUCCESSFUL in 7m 26s
+image	Build the runtime image	2026-09-14T20:58:59.0306757Z #11 447.1 44 actionable tasks: 44 executed
+image	Build the runtime image	2026-09-14T20:58:59.0307460Z #11 447.1 Configuration cache entry stored.
+image	Build the runtime image	2026-09-14T20:58:59.6402481Z #11 DONE 447.9s
+image	Build the runtime image	2026-09-14T20:58:59.8184519Z 
+image	Build the runtime image	2026-09-14T20:58:59.8185932Z #12 [stage-1 2/7] COPY --from=build /etc/ld.so.cache /etc/ld.so.cache
+image	Build the runtime image	2026-09-14T20:58:59.8187149Z #12 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:58:59.8420766Z 
+image	Build the runtime image	2026-09-14T20:58:59.8422681Z #13 [stage-1 3/7] COPY --from=build /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+image	Build the runtime image	2026-09-14T20:59:00.0153290Z #13 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:59:00.0153909Z 
+image	Build the runtime image	2026-09-14T20:59:00.0154731Z #14 [stage-1 4/7] COPY --from=build /lib/x86_64-linux-gnu/libc.so.6 /lib/x86_64-linux-gnu/libc.so.6
+image	Build the runtime image	2026-09-14T20:59:00.0155959Z #14 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:59:00.0156402Z 
+image	Build the runtime image	2026-09-14T20:59:00.0157617Z #15 [stage-1 5/7] COPY --from=build /usr/lib/x86_64-linux-gnu/gconv /usr/lib/x86_64-linux-gnu/gconv
+image	Build the runtime image	2026-09-14T20:59:00.0159724Z #15 DONE 0.1s
+image	Build the runtime image	2026-09-14T20:59:00.0160425Z 
+image	Build the runtime image	2026-09-14T20:59:00.0161350Z #16 [stage-1 6/7] COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
+image	Build the runtime image	2026-09-14T20:59:00.0162433Z #16 DONE 0.1s
+image	Build the runtime image	2026-09-14T20:59:00.1937928Z 
+image	Build the runtime image	2026-09-14T20:59:00.1939926Z #17 [stage-1 7/7] COPY --from=build /app/server/build/bin/native/releaseExecutable/server.kexe /app/server
+image	Build the runtime image	2026-09-14T20:59:00.1941188Z #17 DONE 0.0s
+image	Build the runtime image	2026-09-14T20:59:00.1941465Z 
+image	Build the runtime image	2026-09-14T20:59:00.1941664Z #18 exporting to image
+image	Build the runtime image	2026-09-14T20:59:00.1942154Z #18 exporting layers
+image	Build the runtime image	2026-09-14T20:59:01.0239368Z #18 exporting layers 1.0s done
+image	Build the runtime image	2026-09-14T20:59:01.0545038Z #18 writing image sha256:8bd6c094c3aeb1798e4a8353f9868095d1b76d037b238cf829f579568b5c65bc done
+image	Build the runtime image	2026-09-14T20:59:01.0546647Z #18 naming to docker.io/library/katcher:ci done
+image	Build the runtime image	2026-09-14T20:59:01.0547477Z #18 DONE 1.0s
+image	Build the runtime image	2026-09-14T20:59:01.0557108Z 
+image	Build the runtime image	2026-09-14T20:59:01.0558163Z  ^[[33m1 warning found (use docker --debug to expand):
+image	Build the runtime image	2026-09-14T20:59:01.0559827Z ^[[0m - FromPlatformFlagConstDisallowed: FROM --platform flag should not use constant value "linux/amd64" (line 2)
+image	The image runs, and a page renders a timestamp	﻿2026-09-14T20:59:01.0712485Z ##[group]Run docker run --detach --name katcher-ci --publish 8080:8080 katcher:ci
+image	The image runs, and a page renders a timestamp	2026-09-14T20:59:01.0713380Z ^[[36;1mdocker run --detach --name katcher-ci --publish 8080:8080 katcher:ci^[[0m
+image	The image runs, and a page renders a timestamp	2026-09-14T20:59:01.0714057Z ^[[36;1m./dev/image-smoke.sh http://localhost:8080^[[0m
+image	The image runs, and a page renders a timestamp	2026-09-14T20:59:01.0764907Z shell: /usr/bin/bash -e {0}
+image	The image runs, and a page renders a timestamp	2026-09-14T20:59:01.0765376Z ##[endgroup]
+image	The image runs, and a page renders a timestamp	2026-09-14T20:59:01.1574294Z 4601bd0a5552557d696a167075941038b89296629eec0fdf9c7caf0af27e6c5f
+image	The image runs, and a page renders a timestamp	2026-09-14T20:59:01.4227308Z smoke: waiting for http://localhost:8080
+image	The image runs, and a page renders a timestamp	2026-09-14T20:59:01.5586193Z smoke: rendered 2026-09-14 20:59
+image	It stops in order, and says so	﻿2026-09-14T20:59:01.5645803Z ##[group]Run docker stop --timeout 40 katcher-ci
+image	It stops in order, and says so	2026-09-14T20:59:01.5646575Z ^[[36;1mdocker stop --timeout 40 katcher-ci^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5647153Z ^[[36;1mlog=$(docker logs katcher-ci 2>&1)^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5647875Z ^[[36;1mprintf '%s\n' "$log" | grep -E 'ANNOUNCE|DRAIN|RELEASE_POOLS|EXIT' || true^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5648826Z ^[[36;1mfor stage in SIGNAL ANNOUNCE DRAIN RELEASE_CONSUMERS RELEASE_POOLS EXIT; do^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5649953Z ^[[36;1m  if ! printf '%s\n' "$log" | grep -q "$stage COMPLETED"; then^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5650808Z ^[[36;1m    echo "the shutdown transcript has no completed $stage stage" >&2^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5651535Z ^[[36;1m    printf '%s\n' "$log" | tail -40 >&2^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5652053Z ^[[36;1m    exit 1^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5652436Z ^[[36;1m  fi^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5652801Z ^[[36;1mdone^[[0m
+image	It stops in order, and says so	2026-09-14T20:59:01.5699548Z shell: /usr/bin/bash -e {0}
+image	It stops in order, and says so	2026-09-14T20:59:01.5700060Z ##[endgroup]
+image	It stops in order, and says so	2026-09-14T20:59:03.7441695Z katcher-ci
+image	It stops in order, and says so	2026-09-14T20:59:03.7705275Z ANNOUNCE COMPLETED in 2.000204684s
+image	It stops in order, and says so	2026-09-14T20:59:03.7706073Z DRAIN COMPLETED in 895.038us
+image	It stops in order, and says so	2026-09-14T20:59:03.7706673Z RELEASE_POOLS COMPLETED in 1.881405ms
+image	It stops in order, and says so	2026-09-14T20:59:03.7707295Z EXIT COMPLETED in 1.703us
+image	The allocator cap survived the build	﻿2026-09-14T20:59:03.7878725Z ##[group]Run docker image inspect katcher:ci --format '{{json .Config.Env}}' | grep -q 'MALLOC_ARENA_MAX=2' \
+image	The allocator cap survived the build	2026-09-14T20:59:03.7880324Z ^[[36;1mdocker image inspect katcher:ci --format '{{json .Config.Env}}' | grep -q 'MALLOC_ARENA_MAX=2' \^[[0m
+image	The allocator cap survived the build	2026-09-14T20:59:03.7881211Z ^[[36;1m  || { echo "the image lost MALLOC_ARENA_MAX=2" >&2; exit 1; }^[[0m
+image	The allocator cap survived the build	2026-09-14T20:59:03.7924777Z shell: /usr/bin/bash -e {0}
+image	The allocator cap survived the build	2026-09-14T20:59:03.7925203Z ##[endgroup]
+image	Size	﻿2026-09-14T20:59:03.8254091Z ##[group]Run docker image inspect katcher:ci --format 'unpacked on this runner {{.Size}} bytes (not pull bytes, see the workflow comment)'
+image	Size	2026-09-14T20:59:03.8255837Z ^[[36;1mdocker image inspect katcher:ci --format 'unpacked on this runner {{.Size}} bytes (not pull bytes, see the workflow comment)'^[[0m
+image	Size	2026-09-14T20:59:03.8301012Z shell: /usr/bin/bash -e {0}
+image	Size	2026-09-14T20:59:03.8301463Z ##[endgroup]
+image	Size	2026-09-14T20:59:03.8553809Z unpacked on this runner 27928956 bytes (not pull bytes, see the workflow comment)
+image	Post Run actions/checkout@v7	﻿2026-09-14T20:59:03.8737781Z Post job cleanup.
+image	Post Run actions/checkout@v7	2026-09-14T20:59:03.9924076Z [command]/usr/bin/git version
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0010860Z git version 2.55.0
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0067256Z Temporarily overriding HOME='/home/runner/work/_temp/a9573131-52ab-4803-a97a-3b39828684f6' before making global git config changes
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0068863Z Adding repository directory to the temporary git global config as a safe directory
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0073070Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/katcher/katcher
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0128017Z Removing SSH command configuration
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0139003Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0213953Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0515574Z Removing HTTP extra header
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0525255Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0611280Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0950890Z Removing includeIf entries pointing to credentials config files
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.0961041Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1021717Z includeif.gitdir:/home/runner/work/katcher/katcher/.git.path
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1023249Z includeif.gitdir:/home/runner/work/katcher/katcher/.git/worktrees/*.path
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1024344Z includeif.gitdir:/github/workspace/.git.path
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1025247Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1036576Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/katcher/katcher/.git.path
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1090252Z /home/runner/work/_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1124140Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/katcher/katcher/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-fa32d219\-d277\-498d\-b00e\-18ae8a34e64a\.config
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1211115Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/katcher/katcher/.git/worktrees/*.path
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1310294Z /home/runner/work/_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1313881Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/katcher/katcher/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-fa32d219\-d277\-498d\-b00e\-18ae8a34e64a\.config
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1335727Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1375283Z /github/runner_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1386694Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-fa32d219\-d277\-498d\-b00e\-18ae8a34e64a\.config
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1435854Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1471485Z /github/runner_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1480170Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-fa32d219\-d277\-498d\-b00e\-18ae8a34e64a\.config
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1530238Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+image	Post Run actions/checkout@v7	2026-09-14T20:59:04.1810491Z Removing credentials config '/home/runner/work/_temp/git-credentials-fa32d219-d277-498d-b00e-18ae8a34e64a.config'
+image	Complete job	﻿2026-09-14T20:59:04.2030229Z Cleaning up orphan processes

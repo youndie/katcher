@@ -1,0 +1,10 @@
+rep	metric	ms	verdict	log
+1	warm	687	ok	r1-warm.log
+1	incr_dbg	4721	void:no-work	r1-incr_dbg.log
+1	incr_rel	2250	void:no-work	r1-incr_rel.log
+2	warm	806	ok	r2-warm.log
+2	incr_dbg	2054	void:no-work	r2-incr_dbg.log
+2	incr_rel	1857	void:no-work	r2-incr_rel.log
+3	warm	798	ok	r3-warm.log
+3	incr_dbg	2035	void:no-work	r3-incr_dbg.log
+3	incr_rel	2044	void:no-work	r3-incr_rel.log
