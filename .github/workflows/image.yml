@@ -89,6 +89,12 @@ jobs:
       # The same image measured 27 918 036 here and 9 569 623 on a machine with the snapshotter, so
       # the figures in `server/Dockerfile` (pull bytes) and this line are not comparable and are not
       # meant to be. This one is a trend line for this job: it moves when the image does.
+      # A measured setting that nothing asserts is a setting that will be deleted.
+      - name: The allocator cap survived the build
+        run: |
+          docker image inspect katcher:ci --format '{{json .Config.Env}}' | grep -q 'MALLOC_ARENA_MAX=2' \
+            || { echo "the image lost MALLOC_ARENA_MAX=2" >&2; exit 1; }
+
       - name: Size
         if: always()
         run: docker image inspect katcher:ci --format 'unpacked on this runner {{.Size}} bytes (not pull bytes, see the workflow comment)'
