@@ -3,10 +3,8 @@
 Research into katcher's edit→link loop and its PR / release pipeline. The subject is the
 Kotlin/Native server binary, because that binary is the shipped artifact.
 
-**Status: RQ0 answered, and its answer is "not yet".** The local metrics are measured and
-attributed by compiler phase; the CI side cannot be attributed from the logs it currently
-produces, so the next change to this repository is a `--profile` change and not an optimisation.
-No RQ1-RQ7 experiment has been run.
+**Status: RQ0 green, RQ1 next.** Every metric is attributed — the CI and image sides needed a
+`--profile` change first, which is #65. No RQ1-RQ7 experiment has been run yet.
 
 | File | What it holds |
 |---|---|
