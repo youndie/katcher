@@ -12,6 +12,13 @@ required in production). Client is a KMP library apps embed to capture and uploa
   platform-specific `ServerConfig`. Native is the real deployment target; JVM exists for dev/testing.
   Feature packages under `io.github.youndie.katcher.feature.<name>/data` (auth, app, user, report, error,
   symbolication) each hold their own Exposed/sqlx4k data access.
+- `server/src/commonMain/kotlin/Main.kt` — the process, not the application. It opens the database
+  (migrations included) **before** the engine exists, starts the server with `wait = false`, and then
+  spends the rest of its life inside kore's `runUntilSignal`: announce, drain, release consumers,
+  release pools, release telemetry, exit. The database is opened here rather than in the module so
+  the release stage has a handle to close *after* the drain — wired to `ApplicationStopping` instead,
+  a close runs **before** the drain on Kotlin/Native and after it on the JVM, from identical source,
+  which is the defect kore exists to remove and the reason katcher takes it.
 - `shared/` — DTOs shared between client and server (`CreateReportParams`, `Breadcrumb`,
   `ReportResource`, `ErrorGroupSort`).
 - `client/` — the crash-reporting library consumers embed (`io.github.youndie.katcher:client`).
@@ -32,6 +39,31 @@ required in production). Client is a KMP library apps embed to capture and uploa
 - `dev/` — sample/dogfooding apps (`sample-kotlin-jvm`, `client-android`, `android-gradle-plugin`,
   `server-jvm-keycloak`, `retrace`) — not shipped, used for manual testing.
 - `charts/katcher/` — Helm chart for deploying the server.
+
+## The server's lifecycle is kore's, and three numbers live in two places
+
+`io.github.youndie:kore-core` and `kore-ktor` (version in `gradle/libs.versions.toml`) own the stretch
+from `SIGTERM` to exit, the three probes, and `/version`. What katcher supplies is the participants —
+they are the part no library can write.
+
+- **The probes are three questions, not one route.** `/health/startup` is a latch; `/health/ready`
+  reads a `SELECT 1` against SQLite *and* the shutdown latch; `/health/live` and the `/health` alias
+  are liveness. Pointing readiness at `/health` gives a probe that cannot fail while the process is
+  alive, which is the shape this replaced — the chart had no probes at all.
+- **`KatcherProbes.start(scope)` is not optional.** The registry caches check results and refreshes
+  them on a loop; without that call `/health/ready` answers from checks that never ran, for ever.
+- **`DEADLINES` in `Main.kt` and `terminationGracePeriodSeconds` in the chart are one number in two
+  places.** Nothing tells a process its real grace period, on any platform, so kore is *told* 30 and
+  the chart has to keep saying 30. The plan sums to 21 s; lower the chart's number and the process is
+  killed mid-drain with kore's fit check saying nothing.
+- **`/version` is generated source.** The `io.github.youndie.kore.build` Gradle plugin writes
+  `KoreBuildIdentity` into `server/build/generated/kore` and adds it to `commonMain` — Kotlin/Native
+  has no resources and no manifest. It shells out to git, so `commit` is `unknown` where `.git` is
+  absent: the mutagen replica on the Linux box has none, and a Docker build only has one because
+  `.dockerignore` deliberately keeps `.git` in the context.
+- **The report queue drains, it is not cancelled.** `ReportsQueueService` owns its worker and
+  `drain()` closes the channel and joins; it runs as a release participant after the engine has
+  drained, so reports accepted with `202` are written rather than cancelled halfway.
 
 ## Client crash-capture model (important, non-obvious)
 
@@ -117,9 +149,29 @@ Pass `projectPath` = this project's root (the cwd) in **every** call; all other 
 Everything else — call hierarchies, single-test runs, the debugger, `inspection.kts` — is in the
 `mcp-idea` skill.
 
+## The runtime image is `scratch`, and static is not self-contained
+
+`server/Dockerfile` builds a statically linked `linuxX64` binary (the `staticLinux` block in
+`server/build.gradle.kts`) and puts it on `scratch`: 15 542 820 bytes to pull become 9 522 896.
+
+Five files go with it and none is optional. glibc's `iconv` loads its converters with `dlopen` — even
+UTF-8 — and Ktor's charset layer on Kotlin/Native *is* glibc `iconv`, reached by `encodeURLParameter`
+on every page. A `scratch` image with the binary alone starts, serves `/favicon.svg`, answers 401
+everywhere else, and returns 500 from the first authenticated page. The list came from
+`strace -e trace=openat`, and the copies come from the build stage so the shared glibc matches the
+`libc.a` the binary was linked against.
+
+`-Xoverride-konan-properties` pins five `konan.properties` keys and is not a stable interface: a
+Kotlin bump can break the link. The `Image` workflow is what makes that a pull request's problem
+rather than a release's. `-Pkatcher.staticLink=false` links the old way on a machine without `g++`.
+
 ## Build/test
 
 - `./gradlew :server:build` / `:client:build` — standard Gradle multiplatform build.
+- `dev/image-smoke.sh <base-url>` drives a running katcher through a *rendered* page: it signs in
+  with the two proxy headers, creates an app, sends a crash and requires a timestamp on the group
+  page. A status-code smoke passes on an image that cannot render anything, which is how the `iconv`
+  failure above stayed invisible. The `Image` workflow builds the real image and runs it.
 - Native server tests live in `server/src/nativeTest/kotlin/.../data/*Test.kt` (repository-level tests
   against SQLite).
 - On a Mac `:client:build` also runs the client's native suite on the iOS simulator, which needs an

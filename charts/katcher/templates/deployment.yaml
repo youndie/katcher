@@ -20,6 +20,12 @@ spec:
       labels:
         app: katcher-backend
     spec:
+      # THE NUMBER THE SHUTDOWN PLAN IS CHECKED AGAINST. `DEADLINES` in `server/src/commonMain/kotlin/Main.kt`
+      # adds up to 21 seconds and declares 30 as the budget it is fitting into; nothing tells a
+      # process what its real grace period is, on any platform, so the two are one number written in
+      # two places and they move together. Lower this and the process is `SIGKILL`ed mid-drain, with
+      # kore's fit check saying nothing, because it was told 30.
+      terminationGracePeriodSeconds: 30
       containers:
         - name: katcher-backend
           image: "{{ .Values.registry.server }}/{{ .Values.registry.org }}/{{ .Values.server.image }}:{{ .Values.server.version }}"
@@ -70,6 +76,37 @@ spec:
                   key: {{ .Values.metrik.secretKey }}
             {{- end }}
             {{- end }}
+          # THE THREE PROBES ANSWER THREE DIFFERENT QUESTIONS, and until this chart had them it
+          # asked none: a wedged process kept receiving traffic and a starting one received it
+          # too early. One route answering 200 because the process is alive — which is what
+          # `/health` is here, and why readiness does not point at it — would have been the other
+          # half of the same mistake.
+          #
+          # `failureThreshold: 60` with `periodSeconds: 1` rather than a long `initialDelaySeconds`:
+          # the pod goes into service as soon as it is ready instead of at a fixed time chosen for
+          # the worst case. Migrations run before the server serves, so the minute is for them.
+          #
+          # Readiness is the one that is MEANT to fail. It reads a `SELECT 1` against SQLite and it
+          # goes false first thing in the shutdown sequence, which is what stops traffic arriving
+          # before anything is closed.
+          startupProbe:
+            httpGet:
+              path: /health/startup
+              port: http
+            periodSeconds: 1
+            failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: http
+            periodSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: http
+            periodSeconds: 20
+            failureThreshold: 3
           resources:
             requests:
               cpu: {{ .Values.server.resources.requests.cpu | quote }}

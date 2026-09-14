@@ -61,6 +61,23 @@ jobs:
           docker run --detach --name katcher-ci --publish 8080:8080 katcher:ci
           ./dev/image-smoke.sh http://localhost:8080
 
+      # The shutdown is the half of the lifecycle nobody watches, and on Kotlin/Native it is the
+      # half that runs its steps in the opposite order from the JVM. A transcript with the stages in
+      # the specified order is what says the sequence ran at all — without it, a process that was
+      # simply killed at the end of the grace period looks identical from the outside.
+      - name: It stops in order, and says so
+        run: |
+          docker stop --timeout 40 katcher-ci
+          log=$(docker logs katcher-ci 2>&1)
+          printf '%s\n' "$log" | grep -E 'ANNOUNCE|DRAIN|RELEASE_POOLS|EXIT' || true
+          for stage in SIGNAL ANNOUNCE DRAIN RELEASE_CONSUMERS RELEASE_POOLS EXIT; do
+            if ! printf '%s\n' "$log" | grep -q "$stage COMPLETED"; then
+              echo "the shutdown transcript has no completed $stage stage" >&2
+              printf '%s\n' "$log" | tail -40 >&2
+              exit 1
+            fi
+          done
+
       # The container has no shell, so this is the only account of what went wrong.
       - name: What it said, if it did not
         if: failure()

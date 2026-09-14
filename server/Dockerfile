@@ -17,7 +17,9 @@ RUN gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace
 # ---------- Stage 2 : Runtime ----------
 # NO BASE IMAGE. The binary is linked statically (the `staticLinux` block in
 # `server/build.gradle.kts`), so distroless/cc is not under it any more: 15 542 820 bytes to pull
-# become 9 522 896, measured on the two finished images.
+# become 9 570 311, measured on the two finished images. The distroless figure was taken before kore
+# was added, which costs this image 47 431 bytes — so the comparison flatters the new image by that
+# much and by nothing else.
 #
 # FIVE THINGS ARE STILL COPIED ACROSS, AND NOT ONE OF THEM IS OPTIONAL. A statically linked glibc is
 # not a self-contained one: `iconv` loads its converters with `dlopen`, so it needs the *shared*

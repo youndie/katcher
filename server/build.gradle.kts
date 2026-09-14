@@ -8,6 +8,11 @@ plugins {
     id("io.github.youndie.sborka.parity")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
+    // Generates `KoreBuildIdentity` — the version, the commit and the build time, as compiled-in
+    // source. Kotlin/Native has neither resources nor a manifest, so `/version` has no other way to
+    // know what it is serving. The version it stamps is this project's, which is `version` in
+    // gradle.properties, which is the same head the image tag and both publish workflows spell.
+    alias(libs.plugins.koreBuild)
 }
 
 // NOT A LIBRARY: nothing publishes or resolves this module, so there is no consumer for a
@@ -56,7 +61,7 @@ kotlin {
     // A LINUX BUILD LINKS STATICALLY, so the runtime image needs no base image (#55). glibc,
     // libstdc++ and libgcc move inside the binary — it grows by 893 312 bytes — and the 10 643 700-byte
     // distroless/cc layer under it disappears. Measured on the finished images: 15 542 820 bytes to
-    // pull becomes 9 522 896.
+    // pull becomes 9 570 311.
     //
     // STATIC HERE DOES NOT MEAN SELF-CONTAINED. glibc's `iconv` loads its converters with `dlopen`,
     // and a static binary that calls it still needs the shared glibc and the gconv modules on disk
@@ -137,8 +142,14 @@ tasks.withType<KotlinCompilationTask<*>> {
 // output — and reading it before it is written is a race Gradle fails the build over. The
 // format task already said this; the check task needs it just as much. What ktlint should
 // make of those files is decided in .editorconfig, not here.
+//
+// `generateKoreBuildIdentity` writes into commonMain's source directories for the same reason and
+// needs the same ordering. It is not the KSP task by another name: it always reruns (a commit can
+// change without any input Gradle can see), so ktlint meets it on every build rather than on the
+// first one.
 tasks.withType<BaseKtLintCheckTask>().configureEach {
     mustRunAfter(tasks.named("kspCommonMainKotlinMetadata"))
+    mustRunAfter(tasks.named("generateKoreBuildIdentity"))
 }
 
 dependencies {
@@ -154,6 +165,12 @@ dependencies {
     commonMainImplementation(libs.okio)
     commonMainImplementation(libs.mcp.kotlin.sdk.server)
     commonMainImplementation(libs.metrik.agent)
+
+    // The ordered shutdown, the three probes and /version. `kore-ktor` brings `kore-core` with it,
+    // and both are named because both are imported here — `Main.kt` uses the lifecycle and the
+    // module uses the routes.
+    commonMainImplementation(libs.kore.core)
+    commonMainImplementation(libs.kore.ktor)
 
     commonMainImplementation(libs.kotlinx.serialization.json)
     commonMainImplementation(ktorLibs.server.di)

@@ -33,6 +33,14 @@ for _ in $(seq 1 60); do
 done
 curl -fsS -o /dev/null "$base/favicon.svg" || fail "the server never answered on $base"
 
+# The probes and /version, before signing in: they are outside the `authenticate` block on purpose,
+# because the kubelet carries no headers. A `version:` line also means the Gradle plugin's generated
+# object was compiled in rather than merely written to disk.
+for probe in /health/startup /health/ready /health/live; do
+    curl -fsS -o /dev/null "$base$probe" || fail "$probe did not answer 200"
+done
+curl -fsS "$base/version" | grep -q '^version: ' || fail "/version did not report a version"
+
 curl -fsS "${auth[@]}" -X POST \
     --data-urlencode 'name=smoke' \
     --data-urlencode 'type=OTHER' \
