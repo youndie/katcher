@@ -35,6 +35,10 @@ import io.github.youndie.katcher.mcp.KatcherMcpServer
 import io.github.youndie.katcher.mcp.installMcp
 import io.github.youndie.katcher.retrace.MappingFileStorage
 import io.github.youndie.katcher.retrace.MappingFileStorageOkio
+import io.github.youndie.kore.generated.KoreBuildIdentity
+import io.github.youndie.kore.ktor.installKoreProbes
+import io.github.youndie.kore.ktor.installKoreVersion
+import io.github.youndie.kore.ktor.installShutdownRefusal
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.Authentication
@@ -46,9 +50,30 @@ import okio.Path.Companion.toPath
 import okio.SYSTEM
 import ru.workinprogress.metrik.agent.Metrik
 
-suspend fun Application.module() {
-    val config = getServerConfig()
-    val db = initDb(config)
+/**
+ * Everything this server is, given a database that is already open and the gates that answer for it.
+ *
+ * **The database is a parameter now, and that is the shutdown talking.** It used to be opened here,
+ * which left `main` with no handle on the pool and therefore no way to close it *after* the engine
+ * had drained — the ordering that `ApplicationStopping` gets backwards on Kotlin/Native (kore's
+ * research §1.1, and the reason katcher takes kore at all).
+ */
+suspend fun Application.module(
+    db: ISQLite,
+    config: ServerConfig,
+    probes: KatcherProbes,
+) {
+    // BEFORE the probes and before the routes. An interceptor installed later would let through
+    // every call that arrived first, and the one request this must not miss is the first one after
+    // readiness has gone false. It leaves kore's own routes alone — a 503 from `/health/live` is a
+    // failed liveness probe, which restarts the pod in the middle of the shutdown it is reporting.
+    installShutdownRefusal(isShuttingDown = { probes.readiness.isShuttingDown })
+    installKoreProbes(probes.startup, probes.readiness, probes.liveness)
+
+    // The version and the commit, compiled in by the Gradle plugin because Kotlin/Native has neither
+    // resources nor a manifest to read them from.
+    installKoreVersion(KoreBuildIdentity)
+
     common()
     initDi(db, config)
     initAuth()

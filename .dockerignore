@@ -1,0 +1,14 @@
+# WHAT THE IMAGE BUILD MUST NOT CARRY. `server/Dockerfile` does `COPY . .`, so everything here is
+# sent to the daemon on every build; a checkout on a machine that has built once holds ~600 MB of
+# `build/` directories, against ~30 MB of actual sources. CI never noticed — a fresh checkout has
+# none of them — which is exactly why this file is easy to forget and only bites locally.
+#
+# `.git` IS DELIBERATELY NOT HERE. Nothing in the build reads it today, but a build-identity plugin
+# that stamps the commit into the binary does, and it is 8 MB.
+**/build/
+.gradle/
+.kotlin/
+kotlin-js-store/
+**/node_modules/
+local.properties
+*.iml

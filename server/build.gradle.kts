@@ -8,6 +8,11 @@ plugins {
     id("io.github.youndie.sborka.parity")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.google.devtools.ksp")
+    // Generates `KoreBuildIdentity` — the version, the commit and the build time, as compiled-in
+    // source. Kotlin/Native has neither resources nor a manifest, so `/version` has no other way to
+    // know what it is serving. The version it stamps is this project's, which is `version` in
+    // gradle.properties, which is the same head the image tag and both publish workflows spell.
+    alias(libs.plugins.koreBuild)
 }
 
 // NOT A LIBRARY: nothing publishes or resolves this module, so there is no consumer for a
@@ -42,6 +47,7 @@ kotlin {
 
     val hostOs = System.getProperty("os.name")
     val arch = System.getProperty("os.arch")
+    val isLinuxX64Host = hostOs == "Linux" && (arch == "x86_64" || arch == "amd64")
     val nativeTarget =
         when {
             hostOs == "Mac OS X" && arch == "x86_64" -> macosX64("native")
@@ -52,10 +58,57 @@ kotlin {
             else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
         }
 
+    // A LINUX BUILD LINKS STATICALLY, so the runtime image needs no base image (#55). glibc,
+    // libstdc++ and libgcc move inside the binary — it grows by 893 312 bytes — and the 10 643 700-byte
+    // distroless/cc layer under it disappears. Measured on the finished images: 15 542 820 bytes to
+    // pull becomes 9 570 311.
+    //
+    // STATIC HERE DOES NOT MEAN SELF-CONTAINED. glibc's `iconv` loads its converters with `dlopen`,
+    // and a static binary that calls it still needs the shared glibc and the gconv modules on disk
+    // — which is why `server/Dockerfile` copies five things across and is not a `FROM scratch` with
+    // one COPY. Read that file before changing this one; the two are one decision.
+    //
+    // The link needs the static archives: `libc.a`, `crt1.o`, `libstdc++.a`, `libgcc.a`,
+    // `libgcc_eh.a`. `apt-get install g++` supplies all of them; the stock `gradle:…-noble` image
+    // carries none, and the failure there reads `unable to find library -lc`, which looks like a
+    // linker-flag problem and is not one. `-Pkatcher.staticLink=false` is the way out on a machine
+    // without g++ — the binary then links as it always did.
+    //
+    // `-Xoverride-konan-properties` IS NOT A STABLE INTERFACE. Five keys are pinned below and
+    // JetBrains have said they may change in any patch release, so a Kotlin bump can break this. It
+    // breaks loudly, as a link error, and the `Image` workflow is what makes a pull request rather
+    // than a release the place that happens.
+    //
+    // `linkerKonanFlags` is THE STOCK VALUE WITH `-Bdynamic` REMOVED and nothing else changed — read
+    // the key in `konan.properties` before editing it, its value continues onto a second line.
+    // Rewriting it from memory drops `--gc-sections` and costs 316 488 bytes for nothing.
+    //
+    // Two of the five overrides exist only because `-linker-option -static` does not currently mean
+    // static upstream: KT-89362, patch in JetBrains/kotlin#8127. If that lands, `--no-dynamic-linker`
+    // and the `linkerKonanFlags` line go away.
+    //
+    // The gcc directory is pinned to 13 — what noble ships and what the builder image has. A host
+    // with another gcc fails the link naming the path it could not find, which is the readable half
+    // of a trade against globbing the filesystem at configuration time.
+    val staticLinux =
+        isLinuxX64Host && (project.findProperty("katcher.staticLink") as String?)?.toBoolean() != false
+
     nativeTarget.apply {
         binaries {
             executable {
                 entryPoint = "main"
+
+                if (staticLinux) {
+                    linkerOpts("-static", "--no-dynamic-linker", "-L/usr/lib/x86_64-linux-gnu")
+                    freeCompilerArgs +=
+                        "-Xoverride-konan-properties=" +
+                        "targetSysRoot.linux_x64=/;" +
+                        "crtFilesLocation.linux_x64=usr/lib/x86_64-linux-gnu;" +
+                        "libGcc.linux_x64=usr/lib/gcc/x86_64-linux-gnu/13;" +
+                        "linkerGccFlags=-lgcc -lgcc_eh -lc;" +
+                        "linkerKonanFlags.linux_x64=-Bstatic -lstdc++ -ldl -lm -lpthread " +
+                        "--defsym __cxa_demangle=Konan_cxa_demangle --gc-sections"
+                }
             }
         }
     }
@@ -89,8 +142,14 @@ tasks.withType<KotlinCompilationTask<*>> {
 // output — and reading it before it is written is a race Gradle fails the build over. The
 // format task already said this; the check task needs it just as much. What ktlint should
 // make of those files is decided in .editorconfig, not here.
+//
+// `generateKoreBuildIdentity` writes into commonMain's source directories for the same reason and
+// needs the same ordering. It is not the KSP task by another name: it always reruns (a commit can
+// change without any input Gradle can see), so ktlint meets it on every build rather than on the
+// first one.
 tasks.withType<BaseKtLintCheckTask>().configureEach {
     mustRunAfter(tasks.named("kspCommonMainKotlinMetadata"))
+    mustRunAfter(tasks.named("generateKoreBuildIdentity"))
 }
 
 dependencies {
@@ -106,6 +165,12 @@ dependencies {
     commonMainImplementation(libs.okio)
     commonMainImplementation(libs.mcp.kotlin.sdk.server)
     commonMainImplementation(libs.metrik.agent)
+
+    // The ordered shutdown, the three probes and /version. `kore-ktor` brings `kore-core` with it,
+    // and both are named because both are imported here — `Main.kt` uses the lifecycle and the
+    // module uses the routes.
+    commonMainImplementation(libs.kore.core)
+    commonMainImplementation(libs.kore.ktor)
 
     commonMainImplementation(libs.kotlinx.serialization.json)
     commonMainImplementation(ktorLibs.server.di)

@@ -1,20 +1,28 @@
 [versions]
 # The shared build conventions. One number: every sborka plugin below takes its version from here.
 sborka = "0.4.0.58"
-androidGradlePlugin = "9.3.1"
+androidGradlePlugin = "9.4.0"
 atomicfu = "0.33.0"
 kotlin = "2.4.10"
+# kore: the process lifecycle of a server binary — the ordered shutdown, the three probes and
+# /version. One number for the two libraries and the Gradle plugin that generates the identity;
+# they are published together and a plugin from one version with a library from another would
+# compile and then disagree about the object it generates.
+kore = "0.1.4"
 kotlinxCoroutinesCore = "1.11.0"
 kotlinxDatetime = "0.8.0"
 kotlinxSerializationJson = "1.11.0"
 mcpKotlinSdk = "0.15.0"
 metrikAgent = "0.2.16"
 sqlx4k = "1.13.0"
-ksp = "2.3.11"
+ksp = "2.3.12"
 ktlint = "14.2.0"
-okio = "3.18.1"
+okio = "3.18.2"
 
 [libraries]
+
+kore-core = { module = "io.github.youndie:kore-core", version.ref = "kore" }
+kore-ktor = { module = "io.github.youndie:kore-ktor", version.ref = "kore" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
@@ -30,6 +38,7 @@ sqlx4k-codegen = { module = "io.github.smyrgeorge:sqlx4k-codegen", version.ref =
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
 [plugins]
+koreBuild = { id = "io.github.youndie.kore.build", version.ref = "kore" }
 sborkaKmp = { id = "io.github.youndie.sborka.kmp", version.ref = "sborka" }
 sborkaParity = { id = "io.github.youndie.sborka.parity", version.ref = "sborka" }
 sborkaJvm = { id = "io.github.youndie.sborka.jvm", version.ref = "sborka" }

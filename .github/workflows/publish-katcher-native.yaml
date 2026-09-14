@@ -20,9 +20,19 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      # The key is `version`, and has been since the sborka migration renamed it — Gradle reads that
+      # name on its own. The grep here still said `VERSION`, so it matched nothing and the tag below
+      # came out as `ghcr.io/youndie/katcher:`. This workflow has not run since the rename, which is
+      # why an empty tag never announced itself.
       - name: Extract version
         id: extract_version
-        run: echo "VERSION=$(grep '^VERSION=' gradle.properties | cut -d'=' -f2)" >> $GITHUB_ENV
+        run: |
+          version=$(grep '^version=' gradle.properties | cut -d'=' -f2)
+          if [ -z "$version" ]; then
+            echo "gradle.properties has no version= line; the image would be tagged with nothing" >&2
+            exit 1
+          fi
+          echo "VERSION=$version" >> $GITHUB_ENV
 
       - name: Dockerize and push 🏗️
         uses: docker/build-push-action@v7

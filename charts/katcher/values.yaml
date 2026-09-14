@@ -6,7 +6,11 @@ hostname: ""
 
 server:
   image: katcher
-  version: 0.6.2
+  # 0.8.0 AND NOT EARLIER, because the chart above now probes `/health/startup`, and an image
+  # without that route fails the startup probe sixty times and is restarted. The tag exists once
+  # `Publish server native` has run for this head — the chart and the image move together or the
+  # install is a CrashLoop with a healthy-looking deployment behind it.
+  version: 0.8.0
   resources:
     requests:
       cpu: "30m"
@@ -55,10 +59,10 @@ db:
   # rolled back to. Turn it off only where the data is disposable.
   backupBeforeUpgrade: true
 
-  # Any image with a shell will do; the server image is distroless and has none. Pinned by
+  # Any image with a shell will do; the server image is `scratch` and has none. Pinned by
   # digest-free tag on purpose — this runs once per upgrade and pulling a moving busybox is a
   # smaller risk than an unpatched pinned one.
-  backupImage: "busybox:1.37"
+  backupImage: "busybox:1.38"
 
 sourceMaps:
   size: 2Gi
