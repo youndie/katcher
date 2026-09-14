@@ -12,7 +12,14 @@ RUN apt-get update \
 WORKDIR /app
 COPY . .
 
-RUN gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace
+# INSTRUMENTATION, OFF UNLESS ASKED FOR: `--build-arg GRADLE_PROFILE=--profile`. Empty by
+# default, and an empty expansion adds no argument. RQ0 could not split this step's 448s into
+# configuration, toolchain download, compilation and link, because BuildKit's `#11 <seconds>`
+# prefixes are flush marks rather than line marks — `compileKotlinNative` measured EXACTLY 30.0s
+# in three separate runs. The profile report is what resolves it, and `image.yml` extracts it.
+ARG GRADLE_PROFILE=
+
+RUN gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace ${GRADLE_PROFILE}
 
 # ---------- Stage 2 : Runtime ----------
 # NO BASE IMAGE. The binary is linked statically (the `staticLinux` block in

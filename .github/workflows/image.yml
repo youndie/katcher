@@ -43,6 +43,22 @@ on:
       - .dockerignore
       - .github/workflows/image.yml
 
+  # INSTRUMENTATION, AND IT HAS TO BE ASKED FOR — see the same block in ci.yml. RQ0 could bound
+  # this job's docker steps exactly and could NOT split the Gradle step inside them: BuildKit's
+  # `#11 <seconds>` prefixes are when it flushed a batch, not when a line was written, and
+  # `compileKotlinNative` came out at exactly 30.0s in three separate runs because of it.
+  #
+  # A profile run builds `--target build` and stops there. It does not produce the runtime image
+  # and does not run the smoke test, so it is a measurement and never a gate; the ordinary path
+  # below is untouched. Doing both would mean two full uncached builds — about fourteen minutes —
+  # to answer a question that only needs the first.
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Build with --profile and keep the report instead of building the image
+        type: boolean
+        default: false
+
 concurrency:
   group: image-${{ github.ref }}
   cancel-in-progress: true
@@ -54,9 +70,32 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Build the runtime image
+        if: ${{ !inputs.profile }}
         run: docker build --file server/Dockerfile --tag katcher:ci .
 
+      # The build stage only, with the profiler on, and the report lifted out of it. `docker cp`
+      # from a container made off the stage rather than `--output`, because the report has to come
+      # from the same filesystem the build wrote it to and nothing else in the stage is wanted.
+      - name: Profile the build instead
+        if: ${{ inputs.profile }}
+        run: |
+          docker build --file server/Dockerfile --target build \
+            --build-arg GRADLE_PROFILE=--profile --tag katcher:profile .
+          id=$(docker create katcher:profile)
+          docker cp "$id:/app/build/reports/profile" ./gradle-profile
+          docker rm "$id"
+          ls -la ./gradle-profile
+
+      - name: Keep the report
+        if: ${{ inputs.profile }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: gradle-profile-image
+          path: ./gradle-profile/
+          retention-days: 30
+
       - name: The image runs, and a page renders a timestamp
+        if: ${{ !inputs.profile }}
         run: |
           docker run --detach --name katcher-ci --publish 8080:8080 katcher:ci
           ./dev/image-smoke.sh http://localhost:8080
@@ -66,6 +105,7 @@ jobs:
       # the specified order is what says the sequence ran at all — without it, a process that was
       # simply killed at the end of the grace period looks identical from the outside.
       - name: It stops in order, and says so
+        if: ${{ !inputs.profile }}
         run: |
           docker stop --timeout 40 katcher-ci
           log=$(docker logs katcher-ci 2>&1)
@@ -80,7 +120,7 @@ jobs:
 
       # The container has no shell, so this is the only account of what went wrong.
       - name: What it said, if it did not
-        if: failure()
+        if: ${{ failure() && !inputs.profile }}
         run: docker logs katcher-ci || true
 
       # WHAT THIS NUMBER IS DEPENDS ON THE HOST, and the field does not say so. With the classic
@@ -91,10 +131,11 @@ jobs:
       # meant to be. This one is a trend line for this job: it moves when the image does.
       # A measured setting that nothing asserts is a setting that will be deleted.
       - name: The allocator cap survived the build
+        if: ${{ !inputs.profile }}
         run: |
           docker image inspect katcher:ci --format '{{json .Config.Env}}' | grep -q 'MALLOC_ARENA_MAX=2' \
             || { echo "the image lost MALLOC_ARENA_MAX=2" >&2; exit 1; }
 
       - name: Size
-        if: always()
+        if: ${{ always() && !inputs.profile }}
         run: docker image inspect katcher:ci --format 'unpacked on this runner {{.Size}} bytes (not pull bytes, see the workflow comment)'

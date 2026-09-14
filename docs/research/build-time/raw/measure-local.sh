@@ -21,6 +21,10 @@
 #   incr_dbg   one-line change in :server → linkDebugExecutableNative
 #   incr_rel   the same change          → linkReleaseExecutableNative
 #
+# PROFILE=1 additionally runs Gradle with --profile and keeps <tag>.profile.html beside each
+# timing. Read them with parse-profile.py. The timings from a profiled run are for attribution,
+# not for the results table.
+#
 # Reps are INTERLEAVED (warm, dbg, rel, warm, dbg, rel, …) rather than blocked, so a thermal
 # ramp on this laptop lands on every metric instead of on whichever ran last.
 #
@@ -68,7 +72,13 @@ remote_build() {
     local task="$1"
     local tag="$2"
     local log="$OUT/$tag.log"
-    "$WSL_RUN" "cd $REMOTE && S=\$(date +%s%N) && ./gradlew $task --console=plain; RC=\$?; E=\$(date +%s%N); echo \"ELAPSED_MS=\$(( (E - S) / 1000000 ))\"; echo \"EXIT=\$RC\"" > "$log" 2>&1
+    "$WSL_RUN" "cd $REMOTE && S=\$(date +%s%N) && ./gradlew $task $PROFILE_ARG --console=plain; RC=\$?; E=\$(date +%s%N); echo \"ELAPSED_MS=\$(( (E - S) / 1000000 ))\"; echo \"EXIT=\$RC\"" > "$log" 2>&1
+    if [ -n "$PROFILE_ARG" ]; then
+        # Reports are written on the box and the replica does not carry them back, so they are
+        # fetched in a call of their own rather than looked for locally afterwards.
+        "$WSL_RUN" "cd $REMOTE && cat \$(ls -t build/reports/profile/profile-*.html | head -1)" \
+            > "$OUT/$tag.profile.html" 2>/dev/null || true
+    fi
     local ms rc
     ms=$(grep -o 'ELAPSED_MS=[0-9]*' "$log" | tail -1 | cut -d= -f2)
     rc=$(grep -o 'EXIT=[0-9]*' "$log" | tail -1 | cut -d= -f2)

@@ -9,6 +9,22 @@ on:
   push:
     branches: [main]
 
+  # INSTRUMENTATION, AND IT HAS TO BE ASKED FOR. RQ0 of the build-time study could attribute 26%
+  # of this job: `./gradlew build` is 280s of 337s, and a plain-console log prints a line when a
+  # task STARTS and never how long it took — with `org.gradle.parallel=true` the gap between two
+  # start lines is not a duration. `--profile` is the only thing that carries per-task time and it
+  # cannot be turned on after the fact.
+  #
+  # Off by default rather than always on: a report nobody reads is an artifact nobody deletes, and
+  # the point of the flag is that the number is there when someone asks the question, not that
+  # every pull request carries one. See docs/research/build-time/rq0-attribution.md.
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Run Gradle with --profile and keep the report
+        type: boolean
+        default: false
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -36,7 +52,16 @@ jobs:
       # declare every target they publish, and the Apple ones are cross-compiled here as klibs
       # (kotlin.native.enableKlibsCrossCompilation in gradle.properties). Tests still run only
       # for the host target.
-      - run: ./gradlew build --stacktrace
+      #
+      # `inputs` is null on pull_request and push, so the flag expands to nothing there.
+      - run: ./gradlew build --stacktrace ${{ inputs.profile && '--profile' || '' }}
+
+      - if: ${{ inputs.profile }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: gradle-profile-build
+          path: build/reports/profile/
+          retention-days: 30
 
       - if: failure()
         uses: actions/upload-artifact@v7

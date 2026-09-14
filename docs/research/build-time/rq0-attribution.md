@@ -91,14 +91,28 @@ the free scan service publishes build data to a third party — an outward-facin
 research does not need. `--profile` is built into Gradle, writes an HTML report plus its data
 under `build/reports/profile/`, and the CI job already uploads `**/build/reports/**` on failure.
 
-Three places need it, and they are one PR:
+Three places need it, and they are one PR. **Done** — all three are behind a flag that is off by
+default, so an ordinary pull request runs exactly what it ran before:
 
-1. `ci.yml` — `--profile` on the `build` step, and the report uploaded on success as well as on
-   failure.
-2. `server/Dockerfile` — `--profile` on the Gradle invocation, with the report copied into the
-   build stage output so the Image job can surface it.
-3. The local harness — [raw/measure-local.sh](raw/measure-local.sh) already keeps every Gradle
-   log; it gains `--profile` and keeps the reports next to the timings.
+| where | how to ask for it | what comes back |
+|---|---|---|
+| `ci.yml` | `workflow_dispatch` with `profile: true` | `gradle-profile-build` artifact |
+| `server/Dockerfile` | `--build-arg GRADLE_PROFILE=--profile` | the report, via `image.yml` |
+| `image.yml` | `workflow_dispatch` with `profile: true` | `gradle-profile-image` artifact |
+| [raw/measure-local.sh](raw/measure-local.sh) | `PROFILE=1` | `<tag>.profile.html` beside each timing |
+
+A profile run of `image.yml` builds `--target build` and stops: it does not produce the runtime
+image and does not run the smoke test. It is a measurement, never a gate. Building both would be
+two full uncached builds — about fourteen minutes — to answer a question the first one answers.
+
+[raw/parse-profile.py](raw/parse-profile.py) turns the report into a TSV. It reports each task's
+**outcome** alongside its duration, and that column is not decoration: a task marked `FROM-CACHE`
+or `UP-TO-DATE` contributes its name to the graph and almost nothing to the clock, and a table
+that drops it invites the reader to total up work that never happened.
+
+**Timings from a profiled run do not go in the results table.** Profiling perturbs what it
+measures — the phase-profiled link above took 138 s against the 132 s median of the unprofiled
+ones. Profile runs answer *where*; the plain runs answer *how long*.
 
 And for the inside-the-link split, `-Xprofile-phases` **exists on the pinned compiler** — checked
 against `kotlin-native-prebuilt-linux-x86_64-2.4.10`, which also offers the experimental
