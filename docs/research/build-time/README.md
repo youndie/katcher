@@ -20,6 +20,7 @@ debug edit-link loop down 45.5%.
 | [rq2-jvm-sizing.md](rq2-jvm-sizing.md) | RQ2: the premise checked before the measurement, and what it cost |
 | [rq3-task-graph.md](rq3-task-graph.md) | RQ3: what a PR is actually checked by, and why its green condition needs RQ4 first |
 | [rq4-docker-layering.md](rq4-docker-layering.md) | RQ4: why the cache-mount option cannot work here, and the variant that can |
+| [rq5-ci-caches.md](rq5-ci-caches.md) | RQ5: green before anything was changed, and the duplicate that was not why |
 | [retractions.md](retractions.md) | Claims made in this research and later withdrawn |
 | [raw/](raw/) | The logs the tables were derived from, and the scripts that derive them |
 
