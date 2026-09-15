@@ -108,7 +108,12 @@ jobs:
             --env GRADLE_USER_HOME=/root/.gradle \
             --env GRADLE_PROFILE="${{ inputs.profile && '--profile' || '' }}" \
             gradle:9.7.1-jdk25-noble \
-            sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace $GRADLE_PROFILE'
+            sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null \
+                   && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace $GRADLE_PROFILE \
+                   && echo "--- inside the container ---" \
+                   && echo "GRADLE_USER_HOME=$GRADLE_USER_HOME" \
+                   && du -sh /root/.gradle /home/gradle/.gradle 2>/dev/null \
+                   && gradle --version | grep -iE "gradle user home|^Gradle" || true'
           # The container writes as root through the mounts; the cache save step and everything
           # after it run as the runner's user.
           sudo chown -R "$(id -u):$(id -g)" "$HOME/.gradle" "$HOME/.konan" server/build
