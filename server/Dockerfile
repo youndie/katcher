@@ -1,25 +1,16 @@
-# ---------- Stage 1 : Build ----------
-FROM --platform=linux/amd64 gradle:9.7.1-jdk25-noble AS build
-
-# The static archives the link needs: libc.a, crt1.o, libstdc++.a, libgcc.a, libgcc_eh.a. The image
-# ships glibc 2.39 — the right version — and none of the archives, and the link fails with `unable
-# to find library -lc`, which reads like a linker-flag problem and is not one. gcc 13 here is the
-# version the `libGcc` override in `server/build.gradle.kts` names; the two move together.
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends g++ \
-    && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /app
-COPY . .
-
-# INSTRUMENTATION, OFF UNLESS ASKED FOR: `--build-arg GRADLE_PROFILE=--profile`. Empty by
-# default, and an empty expansion adds no argument. RQ0 could not split this step's 448s into
-# configuration, toolchain download, compilation and link, because BuildKit's `#11 <seconds>`
-# prefixes are flush marks rather than line marks — `compileKotlinNative` measured EXACTLY 30.0s
-# in three separate runs. The profile report is what resolves it, and `image.yml` extracts it.
-ARG GRADLE_PROFILE=
-
-RUN gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace ${GRADLE_PROFILE}
+# ---------- Stage 1 : where the glibc artefacts come from ----------
+# RQ4. Gradle no longer runs here. It runs in `docker run` against THIS SAME IMAGE, with the
+# runner's `~/.gradle` and `~/.konan` mounted in — see `.github/workflows/image.yml`. Inside
+# `docker build` those caches cannot persist between runs: a BuildKit cache mount lives in the
+# builder's own state, `cache-to: type=gha` exports layers rather than mounts, and the layer below
+# `COPY . .` is invalidated by every commit anyway. Outside it, `actions/cache` handles them.
+#
+# THE IMAGE STAYS THE SAME ONE, and that is the whole point of doing it this way rather than
+# linking on the runner. The five artefacts below have to be the same build of glibc as the
+# `libc.a` the binary was linked against; linking on the runner and copying them from here would
+# pair a 2.39 with a different 2.39. That failure does not break the build — it returns 500 from
+# the first authenticated page, which is what `dev/image-smoke.sh` exists to catch.
+FROM --platform=linux/amd64 gradle:9.7.1-jdk25-noble AS libc
 
 # ---------- Stage 2 : Runtime ----------
 # NO BASE IMAGE. The binary is linked statically (the `staticLinux` block in
@@ -58,13 +49,14 @@ RUN gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace ${GRADLE
 FROM scratch
 WORKDIR /app
 
-COPY --from=build /etc/ld.so.cache /etc/ld.so.cache
-COPY --from=build /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
-COPY --from=build /lib/x86_64-linux-gnu/libc.so.6 /lib/x86_64-linux-gnu/libc.so.6
-COPY --from=build /usr/lib/x86_64-linux-gnu/gconv /usr/lib/x86_64-linux-gnu/gconv
-COPY --from=build /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=libc /etc/ld.so.cache /etc/ld.so.cache
+COPY --from=libc /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+COPY --from=libc /lib/x86_64-linux-gnu/libc.so.6 /lib/x86_64-linux-gnu/libc.so.6
+COPY --from=libc /usr/lib/x86_64-linux-gnu/gconv /usr/lib/x86_64-linux-gnu/gconv
+COPY --from=libc /usr/share/zoneinfo /usr/share/zoneinfo
 
-COPY --from=build /app/server/build/bin/native/releaseExecutable/server.kexe /app/server
+# From the build context now, not from a stage. `.dockerignore` un-excludes exactly this path.
+COPY server/build/bin/native/releaseExecutable/server.kexe /app/server
 
 # THE ALLOCATOR, CAPPED. glibc gives a thread an arena of its own whenever the one it wants is
 # locked, up to eight per core — and it counts the *host's* cores, not the container's CPU quota, so

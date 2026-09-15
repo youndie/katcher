@@ -48,10 +48,9 @@ on:
   # `#11 <seconds>` prefixes are when it flushed a batch, not when a line was written, and
   # `compileKotlinNative` came out at exactly 30.0s in three separate runs because of it.
   #
-  # A profile run builds `--target build` and stops there. It does not produce the runtime image
-  # and does not run the smoke test, so it is a measurement and never a gate; the ordinary path
-  # below is untouched. Doing both would mean two full uncached builds — about fourteen minutes —
-  # to answer a question that only needs the first.
+  # Since RQ4 moved Gradle out of `docker build`, a profile run is no longer a separate path: the
+  # flag rides along on the `docker run` that links the binary, the image is still assembled, and
+  # the smoke test still runs. It costs one extra artifact rather than a second whole build.
   workflow_dispatch:
     inputs:
       profile:
@@ -69,33 +68,56 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Build the runtime image
-        if: ${{ !inputs.profile }}
-        run: docker build --file server/Dockerfile --tag katcher:ci .
+      # RQ4: THE CACHES THE CONTAINER USED TO START WITHOUT. Inside `docker build` they cannot
+      # persist — a BuildKit cache mount lives in the builder's own state, `type=gha` exports
+      # layers rather than mounts, and the layer under `COPY . .` is invalidated by every commit.
+      # Outside it, this is an ordinary actions/cache.
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: image-gradle-${{ runner.os }}-${{ hashFiles('gradle/*.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: image-gradle-${{ runner.os }}-
 
-      # The build stage only, with the profiler on, and the report lifted out of it. `docker cp`
-      # from a container made off the stage rather than `--output`, because the report has to come
-      # from the same filesystem the build wrote it to and nothing else in the stage is wanted.
-      - name: Profile the build instead
-        if: ${{ inputs.profile }}
+      - uses: actions/cache@v6
+        with:
+          path: ~/.konan
+          key: image-konan-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: image-konan-${{ runner.os }}-
+
+      # THE SAME IMAGE THE RUNTIME TAKES ITS GLIBC FROM, and that is not incidental: the binary is
+      # statically linked but still `dlopen`s its gconv converters, so the shared glibc copied into
+      # the runtime has to be the same build as the `libc.a` this link used. Linking on the runner
+      # instead would pair one glibc 2.39 with a different one, and the symptom is not a failed
+      # build — it is 500 from the first authenticated page.
+      - name: Link the binary, in the image that supplies its glibc
         run: |
-          docker build --file server/Dockerfile --target build \
-            --build-arg GRADLE_PROFILE=--profile --tag katcher:profile .
-          id=$(docker create katcher:profile)
-          docker cp "$id:/app/build/reports/profile" ./gradle-profile
-          docker rm "$id"
-          ls -la ./gradle-profile
+          mkdir -p "$HOME/.gradle" "$HOME/.konan"
+          docker run --rm \
+            --volume "$PWD":/app --workdir /app \
+            --volume "$HOME/.gradle":/root/.gradle \
+            --volume "$HOME/.konan":/root/.konan \
+            --env GRADLE_PROFILE="${{ inputs.profile && '--profile' || '' }}" \
+            gradle:9.7.1-jdk25-noble \
+            sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace $GRADLE_PROFILE'
+          # The container writes as root through the mounts; the cache save step and everything
+          # after it run as the runner's user.
+          sudo chown -R "$(id -u):$(id -g)" "$HOME/.gradle" "$HOME/.konan" server/build
+          ls -l server/build/bin/native/releaseExecutable/server.kexe
 
-      - name: Keep the report
+      - name: Keep the profile report
         if: ${{ inputs.profile }}
         uses: actions/upload-artifact@v7
         with:
           name: gradle-profile-image
-          path: ./gradle-profile/
+          path: build/reports/profile/
           retention-days: 30
 
+      - name: Assemble the runtime image
+        run: docker build --file server/Dockerfile --tag katcher:ci .
+
       - name: The image runs, and a page renders a timestamp
-        if: ${{ !inputs.profile }}
         run: |
           docker run --detach --name katcher-ci --publish 8080:8080 katcher:ci
           ./dev/image-smoke.sh http://localhost:8080
@@ -105,7 +127,6 @@ jobs:
       # the specified order is what says the sequence ran at all — without it, a process that was
       # simply killed at the end of the grace period looks identical from the outside.
       - name: It stops in order, and says so
-        if: ${{ !inputs.profile }}
         run: |
           docker stop --timeout 40 katcher-ci
           log=$(docker logs katcher-ci 2>&1)
@@ -120,7 +141,7 @@ jobs:
 
       # The container has no shell, so this is the only account of what went wrong.
       - name: What it said, if it did not
-        if: ${{ failure() && !inputs.profile }}
+        if: failure()
         run: docker logs katcher-ci || true
 
       # WHAT THIS NUMBER IS DEPENDS ON THE HOST, and the field does not say so. With the classic
@@ -131,11 +152,10 @@ jobs:
       # meant to be. This one is a trend line for this job: it moves when the image does.
       # A measured setting that nothing asserts is a setting that will be deleted.
       - name: The allocator cap survived the build
-        if: ${{ !inputs.profile }}
         run: |
           docker image inspect katcher:ci --format '{{json .Config.Env}}' | grep -q 'MALLOC_ARENA_MAX=2' \
             || { echo "the image lost MALLOC_ARENA_MAX=2" >&2; exit 1; }
 
       - name: Size
-        if: ${{ always() && !inputs.profile }}
+        if: always()
         run: docker image inspect katcher:ci --format 'unpacked on this runner {{.Size}} bytes (not pull bytes, see the workflow comment)'
