@@ -68,16 +68,7 @@ jobs:
       # `dev` samples or docs, none of which `:server` depends on.
       #
       # 130.3 s of the 361.8 s of task time in this job, and one task out of 863.
-      # `--no-configuration-cache` — RQ6, AND ONLY HERE. Measured on this repository rather than
-      # taken from the article that suggested it: every CI run logs `Calculating task graph as no
-      # cached configuration is available` and then `Configuration cache entry stored`. It is
-      # computed and serialised on every run and reused on none, because the entry lives in the
-      # project's `.gradle/` and every run is a fresh checkout — `setup-gradle` caches `~/.gradle`,
-      # which is a different directory.
-      #
-      # NOT turned off in `gradle.properties`, which would reach the local loop too. There the
-      # entry IS reused between runs, and RQ1's measurements sit on top of that.
-      - run: ./gradlew build -x :server:linkReleaseExecutableNative --no-configuration-cache --stacktrace ${{ inputs.profile && '--profile' || '' }}
+      - run: ./gradlew build -x :server:linkReleaseExecutableNative --stacktrace ${{ inputs.profile && '--profile' || '' }}
 
       - if: ${{ inputs.profile }}
         uses: actions/upload-artifact@v7
