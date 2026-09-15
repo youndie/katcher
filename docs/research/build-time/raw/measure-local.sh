@@ -37,17 +37,20 @@ set -u -o pipefail
 
 REPS="${REPS:-3}"
 SUBJECT="${SUBJECT:-server/src/commonMain/kotlin/Main.kt}"
-# WHERE THE BUILD RUNS. In local mode this defaults to the tree you are standing in, because
-# the alternative is editing one checkout and building another — see the assertion below.
-if [ -n "${RUNNER-x}" ] && [ -z "${RUNNER:-}" ]; then
-    REMOTE="${REMOTE:-$PWD}"
-else
-    REMOTE="${REMOTE:-\$HOME/katcher}"
-fi
 # HOW A COMMAND REACHES THE BUILD HOST. Empty means "this machine" — which is how it runs on a
 # server you can edit on directly. `wsl-run` is the mutagen case, where the orchestrator has to
 # stay on the mac because the replica daemon reverts an edit made on the far side.
 RUNNER="${RUNNER-$HOME/.claude/bin/wsl-run}"
+
+# WHERE THE BUILD RUNS — decided AFTER RUNNER, because it depends on it. The first version of this
+# tested RUNNER above its own assignment and inverted the sense of the test as well, so local mode
+# still defaulted to ~/katcher and the assertion below refused to start. Two bugs in four lines,
+# both invisible until something downstream said no.
+if [ -z "$RUNNER" ]; then
+    REMOTE="${REMOTE:-$PWD}"
+else
+    REMOTE="${REMOTE:-\$HOME/katcher}"
+fi
 STAMP="$(date +%Y%m%d-%H%M%S)"
 OUT="${OUT:-$PWD/docs/research/build-time/raw/local-$STAMP}"
 
