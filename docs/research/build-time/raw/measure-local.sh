@@ -70,8 +70,16 @@ GRADLE_ARGS="${GRADLE_ARGS:-}"
 # would spend four minutes a rep on a metric that compiler caches cannot touch.
 METRICS="${METRICS:-warm incr_dbg incr_rel}"
 
-REL=":server:linkReleaseExecutableNative"
-DBG=":server:linkDebugExecutableNative"
+# THE TASK NAMES ARE PARAMETERS, and RQ8 is why. §7 promises this script lets "the next repo
+# produce its own before/after in one command"; the next repo was tracy, which declares
+# `linuxX64()` explicitly where katcher picks its native target by host and calls it `native`. Two
+# repositories in one portfolio, two task names, and a script with either one hardcoded runs on
+# exactly one of them.
+#
+#   katcher   REL=:server:linkReleaseExecutableNative   SUBJECT=server/src/commonMain/kotlin/Main.kt
+#   tracy     REL=:server:linkReleaseExecutableLinuxX64 SUBJECT=server/src/commonMain/kotlin/io/github/youndie/tracy/server/Application.kt
+REL="${REL:-:server:linkReleaseExecutableNative}"
+DBG="${DBG:-:server:linkDebugExecutableNative}"
 
 [ -f "$SUBJECT" ] || { echo "run me from the repository root: $SUBJECT not found" >&2; exit 2; }
 [ -z "$RUNNER" ] || [ -x "${RUNNER%% *}" ] || { echo "no runner at ${RUNNER%% *}" >&2; exit 2; }
@@ -152,7 +160,7 @@ remote_build() {
 did_work() {
     local log="$OUT/$1.log"
     local task="$2"
-    if ! grep -qE "^> Task :server:compileKotlinNative\$" "$log"; then
+    if ! grep -qE "^> Task ${COMPILE_TASK:-:server:compileKotlinNative}\$" "$log"; then
         echo "compile-not-run" >&2
         return 1
     fi
