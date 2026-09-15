@@ -114,6 +114,16 @@ jobs:
           sudo chown -R "$(id -u):$(id -g)" "$HOME/.gradle" "$HOME/.konan" server/build
           ls -l server/build/bin/native/releaseExecutable/server.kexe
 
+          # WHERE THE CACHES ACTUALLY LANDED. Printed every run, not added while debugging: the
+          # first two runs of this change both reported "Path(s) specified in the action for
+          # caching do(es) not exist" in the post step, and neither the timings nor the green tick
+          # said anything was wrong. A cache the build never writes to still looks like a success.
+          echo "--- receipts ---"
+          du -sh "$HOME/.gradle" "$HOME/.konan" 2>/dev/null || true
+          ls -la "$HOME/.gradle" 2>/dev/null | head -10 || echo "no $HOME/.gradle at all"
+          docker run --rm --env GRADLE_USER_HOME=/root/.gradle gradle:9.7.1-jdk25-noble \
+            sh -c 'id; echo "HOME=$HOME GRADLE_USER_HOME=$GRADLE_USER_HOME"' || true
+
       - name: Keep the profile report
         if: ${{ inputs.profile }}
         uses: actions/upload-artifact@v7
