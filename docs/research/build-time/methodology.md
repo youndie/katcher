@@ -162,3 +162,56 @@ around from here.
 **For measurement, the lasting point:** a stand that can stop mid-campaign has to be *asked*
 whether it was up, per campaign, not assumed. Recording box load and memory at the start of each
 block already existed; it is not enough, because a box that is gone records nothing at all.
+
+## The baseline that counts, and the two stands behind it
+
+**Taken 2026-09-15 on the WSL box, in `~/katcher-bench` at `2153193`** —
+[raw/baseline-wsl-2026-09-15.tsv](raw/baseline-wsl-2026-09-15.tsv). Four reps, rep 1 discarded as
+warm-up, the cut declared before the run.
+
+| metric | median | range | CV |
+|---|---|---|---|
+| `T_warm` | **0.94 s** | 0.88–1.02 | 5.9% |
+| `T_incr_dbg` | **8.03 s** | 7.37–8.97 | 8.1% |
+| `T_incr_rel` | **110.13 s** | 109.91–112.40 | 1.0% |
+
+Load stayed between 0.31 and 2.85 on 20 cores for the whole campaign, and that is readable in the
+results file rather than asserted here: **every row carries load before, load after and memory
+used.** This is the first campaign of the study that can say it ran on a quiet machine and show it.
+
+It is a baseline for the repository *as it now stands* — `kotlin.incremental.native=true` from RQ1
+is in it. It is not comparable to the pre-merge figures taken on the mutagen replica.
+
+### bench-a, set up and abandoned
+
+A Hetzner box (4 cores, 7.7 GiB, Intel Xeon Skylake) was provisioned as a second stand and dropped.
+Two reasons, and the second is the one that decided it:
+
+1. **The release link does not fit.** With the repository's `-Xmx4G` the Gradle daemon reaches
+   5.95 GB RSS — LLVM allocates outside the Java heap — and `clang++` then asks for its own. The
+   kernel log carries 125 OOM kills. `-Xmx3g` completes at ~300 s against `-Xmx4G`'s 256–275 s:
+   slower, but it finishes.
+2. **It was already someone's measurement stand.** A `memory-probe` campaign was running on it, with
+   `k6` driving load from bench-b. Two measurement campaigns on one box corrupt each other in both
+   directions, and mine was the more damaging: a probe measuring behaviour under a 512 MB limit,
+   next to a process triggering global OOM, measures my process.
+
+### What a machine needs to build this at all
+
+Seven independent failures, each looking like a broken build rather than a missing package. Worth
+more than most of the settings this study measured: a setting costs minutes, a missing `libcrypt.a`
+costs an hour and points at the linker.
+
+| | requirement | how it fails without it |
+|---|---|---|
+| 1 | **JDK 25 for Gradle itself** | `kore-build` sets a JVM 25 floor at *buildscript* level; foojay provisions compilation toolchains and cannot help |
+| 2 | **`g++-13`, not `g++`** | `libGcc` is pinned to `/usr/lib/gcc/x86_64-linux-gnu/13`; a distribution defaulting to 15 leaves that path absent |
+| 3 | **`libcrypt-dev`** | `ld.lld: unable to find library -lcrypt` |
+| 4 | **`zlib1g-dev`** | `-lz`, and only the **debug** link needs it — the release link succeeds without it |
+| 5 | **`libffi-dev`** | |
+| 6 | **Reachable `github.com`** | Gradle distributions redirect there from `services.gradle.org`; an IPv6-only host cannot fetch the wrapper |
+| 7 | **Reachable `reposilite.kotlin.website`** | IPv4-only, and it carries the `sborka` plugins every module applies |
+
+The comment in `server/Dockerfile` — *"gcc 13 here is the version the `libGcc` override names; the
+two move together"* — reads as a historical note and is a working warning. The first port to
+another distribution walked straight into it.

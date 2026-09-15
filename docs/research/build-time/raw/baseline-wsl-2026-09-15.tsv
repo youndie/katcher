@@ -1,0 +1,13 @@
+rep	metric	ms	verdict	load_before	load_after	mem_used_mb	log
+1	warm	1160	ok	0.31	1.37	10152	r1-warm.log
+1	incr_dbg	8061	ok	1.37	1.40	10532	r1-incr_dbg.log
+1	incr_rel	115698	ok	1.40	1.31	12098	r1-incr_rel.log
+2	warm	882	ok	1.31	1.15	13149	r2-warm.log
+2	incr_dbg	7366	ok	1.15	2.28	13296	r2-incr_dbg.log
+2	incr_rel	110134	ok	2.28	1.24	8072	r2-incr_rel.log
+3	warm	945	ok	1.24	1.36	8628	r3-warm.log
+3	incr_dbg	8032	ok	1.36	2.85	8665	r3-incr_dbg.log
+3	incr_rel	109911	ok	2.85	1.24	9638	r3-incr_rel.log
+4	warm	1020	ok	1.24	1.38	10067	r4-warm.log
+4	incr_dbg	8975	ok	1.38	1.72	9987	r4-incr_dbg.log
+4	incr_rel	112402	ok	1.72	1.46	10781	r4-incr_rel.log

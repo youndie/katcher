@@ -173,7 +173,7 @@ The skill is not written until RQ8 is closed.
 
 | Parameter | Value |
 |---|---|
-| Local machine (Linux native, or Docker on macOS) | Linux native: Ubuntu 24.04 under WSL2, 20 cores, 15 GiB, via the `katcher` mutagen session and `wsl-run`. The mac links macosArm64 and is not a measurement host |
+| Local machine (Linux native, or Docker on macOS) | Linux native: Ubuntu 24.04 under WSL2, 20 cores, 15 GiB. **Reached by ssh through a tunnel to `192.168.1.102:2222`, not `127.0.0.1:2222`** — the guest uses mirrored networking, so its address is the host's and Windows refuses the loopback one. Measurements run in `~/katcher-bench`, a plain `git clone`, **not** the mutagen replica: the replica's daemon reverts a probe edit before the compiler reads it. The mac links macosArm64 and is not a measurement host. A second stand, `bench-a` (Hetzner, 4 cores, 7.7 GiB), was set up and abandoned — see methodology.md |
 | CI runner (GitHub-hosted ubuntu size, or self-hosted) and billing model | `ubuntu-latest`, GitHub-hosted, standard size. Public repository → free; no billing model |
 | Pinned Kotlin / Gradle / JDK versions (README badge shows Kotlin 2.4.10 — verify in `libs.versions.toml`) | Kotlin 2.4.10 (badge verified against the catalog), Gradle 9.7.1, JDK toolchain 25. Also: KSP 2.3.11, AGP 9.3.1 |
 | Time box | **none** — the study runs until a kill criterion fires. Decided 2026-09-15; see the note under §5 |
