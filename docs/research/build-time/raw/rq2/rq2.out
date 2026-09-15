@@ -1,0 +1,29 @@
+=== stopping every daemon, so a campaign runs against one process it can name
+daemons now: 0
+0
+started
+=== A asked for -Xmx5g; process list says:
+269183 MaxMetaspaceSize=1g -Xmx5g
+daemon count: 1
+--- A (rep 1 warm-up, 2-4 reported)
+1	incr_rel	139077	ok	r1-incr_rel.log
+2	incr_rel	132427	ok	r2-incr_rel.log
+3	incr_rel	134433	ok	r3-incr_rel.log
+4	incr_rel	134762	ok	r4-incr_rel.log
+# box memory   15991 MiB total, 2176 MiB used
+# box loadavg  0.57 0.38 0.49
+oom lines in dmesg tail: 0
+/private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2/A/r1-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2/A/r2-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2/A/r3-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2/A/r4-incr_rel.log:0
+started
+=== B asked for -Xmx10g; process list says:
+269183 MaxMetaspaceSize=1g -Xmx5g 271183 MaxMetaspaceSize=1g -Xmx10g
+daemon count: 2
+--- B (rep 1 warm-up, 2-4 reported)
+1	incr_rel	135573	ok	r1-incr_rel.log
+2	incr_rel	121047	ok	r2-incr_rel.log
+3	incr_rel	123934	ok	r3-incr_rel.log
+4	incr_rel	119910	ok	r4-incr_rel.log
+# box memory   15991 MiB total, 8200 MiB used
+# box loadavg  1.20 1.51 1.09
+oom lines in dmesg tail: 0
+/private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2/B/r1-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2/B/r2-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2/B/r3-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2/B/r4-incr_rel.log:0

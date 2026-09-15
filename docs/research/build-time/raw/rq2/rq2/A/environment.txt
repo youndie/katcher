@@ -1,0 +1,12 @@
+# repository   /Users/youndie/Documents/GitHub/katcher @ 59545e9
+# subject      server/src/commonMain/kotlin/Main.kt
+# started      2026-09-15T01:18:20+02:00
+# reps         4
+# metrics      incr_rel
+# gradle args  -Dorg.gradle.jvmargs='-Xmx5g -XX:MaxMetaspaceSize=1g'
+# profile      0
+# box cores    20
+# box memory   15991 MiB total, 2176 MiB used
+# box loadavg  0.57 0.38 0.49
+# box kernel   6.6.87.2-microsoft-standard-WSL2
+# finished     2026-09-15T01:27:32+02:00
