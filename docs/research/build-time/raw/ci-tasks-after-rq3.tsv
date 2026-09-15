@@ -1,0 +1,1274 @@
+file	section	name	seconds	outcome
+profile-2026-09-15-02-25-54.html	summary	Total Build Time	115.060	
+profile-2026-09-15-02-25-54.html	summary	Startup	6.449	
+profile-2026-09-15-02-25-54.html	summary	Settings and buildSrc	0.967	
+profile-2026-09-15-02-25-54.html	summary	Loading Projects	0.721	
+profile-2026-09-15-02-25-54.html	summary	Configuring Projects	6.506	
+profile-2026-09-15-02-25-54.html	summary	Artifact Transforms	1.083	
+profile-2026-09-15-02-25-54.html	summary	Task Execution	306.450	
+profile-2026-09-15-02-25-54.html	configuration	:client	2.652	
+profile-2026-09-15-02-25-54.html	configuration	:	1.182	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android	0.760	
+profile-2026-09-15-02-25-54.html	configuration	:shared	0.459	
+profile-2026-09-15-02-25-54.html	configuration	:server	0.404	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak	0.380	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin	0.323	
+profile-2026-09-15-02-25-54.html	configuration	:core	0.087	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm	0.082	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace	0.061	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android	0.059	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native	0.053	
+profile-2026-09-15-02-25-54.html	configuration	:dev	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:runtimeClasspath	0.060	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosArm64CompileKlibraries	0.052	
+profile-2026-09-15-02-25-54.html	configuration	:core:jvmCompileClasspath	0.036	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugUnitTestCompileClasspath	0.025	
+profile-2026-09-15-02-25-54.html	configuration	:server:jvmCompileClasspath	0.024	
+profile-2026-09-15-02-25-54.html	configuration	:shared:jvmCompileClasspath	0.024	
+profile-2026-09-15-02-25-54.html	configuration	:server:kspCommonMainKotlinMetadataProcessorClasspath	0.021	
+profile-2026-09-15-02-25-54.html	configuration	:core:nativeCompileKlibraries	0.020	
+profile-2026-09-15-02-25-54.html	configuration	:server:nativeCompileKlibraries	0.020	
+profile-2026-09-15-02-25-54.html	configuration	:shared:macosX64CompileKlibraries	0.020	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosSimulatorArm64CompileKlibraries	0.017	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosX64CompileKlibraries	0.015	
+profile-2026-09-15-02-25-54.html	configuration	:shared:macosArm64CompileKlibraries	0.015	
+profile-2026-09-15-02-25-54.html	configuration	:client:jvmTestCompileClasspath	0.013	
+profile-2026-09-15-02-25-54.html	configuration	:client:ktlint	0.012	
+profile-2026-09-15-02-25-54.html	configuration	:shared:linuxArm64CompileKlibraries	0.012	
+profile-2026-09-15-02-25-54.html	configuration	:detachedConfiguration1	0.011	
+profile-2026-09-15-02-25-54.html	configuration	:shared:linuxX64CompileKlibraries	0.011	
+profile-2026-09-15-02-25-54.html	configuration	:shared:wasmJsCompileClasspath	0.011	
+profile-2026-09-15-02-25-54.html	configuration	:shared:mingwX64CompileKlibraries	0.010	
+profile-2026-09-15-02-25-54.html	configuration	:client:androidLintTool	0.009	
+profile-2026-09-15-02-25-54.html	configuration	:client:commonMainResolvableDependenciesMetadata	0.009	
+profile-2026-09-15-02-25-54.html	configuration	:core:commonMainResolvableDependenciesMetadata	0.009	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:runtimeClasspath	0.009	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosArm64CompileKlibraries	0.008	
+profile-2026-09-15-02-25-54.html	configuration	:client:jvmTestRuntimeClasspath	0.008	
+profile-2026-09-15-02-25-54.html	configuration	:server:commonMainResolvableDependenciesMetadata	0.008	
+profile-2026-09-15-02-25-54.html	configuration	:shared:commonMainResolvableDependenciesMetadata	0.008	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosSimulatorArm64CompileKlibraries	0.007	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosX64CompileKlibraries	0.007	
+profile-2026-09-15-02-25-54.html	configuration	:client:linuxArm64CompileKlibraries	0.007	
+profile-2026-09-15-02-25-54.html	configuration	:client:macosX64CompileKlibraries	0.007	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:testRuntimeClasspath	0.007	
+profile-2026-09-15-02-25-54.html	configuration	:server:nativeTestCompileKlibraries	0.007	
+profile-2026-09-15-02-25-54.html	configuration	:shared:jvmMainCompileClasspath	0.007	
+profile-2026-09-15-02-25-54.html	configuration	:shared:wasmJsTestNpmAggregated	0.007	
+profile-2026-09-15-02-25-54.html	configuration	:client:ktlintReporter	0.006	
+profile-2026-09-15-02-25-54.html	configuration	:client:linuxX64CompileKlibraries	0.006	
+profile-2026-09-15-02-25-54.html	configuration	:client:macosArm64CompileKlibraries	0.006	
+profile-2026-09-15-02-25-54.html	configuration	:client:mingwX64CompileKlibraries	0.006	
+profile-2026-09-15-02-25-54.html	configuration	:core:allSourceSetsCompileDependenciesMetadata	0.006	
+profile-2026-09-15-02-25-54.html	configuration	:server:jvmTestRuntimeClasspath	0.006	
+profile-2026-09-15-02-25-54.html	configuration	:server:nativeCompilationDependenciesMetadata	0.006	
+profile-2026-09-15-02-25-54.html	configuration	:shared:wasmJsNpmAggregated	0.006	
+profile-2026-09-15-02-25-54.html	configuration	:client:allSourceSetsCompileDependenciesMetadata	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:androidCompileClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:androidRuntimeClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:jvmCompileClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:jvmMainCompileClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:linuxArm64TestCompileKlibraries	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:linuxX64CompilationDependenciesMetadata	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:macosArm64CompilationDependenciesMetadata	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:macosArm64TestCompileKlibraries	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:swiftPMDependenciesMetadataClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:core:jvmTestCompileClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:core:jvmTestRuntimeClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:compileClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugUnitTestRuntimeClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:server:allSourceSetsCompileDependenciesMetadata	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:server:jvmMainCompileClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:server:jvmTestCompileClasspath	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:shared:allSourceSetsCompileDependenciesMetadata	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:shared:linuxX64CompilationDependenciesMetadata	0.005	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosArm64CompilationDependenciesMetadata	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosArm64TestCompileKlibraries	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosSimulatorArm64TestCompileKlibraries	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosX64CompilationDependenciesMetadata	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosX64TestCompileKlibraries	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:linuxArm64CompilationDependenciesMetadata	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:linuxX64TestCompileKlibraries	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:macosX64CompilationDependenciesMetadata	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:macosX64TestCompileKlibraries	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:metadataIosMainCompileClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:metadataNativeMainCompileClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:mingwX64CompilationDependenciesMetadata	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:mingwX64TestCompileKlibraries	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:core:jvmMainCompileClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:core:nativeCompilationDependenciesMetadata	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:core:nativeTestCompileKlibraries	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:testRuntimeClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:androidLintTool	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:compileClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:testRuntimeClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:nativeCompileKlibraries	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:compileClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:testCompileClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosX64CompilationDependenciesMetadata	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:shared:jvmTestCompileClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:shared:ktlint	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:shared:macosX64CompilationDependenciesMetadata	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:shared:swiftPMDependenciesMetadataClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:shared:wasmJsTestCompileClasspath	0.004	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosMainResolvableDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:client:iosSimulatorArm64CompilationDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerClasspath	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:client:linuxMainResolvableDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:client:metadataAppleMainCompileClasspath	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:client:metadataMacosMainCompileClasspath	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:client:nativeMainResolvableDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:core:ktlint	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:ktlint	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:androidLintTool	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:runtimeClasspath	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:testCompileClasspath	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:appleMainResolvableDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosArm64CompilationDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosArm64TestCompileKlibraries	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosSimulatorArm64CompilationDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosSimulatorArm64TestCompileKlibraries	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMetadataLinuxMain	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:ktlintReporter	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:linuxArm64CompilationDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:linuxMainResolvableDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:macosArm64CompilationDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:metadataNativeMainCompileClasspath	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:mingwX64CompilationDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:shared:nativeMainResolvableDependenciesMetadata	0.003	
+profile-2026-09-15-02-25-54.html	configuration	:client:appleMainResolvableDependenciesMetadata	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:client:jvmSharedMainResolvableDependenciesMetadata	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinBuildToolsApiClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMetadataCommonMain	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:client:ktlintRuleset	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:client:macosMainResolvableDependenciesMetadata	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:client:metadataLinuxMainCompileClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:core:ktlintReporter	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:ktlint	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:ktlint	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:commonMainResolvableDependenciesMetadata	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:jvmCompileClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:ktlintReporter	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:ktlintRuleset	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:nativeCompileKlibraries	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:ktlint	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:ktlint	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:ktlintReporter	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:nativeTestCompileKlibraries	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:ktlint	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration7	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:server:ktlint	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosMainResolvableDependenciesMetadata	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:iosX64TestCompileKlibraries	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:jvmTestRuntimeClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:linuxArm64TestCompileKlibraries	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:linuxX64TestCompileKlibraries	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:macosArm64TestCompileKlibraries	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:macosMainResolvableDependenciesMetadata	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:macosX64TestCompileKlibraries	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:metadataAppleMainCompileClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:metadataIosMainCompileClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:metadataLinuxMainCompileClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:metadataMacosMainCompileClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:mingwX64TestCompileKlibraries	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:shared:wasmJsTestRuntimeClasspath	0.002	
+profile-2026-09-15-02-25-54.html	configuration	:client:detachedConfiguration2	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:detachedConfiguration4	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:detachedConfiguration5	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathAndroidMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathIosArm64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathIosSimulatorArm64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathIosSimulatorArm64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathIosX64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathJvmMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathJvmTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathLinuxArm64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathLinuxArm64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathLinuxX64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathLinuxX64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMacosArm64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMacosX64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMacosX64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMetadataIosMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMetadataJvmSharedMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMetadataMacosMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMetadataNativeMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMingwX64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinKlibCommonizerClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinNativeBundleConfiguration	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:resolvableIosX64TestCompilationApi	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:resolvableMacosArm64TestCompilationApi	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:resolvableMacosX64TestCompilationApi	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinBuildToolsApiClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinCompilerClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinCompilerPluginClasspathJvmMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinCompilerPluginClasspathJvmTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinCompilerPluginClasspathMetadataCommonMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinCompilerPluginClasspathNativeMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:core:ktlintRuleset	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:detachedConfiguration2	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:detachedConfiguration1	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:kotlinBuildToolsApiClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:kotlinCompilerPluginClasspathMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:kotlinCompilerPluginClasspathTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:ktlintReporter	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:ktlintRuleset	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:testCompileClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:androidCompileClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:detachedConfiguration2	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:kotlinBuildToolsApiClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:ktlintReporter	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:ktlintRuleset	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:allSourceSetsCompileDependenciesMetadata	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:detachedConfiguration2	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:jvmMainCompileClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:jvmTestCompileClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:jvmTestRuntimeClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinCompilerPluginClasspathJvmMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinCompilerPluginClasspathJvmTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinCompilerPluginClasspathNativeMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:nativeCompilationDependenciesMetadata	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:nativeTestCompileKlibraries	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:resolvableNativeTestCompilationApi	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugAndroidTestCompileClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugRuntimeClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:detachedConfiguration1	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:detachedConfiguration2	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:detachedConfiguration6	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:kotlinBuildToolsApiClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:ktlintReporter	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:lintChecks	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:releaseCompileClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:releaseRuntimeClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:detachedConfiguration1	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:kotlinBuildToolsApiClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:kotlinCompilerPluginClasspathMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:kotlinCompilerPluginClasspathTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:kotlinScriptDefExtensions	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:ktlintRuleset	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:kotlinCompilerClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:kotlinNativeBundleConfiguration	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:ktlint	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:ktlintReporter	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:ktlintRuleset	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:resolvableNativeTestCompilationApi	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:detachedConfiguration2	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:kotlinBuildToolsApiClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:kotlinCompilerPluginClasspathTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:ktlintReporter	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:ktlintRuleset	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration19	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration2	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration4	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration5	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration6	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinBuildToolsApiClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinCompilerClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinCompilerPluginClasspathJvmMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinCompilerPluginClasspathJvmTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinCompilerPluginClasspathMetadataCommonMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinCompilerPluginClasspathNativeMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinCompilerPluginClasspathNativeTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinNativeBundleConfiguration	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:ktlintReporter	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:ktlintRuleset	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:server:resolvableNativeCompilationApi	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:detachedConfiguration1	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:detachedConfiguration2	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:detachedConfiguration57	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinBuildToolsApiClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathIosArm64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathIosX64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathJvmMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathJvmTest	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathLinuxX64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathLinuxX64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMetadataCommonMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMetadataIosMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMetadataNativeMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMingwX64Main	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMingwX64Test	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathWasmJsMain	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinKlibCommonizerClasspath	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinScriptDefExtensions	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:ktlintRuleset	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:resolvableIosSimulatorArm64TestCompilationApi	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:shared:resolvableIosX64TestCompilationApi	0.001	
+profile-2026-09-15-02-25-54.html	configuration	:client:jvmMainAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:jvmTestAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathIosArm64Main	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathIosX64Test	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMacosArm64Test	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMetadataAppleMain	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMetadataLinuxMain	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinCompilerPluginClasspathMingwX64Main	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:kotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:lintPublish	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:resolvableIosSimulatorArm64TestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:resolvableLinuxX64TestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:resolvableMingwX64TestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:client:testKotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:detachedConfiguration1	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:detachedConfiguration2	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:jvmMainAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:jvmTestAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinCompilerPluginClasspathNativeTest	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinNativeBundleConfiguration	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:kotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:resolvableNativeTestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:core:testKotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:annotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:detachedConfiguration2	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:kotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:testAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:android-gradle-plugin:testKotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:androidRuntimeClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:kotlinCompilerPluginClasspathAndroidMain	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:client-android:lintPublish	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:detachedConfiguration1	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:jvmMainAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:jvmTestAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinBuildToolsApiClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinCompilerClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinCompilerPluginClasspathMetadataCommonMain	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinCompilerPluginClasspathNativeTest	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinNativeBundleConfiguration	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:kotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:retrace:testKotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:androidApis	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugAndroidTestRuntimeClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugAnnotationProcessorClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugCompileClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugLintChecksClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugReverseMetadataValues	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:debugUnitTestAnnotationProcessorClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:detachedConfiguration3	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:detachedConfiguration4	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:kotlinCompilerPluginClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:ktlintRuleset	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:releaseAnnotationProcessorClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:releaseLintChecksClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-android:releaseReverseMetadataValues	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:annotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:detachedConfiguration2	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:testAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-jvm:testKotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:kotlinCompilerPluginClasspathNativeMain	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:kotlinCompilerPluginClasspathNativeTest	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:sample-kotlin-native:resolvableNativeCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:annotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:detachedConfiguration1	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:kotlinCompilerPluginClasspathMain	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:kotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:shadow	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:testAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:dev:server-jvm-keycloak:testKotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration1	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration18	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:detachedConfiguration3	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:jvmMainAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:jvmTestAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:kotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:kspKotlinJvmProcessorClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:kspKotlinNativeProcessorClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:kspTestKotlinJvmProcessorClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:kspTestKotlinNativeProcessorClasspath	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:resolvableNativeTestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:server:testKotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:jvmMainAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:jvmTestAnnotationProcessor	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathIosArm64Test	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathIosSimulatorArm64Main	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathIosSimulatorArm64Test	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathIosX64Main	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathLinuxArm64Main	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathLinuxArm64Test	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMacosArm64Main	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMacosArm64Test	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMacosX64Main	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMacosX64Test	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMetadataAppleMain	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathMetadataMacosMain	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinCompilerPluginClasspathWasmJsTest	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:kotlinNativeBundleConfiguration	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:resolvableLinuxX64TestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:resolvableMacosArm64TestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:resolvableMacosX64TestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:resolvableMingwX64TestCompilationApi	0.000	
+profile-2026-09-15-02-25-54.html	configuration	:shared:testKotlinScriptDefExtensions	0.000	
+profile-2026-09-15-02-25-54.html	project	:server	194.850	
+profile-2026-09-15-02-25-54.html	task	:server:linkDebugExecutableNative	41.607	
+profile-2026-09-15-02-25-54.html	task	:server:compileKotlinJvm	39.209	
+profile-2026-09-15-02-25-54.html	task	:server:linkDebugTestNative	35.729	
+profile-2026-09-15-02-25-54.html	task	:server:compileKotlinNative	27.510	
+profile-2026-09-15-02-25-54.html	task	:server:compileCommonMainKotlinMetadata	21.307	
+profile-2026-09-15-02-25-54.html	task	:server:kspCommonMainKotlinMetadata	9.912	
+profile-2026-09-15-02-25-54.html	task	:server:jvmTest	9.091	
+profile-2026-09-15-02-25-54.html	task	:server:compileTestKotlinNative	6.339	
+profile-2026-09-15-02-25-54.html	task	:server:nativeTest	1.123	
+profile-2026-09-15-02-25-54.html	task	:server:compileTestKotlinJvm	0.901	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:transformCommonMainDependenciesMetadata	0.701	
+profile-2026-09-15-02-25-54.html	task	:server:kspTestKotlinJvm	0.433	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:generateKoreBuildIdentity	0.317	
+profile-2026-09-15-02-25-54.html	task	:server:kspKotlinNative	0.154	
+profile-2026-09-15-02-25-54.html	task	:server:jvmJar	0.104	
+profile-2026-09-15-02-25-54.html	task	:server:kspKotlinJvm	0.099	
+profile-2026-09-15-02-25-54.html	task	:server:allTests	0.067	
+profile-2026-09-15-02-25-54.html	task	:server:kspTestKotlinNative	0.064	
+profile-2026-09-15-02-25-54.html	task	:server:allMetadataJar	0.042	
+profile-2026-09-15-02-25-54.html	task	:server:runKtlintCheckOverCommonTestSourceSet	0.028	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:runKtlintCheckOverCommonMainSourceSet	0.014	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:ktlintCommonMainSourceSetCheck	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:ktlintCommonTestSourceSetCheck	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:downloadKotlinNativeDistribution	0.010	
+profile-2026-09-15-02-25-54.html	task	:server:runKtlintCheckOverJvmMainSourceSet	0.010	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:loadKtlintReporters	0.009	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:ktlintJvmMainSourceSetCheck	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:ktlintNativeMainSourceSetCheck	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:runKtlintCheckOverKotlinScripts	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:generateProjectStructureMetadata	0.005	
+profile-2026-09-15-02-25-54.html	task	:server:ktlintKotlinScriptCheck	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:runKtlintCheckOverNativeMainSourceSet	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:server:jvmProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:server:runKtlintCheckOverJvmTestSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:server:compileJvmMainJava	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:server:metadataCommonMainProcessResources	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:server:compileJvmTestJava	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:server:jvmTestProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:server:kmpPartiallyResolvedDependenciesChecker	0.001	
+profile-2026-09-15-02-25-54.html	task	:server:nativeProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:server:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:server:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:server:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:server:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:server:jvmMainClasses	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:server:jvmTestClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:server:ktlintJvmTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:server:ktlintNativeTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:server:metadataCommonMainClasses	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:server:nativeMainKlibrary	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:server:processJvmMainResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:server:processJvmTestResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:server:runKtlintCheckOverNativeTestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	project	:	65.350	
+profile-2026-09-15-02-25-54.html	task	:kotlinWasmToolingSetup	59.177	
+profile-2026-09-15-02-25-54.html	task	:kotlinWasmNodeJsSetup	4.951	
+profile-2026-09-15-02-25-54.html	task	:kotlinWasmNpmInstall	1.047	
+profile-2026-09-15-02-25-54.html	task	:kotlinWasmYarnSetup	0.060	
+profile-2026-09-15-02-25-54.html	task	:checkEditorconfig	0.052	
+profile-2026-09-15-02-25-54.html	task	:wasmRootPackageJson	0.022	
+profile-2026-09-15-02-25-54.html	task	:kotlinWasmKotlinNpmCachesSetup	0.012	
+profile-2026-09-15-02-25-54.html	task	:kotlinWasmStoreYarnLock	0.012	
+profile-2026-09-15-02-25-54.html	task	:kotlinWasmRestoreYarnLock	0.010	
+profile-2026-09-15-02-25-54.html	task	:assemble	0.002	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:kotlinWasmPackageJsonUmbrella	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	project	:shared	13.897	
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinIosArm64	2.569	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinIosSimulatorArm64	2.551	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinMacosArm64	1.397	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinIosX64	1.391	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinMacosX64	1.353	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsPackageJson	0.947	
+profile-2026-09-15-02-25-54.html	task	:shared:transformCommonMainDependenciesMetadata	0.625	
+profile-2026-09-15-02-25-54.html	task	:shared:iosArm64MetadataElements	0.451	
+profile-2026-09-15-02-25-54.html	task	:shared:kotlinWasmNodeJsSetup	0.433	
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinMingwX64	0.323	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinJvm	0.273	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinLinuxArm64	0.143	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:jvmJar	0.143	
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinLinuxX64	0.133	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:transformNativeMainDependenciesMetadata	0.109	
+profile-2026-09-15-02-25-54.html	task	:shared:compileCommonMainKotlinMetadata	0.089	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileKotlinWasmJs	0.077	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:downloadKotlinNativeDistribution	0.074	
+profile-2026-09-15-02-25-54.html	task	:shared:commonizeNativeDistribution	0.068	
+profile-2026-09-15-02-25-54.html	task	:shared:generateProjectStructureMetadata	0.051	
+profile-2026-09-15-02-25-54.html	task	:shared:transformAppleMainDependenciesMetadata	0.047	
+profile-2026-09-15-02-25-54.html	task	:shared:transformLinuxMainDependenciesMetadata	0.041	
+profile-2026-09-15-02-25-54.html	task	:shared:kmpPartiallyResolvedDependenciesChecker	0.037	
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsTest	0.032	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:exportRootPublicationCoordinatesForMetadataApiElements	0.028	
+profile-2026-09-15-02-25-54.html	task	:shared:transformMacosMainDependenciesMetadata	0.026	
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsTestPackageJson	0.026	
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsJar	0.024	
+profile-2026-09-15-02-25-54.html	task	:shared:exportCrossCompilationMetadataForIosX64ApiElements	0.023	
+profile-2026-09-15-02-25-54.html	task	:shared:transformIosMainDependenciesMetadata	0.022	
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverKotlinScripts	0.015	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileJvmMainJava	0.013	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:macosArm64MetadataElements	0.013	
+profile-2026-09-15-02-25-54.html	task	:shared:exportCrossCompilationMetadataForIosSimulatorArm64ApiElements	0.011	
+profile-2026-09-15-02-25-54.html	task	:shared:exportCrossCompilationMetadataForLinuxX64ApiElements	0.011	
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsPublicPackageJson	0.011	
+profile-2026-09-15-02-25-54.html	task	:shared:allMetadataJar	0.010	
+profile-2026-09-15-02-25-54.html	task	:shared:exportCrossCompilationMetadataForIosArm64ApiElements	0.010	
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsBrowserTest	0.010	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:exportCrossCompilationMetadataForMacosX64ApiElements	0.009	
+profile-2026-09-15-02-25-54.html	task	:shared:iosSimulatorArm64MetadataElements	0.009	
+profile-2026-09-15-02-25-54.html	task	:shared:linuxArm64MetadataElements	0.009	
+profile-2026-09-15-02-25-54.html	task	:shared:macosX64MetadataElements	0.009	
+profile-2026-09-15-02-25-54.html	task	:shared:mingwX64MetadataElements	0.009	
+profile-2026-09-15-02-25-54.html	task	:shared:allTests	0.008	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:exportCrossCompilationMetadataForLinuxArm64ApiElements	0.008	
+profile-2026-09-15-02-25-54.html	task	:shared:exportCrossCompilationMetadataForMingwX64ApiElements	0.008	
+profile-2026-09-15-02-25-54.html	task	:shared:iosX64MetadataElements	0.008	
+profile-2026-09-15-02-25-54.html	task	:shared:loadKtlintReporters	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverCommonMainSourceSet	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinJvm	0.007	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:linuxX64MetadataElements	0.007	
+profile-2026-09-15-02-25-54.html	task	:shared:metadataCommonMainProcessResources	0.007	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataLinuxMainProcessResources	0.007	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsTestPublicPackageJson	0.007	
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinIosArm64	0.006	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinWasmJs	0.006	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintCommonMainSourceSetCheck	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintKotlinScriptCheck	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:shared:linkDebugTestLinuxX64	0.006	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataMacosMainProcessResources	0.006	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataNativeMainProcessResources	0.006	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:exportCommonSourceSetsMetadataLocationsForMetadataApiElements	0.005	
+profile-2026-09-15-02-25-54.html	task	:shared:exportCrossCompilationMetadataForMacosArm64ApiElements	0.005	
+profile-2026-09-15-02-25-54.html	task	:shared:jvmTestProcessResources	0.005	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:linkDebugTestMingwX64	0.005	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinIosSimulatorArm64	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:iosSimulatorArm64ProcessResources	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:jvmProcessResources	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMacosX64MainSourceSet	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverWasmJsMainSourceSet	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsTestProcessResources	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinLinuxX64	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinMacosX64	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:iosArm64ProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:jvmTest	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataIosMainProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverAppleMainSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverIosSimulatorArm64MainSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverIosX64MainSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverJvmTestSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverLinuxTestSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsTestTestDevelopmentExecutableCompileSync	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileIosMainKotlinMetadata	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileLinuxMainKotlinMetadata	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinMingwX64	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:macosX64ProcessResources	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverLinuxArm64TestSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverLinuxMainSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileAppleMainKotlinMetadata	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileMacosMainKotlinMetadata	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileNativeMainKotlinMetadata	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestDevelopmentExecutableKotlinWasmJs	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinIosX64	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinLinuxArm64	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:iosX64ProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintIosSimulatorArm64MainSourceSetCheck	0.001	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintLinuxTestSourceSetCheck	0.001	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:linuxArm64ProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:linuxX64ProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataAppleMainProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:mingwX64ProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverCommonTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverIosArm64MainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverIosArm64TestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverIosMainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverLinuxArm64MainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMacosArm64TestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMacosMainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMacosTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMingwMainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverNativeMainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverNativeTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:syncPersistedPackageResolvedToSynthetic	0.001	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:shared:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:shared:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:shared:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:compileJvmTestJava	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:compileTestKotlinMacosArm64	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:computeLocalPackageDependencyInputFiles	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:convertSyntheticImportProjectIntoDefFileIphonesimulator	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:convertSyntheticImportProjectIntoDefFileMacosx	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:fetchSyntheticImportProjectPackages	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:generateSyntheticLinkageSwiftPMImportProjectForCinteropsAndLdDump	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:iosArm64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:iosSimulatorArm64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:iosSimulatorArm64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:iosX64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:iosX64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:jvmMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:jvmTestClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintAppleMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintAppleTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintCommonTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintIosArm64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintIosArm64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintIosMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintIosSimulatorArm64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintIosTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintIosX64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintIosX64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintJvmMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintJvmTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintLinuxArm64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintLinuxArm64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintLinuxMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintLinuxX64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintLinuxX64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMacosArm64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMacosArm64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMacosMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMacosTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMacosX64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMacosX64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMingwMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMingwTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMingwX64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintMingwX64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintNativeMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintNativeTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintWasmJsMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintWasmJsTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintWebMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:ktlintWebTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:linkDebugTestIosSimulatorArm64	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:linkDebugTestIosX64	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:linkDebugTestMacosArm64	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:linkDebugTestMacosX64	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:linuxArm64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:linuxX64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:linuxX64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:macosArm64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:macosArm64ProcessResources	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:macosArm64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:macosX64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:macosX64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:metadataAppleMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataCommonMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataIosMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataLinuxMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataMacosMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:metadataNativeMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:mingwX64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:mingwX64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:processJvmMainResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:processJvmTestResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverAppleTestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverIosSimulatorArm64TestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverIosTestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverIosX64TestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverJvmMainSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverLinuxX64MainSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverLinuxX64TestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMacosArm64MainSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMacosX64TestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMingwTestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMingwX64MainSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverMingwX64TestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverWasmJsTestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverWebMainSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:runKtlintCheckOverWebTestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:shared:wasmJsTestClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	project	:dev:sample-android	10.443	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lintReportDebug	4.401	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:validateSigningDebug	1.634	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:packageDebug	0.747	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateReleaseLintVitalReportModel	0.640	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:sdkReleaseDependencyData	0.400	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:packageRelease	0.393	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileDebugUnitTestKotlin	0.256	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeDebugJavaResource	0.215	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:extractReleaseVersionControlInfo	0.193	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateDebugUnitTestLintModel	0.132	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseJavaResource	0.110	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:collectReleaseDependencies	0.090	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeExtDexRelease	0.067	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:testDebugUnitTest	0.067	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeDexRelease	0.051	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeExtDexDebug	0.047	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processDebugResources	0.046	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:writeDebugSigningConfigVersions	0.032	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:bundleDebugClassesToCompileJar	0.031	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lintAnalyzeDebugUnitTest	0.031	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:dexBuilderDebug	0.029	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lintAnalyzeDebug	0.028	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateDebugAndroidTestLintModel	0.027	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:checkDebugDuplicateClasses	0.025	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:createDebugApkListingFileRedirect	0.025	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateDebugLintReportModel	0.023	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lintAnalyzeDebugAndroidTest	0.023	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:checkDebugAarMetadata	0.019	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileDebugJavaWithJavac	0.019	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:packageDebugResources	0.018	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverKotlinScripts	0.018	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mapDebugSourceSetPaths	0.017	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeDebugResources	0.016	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseResources	0.016	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:loadKtlintReporters	0.015	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeProjectDexDebug	0.015	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processDebugMainManifest	0.015	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:createDebugCompatibleScreenManifests	0.014	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseArtProfile	0.014	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lintVitalAnalyzeRelease	0.013	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:dexBuilderRelease	0.012	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateReleaseBuildConfig	0.012	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseJniLibFolders	0.012	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileDebugUnitTestJavaWithJavac	0.011	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:createReleaseCompatibleScreenManifests	0.011	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateDebugBuildConfig	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateDebugResources	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeLibDexDebug	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseGlobalSynthetics	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:bundleDebugClassesToRuntimeJar	0.010	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:checkReleaseDuplicateClasses	0.010	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:extractProguardFiles	0.010	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeDebugAssets	0.010	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeDebugJniLibFolders	0.010	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseAssets	0.010	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:packageReleaseResources	0.010	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileDebugKotlin	0.009	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileReleaseArtProfile	0.009	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compressDebugAssets	0.009	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateDebugGlobalSynthetics	0.009	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileReleaseJavaWithJavac	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileReleaseNavigationResources	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:createReleaseApkListingFileRedirect	0.008	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:desugarDebugFileDependencies	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:extractDeepLinksRelease	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintKotlinScriptCheck	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeDebugNativeLibs	0.008	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:optimizeReleaseResources	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processDebugManifest	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processReleaseResources	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverTestSourceSet	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:extractDeepLinksDebug	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mapReleaseSourceSetPaths	0.007	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processDebugJavaRes	0.007	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processDebugUnitTestJavaRes	0.007	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateReleaseResources	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processReleaseJavaRes	0.006	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processReleaseMainManifest	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:stripReleaseDebugSymbols	0.006	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:writeDebugAppMetadata	0.006	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileDebugNavigationResources	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateDebugRFile	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateReleaseRFile	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:parseDebugLocalResources	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processReleaseManifest	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:checkReleaseAarMetadata	0.004	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:desugarReleaseFileDependencies	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:javaPreCompileDebug	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:javaPreCompileDebugUnitTest	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:javaPreCompileRelease	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintTestSourceSetCheck	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeDebugNativeDebugMetadata	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseNativeLibs	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:parseReleaseLocalResources	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processDebugManifestForPackage	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processDebugNavigationResources	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processReleaseNavigationResources	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compileReleaseKotlin	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:compressReleaseAssets	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintAndroidTestReleaseSourceSetCheck	0.003	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverReleaseSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverTestFixturesDebugSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverTestFixturesSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:writeReleaseSigningConfigVersions	0.003	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseStartupProfile	0.002	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:processReleaseManifestForPackage	0.002	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverAndroidTestDebugSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverMainSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverTestDebugSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverTestFixturesReleaseSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverTestReleaseSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:stripDebugDebugSymbols	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:writeReleaseAppMetadata	0.002	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:extractReleaseNativeSymbolTables	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lintDebug	0.001	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:mergeReleaseNativeDebugMetadata	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverAndroidTestReleaseSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverDebugSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:assembleDebug	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:assembleRelease	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateDebugAssets	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:generateReleaseAssets	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintAndroidTestDebugSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintAndroidTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintDebugSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintReleaseSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintTestDebugSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintTestFixturesDebugSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintTestFixturesReleaseSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintTestFixturesSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:ktlintTestReleaseSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lint	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lintVitalRelease	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:lintVitalReportRelease	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:preBuild	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:preDebugAndroidTestBuild	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:preDebugBuild	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:preDebugUnitTestBuild	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:preReleaseBuild	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:runKtlintCheckOverAndroidTestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-android:test	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	project	:client	8.754	
+profile-2026-09-15-02-25-54.html	task	:client:extractAndroidMainAnnotations	1.889	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:linuxX64Test	1.108	
+profile-2026-09-15-02-25-54.html	task	:client:compileAndroidMain	1.058	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:transformCommonMainDependenciesMetadata	0.553	
+profile-2026-09-15-02-25-54.html	task	:client:transformNativeMainDependenciesMetadata	0.420	
+profile-2026-09-15-02-25-54.html	task	:client:linkDebugTestLinuxX64	0.305	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:linkDebugTestMingwX64	0.293	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:mergeAndroidMainJavaResource	0.186	
+profile-2026-09-15-02-25-54.html	task	:client:mergeAndroidMainJniLibFolders	0.166	
+profile-2026-09-15-02-25-54.html	task	:client:transformAppleMainDependenciesMetadata	0.132	
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinIosX64	0.112	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:checkAndroidMainAarMetadata	0.109	
+profile-2026-09-15-02-25-54.html	task	:client:compileCommonMainKotlinMetadata	0.109	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:transformLinuxMainDependenciesMetadata	0.105	
+profile-2026-09-15-02-25-54.html	task	:client:compileNativeMainKotlinMetadata	0.095	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinIosArm64	0.089	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:transformJvmSharedMainDependenciesMetadata	0.084	
+profile-2026-09-15-02-25-54.html	task	:client:downloadKotlinNativeDistribution	0.080	
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinIosSimulatorArm64	0.079	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinMingwX64	0.078	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:transformIosMainDependenciesMetadata	0.076	
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinLinuxArm64	0.066	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinJvm	0.066	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinMacosArm64	0.056	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinMacosX64	0.056	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:allTests	0.055	
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinIosArm64	0.054	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinJvm	0.052	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinMacosArm64	0.051	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinIosSimulatorArm64	0.049	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinLinuxX64	0.048	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileKotlinMingwX64	0.048	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:jvmTest	0.044	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:loadKtlintReporters	0.043	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinLinuxX64	0.041	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:kmpPartiallyResolvedDependenciesChecker	0.041	
+profile-2026-09-15-02-25-54.html	task	:client:mergeAndroidMainConsumerProguardFiles	0.035	
+profile-2026-09-15-02-25-54.html	task	:client:processAndroidMainManifest	0.033	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:transformMacosMainDependenciesMetadata	0.033	
+profile-2026-09-15-02-25-54.html	task	:client:prepareAndroidMainArtProfile	0.032	
+profile-2026-09-15-02-25-54.html	task	:client:processAndroidMainJavaRes	0.032	
+profile-2026-09-15-02-25-54.html	task	:client:prepareLintJarForPublish	0.031	
+profile-2026-09-15-02-25-54.html	task	:client:commonizeNativeDistribution	0.030	
+profile-2026-09-15-02-25-54.html	task	:client:copyAndroidMainJniLibsProjectOnly	0.030	
+profile-2026-09-15-02-25-54.html	task	:client:jvmJar	0.030	
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinMacosX64	0.029	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinIosX64	0.028	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileTestKotlinLinuxArm64	0.027	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:macosArm64ProcessResources	0.025	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:writeAndroidMainAarMetadata	0.025	
+profile-2026-09-15-02-25-54.html	task	:client:bundleAndroidMainAar	0.020	
+profile-2026-09-15-02-25-54.html	task	:client:generateAndroidMainEmptyResourceFiles	0.020	
+profile-2026-09-15-02-25-54.html	task	:client:generateProjectStructureMetadata	0.018	
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverKotlinScripts	0.018	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverAndroidMainSourceSet	0.017	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:allMetadataJar	0.014	
+profile-2026-09-15-02-25-54.html	task	:client:linuxArm64MetadataElements	0.014	
+profile-2026-09-15-02-25-54.html	task	:client:jvmProcessResources	0.013	
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverCommonMainSourceSet	0.013	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:iosX64MetadataElements	0.011	
+profile-2026-09-15-02-25-54.html	task	:client:ktlintAndroidMainSourceSetCheck	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:iosArm64MetadataElements	0.010	
+profile-2026-09-15-02-25-54.html	task	:client:ktlintNativeMainSourceSetCheck	0.010	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:mingwX64MetadataElements	0.010	
+profile-2026-09-15-02-25-54.html	task	:client:ktlintJvmMainSourceSetCheck	0.009	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:linuxX64MetadataElements	0.009	
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverJvmTestSourceSet	0.009	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:syncAndroidMainLibJars	0.009	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:mingwX64ProcessResources	0.008	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverCommonTestSourceSet	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:ktlintCommonTestSourceSetCheck	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:ktlintNativeTestSourceSetCheck	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:macosArm64MetadataElements	0.007	
+profile-2026-09-15-02-25-54.html	task	:client:macosX64MetadataElements	0.007	
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverNativeTestSourceSet	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:iosSimulatorArm64MetadataElements	0.006	
+profile-2026-09-15-02-25-54.html	task	:client:ktlintCommonMainSourceSetCheck	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverJvmSharedMainSourceSet	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:macosX64ProcessResources	0.005	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:metadataCommonMainProcessResources	0.005	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:metadataJvmSharedMainProcessResources	0.005	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:compileAppleMainKotlinMetadata	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:iosSimulatorArm64ProcessResources	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:ktlintKotlinScriptCheck	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:linuxArm64ProcessResources	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:mergeAndroidMainGeneratedProguardFiles	0.004	
+profile-2026-09-15-02-25-54.html	task	:client:metadataNativeMainProcessResources	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverAppleMainSourceSet	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverIosMainSourceSet	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverJvmMainSourceSet	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverLinuxX64MainSourceSet	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMingwTestSourceSet	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:compileIosMainKotlinMetadata	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:iosX64ProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:jvmTestProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:ktlintJvmSharedMainSourceSetCheck	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMingwMainSourceSetCheck	0.003	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:metadataIosMainProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:metadataMacosMainProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverIosX64MainSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverLinuxArm64TestSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMacosX64TestSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverNativeMainSourceSet	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:compileJvmMainJava	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:compileJvmTestJava	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:compileMacosMainKotlinMetadata	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:exportCrossCompilationMetadataForLinuxX64ApiElements	0.002	
+profile-2026-09-15-02-25-54.html	task	:client:ktlintJvmTestSourceSetCheck	0.002	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:client:mergeAndroidMainNativeLibs	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:metadataLinuxMainProcessResources	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverIosSimulatorArm64MainSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverLinuxMainSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverLinuxX64TestSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMacosArm64TestSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMacosMainSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMingwMainSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:compileLinuxMainKotlinMetadata	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:iosArm64MainKlibrary	0.001	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:iosArm64ProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:linuxX64ProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:metadataAppleMainProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:preAndroidMainBuild	0.001	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverAppleTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverIosArm64MainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverIosSimulatorArm64TestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverIosTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverLinuxArm64MainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverLinuxTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMacosArm64MainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMacosTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMingwX64MainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMingwX64TestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:androidPreBuild	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:client:assembleAndroidMain	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:client:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:client:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:client:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:compileJvmSharedMainKotlinMetadata	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:computeLocalPackageDependencyInputFiles	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:convertSyntheticImportProjectIntoDefFileIphonesimulator	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:convertSyntheticImportProjectIntoDefFileMacosx	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:fetchSyntheticImportProjectPackages	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:fetchUmbrellaPackageIdentifierForDefault	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:generateSyntheticLinkageSwiftPMImportProjectForCinteropsAndLdDump	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:generateUmbrellaPackageIdentifierBasedResolutionForDefault	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:iosSimulatorArm64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:iosSimulatorArm64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:iosX64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:iosX64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:jvmMainClasses	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:client:jvmTestClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:ktlintAppleMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintAppleTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintIosArm64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintIosArm64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintIosMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintIosSimulatorArm64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintIosSimulatorArm64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintIosTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintIosX64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintIosX64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintLinuxArm64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintLinuxArm64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintLinuxMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintLinuxTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintLinuxX64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintLinuxX64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMacosArm64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMacosArm64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMacosMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMacosTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMacosX64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMacosX64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMingwTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMingwX64MainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:ktlintMingwX64TestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:linkDebugTestIosSimulatorArm64	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:linkDebugTestIosX64	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:linkDebugTestMacosArm64	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:linkDebugTestMacosX64	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:linuxArm64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:linuxX64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:macosArm64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:macosArm64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:macosX64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:macosX64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:metadataAppleMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:metadataCommonMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:metadataIosMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:metadataJvmSharedMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:metadataLinuxMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:metadataMacosMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:metadataNativeMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:mingwX64MainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:client:mingwX64Test	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:processJvmMainResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:processJvmTestResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverIosArm64TestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverIosX64TestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:runKtlintCheckOverMacosX64MainSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:client:syncPersistedPackageResolvedToSynthetic	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	project	:dev:server-jvm-keycloak	8.308	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:shadowDistZip	2.788	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:distZip	2.103	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:startShadowScripts	1.255	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:shadowJar	0.734	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:shadowDistTar	0.593	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:distTar	0.365	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:startScripts	0.178	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:compileKotlin	0.133	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:compileTestKotlin	0.058	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:jar	0.052	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:test	0.009	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:runKtlintCheckOverTestSourceSet	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:ktlintTestSourceSetCheck	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:ktlintMainSourceSetCheck	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:loadKtlintReporters	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:processResources	0.004	
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:ktlintKotlinScriptCheck	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:processTestResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:runKtlintCheckOverKotlinScripts	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:runKtlintCheckOverMainSourceSet	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:compileJava	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:compileTestJava	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:classes	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:server-jvm-keycloak:testClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	project	:dev:sample-kotlin-jvm	1.970	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:startScripts	1.089	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:distZip	0.628	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:distTar	0.137	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:compileKotlin	0.059	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:jar	0.014	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:ktlintMainSourceSetCheck	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:loadKtlintReporters	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:ktlintKotlinScriptCheck	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:runKtlintCheckOverKotlinScripts	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:runKtlintCheckOverMainSourceSet	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:compileJava	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:compileTestJava	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:compileTestKotlin	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:runKtlintCheckOverTestSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:test	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:processTestResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:classes	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:ktlintTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:processResources	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-jvm:testClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	project	:core	1.129	
+profile-2026-09-15-02-25-54.html	task	:core:transformCommonMainDependenciesMetadata	0.574	
+profile-2026-09-15-02-25-54.html	task	:core:compileKotlinJvm	0.153	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:core:jvmJar	0.140	
+profile-2026-09-15-02-25-54.html	task	:core:compileKotlinNative	0.091	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:core:allMetadataJar	0.033	
+profile-2026-09-15-02-25-54.html	task	:core:compileCommonMainKotlinMetadata	0.029	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:core:downloadKotlinNativeDistribution	0.016	
+profile-2026-09-15-02-25-54.html	task	:core:generateProjectStructureMetadata	0.011	
+profile-2026-09-15-02-25-54.html	task	:core:runKtlintCheckOverKotlinScripts	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:core:compileTestKotlinJvm	0.007	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:ktlintKotlinScriptCheck	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:core:loadKtlintReporters	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:core:exportCommonSourceSetsMetadataLocationsForMetadataApiElements	0.005	
+profile-2026-09-15-02-25-54.html	task	:core:kmpPartiallyResolvedDependenciesChecker	0.005	
+profile-2026-09-15-02-25-54.html	task	:core:ktlintCommonMainSourceSetCheck	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:core:nativeProcessResources	0.005	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:runKtlintCheckOverCommonMainSourceSet	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:core:exportCrossCompilationMetadataForNativeApiElements	0.004	
+profile-2026-09-15-02-25-54.html	task	:core:exportRootPublicationCoordinatesForMetadataApiElements	0.004	
+profile-2026-09-15-02-25-54.html	task	:core:runKtlintCheckOverJvmTestSourceSet	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:compileJvmMainJava	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:jvmTest	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:linkDebugTestNative	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:jvmTestProcessResources	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:runKtlintCheckOverNativeTestSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:assemble	0.001	Did No Work
+profile-2026-09-15-02-25-54.html	task	:core:compileJvmTestJava	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:compileTestKotlinNative	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:runKtlintCheckOverCommonTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:runKtlintCheckOverJvmMainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:allTests	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:core:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:core:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:jvmMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:core:jvmProcessResources	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:jvmTestClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:core:ktlintCommonTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:ktlintJvmMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:ktlintJvmTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:ktlintNativeMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:ktlintNativeTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:metadataCommonMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:core:metadataCommonMainProcessResources	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:core:nativeMainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:core:nativeTest	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:processJvmMainResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:processJvmTestResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:core:runKtlintCheckOverNativeMainSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	project	:dev:retrace	0.480	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:transformCommonMainDependenciesMetadata	0.205	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:compileKotlinJvm	0.048	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:compileKotlinNative	0.033	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:compileCommonMainKotlinMetadata	0.028	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:jvmJar	0.023	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:allMetadataJar	0.016	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:downloadKotlinNativeDistribution	0.014	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:compileTestKotlinJvm	0.010	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:compileJvmMainJava	0.008	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:runKtlintCheckOverKotlinScripts	0.008	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:ktlintKotlinScriptCheck	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:loadKtlintReporters	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:metadataCommonMainProcessResources	0.007	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:runKtlintCheckOverCommonMainSourceSet	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:exportCrossCompilationMetadataForNativeApiElements	0.006	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:generateProjectStructureMetadata	0.006	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:linkDebugTestNative	0.006	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:exportCommonSourceSetsMetadataLocationsForMetadataApiElements	0.005	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:ktlintCommonMainSourceSetCheck	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:allTests	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:nativeProcessResources	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:compileJvmTestJava	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:compileTestKotlinNative	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:exportRootPublicationCoordinatesForMetadataApiElements	0.003	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:jvmProcessResources	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:runKtlintCheckOverNativeTestSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:jvmTest	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:runKtlintCheckOverJvmTestSourceSet	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:jvmTestProcessResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:runKtlintCheckOverCommonTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:runKtlintCheckOverJvmMainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:runKtlintCheckOverNativeMainSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:jvmMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:jvmTestClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:kmpPartiallyResolvedDependenciesChecker	0.000	
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:ktlintCommonTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:ktlintJvmMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:ktlintJvmTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:ktlintNativeMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:ktlintNativeTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:metadataCommonMainClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:nativeMainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:nativeTest	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:processJvmMainResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:retrace:processJvmTestResources	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	project	:dev:sample-kotlin-native	0.478	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:linkDebugExecutableNative	0.290	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:linkReleaseExecutableNative	0.078	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:compileKotlinNative	0.040	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:downloadKotlinNativeDistribution	0.021	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:generateProjectStructureMetadata	0.010	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:allMetadataJar	0.008	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:nativeProcessResources	0.007	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:compileTestKotlinNative	0.005	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:ktlintKotlinScriptCheck	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:linkDebugTestNative	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:loadKtlintReporters	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:runKtlintCheckOverKotlinScripts	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:runKtlintCheckOverNativeMainSourceSet	0.003	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:ktlintNativeMainSourceSetCheck	0.002	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:kmpPartiallyResolvedDependenciesChecker	0.001	
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:runKtlintCheckOverCommonTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:allTests	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:ktlintCommonMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:ktlintCommonTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:ktlintNativeTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:nativeMainKlibrary	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:nativeTest	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:runKtlintCheckOverCommonMainSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:sample-kotlin-native:runKtlintCheckOverNativeTestSourceSet	0.000	NO-SOURCE
+profile-2026-09-15-02-25-54.html	project	:dev:client-android	0.446	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:compileAndroidMain	0.076	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:bundleAndroidMainClassesToCompileJar	0.062	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:processAndroidMainManifest	0.038	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:bundleLibRuntimeToDirAndroidMain	0.031	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:mergeAndroidMainJavaResource	0.021	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:extractAndroidMainAnnotations	0.020	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:createFullJarAndroidMain	0.015	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:bundleAndroidMainLocalLintAar	0.014	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:checkAndroidMainAarMetadata	0.014	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:generateProjectStructureMetadata	0.013	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:processAndroidMainJavaRes	0.012	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:runKtlintCheckOverKotlinScripts	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:bundleAndroidMainAar	0.010	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:ktlintAndroidMainSourceSetCheck	0.010	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:syncAndroidMainLibJars	0.010	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:generateAndroidMainEmptyResourceFiles	0.009	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:allMetadataJar	0.008	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:bundleAndroidMainClassesToRuntimeJar	0.008	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:loadKtlintReporters	0.007	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:mergeAndroidMainConsumerProguardFiles	0.007	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:mergeAndroidMainJniLibFolders	0.007	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:writeAndroidMainAarMetadata	0.007	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:copyAndroidMainJniLibsProjectOnly	0.006	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:mergeAndroidMainGeneratedProguardFiles	0.006	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:prepareAndroidMainArtProfile	0.005	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:runKtlintCheckOverAndroidMainSourceSet	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:ktlintKotlinScriptCheck	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:prepareLintJarForPublish	0.004	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:runKtlintCheckOverCommonMainSourceSet	0.003	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:assemble	0.001	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:mergeAndroidMainNativeLibs	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:runKtlintCheckOverCommonTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:androidPreBuild	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:assembleAndroidMain	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:kmpPartiallyResolvedDependenciesChecker	0.000	
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:ktlintCommonMainSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:ktlintCommonTestSourceSetCheck	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:client-android:preAndroidMainBuild	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	project	:dev:android-gradle-plugin	0.353	
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:compileKotlin	0.181	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:pluginUnderTestMetadata	0.044	
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:validatePlugins	0.025	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:jar	0.019	
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:runKtlintCheckOverKotlinScripts	0.012	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:loadKtlintReporters	0.011	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:sourcesJar	0.009	
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:pluginDescriptors	0.008	
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:compileTestJava	0.007	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:processResources	0.007	
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:ktlintKotlinScriptCheck	0.006	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:runKtlintCheckOverMainSourceSet	0.005	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:test	0.005	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:compileTestKotlin	0.004	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:ktlintMainSourceSetCheck	0.004	FROM-CACHE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:compileJava	0.002	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:classes	0.001	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:ktlintTestSourceSetCheck	0.001	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:processTestResources	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:runKtlintCheckOverTestSourceSet	0.001	NO-SOURCE
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:assemble	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:build	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:check	0.000	Did No Work
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:checkKotlinGradlePluginConfigurationErrors	0.000	SKIPPED
+profile-2026-09-15-02-25-54.html	task	:dev:android-gradle-plugin:testClasses	0.000	UP-TO-DATE
+profile-2026-09-15-02-25-54.html	project	:dev	0.000	

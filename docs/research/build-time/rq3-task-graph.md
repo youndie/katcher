@@ -1,7 +1,9 @@
 # RQ3 — build only what ships
 
-**Status: the change is made and awaiting measurement. The task-count half of the green
-condition is rejected as a proxy, with numbers.**
+**Status: amber at 22.2% on `T_pr`, against a green threshold of 25%. Not adopted.**
+
+CI itself falls 43.0%. `T_pr` does not, because it is the slower of two jobs and the other one
+becomes the slower as soon as this one drops — which was written down before the run, not after.
 
 > **Green:** task count on the PR workflow down ≥ 30% **and** `T_pr` down ≥ 25%, with the same set
 > of checks still enforced (list them before and after).
@@ -148,3 +150,67 @@ covered.
 - Green ≥ 25% on `T_pr`, red < 10%, per the brief. Measured as three runs, median.
 - The checks after must equal the checks before: three test tasks, the ktlint set, Android lint.
   The "after" list is taken from the profile of the changed job, not asserted.
+
+
+---
+
+# The measurement
+
+Three runs of the changed CI job, and the Image figure from RQ4's warm measurement.
+
+| | before | after |
+|---|---|---|
+| CI job | 284 s (310, 284, 279) | **162 s** (157, 162, 186) |
+| Image job (RQ4, warm) | 221 s | 221 s — untouched |
+| **`T_pr`** = slower of the two, server PR | **284 s** | **221 s** |
+| tasks in the graph | 863 | 862 |
+
+- **CI alone: 43.0%.**
+- **`T_pr`: 22.2%.** Green is ≥ 25%, red < 10%. Amber.
+
+## Why it stops at 22%
+
+`T_pr` is the slower of the two jobs. Taking CI from 284 s to 162 s puts it *below* Image's 221 s,
+so Image becomes the gate and every second cut from CI after that point moves nothing at all.
+
+This was stated in the pull request before the run: *"if CI drops below 221 s, Image becomes the
+gate again and further CI cuts stop moving the metric"*. It is recorded here as a prediction that
+held rather than as an explanation found afterwards, because the two are indistinguishable once
+the number is in.
+
+## The after-list, which is the part the brief actually demands
+
+Taken from the profile of the changed job ([raw/ci-tasks-after-rq3.tsv](raw/ci-tasks-after-rq3.tsv)),
+not asserted:
+
+| | before | after |
+|---|---|---|
+| executed tests | `:server:jvmTest`, `:server:nativeTest`, `:client:linuxX64Test` | **identical** |
+| ktlint tasks in the graph | 259 | **259** |
+| Android lint executed | 9 | **9** |
+| `:server:linkReleaseExecutableNative` | present | **absent** |
+
+One difference looked like a dropped check and was not. `:server:runKtlintCheckOverKotlinScripts`
+executed for 4.19 s before and does not appear as executed after — because it came back
+`FROM-CACHE` at 0.006 s. The task is in both graphs; only its outcome differs. The first pass over
+this counted executed tasks alone and raised a false alarm, which is the right way round for a
+check that exists to catch a dropped check.
+
+**No check was dropped.** One task was removed and it was the one nothing consumed.
+
+## Three ambers, and they are not three coincidences
+
+| | measured | threshold |
+|---|---|---|
+| RQ2, `-Xmx10g` | 9.96% | 10% |
+| RQ4, link outside `docker build` | 45.0% | 50% |
+| RQ3, drop the duplicate link | 22.2% | 25% |
+
+Every one of these changes works. Every one lands just short of a line drawn before measurement.
+The pattern has a cause, and it is the same each time: **the lever stops where something else
+becomes the binding constraint.** RQ4 ran out at the link, which RQ0 measured as 79.7% LLVM. RQ3
+ran out at the neighbouring job. RQ2 ran out at native memory the Java heap does not own.
+
+The thresholds were written as though each lever acted alone. They queue behind one another
+instead. That is a fact about the brief, learned by measuring, and it is not fixed by moving three
+lines four points each — which would also make every threshold in the document worth nothing.
