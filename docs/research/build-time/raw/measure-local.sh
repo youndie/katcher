@@ -21,6 +21,10 @@
 #   incr_dbg   one-line change in :server → linkDebugExecutableNative
 #   incr_rel   the same change          → linkReleaseExecutableNative
 #
+# PROFILE=1 additionally runs Gradle with --profile and keeps <tag>.profile.html beside each
+# timing. Read them with parse-profile.py. The timings from a profiled run are for attribution,
+# not for the results table.
+#
 # Reps are INTERLEAVED (warm, dbg, rel, warm, dbg, rel, …) rather than blocked, so a thermal
 # ramp on this laptop lands on every metric instead of on whichever ran last.
 #
@@ -37,6 +41,22 @@ REMOTE="${REMOTE:-\$HOME/katcher}"
 WSL_RUN="${WSL_RUN:-$HOME/.claude/bin/wsl-run}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 OUT="${OUT:-$PWD/docs/research/build-time/raw/local-$STAMP}"
+
+# PROFILE=1 adds --profile to every timed run and keeps the report beside the timing. Off by
+# default: profiling perturbs what it measures, so a timing taken with it is not comparable to one
+# taken without, and the two must not end up in the same table.
+PROFILE_ARG=""
+[ "${PROFILE:-0}" = "1" ] && PROFILE_ARG="--profile"
+
+# GRADLE_ARGS carries the variant under test, e.g. GRADLE_ARGS="-Pkotlin.incremental.native=true".
+# Passed on the command line rather than edited into gradle.properties: this tree is a mutagen
+# source, and an edit here travels to the box mid-run. A variant that survives measurement becomes
+# a gradle.properties line in its own PR; while it is being measured it is an argument.
+GRADLE_ARGS="${GRADLE_ARGS:-}"
+
+# METRICS selects which of the three to run. RQ1 only needs incr_dbg, and running incr_rel for it
+# would spend four minutes a rep on a metric that compiler caches cannot touch.
+METRICS="${METRICS:-warm incr_dbg incr_rel}"
 
 REL=":server:linkReleaseExecutableNative"
 DBG=":server:linkDebugExecutableNative"
@@ -68,7 +88,13 @@ remote_build() {
     local task="$1"
     local tag="$2"
     local log="$OUT/$tag.log"
-    "$WSL_RUN" "cd $REMOTE && S=\$(date +%s%N) && ./gradlew $task --console=plain; RC=\$?; E=\$(date +%s%N); echo \"ELAPSED_MS=\$(( (E - S) / 1000000 ))\"; echo \"EXIT=\$RC\"" > "$log" 2>&1
+    "$WSL_RUN" "cd $REMOTE && S=\$(date +%s%N) && ./gradlew $task $GRADLE_ARGS $PROFILE_ARG --console=plain; RC=\$?; E=\$(date +%s%N); echo \"ELAPSED_MS=\$(( (E - S) / 1000000 ))\"; echo \"EXIT=\$RC\"" > "$log" 2>&1
+    if [ -n "$PROFILE_ARG" ]; then
+        # Reports are written on the box and the replica does not carry them back, so they are
+        # fetched in a call of their own rather than looked for locally afterwards.
+        "$WSL_RUN" "cd $REMOTE && cat \$(ls -t build/reports/profile/profile-*.html | head -1)" \
+            > "$OUT/$tag.profile.html" 2>/dev/null || true
+    fi
     local ms rc
     ms=$(grep -o 'ELAPSED_MS=[0-9]*' "$log" | tail -1 | cut -d= -f2)
     rc=$(grep -o 'EXIT=[0-9]*' "$log" | tail -1 | cut -d= -f2)
@@ -104,6 +130,9 @@ printf 'rep\tmetric\tms\tverdict\tlog\n' | tee "$OUT/results.tsv"
     echo "# subject      $SUBJECT"
     echo "# started      $(date -Iseconds)"
     echo "# reps         $REPS"
+    echo "# metrics      $METRICS"
+    echo "# gradle args  ${GRADLE_ARGS:-(none)}"
+    echo "# profile      ${PROFILE:-0}"
     "$WSL_RUN" "cd $REMOTE && echo \"# box cores    \$(nproc)\" && free -m | awk '/^Mem:/ {print \"# box memory   \"\$2\" MiB total, \"\$3\" MiB used\"}' && echo \"# box loadavg  \$(cut -d' ' -f1-3 /proc/loadavg)\" && echo \"# box kernel   \$(uname -r)\"" 2>/dev/null
 } > "$OUT/environment.txt"
 cat "$OUT/environment.txt"
@@ -111,7 +140,7 @@ cat "$OUT/environment.txt"
 emit() { printf '%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" | tee -a "$OUT/results.tsv"; }
 
 for rep in $(seq 1 "$REPS"); do
-    for metric in warm incr_dbg incr_rel; do
+    for metric in $METRICS; do
         case "$metric" in
             warm)
                 remote_build "$REL" "r$rep-warm-settle" > /dev/null

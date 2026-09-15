@@ -1,0 +1,4 @@
+rep	metric	ms	verdict	log
+1	incr_dbg	5386	ok	r1-incr_dbg.log
+2	incr_dbg	4305	ok	r2-incr_dbg.log
+3	incr_dbg	3779	ok	r3-incr_dbg.log

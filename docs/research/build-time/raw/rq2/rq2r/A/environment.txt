@@ -1,0 +1,7 @@
+# repository   /Users/youndie/Documents/GitHub/katcher @ 59545e9
+# subject      server/src/commonMain/kotlin/Main.kt
+# started      2026-09-15T01:44:34+02:00
+# reps         4
+# metrics      incr_rel
+# gradle args  -Dorg.gradle.jvmargs='-Xmx5g -XX:MaxMetaspaceSize=1g'
+# profile      0

@@ -43,6 +43,21 @@ on:
       - .dockerignore
       - .github/workflows/image.yml
 
+  # INSTRUMENTATION, AND IT HAS TO BE ASKED FOR — see the same block in ci.yml. RQ0 could bound
+  # this job's docker steps exactly and could NOT split the Gradle step inside them: BuildKit's
+  # `#11 <seconds>` prefixes are when it flushed a batch, not when a line was written, and
+  # `compileKotlinNative` came out at exactly 30.0s in three separate runs because of it.
+  #
+  # Since RQ4 moved Gradle out of `docker build`, a profile run is no longer a separate path: the
+  # flag rides along on the `docker run` that links the binary, the image is still assembled, and
+  # the smoke test still runs. It costs one extra artifact rather than a second whole build.
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Build with --profile and keep the report instead of building the image
+        type: boolean
+        default: false
+
 concurrency:
   group: image-${{ github.ref }}
   cancel-in-progress: true
@@ -53,7 +68,82 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - name: Build the runtime image
+      # RQ4: THE CACHES THE CONTAINER USED TO START WITHOUT. Inside `docker build` they cannot
+      # persist — a BuildKit cache mount lives in the builder's own state, `type=gha` exports
+      # layers rather than mounts, and the layer under `COPY . .` is invalidated by every commit.
+      # Outside it, this is an ordinary actions/cache.
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: image-gradle-${{ runner.os }}-${{ hashFiles('gradle/*.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: image-gradle-${{ runner.os }}-
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.konan
+          key: image-konan-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: image-konan-${{ runner.os }}-
+
+      # THE SAME IMAGE THE RUNTIME TAKES ITS GLIBC FROM, and that is not incidental: the binary is
+      # statically linked but still `dlopen`s its gconv converters, so the shared glibc copied into
+      # the runtime has to be the same build as the `libc.a` this link used. Linking on the runner
+      # instead would pair one glibc 2.39 with a different one, and the symptom is not a failed
+      # build — it is 500 from the first authenticated page.
+      # THE TWO CACHES MOUNT AT DIFFERENT PATHS, AND THE ASYMMETRY IS MEASURED RATHER THAN GUESSED.
+      # Kotlin/Native takes `$HOME/.konan`, and the container runs as root, so /root/.konan is
+      # right. Gradle in this image does NOT honour `GRADLE_USER_HOME`: setting it to /root/.gradle
+      # and asking the container afterwards produced
+      #
+      #     GRADLE_USER_HOME=/root/.gradle
+      #     0       /root/.gradle
+      #     1.3G    /home/gradle/.gradle
+      #
+      # so the mount follows where it actually writes. Three green runs passed before this was
+      # found — the image built, the smoke test passed, and the time even improved, because the
+      # konan half of the cache was real. The only complaint was `actions/cache` reporting "Path(s)
+      # specified in the action for caching do(es) not exist" in a post step, which is the last
+      # place anyone looks. That is why the receipts below print on every run.
+      - name: Link the binary, in the image that supplies its glibc
+        run: |
+          mkdir -p "$HOME/.gradle" "$HOME/.konan"
+          docker run --rm \
+            --volume "$PWD":/app --workdir /app \
+            --volume "$HOME/.gradle":/home/gradle/.gradle \
+            --volume "$HOME/.konan":/root/.konan \
+            --env GRADLE_PROFILE="${{ inputs.profile && '--profile' || '' }}" \
+            gradle:9.7.1-jdk25-noble \
+            sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null \
+                   && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace $GRADLE_PROFILE \
+                   && echo "--- inside the container ---" \
+                   && echo "GRADLE_USER_HOME=$GRADLE_USER_HOME" \
+                   && du -sh /root/.gradle /home/gradle/.gradle 2>/dev/null \
+                   && gradle --version | grep -iE "gradle user home|^Gradle" || true'
+          # The container writes as root through the mounts; the cache save step and everything
+          # after it run as the runner's user.
+          sudo chown -R "$(id -u):$(id -g)" "$HOME/.gradle" "$HOME/.konan" server/build
+          ls -l server/build/bin/native/releaseExecutable/server.kexe
+
+          # WHERE THE CACHES ACTUALLY LANDED. Printed every run, not added while debugging: the
+          # first two runs of this change both reported "Path(s) specified in the action for
+          # caching do(es) not exist" in the post step, and neither the timings nor the green tick
+          # said anything was wrong. A cache the build never writes to still looks like a success.
+          echo "--- receipts ---"
+          du -sh "$HOME/.gradle" "$HOME/.konan" 2>/dev/null || true
+          ls -la "$HOME/.gradle" 2>/dev/null | head -10 || echo "no $HOME/.gradle at all"
+          docker run --rm --env GRADLE_USER_HOME=/root/.gradle gradle:9.7.1-jdk25-noble \
+            sh -c 'id; echo "HOME=$HOME GRADLE_USER_HOME=$GRADLE_USER_HOME"' || true
+
+      - name: Keep the profile report
+        if: ${{ inputs.profile }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: gradle-profile-image
+          path: build/reports/profile/
+          retention-days: 30
+
+      - name: Assemble the runtime image
         run: docker build --file server/Dockerfile --tag katcher:ci .
 
       - name: The image runs, and a page renders a timestamp

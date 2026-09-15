@@ -100,3 +100,50 @@ Compilation and link are now reported as one phase, and the surrounding boundari
 **Common to all three:** the number looked reasonable in isolation. What exposed each one was a
 comparison it had to survive — against another metric, against a task's own log line, against a
 second run. A measurement with nothing to contradict it is not yet evidence.
+
+---
+
+## 2026-09-15 — RQ1's first campaign, and two claims made inside it
+
+### The interleaved campaign is void
+
+Reported A 20520 / 9839 / 10892, B 8185 / 3831 / 4855, C 7615 / 8109 / 7696. Not published, and
+not corrected — void. **Variant C disables the compiler caches and so does strictly more work, and
+it measured faster than the baseline in all three rounds**; variant A disagreed with its own
+baseline of 12810 ms taken an hour earlier.
+
+The mechanism is in the log, not in a guess:
+
+```
+Calculating task graph as configuration cache cannot be reused
+because Gradle property 'kotlin.native.cacheKind' has changed.
+```
+
+Each variant is a Gradle property, so alternating them invalidated the configuration cache and put
+its rebuild inside the timed window — a cost a real edit loop never pays. Interleaving was in
+methodology.md to spread thermal drift; for property variants it is the larger error, and the rule
+is now reversed for them.
+
+### "B is converging" — a mechanism read into three ordered points
+
+B's three values fell monotonically, 5386 → 4305 → 3779, and I explained it: incremental
+compilation accumulates state, so the three were a converging sequence rather than three samples of
+one quantity. Six reps said otherwise — 3780, 4532, 4513, 4492, 6107, 5043 — a plateau near 4500
+with an outlier. Three points that happen to be ordered are not a trend, and the explanation was
+the more convincing for being plausible.
+
+### "Stopping the daemons removes the noise" — it traded one source for another
+
+Offered as *finding and removing the source of noise*, which §2 requires before a metric is
+reportable again. `./gradlew --stop` did free 7 GB, and then A ran 21556 → 11968 → 8190: a
+cold-start ramp that two warm-up runs did not absorb. **A quiet box is not a warm one**, and a real
+edit loop runs against a warm daemon — stopping it measures start-up instead of work. The fix was
+warm-up with a cut declared before the run, not a quieter machine.
+
+### The baseline that did not transfer
+
+`T_incr_dbg` = 12810 ms (n=3, CV 3.0%) is correct for the campaign that produced it and is **not**
+the baseline for RQ1. That campaign interleaved `incr_rel` between the debug measurements, and two
+minutes of release linking between samples leaves the box and its daemons in a different state.
+Every RQ1 comparison therefore re-measures A inside its own campaign. A baseline is a property of
+its conditions, not of the repository.

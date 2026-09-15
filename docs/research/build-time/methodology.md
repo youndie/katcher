@@ -42,9 +42,33 @@ that can link linuxX64:
   margin under it.
 - **It is not idle.** It also hosts a self-hosted Actions runner and other syncs. Background
   load at the time of a measurement is part of the measurement and goes in the log beside it.
-- **Consequence for the protocol.** Variants are interleaved (A B A B A B), never run in blocks,
-  and the reported figure is a median of three per variant with the full spread printed. A
-  difference inside the spread is reported as inconclusive, not as a small win.
+- **Consequence for the protocol.** The reported figure is a median per variant with the full
+  spread printed, and a difference inside the spread is inconclusive rather than a small win.
+  Whether variants are interleaved or blocked depends on what the variant *is* — see below.
+
+## Interleave or block: it depends on what the variant is
+
+- **A variant that does not touch the build's configuration is interleaved** (A B A B A B), so a
+  thermal ramp lands on every variant rather than on whichever went last.
+- **A variant that is a Gradle property is blocked**, with a throwaway run after each switch.
+  Switching one invalidates the configuration cache — `configuration cache cannot be reused
+  because Gradle property '…' has changed` — and alternating puts that rebuild inside the timed
+  window, a cost no real edit loop pays. This is the reverse of the rule above and was learned by
+  publishing an impossible ordering; see retractions.md.
+- **Daemons are left running.** A real edit loop runs against a warm daemon, so `./gradlew --stop`
+  before a campaign measures start-up rather than work. Warm up instead, and declare the
+  warm-up/measure cut *before* the run rather than choosing the split that flatters the result.
+
+## The noise gate, and what it gets wrong
+
+§2 refuses a metric at CV > 15%. Applied to a **difference between variants of different
+magnitude, it penalises success**: the absolute jitter on this box is about the same number of
+milliseconds either way — roughly what one Gradle invocation varies by — so a variant that halves
+the metric doubles its own CV. RQ1's winner failed the gate for having worked.
+
+Judge the difference against the absolute spread instead: RQ1's two medians are 3754 ms apart,
+3.3× the larger standard deviation. The CV gate still applies to a metric reported on its own
+rather than as a difference.
 - **Measured, 2026-09-14: build wall-clock on this box does not swing like that.** Three
   interleaved reps gave CV of 1.2% (`T_incr_rel`), 3.0% (`T_incr_dbg`) and 6.6% (`T_warm`) — well
   inside the gate. The ±15% is a *throughput* observation and does not transfer to a
@@ -98,3 +122,43 @@ The mutagen session is `one-way-replica`: the mac is the source, the box is a co
 - Green/red thresholds are declared before the measurement, not after it.
 - A number that is re-run and does not reproduce goes in [retractions.md](retractions.md)
   rather than quietly out of the table.
+
+
+## Incident, 2026-09-15: the box stops, and everything downstream lies about it
+
+Mid-campaign, every `wsl-run` call began printing `mutagen sync flush katcher не прошёл`. The
+cause was not the sync and not the tunnel: the WSL guest `Ubuntu-24.04` was in state `Stopped`,
+and a diagnostic command was what started it again. All thirty mutagen sessions in the portfolio
+were in `Connecting to beta`, not just this one.
+
+**Three things failed quietly, and the order matters.**
+
+- **`wsl-run` returns 0 when the flush fails.** The background campaign reported
+  `completed (exit code 0)` having built nothing. Exit status is not a signal here; the output is.
+- **The harness guard is what saved the data.** Rep 4 printed `void:link-` rather than a number,
+  because the link task did not run. Without it, three numbers from variant B and none from A
+  would have looked like a campaign to interpret rather than one to discard.
+- **A half-campaign cannot be rescued.** B's three reps are internally consistent and worthless:
+  with no A taken under the same conditions there is nothing to compare them to.
+
+**Diagnosis, in the order that actually distinguishes the causes:**
+
+| check | what it rules in or out |
+|---|---|
+| `ping` the Windows host | the machine, versus everything on it |
+| `wsl -l -v` via ssh to port 22 | whether the guest is running at all — this is the one that answered |
+| `ss -lnt` inside the guest | whether sshd is listening, versus whether it is reachable |
+| `Test-NetConnection` from Windows | the relay, versus the tunnel — and it **lied**: it reported success on a port a real socket connect then refused |
+| a raw socket read from Windows | the truth: either the SSH banner comes back or it does not |
+| `ssh -vv` from the mac | `kex_exchange_identification: Connection closed` means the far end dropped it before key exchange — not authentication, not the host key |
+
+**What the guest actually needs.** In mirrored networking mode the guest's address *is* the host's
+(`hostname -I` returns 192.168.1.102), and Windows reaches sshd there while `127.0.0.1:2222` is
+refused. So the tunnel has to be `-L 2222:192.168.1.102:2222`, not `-L 2222:127.0.0.1:2222`. That
+gets one working session — and then the guest stops again shortly after the last command exits,
+which is the real fault and is a configuration matter on the machine, not something to be worked
+around from here.
+
+**For measurement, the lasting point:** a stand that can stop mid-campaign has to be *asked*
+whether it was up, per campaign, not assumed. Recording box load and memory at the start of each
+block already existed; it is not enough, because a box that is gone records nothing at all.

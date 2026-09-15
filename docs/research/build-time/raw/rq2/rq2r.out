@@ -1,0 +1,23 @@
+=== stopping every daemon, so a campaign runs against one process it can name
+daemons now: 0
+0
+stopped
+started
+=== B asked for -Xmx10g; process list says:
+273309 MaxMetaspaceSize=1g -Xmx10g
+daemon count: 1
+--- B (rep 1 warm-up, 2-4 reported)
+1	incr_rel	129120	ok	r1-incr_rel.log
+2	incr_rel	127699	ok	r2-incr_rel.log
+3	incr_rel	127260	ok	r3-incr_rel.log
+4	incr_rel		void:link-	r4-incr_rel.log
+# box memory   15991 MiB total, 2203 MiB used
+# box loadavg  0.54 1.23 1.19
+oom lines in dmesg tail: wsl-run: mutagen sync flush katcher не прошёл
+/private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2r/B/r1-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2r/B/r2-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2r/B/r3-incr_rel.log:0 /private/tmp/claude-501/-Users-youndie-Documents-GitHub/677415ad-8c25-47e8-88a5-90f396ac8d7c/scratchpad/rq2r/B/r4-incr_rel.log:0
+wsl-run: mutagen sync flush katcher не прошёл
+wsl-run: mutagen sync flush katcher не прошёл
+=== A asked for -Xmx5g; process list says:
+wsl-run: mutagen sync flush katcher не прошёл
+--- A (rep 1 warm-up, 2-4 reported)
+oom lines in dmesg tail: wsl-run: mutagen sync flush katcher не прошёл

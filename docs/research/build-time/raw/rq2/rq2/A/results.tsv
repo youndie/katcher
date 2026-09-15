@@ -1,0 +1,5 @@
+rep	metric	ms	verdict	log
+1	incr_rel	139077	ok	r1-incr_rel.log
+2	incr_rel	132427	ok	r2-incr_rel.log
+3	incr_rel	134433	ok	r3-incr_rel.log
+4	incr_rel	134762	ok	r4-incr_rel.log

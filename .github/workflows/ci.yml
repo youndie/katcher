@@ -9,6 +9,22 @@ on:
   push:
     branches: [main]
 
+  # INSTRUMENTATION, AND IT HAS TO BE ASKED FOR. RQ0 of the build-time study could attribute 26%
+  # of this job: `./gradlew build` is 280s of 337s, and a plain-console log prints a line when a
+  # task STARTS and never how long it took — with `org.gradle.parallel=true` the gap between two
+  # start lines is not a duration. `--profile` is the only thing that carries per-task time and it
+  # cannot be turned on after the fact.
+  #
+  # Off by default rather than always on: a report nobody reads is an artifact nobody deletes, and
+  # the point of the flag is that the number is there when someone asks the question, not that
+  # every pull request carries one. See docs/research/build-time/rq0-attribution.md.
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: Run Gradle with --profile and keep the report
+        type: boolean
+        default: false
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -19,24 +35,47 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      # `konan-cache: "true"` is the whole of the Kotlin/Native caching here. A second
+      # `actions/cache@v6` on `~/.konan` used to sit below this step, with a DIFFERENT key
+      # (`hashFiles('gradle/*.versions.toml')`, a glob that also matches `jvmLibs.versions.toml`),
+      # restoring a directory this action had restored 13 s earlier — 13 s of a 337 s job, and on a
+      # catalogue bump both entries would have saved the same ~1 GB under two keys.
+      #
+      # RQ5 measured the cache that remains rather than assuming it: `T_first_compile` median 70 s
+      # over eight runs against a 90 s threshold, and a 100% hit rate over those eight. The
+      # architecture was already green; this removes the part that was paid for twice.
       - uses: youndie/sborka/.github/actions/setup-kotlin@main
         with:
           konan-cache: "true"
-
-      # Kotlin/Native cache: LLVM and the sysroots weigh hundreds of megabytes and are
-      # downloaded once. Without it every run spends minutes on that alone.
-      - uses: actions/cache@v6
-        with:
-          path: ~/.konan
-          key: konan-${{ runner.os }}-${{ hashFiles('gradle/*.versions.toml') }}
-          restore-keys: konan-${{ runner.os }}-
 
       # build covers ktlintCheck (through check) and the tests of every module. server and core
       # pick their native target by host, so on this runner that is linuxX64; client and shared
       # declare every target they publish, and the Apple ones are cross-compiled here as klibs
       # (kotlin.native.enableKlibsCrossCompilation in gradle.properties). Tests still run only
       # for the host target.
-      - run: ./gradlew build --stacktrace
+      #
+      # `inputs` is null on pull_request and push, so the flag expands to nothing there.
+      # `-x :server:linkReleaseExecutableNative` — RQ3. `build` reaches this task through
+      # `assemble`, and NOTHING IN THIS JOB CONSUMES IT: the tests link their own binary
+      # (`linkDebugTestNative`), and nothing runs the release executable here. It is not coverage
+      # being dropped, it is coverage being paid for twice — `image.yml` links the same binary and
+      # then actually runs it, through a smoke test that renders a page, a shutdown transcript and
+      # an allocator assertion.
+      #
+      # The two workflows cover each other because of the path filter: every path that could break
+      # this link — server, core, shared, dev/retrace, gradle, the root build files — is in
+      # `image.yml`'s list. A pull request that skips `image.yml` touches only `client`, `charts`,
+      # `dev` samples or docs, none of which `:server` depends on.
+      #
+      # 130.3 s of the 361.8 s of task time in this job, and one task out of 863.
+      - run: ./gradlew build -x :server:linkReleaseExecutableNative --stacktrace ${{ inputs.profile && '--profile' || '' }}
+
+      - if: ${{ inputs.profile }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: gradle-profile-build
+          path: build/reports/profile/
+          retention-days: 30
 
       - if: failure()
         uses: actions/upload-artifact@v7

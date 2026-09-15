@@ -1,0 +1,2 @@
+269183 MaxMetaspaceSize=1g -Xmx5g 271183 MaxMetaspaceSize=1g -Xmx10g
+daemon count: 2
