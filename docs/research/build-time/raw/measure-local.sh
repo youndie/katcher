@@ -111,10 +111,15 @@ remote_build() {
     ms=$(grep -o 'ELAPSED_MS=[0-9]*' "$log" | tail -1 | cut -d= -f2)
     rc=$(grep -o 'EXIT=[0-9]*' "$log" | tail -1 | cut -d= -f2)
     if [ -z "${ms:-}" ] || [ "${rc:-1}" != "0" ]; then
+        # PRINTS A SENTINEL, DOES NOT exit. This function is called inside `$( )`, and an `exit`
+        # there kills the command substitution's subshell and nothing else: the script carried on
+        # and emitted `3 incr_rel <empty> ok` for a build that had failed. A row with no number and
+        # a verdict of ok is worse than one marked void — it reads as a measurement whose value got
+        # lost rather than as a build that did not happen. The caller checks for FAIL.
         echo "FAILED $tag (exit ${rc:-?}) — see $log" >&2
         tail -30 "$log" >&2
-        restore
-        exit 1
+        echo "FAIL"
+        return 1
     fi
     echo "$ms"
 }
@@ -156,8 +161,9 @@ for rep in $(seq 1 "$REPS"); do
     for metric in $METRICS; do
         case "$metric" in
             warm)
-                remote_build "$REL" "r$rep-warm-settle" > /dev/null
+                [ "$(remote_build "$REL" "r$rep-warm-settle")" = FAIL ] && { emit "$rep" "$metric" "" "failed:settle" "r$rep-warm-settle.log"; continue; }
                 ms=$(remote_build "$REL" "r$rep-warm")
+                if [ "$ms" = FAIL ]; then emit "$rep" "$metric" "" "failed:build" "r$rep-warm.log"; continue; fi
                 # The guard is inverted here: a warm run SHOULD be all up to date.
                 if did_work "r$rep-warm" "$REL" 2>/dev/null; then
                     emit "$rep" "$metric" "$ms" "void:recompiled" "r$rep-warm.log"
@@ -167,10 +173,11 @@ for rep in $(seq 1 "$REPS"); do
                 ;;
             incr_dbg|incr_rel)
                 [ "$metric" = incr_dbg ] && task="$DBG" || task="$REL"
-                remote_build "$task" "r$rep-$metric-settle" > /dev/null
+                [ "$(remote_build "$task" "r$rep-$metric-settle")" = FAIL ] && { emit "$rep" "$metric" "" "failed:settle" "r$rep-$metric-settle.log"; continue; }
                 edit_subject
                 ms=$(remote_build "$task" "r$rep-$metric")
                 restore
+                if [ "$ms" = FAIL ]; then emit "$rep" "$metric" "" "failed:build" "r$rep-$metric.log"; continue; fi
                 reason=$(did_work "r$rep-$metric" "$task" 2>&1 >/dev/null) && verdict=ok || verdict="void:$reason"
                 emit "$rep" "$metric" "$ms" "$verdict" "r$rep-$metric.log"
                 ;;
