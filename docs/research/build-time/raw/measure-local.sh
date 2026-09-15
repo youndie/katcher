@@ -38,7 +38,10 @@ set -u -o pipefail
 REPS="${REPS:-3}"
 SUBJECT="${SUBJECT:-server/src/commonMain/kotlin/Main.kt}"
 REMOTE="${REMOTE:-\$HOME/katcher}"
-WSL_RUN="${WSL_RUN:-$HOME/.claude/bin/wsl-run}"
+# HOW A COMMAND REACHES THE BUILD HOST. Empty means "this machine" — which is how it runs on a
+# server you can edit on directly. `wsl-run` is the mutagen case, where the orchestrator has to
+# stay on the mac because the replica daemon reverts an edit made on the far side.
+RUNNER="${RUNNER-$HOME/.claude/bin/wsl-run}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 OUT="${OUT:-$PWD/docs/research/build-time/raw/local-$STAMP}"
 
@@ -62,7 +65,7 @@ REL=":server:linkReleaseExecutableNative"
 DBG=":server:linkDebugExecutableNative"
 
 [ -f "$SUBJECT" ] || { echo "run me from the repository root: $SUBJECT not found" >&2; exit 2; }
-[ -x "$WSL_RUN" ] || { echo "no wsl-run at $WSL_RUN" >&2; exit 2; }
+[ -z "$RUNNER" ] || [ -x "${RUNNER%% *}" ] || { echo "no runner at ${RUNNER%% *}" >&2; exit 2; }
 mkdir -p "$OUT"
 cp "$SUBJECT" "$OUT/subject.orig"
 
@@ -88,12 +91,21 @@ remote_build() {
     local task="$1"
     local tag="$2"
     local log="$OUT/$tag.log"
-    "$WSL_RUN" "cd $REMOTE && S=\$(date +%s%N) && ./gradlew $task $GRADLE_ARGS $PROFILE_ARG --console=plain; RC=\$?; E=\$(date +%s%N); echo \"ELAPSED_MS=\$(( (E - S) / 1000000 ))\"; echo \"EXIT=\$RC\"" > "$log" 2>&1
+    local script="cd $REMOTE && S=\$(date +%s%N) && ./gradlew $task $GRADLE_ARGS $PROFILE_ARG --console=plain; RC=\$?; E=\$(date +%s%N); echo \"ELAPSED_MS=\$(( (E - S) / 1000000 ))\"; echo \"EXIT=\$RC\""
+    if [ -n "$RUNNER" ]; then
+        $RUNNER "$script" > "$log" 2>&1
+    else
+        sh -c "$script" > "$log" 2>&1
+    fi
     if [ -n "$PROFILE_ARG" ]; then
         # Reports are written on the box and the replica does not carry them back, so they are
         # fetched in a call of their own rather than looked for locally afterwards.
-        "$WSL_RUN" "cd $REMOTE && cat \$(ls -t build/reports/profile/profile-*.html | head -1)" \
-            > "$OUT/$tag.profile.html" 2>/dev/null || true
+        local fetch="cd $REMOTE && cat \$(ls -t build/reports/profile/profile-*.html | head -1)"
+        if [ -n "$RUNNER" ]; then
+            $RUNNER "$fetch" > "$OUT/$tag.profile.html" 2>/dev/null || true
+        else
+            sh -c "$fetch" > "$OUT/$tag.profile.html" 2>/dev/null || true
+        fi
     fi
     local ms rc
     ms=$(grep -o 'ELAPSED_MS=[0-9]*' "$log" | tail -1 | cut -d= -f2)
@@ -133,7 +145,8 @@ printf 'rep\tmetric\tms\tverdict\tlog\n' | tee "$OUT/results.tsv"
     echo "# metrics      $METRICS"
     echo "# gradle args  ${GRADLE_ARGS:-(none)}"
     echo "# profile      ${PROFILE:-0}"
-    "$WSL_RUN" "cd $REMOTE && echo \"# box cores    \$(nproc)\" && free -m | awk '/^Mem:/ {print \"# box memory   \"\$2\" MiB total, \"\$3\" MiB used\"}' && echo \"# box loadavg  \$(cut -d' ' -f1-3 /proc/loadavg)\" && echo \"# box kernel   \$(uname -r)\"" 2>/dev/null
+    env_script="cd $REMOTE && echo \"# box cores    \$(nproc)\" && free -m | awk '/^Mem:/ {print \"# box memory   \"\$2\" MiB total, \"\$3\" MiB used\"}' && echo \"# box loadavg  \$(cut -d' ' -f1-3 /proc/loadavg)\" && echo \"# box kernel   \$(uname -r)\""
+    if [ -n "$RUNNER" ]; then $RUNNER "$env_script" 2>/dev/null; else sh -c "$env_script" 2>/dev/null; fi
 } > "$OUT/environment.txt"
 cat "$OUT/environment.txt"
 

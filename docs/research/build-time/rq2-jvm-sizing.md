@@ -1,6 +1,11 @@
 # RQ2 — JVM sizing for the two processes
 
-**Status: amber at 9.96%, against a green threshold of 10%. Not adopted.** One campaign
+**Status: closed. Amber at 9.96% against a 10% threshold, and the variant is dropped — not
+shelved.**
+
+Decided 15.09.2026: `-Xmx10g` goes in the bin. It never cleared its line, the confound in its
+only complete campaign ran in its favour's direction, and the machine the study now measures on has
+**7.7 GiB of RAM** — the variant cannot even be expressed there. Nothing about RQ2 is left open. One campaign
 completed; the second was cut off when the Linux box stopped, and its half cannot answer the
 question it was asked. Below: the premise check that came first, then the result.
 
@@ -137,3 +142,30 @@ property of its conditions.
 Until then RQ2 stays amber and nothing is adopted. `-Xmx10g` on a 15 GiB guest is also not free:
 the guest stopped during the campaign that used it, and while no causal link is established, a
 setting that may cost the whole virtual machine needs a stronger case than 9.96%.
+
+
+---
+
+## Dropped, 2026-09-15
+
+`-Xmx10g` is not adopted and will not be revisited. Three reasons, and the first is the one that
+decides it:
+
+1. **It never cleared its threshold.** 9.96% against 10%, declared before the run. Four hundredths
+   of a point is still short, and the whole value of declaring a line in advance is that it holds
+   when the number lands just under it.
+2. **Its only complete campaign was confounded**, and there is no clean one: the second was cut off
+   when the box stopped. What is missing is not more reps but a receipt that the invocations
+   reached the 10 GB daemon rather than the 5 GB one that was still resident.
+3. **The measurement host changed.** Local work moves to `bench-a` — 4 cores, **7.7 GiB** — where a
+   10 GB heap is not a variant but an impossibility.
+
+What RQ2 leaves behind is not the setting but the two facts the premise check turned up, and those
+stand regardless of the host: **there is one JVM and not two** (Kotlin/Native compiles inside the
+Gradle daemon; no `KotlinCompileDaemon` exists during a link), and **a repository's
+`org.gradle.jvmargs` may not be in effect at all** — on the WSL box `~/.gradle/gradle.properties`
+won with `-Xmx5g` and no 4G daemon existed anywhere.
+
+That second fact is worth re-testing on the new host rather than carried over: `bench-a` has no
+`~/.gradle/gradle.properties`, so the repository's `-Xmx4G` should be what actually runs there. Same
+setting, opposite outcome, one machine apart — which is the point.
