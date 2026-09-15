@@ -91,6 +91,13 @@ jobs:
       # the runtime has to be the same build as the `libc.a` this link used. Linking on the runner
       # instead would pair one glibc 2.39 with a different one, and the symptom is not a failed
       # build — it is 500 from the first authenticated page.
+      # GRADLE_USER_HOME IS SET EXPLICITLY, and the first run of this change is why. The `gradle`
+      # image ships `GRADLE_USER_HOME=/home/gradle/.gradle`, so mounting the runner's cache at
+      # /root/.gradle left Gradle writing somewhere else entirely: `~/.konan` saved (Kotlin/Native
+      # uses $HOME) and the Gradle cache did not, with `actions/cache` reporting "Path(s) specified
+      # in the action for caching do(es) not exist". A mount nobody writes to is not a cache, and
+      # the only reason this was noticed is that RQ4 asked for a receipt that the caches were
+      # restored rather than merely requested.
       - name: Link the binary, in the image that supplies its glibc
         run: |
           mkdir -p "$HOME/.gradle" "$HOME/.konan"
@@ -98,6 +105,7 @@ jobs:
             --volume "$PWD":/app --workdir /app \
             --volume "$HOME/.gradle":/root/.gradle \
             --volume "$HOME/.konan":/root/.konan \
+            --env GRADLE_USER_HOME=/root/.gradle \
             --env GRADLE_PROFILE="${{ inputs.profile && '--profile' || '' }}" \
             gradle:9.7.1-jdk25-noble \
             sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace $GRADLE_PROFILE'
