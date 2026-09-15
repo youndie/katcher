@@ -1,0 +1,5 @@
+rep	metric	ms	verdict	load_before	load_after	mem_used_mb	log
+1	incr_dbg	6238	ok	0.60	0.79	14070	r1-incr_dbg.log
+2	incr_dbg	5669	ok	0.79	0.91	14167	r2-incr_dbg.log
+3	incr_dbg	4827	ok	0.91	0.92	14217	r3-incr_dbg.log
+4	incr_dbg	5207	ok	0.92	0.93	14019	r4-incr_dbg.log
