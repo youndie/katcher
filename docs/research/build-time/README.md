@@ -3,7 +3,7 @@
 Research into katcher's edit→link loop and its PR / release pipeline. The subject is the
 Kotlin/Native server binary, because that binary is the shipped artifact.
 
-**Status: RQ0 green, RQ1 green and adopted, RQ2 amber at 9.96% and blocked on the box.** Every metric is attributed; the CI and
+**Status: RQ0 green; RQ1 green and adopted; RQ2 amber at 9.96%; RQ3 blocked on RQ4; RQ4 amber at 45.0%.** Two changes that work sit just under thresholds drawn before measuring — see the note in rq4-docker-layering.md. Every metric is attributed; the CI and
 image sides needed a `--profile` change first (#65). `kotlin.incremental.native=true` takes the
 debug edit-link loop down 45.5%.
 
