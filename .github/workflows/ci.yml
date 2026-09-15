@@ -54,7 +54,20 @@ jobs:
       # for the host target.
       #
       # `inputs` is null on pull_request and push, so the flag expands to nothing there.
-      - run: ./gradlew build --stacktrace ${{ inputs.profile && '--profile' || '' }}
+      # `-x :server:linkReleaseExecutableNative` — RQ3. `build` reaches this task through
+      # `assemble`, and NOTHING IN THIS JOB CONSUMES IT: the tests link their own binary
+      # (`linkDebugTestNative`), and nothing runs the release executable here. It is not coverage
+      # being dropped, it is coverage being paid for twice — `image.yml` links the same binary and
+      # then actually runs it, through a smoke test that renders a page, a shutdown transcript and
+      # an allocator assertion.
+      #
+      # The two workflows cover each other because of the path filter: every path that could break
+      # this link — server, core, shared, dev/retrace, gradle, the root build files — is in
+      # `image.yml`'s list. A pull request that skips `image.yml` touches only `client`, `charts`,
+      # `dev` samples or docs, none of which `:server` depends on.
+      #
+      # 130.3 s of the 361.8 s of task time in this job, and one task out of 863.
+      - run: ./gradlew build -x :server:linkReleaseExecutableNative --stacktrace ${{ inputs.profile && '--profile' || '' }}
 
       - if: ${{ inputs.profile }}
         uses: actions/upload-artifact@v7

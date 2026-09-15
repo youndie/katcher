@@ -1,7 +1,7 @@
 # RQ3 — build only what ships
 
-**Status: the "before" list is taken, and it says RQ3's green condition cannot be met by RQ3
-alone.** No change proposed yet.
+**Status: the change is made and awaiting measurement. The task-count half of the green
+condition is rejected as a proxy, with numbers.**
 
 > **Green:** task count on the PR workflow down ≥ 30% **and** `T_pr` down ≥ 25%, with the same set
 > of checks still enforced (list them before and after).
@@ -97,3 +97,54 @@ prevent.
 
 No change is proposed and nothing is measured after. The "after" list the brief demands does not
 exist yet, because there is no after.
+
+
+---
+
+# Task count and time are not the same axis here
+
+RQ3's green wants **both** a 30% cut in task count and a 25% cut in `T_pr`. Measured against this
+repository's actual task table, those two ask for opposite changes.
+
+| candidate | share of the 863 tasks | task time |
+|---|---|---|
+| `:dev` samples — nothing in the shipped path depends on them | **33.7%** (291) | **17.6 s** |
+| `:client` | 23.4% (202) | 6.5 s |
+| `:server:linkReleaseExecutableNative` | **0.1%** (1) | **130.3 s** |
+
+Cutting 30% of the count means removing the samples, and buys seventeen seconds while dropping the
+check "the samples still compile against the client API". Cutting the time means removing one task
+and leaves the count essentially unchanged.
+
+**So the count criterion is rejected here, and not because it is inconvenient.** It was a
+reasonable proxy to write down before anything was measured — fewer tasks, less work — and the
+profile says it does not hold in this repository, where the cheap things are numerous and the
+expensive thing is singular. Recorded as a finding rather than met by removing checks worth
+seventeen seconds.
+
+## The change
+
+`./gradlew build -x :server:linkReleaseExecutableNative`
+
+**No check is dropped, and that is the part that needs the argument rather than the number.**
+`build` reaches the task through `assemble`, and nothing in the CI job consumes the result: the
+tests link their own binary via `linkDebugTestNative`, and nothing runs the release executable. The
+same binary is linked by `image.yml`, which then *runs* it — smoke test through an authenticated
+page, six-stage shutdown transcript, allocator assertion.
+
+The two jobs cover each other because of the path filter. Every path that could break this link —
+`server/`, `core/`, `shared/`, `dev/retrace/`, `gradle/`, the root build files — is in `image.yml`'s
+list. A pull request that skips `image.yml` touches only `client`, `charts`, `dev` samples or docs,
+and `:server` depends on none of them. A Kotlin bump, the case `server/Dockerfile` explicitly
+worries about for its `-Xoverride-konan-properties` pins, arrives through `gradle/**` and is
+covered.
+
+## Declared before the measurement
+
+- `T_pr` is the slower of CI and Image on a server-touching PR, per §2.
+- **RQ4 moved the gate.** Before it, Image at 402 s was slower than CI at ~290 s. After it, Image is
+  221 s and **CI is the gate** — which is why RQ3 can now reach `T_pr` at all, and why it is
+  measured on top of RQ4 rather than against the original baseline.
+- Green ≥ 25% on `T_pr`, red < 10%, per the brief. Measured as three runs, median.
+- The checks after must equal the checks before: three test tasks, the ktlint set, Android lint.
+  The "after" list is taken from the profile of the changed job, not asserted.
