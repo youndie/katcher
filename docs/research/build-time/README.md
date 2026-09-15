@@ -38,6 +38,7 @@ each would fix the arithmetic and void every threshold in the brief.
 | [rq3-task-graph.md](rq3-task-graph.md) | RQ3: what a PR is actually checked by, and why its green condition needs RQ4 first |
 | [rq4-docker-layering.md](rq4-docker-layering.md) | RQ4: why the cache-mount option cannot work here, and the variant that can |
 | [rq5-ci-caches.md](rq5-ci-caches.md) | RQ5: green before anything was changed, and the duplicate that was not why |
+| [rq7-input-size.md](rq7-input-size.md) | RQ7: size drives link time at a ratio of 1.05, and the only lever big enough is a feature |
 | [rq6-caches-in-ci.md](rq6-caches-in-ci.md) | RQ6: red — a real mechanism that costs less than the noise, and a borrowed number that did not transfer |
 | [retractions.md](retractions.md) | Claims made in this research and later withdrawn |
 | [raw/](raw/) | The logs the tables were derived from, and the scripts that derive them |
