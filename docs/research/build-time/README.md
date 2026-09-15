@@ -3,12 +3,29 @@
 Research into katcher's edit→link loop and its PR / release pipeline. The subject is the
 Kotlin/Native server binary, because that binary is the shipped artifact.
 
-**Status: RQ0 green; RQ1 green and adopted; RQ2, RQ3 and RQ4 all amber — 9.96%, 22.2% and 45.0%
-against 10%, 25% and 50%.** Three changes that work, each stopping where something else becomes
-the binding constraint. The pattern is analysed at the end of rq3-task-graph.md; whether to adopt
-on these numbers or restate the thresholds is the author's call and nothing is adopted meanwhile. Every metric is attributed; the CI and
-image sides needed a `--profile` change first (#65). `kotlin.incremental.native=true` takes the
-debug edit-link loop down 45.5%.
+**Status: RQ0–RQ6 closed, RQ7 and RQ8 blocked on the Linux box.** Nothing is adopted beyond RQ1.
+
+| | result | |
+|---|---|---|
+| RQ0 attribution | **green**, after the instrumentation it demanded | #65 |
+| RQ1 incremental native | **green, −45.5%**, adopted | #66 |
+| RQ2 JVM sizing | amber, 9.96% against 10% | #67 |
+| RQ3 task graph | amber, 22.2% against 25% (CI itself −43.0%) | #69 |
+| RQ4 docker layering | amber, 45.0% against 50% | #68 |
+| RQ5 CI caches | **green before any change**; one duplicate removed | #70 |
+| RQ6 caches in CI | **red**, 3.7 s; reverted | #71 |
+| RQ7 input size | blocked — needs the box |  |
+| RQ8 transferability to tracy | blocked — needs the box |  |
+
+**If every amber were adopted, `T_pr` goes 402 s → 221 s, 45%.** No single question reached its own
+threshold. That is the study's central result and it is not an accounting problem: each lever
+stopped where a *different* component became binding — RQ4 at the link (79.7% LLVM), RQ3 at the
+neighbouring job, RQ2 at native memory outside the Java heap. The thresholds were written as though
+the levers acted alone. They queue.
+
+The three ambers are the author's call: adopt on the numbers as measured, restate the thresholds
+for what remains, or leave them amber and let the recipe say so. Moving three lines by four points
+each would fix the arithmetic and void every threshold in the brief.
 
 | File | What it holds |
 |---|---|
