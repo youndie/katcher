@@ -37,7 +37,13 @@ set -u -o pipefail
 
 REPS="${REPS:-3}"
 SUBJECT="${SUBJECT:-server/src/commonMain/kotlin/Main.kt}"
-REMOTE="${REMOTE:-\$HOME/katcher}"
+# WHERE THE BUILD RUNS. In local mode this defaults to the tree you are standing in, because
+# the alternative is editing one checkout and building another — see the assertion below.
+if [ -n "${RUNNER-x}" ] && [ -z "${RUNNER:-}" ]; then
+    REMOTE="${REMOTE:-$PWD}"
+else
+    REMOTE="${REMOTE:-\$HOME/katcher}"
+fi
 # HOW A COMMAND REACHES THE BUILD HOST. Empty means "this machine" — which is how it runs on a
 # server you can edit on directly. `wsl-run` is the mutagen case, where the orchestrator has to
 # stay on the mac because the replica daemon reverts an edit made on the far side.
@@ -66,6 +72,20 @@ DBG=":server:linkDebugExecutableNative"
 
 [ -f "$SUBJECT" ] || { echo "run me from the repository root: $SUBJECT not found" >&2; exit 2; }
 [ -z "$RUNNER" ] || [ -x "${RUNNER%% *}" ] || { echo "no runner at ${RUNNER%% *}" >&2; exit 2; }
+# THE TREE EDITED AND THE TREE BUILT MUST BE THE SAME ONE. They were not, once: run from a second
+# checkout without setting REMOTE, the probe went into ~/katcher-bench and `./gradlew` ran in
+# ~/katcher, so every incremental measurement came back `void:compile-not-run`. The guard caught it,
+# but a guard that reports a symptom twelve times is worse than an assertion that names the cause
+# once. Only checkable in local mode — over a runner, the remote path is not this filesystem.
+if [ -z "${RUNNER:-}" ]; then
+    case "$REMOTE" in
+        "$PWD") : ;;
+        *) echo "REMOTE ($REMOTE) is not the tree holding $SUBJECT ($PWD)." >&2
+           echo "The probe would be written to one checkout and the build run in another." >&2
+           exit 2 ;;
+    esac
+fi
+
 mkdir -p "$OUT"
 cp "$SUBJECT" "$OUT/subject.orig"
 
