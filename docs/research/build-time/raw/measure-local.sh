@@ -163,7 +163,7 @@ did_work() {
     return 0
 }
 
-printf 'rep\tmetric\tms\tverdict\tlog\n' | tee "$OUT/results.tsv"
+printf 'rep\tmetric\tms\tverdict\tload_before\tload_after\tmem_used_mb\tlog\n' | tee "$OUT/results.tsv"
 
 {
     echo "# repository   $(pwd) @ $(git rev-parse --short HEAD)"
@@ -178,10 +178,18 @@ printf 'rep\tmetric\tms\tverdict\tlog\n' | tee "$OUT/results.tsv"
 } > "$OUT/environment.txt"
 cat "$OUT/environment.txt"
 
-emit() { printf '%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "$5" | tee -a "$OUT/results.tsv"; }
+# LOAD IS RECORDED PER MEASUREMENT, NOT PER CAMPAIGN. The campaign header used to carry a single
+# loadavg taken at the start, which on a shared box is the one moment it is guaranteed to be
+# meaningless: a WSL baseline began at 1.66 and ended at 124 because someone else's build and a
+# self-hosted runner started during it. The header said 1.66 and nothing contradicted it, while
+# incr_dbg drifted 6394 -> 8590 -> 14572 and looked like a mechanism.
+probe_load() { if [ -z "$RUNNER" ]; then cut -d' ' -f1 /proc/loadavg 2>/dev/null; else $RUNNER 'cut -d" " -f1 /proc/loadavg' 2>/dev/null; fi; }
+probe_mem()  { if [ -z "$RUNNER" ]; then free -m 2>/dev/null | awk '/^Mem:/{print $3}'; else $RUNNER 'free -m | awk "/^Mem:/{print \$3}"' 2>/dev/null; fi; }
+emit() { printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$1" "$2" "$3" "$4" "${LOAD_BEFORE:-}" "$(probe_load)" "$(probe_mem)" "$5" | tee -a "$OUT/results.tsv"; }
 
 for rep in $(seq 1 "$REPS"); do
     for metric in $METRICS; do
+        LOAD_BEFORE=$(probe_load)
         case "$metric" in
             warm)
                 [ "$(remote_build "$REL" "r$rep-warm-settle")" = FAIL ] && { emit "$rep" "$metric" "" "failed:settle" "r$rep-warm-settle.log"; continue; }
