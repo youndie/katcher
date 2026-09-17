@@ -5,7 +5,7 @@ plugins {
     id("io.github.youndie.sborka.lint")
     id("io.github.youndie.sborka.publish")
     id("org.jetbrains.kotlinx.atomicfu")
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    alias(wip.plugins.androidKotlinMultiplatformLibrary)
 }
 
 kotlin {

@@ -6,9 +6,9 @@ plugins {
     // dropped two modules out of the gate.
     id("io.github.youndie.sborka.lint")
     alias(jvmLibs.plugins.jib)
-    alias(jvmLibs.plugins.kotlinJvm)
+    alias(wip.plugins.kotlinJvm)
     alias(ktorLibs.plugins.ktor)
-    alias(libs.plugins.pluginSerialization)
+    alias(wip.plugins.kotlinSerialization)
 
     application
 }
@@ -70,7 +70,7 @@ dependencies {
     implementation(ktorLibs.client.resources)
     implementation(ktorLibs.client.contentNegotiation)
 
-    testImplementation(jvmLibs.kotlin.test.junit)
+    testImplementation(kotlin("test-junit5"))
 }
 
 tasks.test {
