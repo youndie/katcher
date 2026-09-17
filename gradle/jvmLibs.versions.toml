@@ -1,5 +1,4 @@
 [versions]
-kotlin = "2.4.10"
 exposed = "1.4.0"
 logback = "1.6.3"
 koinBom = "4.2.2"
@@ -23,8 +22,6 @@ koin-logger-slf4j = { module = "io.insert-koin:koin-logger-slf4j", version.ref =
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqliteJdbc" }
 
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
 
 [plugins]
-kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 jib = { id = "com.google.cloud.tools.jib", version.ref = "jib" }

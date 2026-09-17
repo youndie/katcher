@@ -1,9 +1,10 @@
 [versions]
 # The shared build conventions. One number: every sborka plugin below takes its version from here.
-sborka = "0.4.0.58"
-androidGradlePlugin = "9.4.0"
+sborka = "0.4.0.89"
+# The compiler comes with them: `wip`, the catalog a sborka release publishes, carries kotlin,
+# ksp and agp. The AGP version in particular was AHEAD of the shared catalog here (9.4.0 against
+# 9.3.2) — the catalog was raised to match rather than this repository moved back.
 atomicfu = "0.33.0"
-kotlin = "2.4.10"
 # kore: the process lifecycle of a server binary — the ordered shutdown, the three probes and
 # /version. One number for the two libraries and the Gradle plugin that generates the identity;
 # they are published together and a plugin from one version with a library from another would
@@ -15,7 +16,6 @@ kotlinxSerializationJson = "1.11.0"
 mcpKotlinSdk = "0.15.0"
 metrikAgent = "0.3.21"
 sqlx4k = "1.13.0"
-ksp = "2.3.12"
 ktlint = "14.2.0"
 okio = "3.18.2"
 
@@ -45,8 +45,4 @@ sborkaJvm = { id = "io.github.youndie.sborka.jvm", version.ref = "sborka" }
 sborkaLint = { id = "io.github.youndie.sborka.lint", version.ref = "sborka" }
 sborkaPublish = { id = "io.github.youndie.sborka.publish", version.ref = "sborka" }
 ktlintPlugin = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-pluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kspPlugin = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 atomicfu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "atomicfu" }
-androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "androidGradlePlugin" }

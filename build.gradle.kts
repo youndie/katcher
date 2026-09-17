@@ -1,10 +1,10 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform) apply false
-    alias(libs.plugins.pluginSerialization) apply false
-    alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
+    alias(wip.plugins.kotlinMultiplatform) apply false
+    alias(wip.plugins.kotlinSerialization) apply false
+    alias(wip.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(jvmLibs.plugins.jib) apply false
-    alias(jvmLibs.plugins.kotlinJvm) apply false
-    alias(libs.plugins.kspPlugin) apply false
+    alias(wip.plugins.kotlinJvm) apply false
+    alias(wip.plugins.ksp) apply false
     alias(libs.plugins.atomicfu) apply false
     alias(libs.plugins.sborkaKmp) apply false
     alias(libs.plugins.sborkaJvm) apply false
