@@ -34,6 +34,54 @@ jobs:
           fi
           echo "VERSION=$version" >> $GITHUB_ENV
 
+      # WITHOUT THIS STEP THERE IS NOTHING TO COPY. `server/Dockerfile` stopped building the binary
+      # in #72 (RQ4): Gradle moved out of `docker build` into a `docker run` against the image that
+      # supplies the runtime's glibc, and `.dockerignore` un-excludes exactly one path so the linked
+      # binary can reach the build context. `Image` got that step; this workflow did not, and since
+      # it is `workflow_dispatch`-only, nothing ran it to find out — its last green run, 0.8.0 on
+      # 14 September, was on the Dockerfile that still built the binary itself. The first dispatch
+      # after the 0.8.3 release failed on
+      #
+      #     "/server/build/bin/native/releaseExecutable/server.kexe": not found
+      #
+      # THE BUILDER IMAGE IS THE SAME ONE ON PURPOSE. The binary is linked statically but still
+      # `dlopen`s its gconv converters, so the shared glibc the runtime copies across has to be the
+      # same build as the `libc.a` this link used. Linking on the runner would pair one glibc 2.39
+      # with a different 2.39 — which does not fail the build, it returns 500 from the first
+      # authenticated page. This block is the one `Image` runs on every push to main, caches and
+      # all; the two have to stay the same link or the image CI exercises is not the image we push.
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: image-gradle-${{ runner.os }}-${{ hashFiles('gradle/*.versions.toml', 'gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: image-gradle-${{ runner.os }}-
+
+      - uses: actions/cache@v6
+        with:
+          path: ~/.konan
+          key: image-konan-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: image-konan-${{ runner.os }}-
+
+      # Gradle in this image does not honour `GRADLE_USER_HOME` — it writes to /home/gradle/.gradle
+      # whatever the variable says — so the mount follows where it actually writes, not where it
+      # claims to. Kotlin/Native does take `$HOME/.konan`, and the container runs as root.
+      - name: Link the binary, in the image that supplies its glibc
+        run: |
+          mkdir -p "$HOME/.gradle" "$HOME/.konan"
+          docker run --rm \
+            --volume "$PWD":/app --workdir /app \
+            --volume "$HOME/.gradle":/home/gradle/.gradle \
+            --volume "$HOME/.konan":/root/.konan \
+            gradle:9.7.1-jdk25-noble \
+            sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null \
+                   && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace'
+          # The container writes as root through the mounts; every step after this runs as the
+          # runner's user, and `docker build` has to be able to read the binary it copies.
+          sudo chown -R "$(id -u):$(id -g)" "$HOME/.gradle" "$HOME/.konan" server/build
+          ls -l server/build/bin/native/releaseExecutable/server.kexe
+
       - name: Dockerize and push 🏗️
         uses: docker/build-push-action@v7
         with:
