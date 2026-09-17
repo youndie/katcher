@@ -15,7 +15,7 @@ server:
   # does not carry it: the tag names the head it was built from, not the head of the branch, and a
   # merged commit is not a released one. Checked in the artefact rather than the log — the config
   # of `:0.8.1` on ghcr has `PATH` and nothing else.
-  version: 0.8.2
+  version: 0.8.3
   resources:
     requests:
       cpu: "30m"
