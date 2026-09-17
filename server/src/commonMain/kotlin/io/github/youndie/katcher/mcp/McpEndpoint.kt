@@ -12,7 +12,7 @@ import io.ktor.server.application.log
 import io.ktor.server.request.path
 import io.ktor.server.response.respond
 import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.readRemaining
+import io.ktor.utils.io.readBuffer
 import io.modelcontextprotocol.kotlin.sdk.server.mcpStatelessStreamableHttp
 import kotlinx.io.readString
 
@@ -63,7 +63,7 @@ fun Application.installMcp(
             onCallReceive { call, _ ->
                 if (call.request.path().startsWith(MCP_PATH)) {
                     transformBody { body: ByteReadChannel ->
-                        val raw = body.readRemaining().readString()
+                        val raw = body.readBuffer().readString()
                         ByteReadChannel(McpProtocolCompat.normalizeRequest(raw))
                     }
                 }
