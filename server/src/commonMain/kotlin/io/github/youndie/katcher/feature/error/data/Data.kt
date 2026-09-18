@@ -26,7 +26,7 @@ import io.github.youndie.katcher.feature.error.ErrorGroupsPaginated
 import io.github.youndie.katcher.feature.report.ErrorGroupFilter
 import io.github.youndie.katcher.feature.report.ErrorGroupSort
 import io.github.youndie.katcher.feature.report.ErrorGroupSortOrder
-import kotlinx.datetime.TimeZone
+import io.github.youndie.katcher.utils.serverZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -380,8 +380,8 @@ fun ErrorGroupDb.toDomain() =
         appId,
         fingerprint,
         title,
-        Instant.fromEpochMilliseconds(firstSeen).toLocalDateTime(TimeZone.currentSystemDefault()),
-        Instant.fromEpochMilliseconds(lastSeen).toLocalDateTime(TimeZone.currentSystemDefault()),
+        Instant.fromEpochMilliseconds(firstSeen).toLocalDateTime(serverZone),
+        Instant.fromEpochMilliseconds(lastSeen).toLocalDateTime(serverZone),
         occurrences,
         resolved,
         fixUrl,

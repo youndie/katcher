@@ -67,7 +67,24 @@ fun silenceWords(
 }
 
 /**
+ * The zone rows are read back in, looked up once for the life of the process.
+ *
+ * On Kotlin/Native `TimeZone.currentSystemDefault()` is not cached by the platform: the lookup is
+ * redone on every call and costs 33 µs against 73 ns for reading the clock (issue #78). One row
+ * of the error list went through it three times — twice mapping the row out of the database and
+ * once rendering it — so a page paid for the lookup as many times as it had rows.
+ *
+ * Caching costs the ability to notice the operator changing the process's zone while it runs.
+ * Daylight saving is not affected: this is the zone, not an offset, and it resolves the offset per
+ * instant on its own.
+ *
+ * Only server-side code depends on `:core`, so nothing here freezes a zone inside an application
+ * carrying the SDK — a device that travels is a different question, and it is issue #78's.
+ */
+val serverZone: TimeZone = TimeZone.currentSystemDefault()
+
+/**
  * Back to epoch milliseconds. Timestamps are stored as milliseconds and only turned into a
  * local date on the way out, so anything that needs to measure age has to turn them back.
  */
-fun LocalDateTime.epochMillis(): Long = toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
+fun LocalDateTime.epochMillis(): Long = toInstant(serverZone).toEpochMilliseconds()

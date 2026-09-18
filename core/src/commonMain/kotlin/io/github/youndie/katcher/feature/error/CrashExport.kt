@@ -1,8 +1,8 @@
 package io.github.youndie.katcher.feature.error
 
 import io.github.youndie.katcher.feature.report.Report
+import io.github.youndie.katcher.utils.serverZone
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.serialization.Serializable
 
@@ -91,11 +91,11 @@ fun buildCrashExport(
 }
 
 /**
- * Rows are stored as epoch millis and read back through [TimeZone.currentSystemDefault],
- * so these [LocalDateTime]s are server-local, not UTC. Converting through the same zone
- * yields a real instant; simply appending "Z" would mislabel local time as UTC.
+ * Rows are stored as epoch millis and read back through [serverZone], so these [LocalDateTime]s
+ * are server-local, not UTC. Converting through the same zone yields a real instant; simply
+ * appending "Z" would mislabel local time as UTC.
  */
-private fun LocalDateTime.toIsoUtc(): String = toInstant(TimeZone.currentSystemDefault()).toString()
+private fun LocalDateTime.toIsoUtc(): String = toInstant(serverZone).toString()
 
 private fun Map<String, String>.capped(): Map<String, String> =
     entries
