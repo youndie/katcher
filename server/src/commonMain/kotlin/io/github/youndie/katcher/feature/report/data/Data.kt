@@ -15,7 +15,7 @@ import io.github.youndie.katcher.feature.report.ReleaseCount
 import io.github.youndie.katcher.feature.report.Report
 import io.github.youndie.katcher.feature.report.ReportRepository
 import io.github.youndie.katcher.feature.report.ReportsPaginated
-import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
+import io.github.youndie.katcher.utils.serverZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 import kotlin.time.Clock
@@ -37,7 +37,7 @@ object ReportRowMapper : RowMapper<Report> {
             timestamp =
                 Instant
                     .fromEpochMilliseconds(row.get("timestamp").asLong())
-                    .toLocalDateTime(currentSystemDefault()),
+                    .toLocalDateTime(serverZone),
             // A report whose context or breadcrumbs will not parse is still a crash worth
             // reading. These are written by a client we do not control and stored as text, so
             // a shape we did not expect costs those fields and nothing else.
