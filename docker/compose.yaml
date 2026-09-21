@@ -44,7 +44,7 @@ services:
   # Creates the realm, the client oauth2-proxy signs in with, and one person to sign in as.
   # Runs once and exits; everything it does is idempotent enough to re-run.
   bootstrap:
-    image: curlimages/curl:8.11.1
+    image: curlimages/curl:8.22.0
     depends_on:
       - shildik
     environment:
