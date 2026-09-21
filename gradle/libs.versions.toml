@@ -15,7 +15,7 @@ kotlinxDatetime = "0.8.0"
 kotlinxSerializationJson = "1.11.0"
 mcpKotlinSdk = "0.15.0"
 metrikAgent = "0.3.21"
-sqlx4k = "1.13.0"
+sqlx4k = "1.13.1"
 ktlint = "14.2.0"
 okio = "3.18.2"
 
