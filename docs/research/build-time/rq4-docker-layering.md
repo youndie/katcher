@@ -58,6 +58,12 @@ same glibc *version*, different build — and the failure mode is not a broken b
 from the first authenticated page, which is exactly what `dev/image-smoke.sh` was written to catch
 after it happened once.
 
+> **Later, #86 (2026-09-27):** the constraint above is gone. The binary now links in `iconv-unicode`
+> and is built with a compiler whose `-static` is static, so the runtime copies no glibc and there is
+> nothing left to pair. It had not held anyway: the `apt-get install g++` in the link container
+> upgrades libc6 from 2.39-0ubuntu8.8 to 8.9, while the stage the Dockerfile copied from kept 8.8.
+> The link still runs in that image, now only because it is a known environment with `libc.a`.
+
 So the link keeps running inside `gradle:9.7.1-jdk25-noble`. What changes is *how* it is invoked:
 
 ```

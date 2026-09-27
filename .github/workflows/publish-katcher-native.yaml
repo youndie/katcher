@@ -3,6 +3,12 @@ name: Publish server native
 on:
   workflow_dispatch:
 
+# THE PATCHED KOTLIN/NATIVE THE IMAGE IS LINKED WITH (#86) — the same value `image.yml` tests with,
+# and it has to be: what CI smoke-tests is only the image pushed here if the two link alike. Why it
+# lives in the workflows and not in gradle.properties is written there.
+env:
+  KOTLIN_NATIVE_RT: 2.4.20-yrt.2
+
 jobs:
   linux-image:
     runs-on: ubuntu-latest
@@ -44,12 +50,9 @@ jobs:
       #
       #     "/server/build/bin/native/releaseExecutable/server.kexe": not found
       #
-      # THE BUILDER IMAGE IS THE SAME ONE ON PURPOSE. The binary is linked statically but still
-      # `dlopen`s its gconv converters, so the shared glibc the runtime copies across has to be the
-      # same build as the `libc.a` this link used. Linking on the runner would pair one glibc 2.39
-      # with a different 2.39 — which does not fail the build, it returns 500 from the first
-      # authenticated page. This block is the one `Image` runs on every push to main, caches and
-      # all; the two have to stay the same link or the image CI exercises is not the image we push.
+      # THE SAME LINK AS `Image`, caches and all, and it has to stay that way: `Image` runs the smoke
+      # test on every push to main, and it only speaks for the image pushed here if the two link
+      # alike — the same builder image, the same `KOTLIN_NATIVE_RT`.
       - uses: actions/cache@v6
         with:
           path: |
@@ -61,22 +64,25 @@ jobs:
       - uses: actions/cache@v6
         with:
           path: ~/.konan
-          key: image-konan-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}
+          # The distribution is in the key because it is not in any file: bumping `KOTLIN_NATIVE_RT`
+          # alone would otherwise hit the old entry and download the new compiler on every run.
+          key: image-konan-${{ runner.os }}-${{ env.KOTLIN_NATIVE_RT }}-${{ hashFiles('gradle/libs.versions.toml') }}
           restore-keys: image-konan-${{ runner.os }}-
 
       # Gradle in this image does not honour `GRADLE_USER_HOME` — it writes to /home/gradle/.gradle
       # whatever the variable says — so the mount follows where it actually writes, not where it
       # claims to. Kotlin/Native does take `$HOME/.konan`, and the container runs as root.
-      - name: Link the binary, in the image that supplies its glibc
+      - name: Link the binary, in the builder image
         run: |
           mkdir -p "$HOME/.gradle" "$HOME/.konan"
           docker run --rm \
             --volume "$PWD":/app --workdir /app \
             --volume "$HOME/.gradle":/home/gradle/.gradle \
             --volume "$HOME/.konan":/root/.konan \
+            --env KOTLIN_NATIVE_RT \
             gradle:9.7.1-jdk25-noble \
             sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null \
-                   && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace'
+                   && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace -Pkotlin.native.version=$KOTLIN_NATIVE_RT'
           # The container writes as root through the mounts; every step after this runs as the
           # runner's user, and `docker build` has to be able to read the binary it copies.
           sudo chown -R "$(id -u):$(id -g)" "$HOME/.gradle" "$HOME/.konan" server/build

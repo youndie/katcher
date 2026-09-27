@@ -56,14 +56,24 @@ curl -fsS -X POST -H 'Content-Type: application/json' \
 
 # Ingestion is queued, so the group appears a moment after the 202. The date pattern is what
 # `LocalDateTime.human()` writes, and reaching it means `currentSystemDefault()` resolved.
+rendered=''
 for _ in $(seq 1 30); do
     page=$(curl -fsS "${auth[@]}" "$base/apps/1/errors/1" 2>/dev/null || true)
-    if printf '%s' "$page" | grep -qE '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}'; then
-        printf 'smoke: rendered %s\n' \
-            "$(printf '%s' "$page" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}' | head -1)" >&2
-        exit 0
-    fi
+    rendered=$(printf '%s' "$page" | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}' | head -1 || true)
+    [ -n "$rendered" ] && break
     sleep 1
 done
+[ -n "$rendered" ] || fail "the group page never rendered a timestamp — the time zone database is the first suspect"
+printf 'smoke: rendered %s\n' "$rendered" >&2
 
-fail "the group page never rendered a timestamp — the time zone database is the first suspect"
+# A CHARSET CONVERSION THAT REACHES glibc's `iconv`, because the pages no longer do. Since Ktor 3.6.0
+# URL encoding takes a fast path for UTF-8, so the date above renders even in an image with neither
+# gconv nor `iconv-unicode` — it stopped being a check of either. A form that names its charset is
+# decoded through `iconv`, and US-ASCII is one glibc loads from gconv: without the library this image
+# answers 500 with `Failed to open iconv for charset US-ASCII with error code 22` (#86). It creates a
+# second app, after the checks above that expect to find the first.
+status=$(curl -sS -o /dev/null -w '%{http_code}' "${auth[@]}" -X POST \
+    -H 'Content-Type: application/x-www-form-urlencoded; charset=US-ASCII' \
+    --data 'name=charset&type=OTHER' "$base/apps") || true
+[ "$status" = 200 ] || fail "a US-ASCII form answered $status — is iconv-unicode linked in? (#86)"
+printf 'smoke: decoded a US-ASCII form\n' >&2
