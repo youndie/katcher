@@ -8,7 +8,10 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class CreateFileSystemTest {
+// NOT `CreateFileSystemTest`, which is the JVM suite's name. sborka's declared-tests check reads
+// every source set under `src/` and keys by simple class name, so two classes sharing one name are
+// counted as whichever file it read last — and `jvmTest` failed demanding this file's three tests.
+class CreateFileSystemNativeTest {
     private val fs = FileSystem.SYSTEM
 
     @Test
