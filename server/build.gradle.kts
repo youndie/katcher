@@ -63,10 +63,15 @@ kotlin {
     // distroless/cc layer under it disappears. Measured on the finished images: 15 542 820 bytes to
     // pull becomes 9 570 311.
     //
-    // STATIC HERE DOES NOT MEAN SELF-CONTAINED. glibc's `iconv` loads its converters with `dlopen`,
-    // and a static binary that calls it still needs the shared glibc and the gconv modules on disk
-    // — which is why `server/Dockerfile` copies five things across and is not a `FROM scratch` with
-    // one COPY. Read that file before changing this one; the two are one decision.
+    // STATIC IS SELF-CONTAINED ONLY WITH `iconv-unicode` LINKED IN (#86). glibc's `iconv` loads its
+    // converters with `dlopen`, and Ktor's charsets on Kotlin/Native are glibc `iconv`, so without the
+    // library a static binary still needs the shared glibc and the gconv tree on disk. Up to Ktor
+    // 3.5 every page reached it and failed with 500 (#55); since 3.6.0 URL encoding has a UTF-8 fast
+    // path and the pages do not, but a request that names its charset still does — a US-ASCII form
+    // is 500 without the library, which is what `dev/image-smoke.sh` checks. The library, added below
+    // under this same condition, answers UTF-8, UTF-16LE/BE, ISO-8859-1 and US-ASCII itself and leaves
+    // glibc every other charset. `server/Dockerfile` copies the binary and `zoneinfo`, nothing else;
+    // read it before changing this block, the two are one decision.
     //
     // The link needs the static archives: `libc.a`, `crt1.o`, `libstdc++.a`, `libgcc.a`,
     // `libgcc_eh.a`. `apt-get install g++` supplies all of them; the stock `gradle:…-noble` image
@@ -83,15 +88,34 @@ kotlin {
     // the key in `konan.properties` before editing it, its value continues onto a second line.
     // Rewriting it from memory drops `--gc-sections` and costs 316 488 bytes for nothing.
     //
-    // Two of the five overrides exist only because `-linker-option -static` does not currently mean
-    // static upstream: KT-89362, patch in JetBrains/kotlin#8127. If that lands, `--no-dynamic-linker`
-    // and the `linkerKonanFlags` line go away.
+    // TWO RECIPES, CHOSEN BY THE COMPILER. The image links with the patched distribution from
+    // youndie/kotlin-native-rt (`-Pkotlin.native.version=<kotlin>-yrt.<n>`, set in the two workflows
+    // that link it and nowhere else — it exists for linux-x86_64 only, so a Mac asked for it fails
+    // on the download). Its `0003-static-executable` makes `-static` mean static: no
+    // `-dynamic-linker`, no `-Bdynamic` — and it asks for `sched_yield` itself. The stock compiler
+    // does none of that (KT-89362, open), so a Linux host building without the property keeps the
+    // hand recipe: `--no-dynamic-linker` plus a `linkerKonanFlags` with `-Bdynamic` removed. Both
+    // give a binary with no INTERP and no NEEDED. The recipe does not ask for `sched_yield`, which
+    // the collector calls while it waits for a concurrent sweeper; in a small program it stays weak
+    // undefined — a call to address 0. Here something else pulls it in: `nm` shows it defined
+    // (`W` with an address) on both compilers, checked on 27 September (#86).
     //
     // The gcc directory is pinned to 13 — what noble ships and what the builder image has. A host
     // with another gcc fails the link naming the path it could not find, which is the readable half
     // of a trade against globbing the filesystem at configuration time.
     val staticLinux =
         isLinuxX64Host && (project.findProperty("katcher.staticLink") as String?)?.toBoolean() != false
+    val patchedNative = (project.findProperty("kotlin.native.version") as String?)?.contains("-yrt.") == true
+
+    // linuxX64 only, like the static link it belongs to: the library has no macOS variant, and the
+    // native target on a Mac is macOS. The klib carries the compiled C and the `--wrap` linker
+    // options both, so nothing else is configured. `nm server.kexe` shows `T __wrap_iconv_open` when
+    // it is in.
+    if (staticLinux) {
+        sourceSets.getByName("nativeMain").dependencies {
+            implementation(libs.kotlinNativeRt.iconvUnicode)
+        }
+    }
 
     nativeTarget.apply {
         binaries {
@@ -136,15 +160,23 @@ kotlin {
                 }
 
                 if (staticLinux) {
-                    linkerOpts("-static", "--no-dynamic-linker", "-L/usr/lib/x86_64-linux-gnu")
+                    if (patchedNative) {
+                        linkerOpts("-static", "-L/usr/lib/x86_64-linux-gnu")
+                    } else {
+                        linkerOpts("-static", "--no-dynamic-linker", "-L/usr/lib/x86_64-linux-gnu")
+                    }
                     freeCompilerArgs +=
                         "-Xoverride-konan-properties=" +
                         "targetSysRoot.linux_x64=/;" +
                         "crtFilesLocation.linux_x64=usr/lib/x86_64-linux-gnu;" +
                         "libGcc.linux_x64=usr/lib/gcc/x86_64-linux-gnu/13;" +
-                        "linkerGccFlags=-lgcc -lgcc_eh -lc;" +
-                        "linkerKonanFlags.linux_x64=-Bstatic -lstdc++ -ldl -lm -lpthread " +
-                        "--defsym __cxa_demangle=Konan_cxa_demangle --gc-sections"
+                        "linkerGccFlags=-lgcc -lgcc_eh -lc" +
+                        if (patchedNative) {
+                            ""
+                        } else {
+                            ";linkerKonanFlags.linux_x64=-Bstatic -lstdc++ -ldl -lm -lpthread " +
+                                "--defsym __cxa_demangle=Konan_cxa_demangle --gc-sections"
+                        }
                 }
             }
         }

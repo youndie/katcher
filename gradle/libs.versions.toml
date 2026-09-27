@@ -10,6 +10,9 @@ atomicfu = "0.33.0"
 # they are published together and a plugin from one version with a library from another would
 # compile and then disagree about the object it generates.
 kore = "0.1.4"
+# youndie/kotlin-native-rt's `iconv` for the Unicode charsets, so the static server needs no gconv
+# (#86). linuxX64 only; `server/build.gradle.kts` adds it where it links statically.
+kotlinNativeRtIconv = "0.1.0"
 kotlinxCoroutinesCore = "1.11.0"
 kotlinxDatetime = "0.8.0"
 kotlinxSerializationJson = "1.11.0"
@@ -23,6 +26,8 @@ okio = "3.18.2"
 
 kore-core = { module = "io.github.youndie:kore-core", version.ref = "kore" }
 kore-ktor = { module = "io.github.youndie:kore-ktor", version.ref = "kore" }
+
+kotlinNativeRt-iconvUnicode = { module = "io.github.youndie.kotlin-native-rt:iconv-unicode", version.ref = "kotlinNativeRtIconv" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }

@@ -62,6 +62,16 @@ concurrency:
   group: image-${{ github.ref }}
   cancel-in-progress: true
 
+# THE PATCHED KOTLIN/NATIVE THE IMAGE IS LINKED WITH (#86), from youndie/kotlin-native-rt: its
+# `-static` means static, which is half of what lets the runtime image carry no glibc files (the other
+# half is `iconv-unicode`, see `server/build.gradle.kts`). Named here and in
+# `publish-katcher-native.yaml`, which pushes the image this job tests — not in gradle.properties:
+# the distribution exists for linux-x86_64 alone, and a Mac asked for it fails on the download. Its
+# Kotlin part has to be the compiler the sborka catalog pins; a Kotlin bump without a matching `-yrt`
+# fails the link loudly, and #86 says how to step back to the stock one.
+env:
+  KOTLIN_NATIVE_RT: 2.4.20-yrt.2
+
 jobs:
   image:
     runs-on: ubuntu-latest
@@ -83,14 +93,17 @@ jobs:
       - uses: actions/cache@v6
         with:
           path: ~/.konan
-          key: image-konan-${{ runner.os }}-${{ hashFiles('gradle/libs.versions.toml') }}
+          # The distribution is in the key because it is not in any file: bumping `KOTLIN_NATIVE_RT`
+          # alone would otherwise hit the old entry and download the new compiler on every run.
+          key: image-konan-${{ runner.os }}-${{ env.KOTLIN_NATIVE_RT }}-${{ hashFiles('gradle/libs.versions.toml') }}
           restore-keys: image-konan-${{ runner.os }}-
 
-      # THE SAME IMAGE THE RUNTIME TAKES ITS GLIBC FROM, and that is not incidental: the binary is
-      # statically linked but still `dlopen`s its gconv converters, so the shared glibc copied into
-      # the runtime has to be the same build as the `libc.a` this link used. Linking on the runner
-      # instead would pair one glibc 2.39 with a different one, and the symptom is not a failed
-      # build — it is 500 from the first authenticated page.
+      # THE IMAGE `server/Dockerfile` NAMES AS ITS FIRST STAGE. It used to matter which glibc build
+      # this was: the runtime copied the shared glibc and gconv out of that stage, and they had to
+      # match the `libc.a` linked here. Since #86 the runtime copies no glibc at all, so the pairing
+      # is gone — and it had not held anyway: the `apt-get install g++` below upgrades libc6 inside
+      # this container (2.39-0ubuntu8.8 to 8.9 on 27 September), while the stage the Dockerfile
+      # copied from kept 8.8.
       # THE TWO CACHES MOUNT AT DIFFERENT PATHS, AND THE ASYMMETRY IS MEASURED RATHER THAN GUESSED.
       # Kotlin/Native takes `$HOME/.konan`, and the container runs as root, so /root/.konan is
       # right. Gradle in this image does NOT honour `GRADLE_USER_HOME`: setting it to /root/.gradle
@@ -105,7 +118,7 @@ jobs:
       # konan half of the cache was real. The only complaint was `actions/cache` reporting "Path(s)
       # specified in the action for caching do(es) not exist" in a post step, which is the last
       # place anyone looks. That is why the receipts below print on every run.
-      - name: Link the binary, in the image that supplies its glibc
+      - name: Link the binary, in the builder image
         run: |
           mkdir -p "$HOME/.gradle" "$HOME/.konan"
           docker run --rm \
@@ -113,9 +126,10 @@ jobs:
             --volume "$HOME/.gradle":/home/gradle/.gradle \
             --volume "$HOME/.konan":/root/.konan \
             --env GRADLE_PROFILE="${{ inputs.profile && '--profile' || '' }}" \
+            --env KOTLIN_NATIVE_RT \
             gradle:9.7.1-jdk25-noble \
             sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null \
-                   && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace $GRADLE_PROFILE \
+                   && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace -Pkotlin.native.version=$KOTLIN_NATIVE_RT $GRADLE_PROFILE \
                    && echo "--- inside the container ---" \
                    && echo "GRADLE_USER_HOME=$GRADLE_USER_HOME" \
                    && du -sh /root/.gradle /home/gradle/.gradle 2>/dev/null \

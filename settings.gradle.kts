@@ -38,6 +38,20 @@ plugins {
 }
 
 dependencyResolutionManagement {
+    // WHERE THE PATCHED KOTLIN/NATIVE COMES FROM, and only it (#86). The image links with
+    // `-Pkotlin.native.version=<kotlin>-yrt.<n>` from youndie/kotlin-native-rt, published under
+    // JetBrains' own coordinate — which the sborka repository above does not admit, since it takes
+    // `io.github.youndie.*` alone. This filter admits the `-yrt` versions of that one module and
+    // nothing else, so the stock distribution every other build uses keeps coming from Central.
+    // `iconv-unicode` needs no entry: its group is already `io.github.youndie`.
+    repositories {
+        maven("https://reposilite.kotlin.website/snapshots") {
+            name = "kotlin-native-rt"
+            mavenContent {
+                includeVersionByRegex("org\\.jetbrains\\.kotlin", "kotlin-native-prebuilt", ".*-yrt\\.[0-9]+")
+            }
+        }
+    }
     versionCatalogs {
         create("ktorLibs") {
             from("io.ktor:ktor-version-catalog:3.6.0")

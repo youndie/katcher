@@ -1,41 +1,41 @@
-# ---------- Stage 1 : where the glibc artefacts come from ----------
-# RQ4. Gradle no longer runs here. It runs in `docker run` against THIS SAME IMAGE, with the
-# runner's `~/.gradle` and `~/.konan` mounted in — see `.github/workflows/image.yml`. Inside
-# `docker build` those caches cannot persist between runs: a BuildKit cache mount lives in the
-# builder's own state, `cache-to: type=gha` exports layers rather than mounts, and the layer below
-# `COPY . .` is invalidated by every commit anyway. Outside it, `actions/cache` handles them.
+# ---------- Stage 1 : the link environment, and where `zoneinfo` comes from ----------
+# RQ4. Gradle does not run here. It runs in `docker run` against THIS SAME IMAGE, with the runner's
+# `~/.gradle` and `~/.konan` mounted in — see `.github/workflows/image.yml`. Inside `docker build`
+# those caches cannot persist between runs: a BuildKit cache mount lives in the builder's own state,
+# `cache-to: type=gha` exports layers rather than mounts, and the layer below `COPY . .` is
+# invalidated by every commit anyway. Outside it, `actions/cache` handles them.
 #
-# THE IMAGE STAYS THE SAME ONE, and that is the whole point of doing it this way rather than
-# linking on the runner. The five artefacts below have to be the same build of glibc as the
-# `libc.a` the binary was linked against; linking on the runner and copying them from here would
-# pair a 2.39 with a different 2.39. That failure does not break the build — it returns 500 from
-# the first authenticated page, which is what `dev/image-smoke.sh` exists to catch.
+# Nothing of glibc is taken from this stage any more (#86): the binary carries all of it, so which
+# build of glibc sits here no longer has to match the `libc.a` it was linked against. The stage stays
+# because it names the image the workflows link in, and because `zoneinfo` comes from it.
 FROM --platform=linux/amd64 gradle:9.7.1-jdk25-noble AS libc
 
 # ---------- Stage 2 : Runtime ----------
 # NO BASE IMAGE. The binary is linked statically (the `staticLinux` block in
 # `server/build.gradle.kts`), so distroless/cc is not under it any more: 15 542 820 bytes to pull
-# become 9 570 311, measured on the two finished images. The distroless figure was taken before kore
-# was added, which costs this image 47 431 bytes — so the comparison flatters the new image by that
-# much and by nothing else.
+# became 9 570 311 while the shared glibc and gconv were still copied in, and 5 682 506 without them
+# (#86) — pull bytes, measured on the finished images. (The distroless figure was taken before kore
+# was added, which costs this image 47 431 bytes.)
 #
-# FIVE THINGS ARE STILL COPIED ACROSS, AND NOT ONE OF THEM IS OPTIONAL. A statically linked glibc is
-# not a self-contained one: `iconv` loads its converters with `dlopen`, so it needs the *shared*
-# glibc, the loader, and the gconv modules — on disk, at the paths glibc compiled in. Ktor reaches
-# that code on every URL it encodes (`encodeURLParameter` → `iconv_open`), which means every page of
-# this UI. A `scratch` image with the binary alone starts, serves `/favicon.svg`, answers 401
-# everywhere else — and returns 500 from the first authenticated page, with
-# `Failed to open iconv for charset UTF-8 with error code 22`.
+# THE BINARY AND `zoneinfo`, AND THAT IS ENOUGH — BECAUSE OF TWO THINGS IN THE LINK, NOT ONE (#86).
+# Until then this image also carried `libc.so.6`, the loader, `ld.so.cache` and the whole gconv tree:
+# a statically linked glibc is not a self-contained one, because `iconv` loads its converters with
+# `dlopen`, and Ktor's charsets on Kotlin/Native are glibc `iconv`. On Ktor 3.5 every URL it encoded
+# went there, and without those files the first authenticated page was 500 with
+# `Failed to open iconv for charset UTF-8 with error code 22` (#55). Ktor 3.6.0 encodes UTF-8 without
+# it, so the pages no longer tell — a form that names its charset still does.
 #
-# The list is not guesswork: it is what `strace -e trace=openat` recorded the running binary opening.
-# `UTF-16.so` alone would carry this application, in an image 2 811 555 bytes smaller, and the whole
-# directory is here anyway — glibc picked *that* module to convert UTF-8, which is enough to say that the set of
-# modules a request can reach is not something this file should be predicting.
+#  - `iconv-unicode` (youndie/kotlin-native-rt) is linked in with `--wrap` around `iconv_open`,
+#    `iconv` and `iconv_close`, and answers UTF-8, UTF-16LE/BE, ISO-8859-1 and US-ASCII itself. Any
+#    other charset still goes to glibc and, with no gconv here, fails with error 22 — `UTF-16` with a
+#    byte-order mark and `windows-1251` among them. Ktor's own reach for ISO-8859-1 (Basic auth, the
+#    websocket accept key) is covered.
+#  - the patched Kotlin/Native (`-yrt.<n>`, same repository) makes `-static` mean static, so there is
+#    no interpreter to find either.
 #
-# They come from the build stage on purpose: the shared glibc a static binary dlopens has to be the
-# same build as the `libc.a` it was linked against. Copied from one image, they are — and the old
-# rule about keeping builder and runtime paired by glibc version is gone with the runtime image it
-# was about.
+# `dev/image-smoke.sh` is what says the two held: it renders a page behind authentication, and posts
+# a US-ASCII form. Drop the library and the same image answers that form with 500 and fails the
+# smoke — checked, not assumed, on 27 September; the page alone rendered either way.
 #
 # `/usr/share/zoneinfo` is the one thing here that nothing currently reads: the trace shows neither
 # it nor `/etc/localtime` being opened, and both this image and the distroless one it replaces
@@ -49,10 +49,6 @@ FROM --platform=linux/amd64 gradle:9.7.1-jdk25-noble AS libc
 FROM scratch
 WORKDIR /app
 
-COPY --from=libc /etc/ld.so.cache /etc/ld.so.cache
-COPY --from=libc /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
-COPY --from=libc /lib/x86_64-linux-gnu/libc.so.6 /lib/x86_64-linux-gnu/libc.so.6
-COPY --from=libc /usr/lib/x86_64-linux-gnu/gconv /usr/lib/x86_64-linux-gnu/gconv
 COPY --from=libc /usr/share/zoneinfo /usr/share/zoneinfo
 
 # From the build context now, not from a stage. `.dockerignore` un-excludes exactly this path.

@@ -149,29 +149,39 @@ Pass `projectPath` = this project's root (the cwd) in **every** call; all other 
 Everything else — call hierarchies, single-test runs, the debugger, `inspection.kts` — is in the
 `mcp-idea` skill.
 
-## The runtime image is `scratch`, and static is not self-contained
+## The runtime image is `scratch`, and static is self-contained only with two pieces
 
 `server/Dockerfile` builds a statically linked `linuxX64` binary (the `staticLinux` block in
-`server/build.gradle.kts`) and puts it on `scratch`: 15 542 820 bytes to pull become 9 522 896.
+`server/build.gradle.kts`) and puts it on `scratch` with one other thing, `zoneinfo`.
 
-Five files go with it and none is optional. glibc's `iconv` loads its converters with `dlopen` — even
-UTF-8 — and Ktor's charset layer on Kotlin/Native *is* glibc `iconv`, reached by `encodeURLParameter`
-on every page. A `scratch` image with the binary alone starts, serves `/favicon.svg`, answers 401
-everywhere else, and returns 500 from the first authenticated page. The list came from
-`strace -e trace=openat`, and the copies come from the build stage so the shared glibc matches the
-`libc.a` the binary was linked against.
+That holds because of two pieces from youndie/kotlin-native-rt (#86), and neither is optional:
 
-`-Xoverride-konan-properties` pins five `konan.properties` keys and is not a stable interface: a
-Kotlin bump can break the link. The `Image` workflow is what makes that a pull request's problem
-rather than a release's. `-Pkatcher.staticLink=false` links the old way on a machine without `g++`.
+- **`iconv-unicode`**, a dependency of `nativeMain` on a Linux host. glibc's `iconv` loads its
+  converters with `dlopen` — even UTF-8 — and Ktor's charset layer on Kotlin/Native *is* glibc
+  `iconv`. The library wraps `iconv_open/iconv/iconv_close` and answers UTF-8, UTF-16LE/BE,
+  ISO-8859-1 and US-ASCII itself; other charsets still go to glibc and fail in this image with error
+  22. On Ktor 3.5 every page reached `iconv` through URL encoding and was 500 without it (#55); since
+  3.6.0 URL encoding has a UTF-8 fast path and the pages render either way, so the smoke posts a
+  `charset=US-ASCII` form — 500 without the library.
+- **the patched compiler, `-Pkotlin.native.version=<kotlin>-yrt.<n>`**, set in the two workflows that
+  link the image (`KOTLIN_NATIVE_RT`) and nowhere else — the distribution is linux-x86_64 only, so a
+  Mac asked for it fails on the download. With it `-static` means static and `sched_yield` is linked
+  in. Without it (a Linux host building with the stock compiler) the `staticLinux` block falls back
+  to the hand recipe: `--no-dynamic-linker` and a `linkerKonanFlags` override (KT-89362).
+
+`-Xoverride-konan-properties` pins `konan.properties` keys and is not a stable interface: a Kotlin
+bump can break the link, and so can a Kotlin bump without a matching `-yrt`. The `Image` workflow is
+what makes that a pull request's problem rather than a release's. `-Pkatcher.staticLink=false` links
+the old way on a machine without `g++`.
 
 ## Build/test
 
 - `./gradlew :server:build` / `:client:build` — standard Gradle multiplatform build.
 - `dev/image-smoke.sh <base-url>` drives a running katcher through a *rendered* page: it signs in
   with the two proxy headers, creates an app, sends a crash and requires a timestamp on the group
-  page. A status-code smoke passes on an image that cannot render anything, which is how the `iconv`
-  failure above stayed invisible. The `Image` workflow builds the real image and runs it.
+  page, then posts a `charset=US-ASCII` form, the one request found that still reaches `iconv`. A
+  status-code smoke passes on an image that cannot render anything, which is how the `iconv` failure
+  above stayed invisible. The `Image` workflow builds the real image and runs it.
 - Native server tests live in `server/src/nativeTest/kotlin/.../data/*Test.kt` (repository-level tests
   against SQLite).
 - On a Mac `:client:build` also runs the client's native suite on the iOS simulator, which needs an
