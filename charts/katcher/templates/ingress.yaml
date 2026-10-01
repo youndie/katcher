@@ -48,7 +48,7 @@ spec:
 # MCP clients are machines: they hold no browser session, so the forward-auth
 # middleware would reject them before Katcher ever saw the request. This route
 # bypasses it for /mcp only, exactly as the ingest routes above do, and the
-# endpoint authenticates itself with the bearer token instead.
+# endpoint authenticates itself with `Authorization: Bearer <token>` instead.
 #
 # Rendered only when a token is configured, so the bypass cannot exist without
 # the authentication that replaces it.

@@ -1,5 +1,7 @@
 package io.github.youndie.katcher.mcp
 
+import io.github.youndie.kore.mcp.HiddenCharacters
+
 /** One reason a report was held back. Never includes the offending text verbatim. */
 data class TrustFinding(
     val rule: String,
@@ -53,32 +55,6 @@ data class ScreenedField(
  * none of them may be waived by anything contained in the report itself.
  */
 object CrashTrust {
-    /**
-     * Characters that render as nothing, or reorder what a human sees relative to what a
-     * model reads. Legitimate stack traces have no reason to contain them, while they are
-     * a standard way to smuggle instructions past a reviewer glancing at the UI.
-     *
-     * Written as escapes rather than literals on purpose: as literals they are invisible
-     * in a diff, and a formatter already silently dropped one of them from this set.
-     */
-    private val HIDDEN_CHARS =
-        setOf(
-            '\u200B', // zero-width space
-            '\u200C', // zero-width non-joiner
-            '\u200D', // zero-width joiner
-            '\uFEFF', // zero-width no-break space / BOM
-            '\u202A', // left-to-right embedding
-            '\u202B', // right-to-left embedding
-            '\u202C', // pop directional formatting
-            '\u202D', // left-to-right override
-            '\u202E', // right-to-left override
-            '\u2066', // left-to-right isolate
-            '\u2067', // right-to-left isolate
-            '\u2068', // first strong isolate
-            '\u2069', // pop directional isolate
-            '\u001B', // escape, opens an ANSI sequence
-        )
-
     /**
      * Phrases that address a reader instead of describing a failure. A stack trace has no
      * reason to speak in the second person or to talk about instructions and assistants.
@@ -185,14 +161,18 @@ object CrashTrust {
         val value = field.value
         val lower = value.lowercase()
 
-        value.firstOrNull { it in HIDDEN_CHARS }?.let { char ->
+        // Characters that render as nothing, or reorder what a human sees relative to what a model
+        // reads: no reason to be in a stack trace, a standard way to smuggle instructions past a
+        // reviewer glancing at the UI. The set is kore-mcp's — not a domain rule, and the copy that
+        // used to live here missed the Tags block, a whole instruction in invisible ASCII.
+        HiddenCharacters.firstIn(value)?.let { codePoint ->
             findings +=
                 TrustFinding(
                     rule = "hidden-characters",
                     field = field.name,
                     // Report the code point, never the surrounding text: findings are shown
                     // to the same agent we are protecting.
-                    detail = "contains non-printing character U+${char.code.toString(16).uppercase().padStart(4, '0')}",
+                    detail = "contains non-printing character ${HiddenCharacters.label(codePoint)}",
                 )
         }
 

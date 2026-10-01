@@ -85,6 +85,15 @@ class CrashTrustTest {
     }
 
     @Test
+    fun `invisible ASCII from the Unicode Tags block is caught and named by its code point`() {
+        // U+E0041 U+E0042: "AB" in tag characters — drawn by no viewer and read by a model as
+        // text. Written as escapes: as literals they would be invisible here too.
+        val suspect = assertIs<TrustVerdict.Suspect>(screenTrace("at X.y(Z.kt:1)\n\uDB40\uDC41\uDB40\uDC42"))
+        val finding = suspect.findings.single { it.rule == "hidden-characters" }
+        assertEquals("contains non-printing character U+E0041", finding.detail)
+    }
+
+    @Test
     fun `findings never quote the offending text back`() {
         // Findings are shown to the same agent being protected, so echoing the payload
         // would defeat the point of withholding it.

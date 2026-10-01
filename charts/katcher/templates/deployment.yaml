@@ -46,9 +46,9 @@ spec:
                 secretKeyRef:
                   name: katcher-mcp
                   key: token
-            # The transport rejects any Host it was not told about, defaulting to
-            # localhost, so the public hostname has to be declared or every request
-            # is refused.
+            # Any other Host is refused with 400. An empty list means the Host header
+            # is not checked at all, so the public hostname is what turns the
+            # DNS-rebinding protection on.
             - name: MCP_ALLOWED_HOSTS
               value: {{ .Values.hostname | quote }}
             {{- end }}

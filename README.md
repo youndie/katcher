@@ -123,8 +123,8 @@ secret, nothing to reach.
 
 | Variable | Purpose |
 |---|---|
-| `MCP_TOKEN` | Bearer token clients must present. Setting it is what turns the feature on. |
-| `MCP_ALLOWED_HOSTS` | Comma-separated hostnames the endpoint may be reached on. **Required when deployed**: the transport's DNS-rebinding protection accepts `localhost` only by default and refuses everything else with `Invalid Host`. |
+| `MCP_TOKEN` | Token clients must present as `Authorization: Bearer <token>`. The `Bearer` scheme is required: a bare token, or none, gets `401` with `WWW-Authenticate: Bearer`. Setting it is what turns the feature on. |
+| `MCP_ALLOWED_HOSTS` | Comma-separated hostnames (`host` or `host:port`) the endpoint may be reached on; any other `Host` gets `400` with `{"error":"invalid host"}`. **Empty means the `Host` header is not checked at all** — not "localhost only" — so set it when deployed: it is the endpoint's DNS-rebinding protection. An entry that is not a host name stops the server at start. |
 
 ```shell
 docker run -p 8080:8080 -v ./data:/data \
@@ -145,7 +145,7 @@ The chart wires it through a `Secret` and fills `MCP_ALLOWED_HOSTS` from `hostna
 
 An MCP client is a machine and carries no browser session, so the forward-auth middleware
 described above will reject it before Katcher ever sees the request. `/mcp` needs to bypass
-that middleware — it authenticates itself with the bearer token instead. The Helm chart
+that middleware — it authenticates itself with `Authorization: Bearer <token>` instead. The Helm chart
 creates this bypass automatically, but only when `mcp.token` is set.
 
 ### Connecting a client

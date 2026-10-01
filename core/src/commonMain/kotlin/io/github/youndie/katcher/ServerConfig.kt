@@ -6,8 +6,8 @@ class ServerConfig(
     /** When null, the MCP endpoint is not exposed at all. */
     val mcpToken: String? = null,
     /**
-     * Hostnames the MCP endpoint accepts in the Host header. Empty keeps the SDK default
-     * of localhost only, so a deployment must declare its public hostname explicitly.
+     * Hostnames the MCP endpoint accepts in the Host header. Empty means the Host header is
+     * not checked at all, so a deployment declares its public hostname explicitly.
      */
     val mcpAllowedHosts: List<String> = emptyList(),
     /**

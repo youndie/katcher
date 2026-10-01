@@ -65,6 +65,17 @@ they are the part no library can write.
   `drain()` closes the channel and joins; it runs as a release participant after the engine has
   drained, so reports accepted with `202` are written rather than cancelled halfway.
 
+## The MCP endpoint is kore-mcp's; the tools and the screen are katcher's
+
+`io.github.youndie:kore-mcp` (its own version ref, `koreMcp`, ahead of the rest of kore until the
+lifecycle migration lands) installs `/mcp`: nothing at all without `MCP_TOKEN`, the bearer check on
+the transport's own route, the `Host` allowlist (empty = not checked), and the responses in MCP's
+JSON. `installMcp` in `Application.kt` calls it after `common()` — kore-mcp installs the SDK's
+ContentNegotiation when it finds none, and katcher's would then be a duplicate. What stays here is
+`KatcherMcpServer.register` (the five tools, `link_fix` the only one that writes), `CrashTrust`'s
+domain rules and `CrashAssessment`; only the hidden-character set comes from kore
+(`HiddenCharacters`). `McpEndpointTest` drives the whole module through Ktor's test engine.
+
 ## Client crash-capture model (important, non-obvious)
 
 `Katcher.catch()` (`client/src/commonMain/kotlin/io/github/youndie/katcher/Katcher.kt`) is **not fully

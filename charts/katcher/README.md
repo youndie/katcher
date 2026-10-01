@@ -82,7 +82,8 @@ storage:
 
 # 4. AI agents over MCP (optional, off unless a token is set)
 mcp:
-   # Bearer token MCP clients must present. Do NOT commit a real value:
+   # Token MCP clients must present as `Authorization: Bearer <token>` — the scheme is
+   # required. Do NOT commit a real value:
    # pass it at install time with --set mcp.token=... from your CI secret store.
    # Empty means the endpoint is not created at all.
    token: ""
@@ -149,7 +150,7 @@ helm upgrade --install katcher ./charts/katcher \
 The Helm chart creates distinct **IngressRoutes**:
 1. **The UI Route** (`/`): protected. With the bundled provider it goes to the oauth2-proxy that comes with the release; with your own SSO it goes to Katcher with your middleware attached. Either way somebody has established who the person is, and Katcher reads the injected headers to identify them.
 2. **The API Route** (`/api/reports`): **Publicly accessible** (bypasses the auth middleware). This allows your applications and SDKs to send crash reports without needing an interactive login session.
-3. **The MCP Route** (`/mcp`): created **only when `mcp.token` is set**. Also bypasses the auth middleware, because an MCP client is a machine with no browser session and would otherwise be rejected before reaching Katcher. It authenticates with the bearer token instead.
+3. **The MCP Route** (`/mcp`): created **only when `mcp.token` is set**. Also bypasses the auth middleware, because an MCP client is a machine with no browser session and would otherwise be rejected before reaching Katcher. It authenticates with `Authorization: Bearer <token>` instead; a request without it, or with a bare token, gets `401`.
 
 ### MCP
 Setting `mcp.token` turns on the endpoint coding agents use to read crashes, and creates
@@ -157,7 +158,9 @@ three things at once: a `Secret` holding the token, the `MCP_TOKEN` environment 
 read from it, and the ingress route above. Leave it empty and none of them exist.
 
 `MCP_ALLOWED_HOSTS` is filled from `hostname` automatically. It has to match the host
-clients actually use — the transport rejects any other with `Invalid Host`.
+clients actually use — any other `Host` is refused with `400` (`{"error":"invalid host"}`).
+An empty `hostname` leaves the list empty, and **an empty list means the `Host` header is not
+checked at all**, not "localhost only": set `hostname` whenever `mcp.token` is set.
 
 ```shell
 helm upgrade --install katcher ./charts/katcher \

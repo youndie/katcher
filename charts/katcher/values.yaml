@@ -40,8 +40,10 @@ server:
       # and 192Mi is where it goes back to.
       memory: "128Mi"
 
-# Bearer token for the MCP endpoint, which coding agents use to read crashes.
+# Token for the MCP endpoint, which coding agents use to read crashes. Clients send it as
+# `Authorization: Bearer <token>`; without the scheme the request is refused with 401.
 # Empty means the endpoint is not mounted at all — the feature is off, not open.
+# `hostname` above becomes MCP_ALLOWED_HOSTS: left empty, the Host header is not checked.
 # Supply it at deploy time (--set mcp.token=...) from a CI secret; never commit a value here.
 mcp:
   token: ""

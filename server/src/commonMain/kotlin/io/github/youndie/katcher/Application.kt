@@ -32,19 +32,22 @@ import io.github.youndie.katcher.feature.symbolication.data.SymbolMapRepositoryI
 import io.github.youndie.katcher.feature.user.UserRepository
 import io.github.youndie.katcher.feature.user.data.UserRepositoryImpl
 import io.github.youndie.katcher.mcp.KatcherMcpServer
-import io.github.youndie.katcher.mcp.installMcp
 import io.github.youndie.katcher.retrace.MappingFileStorage
 import io.github.youndie.katcher.retrace.MappingFileStorageOkio
 import io.github.youndie.kore.generated.KoreBuildIdentity
 import io.github.youndie.kore.ktor.installKoreProbes
 import io.github.youndie.kore.ktor.installKoreVersion
 import io.github.youndie.kore.ktor.installShutdownRefusal
+import io.github.youndie.kore.mcp.KoreMcpConfig
+import io.github.youndie.kore.mcp.installKoreMcp
 import io.github.youndie.metrik.agent.Metrik
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
+import io.ktor.server.application.log
 import io.ktor.server.auth.Authentication
 import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.plugins.di.resolve
+import io.modelcontextprotocol.kotlin.sdk.types.Implementation
 import kotlinx.coroutines.runBlocking
 import okio.FileSystem
 import okio.Path.Companion.toPath
@@ -81,6 +84,37 @@ suspend fun Application.module(
     installMcp(config, KatcherMcpServer(dependencies.resolve(), dependencies.resolve(), dependencies.resolve()))
     installMetrik(config)
     launchReportQueueService(dependencies.resolve())
+}
+
+/**
+ * The endpoint coding agents read crashes through — only when `MCP_TOKEN` is set.
+ *
+ * kore-mcp owns it. An unset token installs nothing at all: no route, no guard, nothing to reach even
+ * when the proxy in front is misconfigured. The bearer check is a plugin on the transport's own route,
+ * so whatever routing sends there has been through it; the host allowlist is checked when one is
+ * configured; and MCP's messages leave in MCP's JSON whatever this application's ContentNegotiation
+ * would do to them. That last part is why this runs after `common()`: kore-mcp installs the SDK's
+ * ContentNegotiation when it finds none, and katcher's own would then be a duplicate.
+ *
+ * It does NOT reuse the header-trusting provider the HTML pages use: that one accepts whatever identity
+ * the caller claims, which is only safe behind the proxy, and would hand anyone any user they asked for
+ * on a machine-facing endpoint.
+ *
+ * A static bearer token is the pragmatic choice for a single-tenant self-hosted deployment. The MCP
+ * specification's OAuth 2.1 flow is deliberately not implemented — a known gap, not an oversight.
+ */
+private fun Application.installMcp(
+    config: ServerConfig,
+    tools: KatcherMcpServer,
+) {
+    val mcp = KoreMcpConfig(config.mcpToken, config.mcpAllowedHosts)
+    if (!mcp.enabled) {
+        log.info("MCP endpoint disabled: MCP_TOKEN is not set")
+        return
+    }
+    installKoreMcp(mcp, Implementation(name = "katcher", version = "0.1.0")) { tools.register(this) }
+    val hosts = mcp.allowedHosts.joinToString().ifEmpty { "any (Host is not checked)" }
+    log.info("MCP endpoint enabled at ${mcp.path}, allowed hosts: $hosts")
 }
 
 /**
