@@ -27,8 +27,11 @@ gradlePlugin {
     }
 }
 
+// The Kotlin and AGP this plugin compiles against are the ones the rest of the build uses, taken
+// from sborka's `wip` catalog rather than spelled here: as literals they sat a Kotlin patch and an
+// AGP minor behind everything else, and only a Renovate PR for this one file noticed.
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.10")
-    implementation("com.android.tools.build:gradle:9.3.1")
-    implementation("org.jetbrains.kotlin:kotlin-serialization:2.4.10")
+    implementation(wip.kotlin.gradle.plugin)
+    implementation("com.android.tools.build:gradle:${wip.versions.agp.get()}")
+    implementation("org.jetbrains.kotlin:kotlin-serialization:${wip.versions.kotlin.get()}")
 }
