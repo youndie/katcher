@@ -1,6 +1,6 @@
 [versions]
 # The shared build conventions. One number: every sborka plugin below takes its version from here.
-sborka = "0.4.0.89"
+sborka = "0.4.0.110"
 # The compiler comes with them: `wip`, the catalog a sborka release publishes, carries kotlin,
 # ksp and agp. The AGP version in particular was AHEAD of the shared catalog here (9.4.0 against
 # 9.3.2) — the catalog was raised to match rather than this repository moved back.
