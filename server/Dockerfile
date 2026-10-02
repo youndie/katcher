@@ -8,7 +8,7 @@
 # Nothing of glibc is taken from this stage any more (#86): the binary carries all of it, so which
 # build of glibc sits here no longer has to match the `libc.a` it was linked against. The stage stays
 # because it names the image the workflows link in, and because `zoneinfo` comes from it.
-FROM --platform=linux/amd64 gradle:9.7.1-jdk25-noble AS libc
+FROM --platform=linux/amd64 gradle:9.8.0-jdk25-noble AS libc
 
 # ---------- Stage 2 : Runtime ----------
 # NO BASE IMAGE. The binary is linked statically (the `staticLinux` block in

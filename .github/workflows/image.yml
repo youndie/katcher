@@ -127,7 +127,7 @@ jobs:
             --volume "$HOME/.konan":/root/.konan \
             --env GRADLE_PROFILE="${{ inputs.profile && '--profile' || '' }}" \
             --env KOTLIN_NATIVE_RT \
-            gradle:9.7.1-jdk25-noble \
+            gradle:9.8.0-jdk25-noble \
             sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null \
                    && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace -Pkotlin.native.version=$KOTLIN_NATIVE_RT $GRADLE_PROFILE \
                    && echo "--- inside the container ---" \
@@ -146,7 +146,7 @@ jobs:
           echo "--- receipts ---"
           du -sh "$HOME/.gradle" "$HOME/.konan" 2>/dev/null || true
           ls -la "$HOME/.gradle" 2>/dev/null | head -10 || echo "no $HOME/.gradle at all"
-          docker run --rm --env GRADLE_USER_HOME=/root/.gradle gradle:9.7.1-jdk25-noble \
+          docker run --rm --env GRADLE_USER_HOME=/root/.gradle gradle:9.8.0-jdk25-noble \
             sh -c 'id; echo "HOME=$HOME GRADLE_USER_HOME=$GRADLE_USER_HOME"' || true
 
       - name: Keep the profile report
