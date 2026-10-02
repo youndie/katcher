@@ -16,7 +16,6 @@ import io.ktor.http.contentType
 import io.ktor.http.encodedPath
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
-import io.modelcontextprotocol.kotlin.sdk.types.LATEST_PROTOCOL_VERSION
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.boolean
@@ -32,7 +31,8 @@ import kotlin.test.assertEquals
  * What the endpoint does with a token, a `Host` header or a protocol version is kore-mcp's, and kore
  * tests it. What is katcher's is the wiring — that the module installs the endpoint behind its own
  * ContentNegotiation and registers the five tools on it — and the one property katcher's own copy of
- * that wiring got wrong: which requests the token check sees.
+ * that wiring got wrong: which requests the token check sees. Whether the answers leave in MCP's JSON
+ * despite that ContentNegotiation is [McpWireFormatTest]'s.
  *
  * A file database, for the reason [RepositoryTest] gives; nothing here reads it.
  */
@@ -59,8 +59,8 @@ class McpEndpointTest : RepositoryTest() {
             setBody(body)
         }
 
-    private fun initialize(version: String = "2025-06-18") =
-        """{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"$version",""" +
+    private fun initialize() =
+        """{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18",""" +
             """"capabilities":{},"clientInfo":{"name":"test","version":"1"}}}"""
 
     private suspend fun HttpResponse.result(): JsonObject =
@@ -99,22 +99,6 @@ class McpEndpointTest : RepositoryTest() {
                 ),
                 readOnly,
             )
-        }
-
-    @Test
-    fun `an initialize asking for the latest protocol should get its version back`() =
-        testApplication {
-            // Given — katcher's ContentNegotiation omits defaults, and SDK 0.15.0 answers through it:
-            // without kore-mcp encoding the response itself, this is the field that goes missing and
-            // no current client connects.
-            katcher()
-
-            // When
-            val response = rpc(initialize(LATEST_PROTOCOL_VERSION))
-
-            // Then
-            assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(LATEST_PROTOCOL_VERSION, response.result()["protocolVersion"]?.jsonPrimitive?.content)
         }
 
     /**
