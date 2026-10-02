@@ -80,7 +80,7 @@ jobs:
             --volume "$HOME/.gradle":/home/gradle/.gradle \
             --volume "$HOME/.konan":/root/.konan \
             --env KOTLIN_NATIVE_RT \
-            gradle:9.7.1-jdk25-noble \
+            gradle:9.8.0-jdk25-noble \
             sh -c 'apt-get update -qq && apt-get install -y --no-install-recommends -qq g++ >/dev/null \
                    && gradle :server:linkReleaseExecutableNative --no-daemon --stacktrace -Pkotlin.native.version=$KOTLIN_NATIVE_RT'
           # The container writes as root through the mounts; every step after this runs as the
