@@ -169,18 +169,31 @@ jobs:
       # half that runs its steps in the opposite order from the JVM. A transcript with the stages in
       # the specified order is what says the sequence ran at all — without it, a process that was
       # simply killed at the end of the grace period looks identical from the outside.
+      #
+      # And it has to leave BY ITSELF. `docker stop` sends SIGKILL at the end of its timeout, and a
+      # process killed there leaves no EXIT line — but the exit code says so too (137), and the time
+      # says how close it came. The whole transcript is printed, every stage, so the log of a green
+      # run is the evidence rather than a summary of it.
       - name: It stops in order, and says so
         run: |
+          started=$(date +%s)
           docker stop --timeout 40 katcher-ci
+          took=$(( $(date +%s) - started ))
+          code=$(docker inspect katcher-ci --format '{{.State.ExitCode}}')
           log=$(docker logs katcher-ci 2>&1)
-          printf '%s\n' "$log" | grep -E 'ANNOUNCE|DRAIN|RELEASE_POOLS|EXIT' || true
-          for stage in SIGNAL ANNOUNCE DRAIN RELEASE_CONSUMERS RELEASE_POOLS EXIT; do
+          echo "--- the shutdown: exit code $code after ${took}s of a 40s timeout ---"
+          printf '%s\n' "$log" | grep -E 'SIGNAL|ANNOUNCE|DRAIN|RELEASE_|EXIT|participant' || true
+          for stage in SIGNAL ANNOUNCE DRAIN RELEASE_CONSUMERS RELEASE_POOLS RELEASE_TELEMETRY EXIT; do
             if ! printf '%s\n' "$log" | grep -q "$stage COMPLETED"; then
               echo "the shutdown transcript has no completed $stage stage" >&2
               printf '%s\n' "$log" | tail -40 >&2
               exit 1
             fi
           done
+          if [ "$code" = 137 ] || [ "$took" -ge 40 ]; then
+            echo "the process did not leave by itself: exit code $code after ${took}s" >&2
+            exit 1
+          fi
 
       # The container has no shell, so this is the only account of what went wrong.
       - name: What it said, if it did not

@@ -1,5 +1,7 @@
 package io.github.youndie.katcher
 
+import kotlin.system.exitProcess
+
 actual fun getServerConfig(): ServerConfig =
     ServerConfig(
         sqlitePath = runCatching { System.getenv(DB_PATH) }.getOrNull() ?: "./data/local.db",
@@ -18,3 +20,5 @@ actual fun getServerConfig(): ServerConfig =
     )
 
 private fun env(name: String): String? = runCatching { System.getenv(name) }.getOrNull()?.takeIf { it.isNotBlank() }
+
+actual fun endProcess(code: Int): Nothing = exitProcess(code)

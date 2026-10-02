@@ -6,17 +6,17 @@ sborka = "0.4.0.111"
 # 9.3.2) — the catalog was raised to match rather than this repository moved back.
 atomicfu = "0.33.0"
 # kore: the process lifecycle of a server binary — the ordered shutdown, the three probes and
-# /version. One number for the two libraries and the Gradle plugin that generates the identity;
-# they are published together and a plugin from one version with a library from another would
-# compile and then disagree about the object it generates.
-kore = "0.1.4"
-# kore-mcp: the guarded MCP endpoint, under its own number ON PURPOSE. It depends on neither
-# kore-core nor kore-ktor, so it can move without them; the rest of kore moving to 0.1.14 is the
-# lifecycle migration — `startForKore()` in place of `start()`, the shutdown refusal gated on a
-# `DrainGate` rather than on readiness (the predicate form is deprecated there, and warnings are
-# errors here) — and that is its own change, not a rider on this one. Fold the two refs back into
-# one when that change lands.
-koreMcp = "0.1.14"
+# /version — and the guarded MCP endpoint (kore-mcp). One number for every kore module and the
+# Gradle plugin that generates the identity; they are published together and a plugin from one
+# version with a library from another would compile and then disagree about the object it generates.
+#
+# kore-ktor hands `ktor-server-core` on through `api`, so a kore bump can raise ONE Ktor module past
+# the rest: the build is green and the runtime throws `IrLinkageError`. After a bump no `io.ktor:` in
+# `./gradlew :server:dependencies --configuration nativeCompileKlibraries` (or `jvmRuntimeClasspath`)
+# may resolve past the Ktor of the `ktorLibs` catalog in settings.gradle.kts. An arrow UP TO it is
+# normal — kore and the MCP SDK are built on an older Ktor, and the SDK's `ktor-server-websockets`
+# stays on its own 3.5.1 because nothing here declares it — an arrow past it is the trap.
+kore = "0.1.14"
 # youndie/kotlin-native-rt's `iconv` for the Unicode charsets, so the static server needs no gconv
 # (#86). linuxX64 only; `server/build.gradle.kts` adds it where it links statically.
 kotlinNativeRtIconv = "0.1.0"
@@ -33,7 +33,7 @@ okio = "3.18.2"
 kore-core = { module = "io.github.youndie:kore-core", version.ref = "kore" }
 kore-ktor = { module = "io.github.youndie:kore-ktor", version.ref = "kore" }
 # Brings the MCP SDK (`kotlin-sdk-server`) through `api`: the SDK's version is kore-mcp's.
-kore-mcp = { module = "io.github.youndie:kore-mcp", version.ref = "koreMcp" }
+kore-mcp = { module = "io.github.youndie:kore-mcp", version.ref = "kore" }
 
 kotlinNativeRt-iconvUnicode = { module = "io.github.youndie.kotlin-native-rt:iconv-unicode", version.ref = "kotlinNativeRtIconv" }
 

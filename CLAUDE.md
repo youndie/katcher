@@ -13,12 +13,12 @@ required in production). Client is a KMP library apps embed to capture and uploa
   Feature packages under `io.github.youndie.katcher.feature.<name>/data` (auth, app, user, report, error,
   symbolication) each hold their own Exposed/sqlx4k data access.
 - `server/src/commonMain/kotlin/Main.kt` — the process, not the application. It opens the database
-  (migrations included) **before** the engine exists, starts the server with `wait = false`, and then
-  spends the rest of its life inside kore's `runUntilSignal`: announce, drain, release consumers,
-  release pools, release telemetry, exit. The database is opened here rather than in the module so
-  the release stage has a handle to close *after* the drain — wired to `ApplicationStopping` instead,
-  a close runs **before** the drain on Kotlin/Native and after it on the JVM, from identical source,
-  which is the defect kore exists to remove and the reason katcher takes it.
+  (migrations included) **before** the engine exists, starts the server with kore's `startForKore()`,
+  and then spends the rest of its life inside kore's `runUntilSignal`: announce, drain, release
+  consumers, release pools, release telemetry, exit. The database is opened here rather than in the
+  module so the release stage has a handle to close *after* the drain — wired to `ApplicationStopping`
+  instead, a close runs **before** the drain on Kotlin/Native and after it on the JVM, from identical
+  source, which is the defect kore exists to remove and the reason katcher takes it.
 - `shared/` — DTOs shared between client and server (`CreateReportParams`, `Breadcrumb`,
   `ReportResource`, `ErrorGroupSort`).
 - `client/` — the crash-reporting library consumers embed (`io.github.youndie.katcher:client`).
@@ -42,10 +42,27 @@ required in production). Client is a KMP library apps embed to capture and uploa
 
 ## The server's lifecycle is kore's, and three numbers live in two places
 
-`io.github.youndie:kore-core` and `kore-ktor` (version in `gradle/libs.versions.toml`) own the stretch
-from `SIGTERM` to exit, the three probes, and `/version`. What katcher supplies is the participants —
-they are the part no library can write.
+`io.github.youndie:kore-core` and `kore-ktor` (one `kore` version in `gradle/libs.versions.toml`, shared
+with kore-mcp and the `kore.build` plugin) own the stretch from `SIGTERM` to exit, the three probes, and
+`/version`. What katcher supplies is the participants — they are the part no library can write.
 
+- **`startForKore()`, never `start()`.** On the JVM `start` leaves Ktor's own shutdown hook on and it
+  stops the engine at the signal, mid-announce (kore#90); on Kotlin/Native a `SIGTERM` between Ktor's
+  handler and kore's hangs the process (kore B-63). `EngineDrain` refuses to be built beside the hook.
+- **One `DrainGate`, two readers.** `main` creates it and hands the same instance to the module's
+  `installShutdownRefusal` and to `EngineDrain`, which opens it as its first act. A refusal gated on
+  readiness answers `503` through the whole announce, to the requests the announce exists to serve
+  (kore B-61); two instances compile and never refuse.
+- **`REUSE_ADDRESS` is one value in two places** (`HttpListener.kt`): the engine's `reuseAddress` and
+  the bind `listenRefusal` makes before anything starts. A busy port is then one line and exit 1, not
+  CIO's `SIGABRT` (kore B-59), and a restart in place binds over its predecessor's `TIME_WAIT` (B-62).
+  The check goes through a one-key kore schema fed the port alone — never the process environment:
+  the kubelet puts `KATCHER_PORT`, `KATCHER_SERVICE_HOST` and friends into the pod, and kore's schema
+  refuses undeclared variables under its prefix.
+- **Stages are ordered, participants inside a stage are not.** The health-check loop stops in
+  RELEASE_CONSUMERS, beside the queue, because its `SELECT 1` goes through the pool RELEASE_POOLS
+  closes; `KatcherProbes.stop()` is `stopAndJoin()`, so the check in flight has finished when the
+  stage reports `COMPLETED` (kore#79). RELEASE_TELEMETRY has no participant and still reports.
 - **The probes are three questions, not one route.** `/health/startup` is a latch; `/health/ready`
   reads a `SELECT 1` against SQLite *and* the shutdown latch; `/health/live` and the `/health` alias
   are liveness. Pointing readiness at `/health` gives a probe that cannot fail while the process is
@@ -67,14 +84,14 @@ they are the part no library can write.
 
 ## The MCP endpoint is kore-mcp's; the tools and the screen are katcher's
 
-`io.github.youndie:kore-mcp` (its own version ref, `koreMcp`, ahead of the rest of kore until the
-lifecycle migration lands) installs `/mcp`: nothing at all without `MCP_TOKEN`, the bearer check on
-the transport's own route, the `Host` allowlist (empty = not checked), and the responses in MCP's
-JSON. `installMcp` in `Application.kt` calls it after `common()` — kore-mcp installs the SDK's
-ContentNegotiation when it finds none, and katcher's would then be a duplicate. What stays here is
-`KatcherMcpServer.register` (the five tools, `link_fix` the only one that writes), `CrashTrust`'s
-domain rules and `CrashAssessment`; only the hidden-character set comes from kore
-(`HiddenCharacters`). `McpEndpointTest` drives the whole module through Ktor's test engine.
+`io.github.youndie:kore-mcp` (the same `kore` version as the rest of kore) installs `/mcp`: nothing at
+all without `MCP_TOKEN`, the bearer check on the transport's own route, the `Host` allowlist (empty =
+not checked), and the responses in MCP's JSON. `installMcp` in `Application.kt` calls it after
+`common()` — kore-mcp installs the SDK's ContentNegotiation when it finds none, and katcher's would
+then be a duplicate. What stays here is `KatcherMcpServer.register` (the five tools, `link_fix` the
+only one that writes), `CrashTrust`'s domain rules and `CrashAssessment`; only the hidden-character
+set comes from kore (`HiddenCharacters`). `McpEndpointTest` drives the whole module through Ktor's
+test engine.
 
 ## Client crash-capture model (important, non-obvious)
 
