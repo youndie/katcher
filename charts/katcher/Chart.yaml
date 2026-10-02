@@ -2,8 +2,8 @@ apiVersion: v2
 name: katcher
 description: Katcher - tiny self-hosted crash tracker
 type: application
-version: 0.7.5
-appVersion: "0.8.5"
+version: 0.7.6
+appVersion: "0.8.6"
 
 # The provider that signs people in, for installations that have no SSO of their own.
 #

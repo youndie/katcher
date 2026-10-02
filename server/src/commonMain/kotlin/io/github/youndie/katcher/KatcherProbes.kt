@@ -52,7 +52,12 @@ class KatcherProbes(
         checks.start(scope)
     }
 
-    fun stop() {
-        checks.stop()
+    /**
+     * Stops the loop and WAITS for the check already running (kore#79). The old `stop()` only
+     * cancelled it, and a `SELECT 1` inside the FFI call is not reached by a cancellation — it ran on
+     * after its stage had reported `COMPLETED`. Called a stage before the pool closes, in `main`.
+     */
+    suspend fun stop() {
+        checks.stopAndJoin()
     }
 }

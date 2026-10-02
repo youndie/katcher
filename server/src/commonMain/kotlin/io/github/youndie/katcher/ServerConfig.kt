@@ -35,3 +35,11 @@ const val METRIK_SERVICE = "METRIK_SERVICE"
 const val METRIK_RELEASE = "METRIK_RELEASE"
 
 expect fun getServerConfig(): ServerConfig
+
+/**
+ * Ends the process with [code].
+ *
+ * `expect` for something both targets have: `kotlin.system.exitProcess` is declared for the JVM and
+ * for Kotlin/Native, not in common, so `commonMain` cannot see it.
+ */
+expect fun endProcess(code: Int): Nothing

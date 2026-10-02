@@ -5,6 +5,7 @@ package io.github.youndie.katcher
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.toKString
 import platform.posix.getenv
+import kotlin.system.exitProcess
 
 @OptIn(ExperimentalForeignApi::class)
 actual fun getServerConfig(): ServerConfig =
@@ -51,3 +52,5 @@ val getSourceMapsPath
         runCatching {
             getenv(SOURCE_MAPS_PATH)?.toKString() ?: "./data/mappings"
         }.getOrNull()
+
+actual fun endProcess(code: Int): Nothing = exitProcess(code)
