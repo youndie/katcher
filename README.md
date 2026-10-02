@@ -141,6 +141,22 @@ helm upgrade --install katcher ./charts/katcher --set mcp.token="$MCP_TOKEN"
 
 The chart wires it through a `Secret` and fills `MCP_ALLOWED_HOSTS` from `hostname`.
 
+### A warning in the startup log
+
+With `MCP_TOKEN` set, the log at start carries a `WARN` line from the MCP SDK:
+`ContentNegotiation is already installed. MCP requires json(McpJson) for correct JSON-RPC
+serialization…`. It is expected, and it does not mean the MCP answers are malformed.
+
+The SDK prints it whenever the application already has ContentNegotiation, because Ktor does not let
+it see which `Json` that is. Katcher's would matter: it pretty-prints and leaves out default values,
+and an answer written with it would lose `protocolVersion` from `initialize` and the whole `result`
+from `ping`. The endpoint writes its answers in MCP's own JSON before Katcher's ContentNegotiation
+sees them. `McpWireFormatTest` holds that on the raw body: every answer of the assembled server —
+both `initialize` versions, `ping`, the tool list, tool calls with and without a tool error, an
+unknown tool and method, a batch, an unparseable body — is byte for byte what MCP's JSON writes. Its
+control sends the same requests to the bare SDK under Katcher's JSON and requires them to come out
+different, so a green run cannot mean the comparison catches nothing.
+
 ### Behind a reverse proxy
 
 An MCP client is a machine and carries no browser session, so the forward-auth middleware

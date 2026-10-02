@@ -91,7 +91,9 @@ not checked), and the responses in MCP's JSON. `installMcp` in `Application.kt` 
 then be a duplicate. What stays here is `KatcherMcpServer.register` (the five tools, `link_fix` the
 only one that writes), `CrashTrust`'s domain rules and `CrashAssessment`; only the hidden-character
 set comes from kore (`HiddenCharacters`). `McpEndpointTest` drives the whole module through Ktor's
-test engine.
+test engine; `McpWireFormatTest` holds the answers to MCP's JSON on the raw body — katcher's own
+`Json` would drop `protocolVersion` and `ping`'s `result` — with a control on the bare SDK that must
+come out different.
 
 ## Client crash-capture model (important, non-obvious)
 
