@@ -9,11 +9,8 @@ import io.github.youndie.katcher.feature.report.Report
 import io.github.youndie.katcher.feature.report.ReportRepository
 import io.github.youndie.katcher.utils.human
 import io.modelcontextprotocol.kotlin.sdk.server.Server
-import io.modelcontextprotocol.kotlin.sdk.server.ServerOptions
 import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
 import io.modelcontextprotocol.kotlin.sdk.types.CallToolResult
-import io.modelcontextprotocol.kotlin.sdk.types.Implementation
-import io.modelcontextprotocol.kotlin.sdk.types.ServerCapabilities
 import io.modelcontextprotocol.kotlin.sdk.types.TextContent
 import io.modelcontextprotocol.kotlin.sdk.types.ToolAnnotations
 import io.modelcontextprotocol.kotlin.sdk.types.ToolSchema
@@ -53,16 +50,11 @@ class KatcherMcpServer(
 ) {
     private val json = Json { prettyPrint = true }
 
-    fun build(): Server {
-        val server =
-            Server(
-                serverInfo = Implementation(name = "katcher", version = "0.1.0"),
-                options =
-                    ServerOptions(
-                        capabilities = ServerCapabilities(tools = ServerCapabilities.Tools(listChanged = false)),
-                    ),
-            )
-
+    /**
+     * Registers the five tools on [server]. The endpoint builds a fresh [Server] per request — it is
+     * stateless — and hands it here; this class constructs none of its own.
+     */
+    fun register(server: Server) {
         server.addTool(
             name = "list_apps",
             description =
@@ -251,8 +243,6 @@ class KatcherMcpServer(
             val url = request.stringArg("pullRequestUrl") ?: return@addTool errorResult("pullRequestUrl is required")
             linkFix(groupId, url)
         }
-
-        return server
     }
 
     @Suppress(

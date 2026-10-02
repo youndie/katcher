@@ -10,13 +10,19 @@ atomicfu = "0.33.0"
 # they are published together and a plugin from one version with a library from another would
 # compile and then disagree about the object it generates.
 kore = "0.1.4"
+# kore-mcp: the guarded MCP endpoint, under its own number ON PURPOSE. It depends on neither
+# kore-core nor kore-ktor, so it can move without them; the rest of kore moving to 0.1.14 is the
+# lifecycle migration — `startForKore()` in place of `start()`, the shutdown refusal gated on a
+# `DrainGate` rather than on readiness (the predicate form is deprecated there, and warnings are
+# errors here) — and that is its own change, not a rider on this one. Fold the two refs back into
+# one when that change lands.
+koreMcp = "0.1.14"
 # youndie/kotlin-native-rt's `iconv` for the Unicode charsets, so the static server needs no gconv
 # (#86). linuxX64 only; `server/build.gradle.kts` adds it where it links statically.
 kotlinNativeRtIconv = "0.1.0"
 kotlinxCoroutinesCore = "1.11.0"
 kotlinxDatetime = "0.8.0"
 kotlinxSerializationJson = "1.11.0"
-mcpKotlinSdk = "0.15.0"
 metrikAgent = "0.3.21"
 sqlx4k = "1.13.0"
 ktlint = "14.2.0"
@@ -26,6 +32,8 @@ okio = "3.18.2"
 
 kore-core = { module = "io.github.youndie:kore-core", version.ref = "kore" }
 kore-ktor = { module = "io.github.youndie:kore-ktor", version.ref = "kore" }
+# Brings the MCP SDK (`kotlin-sdk-server`) through `api`: the SDK's version is kore-mcp's.
+kore-mcp = { module = "io.github.youndie:kore-mcp", version.ref = "koreMcp" }
 
 kotlinNativeRt-iconvUnicode = { module = "io.github.youndie.kotlin-native-rt:iconv-unicode", version.ref = "kotlinNativeRtIconv" }
 
@@ -33,7 +41,6 @@ kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-c
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
-mcp-kotlin-sdk-server = { module = "io.modelcontextprotocol:kotlin-sdk-server", version.ref = "mcpKotlinSdk" }
 # Агент metrik: Ktor-плагин, меряет в процессе и раз в минуту шлёт одну UDP-датаграмму.
 metrik-agent = { module = "io.github.youndie.metrik:agent", version.ref = "metrikAgent" }
 

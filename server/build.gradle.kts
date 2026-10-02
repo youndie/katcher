@@ -186,6 +186,8 @@ kotlin {
         commonTest.dependencies {
             implementation(kotlin("test"))
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.11.0")
+            // `McpEndpointTest` drives the whole module through Ktor's test engine.
+            implementation(ktorLibs.server.testHost)
         }
     }
 }
@@ -232,7 +234,9 @@ dependencies {
 
     commonMainImplementation(libs.kotlinx.datetime)
     commonMainImplementation(libs.okio)
-    commonMainImplementation(libs.mcp.kotlin.sdk.server)
+    // The MCP endpoint: the bearer guard on the transport's own route, the host allowlist, and the
+    // responses in MCP's JSON. The SDK comes with it, through `api`.
+    commonMainImplementation(libs.kore.mcp)
     commonMainImplementation(libs.metrik.agent)
 
     // The ordered shutdown, the three probes and /version. `kore-ktor` brings `kore-core` with it,
