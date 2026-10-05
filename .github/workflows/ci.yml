@@ -44,7 +44,7 @@ jobs:
       # RQ5 measured the cache that remains rather than assuming it: `T_first_compile` median 70 s
       # over eight runs against a 90 s threshold, and a 100% hit rate over those eight. The
       # architecture was already green; this removes the part that was paid for twice.
-      - uses: youndie/sborka/.github/actions/setup-kotlin@main
+      - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.130
         with:
           konan-cache: "true"
 
