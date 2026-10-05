@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v7
-      - uses: youndie/sborka/.github/actions/setup-kotlin@main
+      - uses: youndie/sborka/.github/actions/setup-kotlin@v0.5.0.130
         with:
           konan-cache: "true"
       - name: Publish
