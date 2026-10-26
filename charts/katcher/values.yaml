@@ -121,7 +121,7 @@ auth:
       limits:
         cpu: "1"
         memory: 128Mi
-  bootstrapImage: curlimages/curl:8.11.1
+  bootstrapImage: curlimages/curl:8.23.0
 
 # Values of the shildik subchart, and the switch that brings it in at all. `enabled: false` means
 # the provider is not installed — not installed and turned off, absent.
