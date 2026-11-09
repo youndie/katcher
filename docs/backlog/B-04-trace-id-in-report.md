@@ -81,6 +81,6 @@ tracy little and needs changes in the other two repositories
   tests went red. `TraceIdTest` in `:shared` holds the shape.
 - README: "From a Ktor server: the crash and its trace", the `StatusPages` handler with tracy's
   `TracyTraceContext`.
-- Not done here: the chart does not expose `KATCHER_TRACE_URL` yet (the deployment's values live in the
-  infra repository); a deployment sets it as an extra env. The reverse link and metrik stay with the
-  other repositories' halves of M-90.
+- Not done here: the chart does not pass `KATCHER_TRACE_URL` yet, so on the stand the id stays text
+  until a chart value is added for it. The reverse link and metrik stay with the other repositories'
+  halves of M-90.
