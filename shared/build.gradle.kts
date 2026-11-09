@@ -37,4 +37,5 @@ dependencies {
     commonMainImplementation(ktorLibs.client.resources)
     commonMainImplementation(libs.kotlinx.datetime)
     commonMainImplementation(libs.kotlinx.serialization.json)
+    commonTestImplementation(kotlin("test"))
 }

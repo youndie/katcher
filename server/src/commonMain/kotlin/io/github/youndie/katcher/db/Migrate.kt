@@ -1,5 +1,6 @@
 package io.github.youndie.katcher.db
 
+import io.github.smyrgeorge.sqlx4k.QueryExecutor
 import io.github.smyrgeorge.sqlx4k.impl.extensions.asLong
 import io.github.smyrgeorge.sqlx4k.sqlite.ISQLite
 
@@ -132,15 +133,31 @@ FOREIGN KEY (app_id) REFERENCES apps(id) ON DELETE CASCADE
         """ALTER TABLE apps DROP COLUMN api_key;""",
     )
 
-val allMigrations =
+/** One schema version: SQL statements, or code where the step is a rewrite of the rows themselves. */
+private typealias Migration = suspend QueryExecutor.() -> Unit
+
+private fun sql(statements: List<String>): Migration =
+    {
+        statements.forEach { statement ->
+            // A migration that fails must stop the start, not be stepped over: a server that runs
+            // on a half-migrated schema breaks later, somewhere else, and by then nothing points
+            // back here.
+            execute(statement).getOrThrow()
+        }
+    }
+
+private val allMigrations: List<Migration> =
     listOf(
-        migrationV1,
-        migrationV2,
-        migrationV3,
-        migrationV4,
-        migrationV5,
-        migrationV6,
-        migrationV7,
+        sql(migrationV1),
+        sql(migrationV2),
+        sql(migrationV3),
+        sql(migrationV4),
+        sql(migrationV5),
+        sql(migrationV6),
+        sql(migrationV7),
+        // Credentials stored before ingest masked them (B-01). Masking new reports does not
+        // unpublish the old ones; this makes the pages stop showing them, nothing more.
+        { remaskStoredCredentials() },
     )
 
 suspend fun ISQLite.migrateDb() {
@@ -177,13 +194,7 @@ suspend fun ISQLite.migrateDb() {
 
         if (currentVersion < targetVersion) {
             for (v in (currentVersion + 1)..targetVersion) {
-                val migration = allMigrations[v - 1]
-                migration.forEach { sql ->
-                    // A migration that fails must stop the start, not be stepped over: a
-                    // server that runs on a half-migrated schema breaks later, somewhere else,
-                    // and by then nothing points back here.
-                    this.execute(sql).getOrThrow()
-                }
+                allMigrations[v - 1].invoke(this)
                 this.execute("PRAGMA user_version = $v;").getOrThrow()
                 println("Migrated to version $v")
             }

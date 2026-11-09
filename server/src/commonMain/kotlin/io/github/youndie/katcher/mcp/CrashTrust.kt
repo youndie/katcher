@@ -114,7 +114,13 @@ object CrashTrust {
             "| bash",
         )
 
-    /** Names of things worth stealing. Their presence suggests exfiltration, not diagnostics. */
+    /**
+     * Names of things worth stealing. Their presence suggests exfiltration, not diagnostics.
+     *
+     * Names, not values: a token a client library printed into a message matches none of these.
+     * Values are `CredentialMask`'s, applied at ingest and by the V8 migration, so by the time a
+     * crash reaches this screen a secret in it is already `<redacted>`.
+     */
     private val CREDENTIAL_PATTERNS =
         listOf(
             "aws_secret",
