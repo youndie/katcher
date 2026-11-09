@@ -1,7 +1,7 @@
 ---
 id: B-05
 title: "addBreadcrumb resolves the time zone once per process, not once per call (#78)"
-status: open
+status: wip
 priority: P2
 size: XS
 stage: stage-3-client-cost
