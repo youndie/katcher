@@ -1,7 +1,7 @@
 ---
 id: B-01
 title: "Mask credentials in a report on the client and again at ingest, before anything is stored or shown"
-status: open
+status: wip
 priority: P1
 size: M
 stage: stage-2-hygiene

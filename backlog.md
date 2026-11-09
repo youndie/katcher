@@ -44,7 +44,7 @@ must never move its file.
 
 | Task | | Priority | Size | Blocked by |
 |---|---|---|---|---|
-| [B-01](docs/backlog/B-01-mask-credentials-in-reports.md) `[ ]` | Mask credentials in a report on the client and again at ingest, before anything is stored or shown | P1 | M | - |
+| [B-01](docs/backlog/B-01-mask-credentials-in-reports.md) `[~]` | Mask credentials in a report on the client and again at ingest, before anything is stored or shown | P1 | M | - |
 | [B-03](docs/backlog/B-03-native-client-smoke.md) `[ ]` | A CI check sees a crash from a linked Kotlin/Native consumer arrive on the server, and the production silence is explained | P1 | M | - |
 | [B-02](docs/backlog/B-02-one-failure-one-group.md) `[ ]` | One failure is one group: request data in the message no longer opens a group per variant | P2 | M | - |
 | [B-05](docs/backlog/B-05-breadcrumb-zone-once.md) `[ ]` | addBreadcrumb resolves the time zone once per process, not once per call (#78) | P2 | XS | - |
