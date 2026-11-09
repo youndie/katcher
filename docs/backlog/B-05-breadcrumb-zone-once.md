@@ -1,7 +1,7 @@
 ---
 id: B-05
 title: "addBreadcrumb resolves the time zone once per process, not once per call (#78)"
-status: open
+status: done
 priority: P2
 size: XS
 stage: stage-3-client-cost
@@ -41,3 +41,25 @@ render path. #79 is still open; it closes with this item.
   #78 and #79 are closed by the pull request.
 - Anchors: `client/src/commonMain/kotlin/io/github/youndie/katcher/Katcher.kt`,
   `core/src/commonMain/kotlin/io/github/youndie/katcher/utils/DateUtils.kt`.
+
+## Findings
+
+2026-11-09, done.
+
+- `Katcher.zone` is resolved once, when the object is first touched, and `addBreadcrumb` stamps with
+  it; no `currentSystemDefault()` is left on a per-call path in `client/src/commonMain`.
+- The benchmark is now in the repository: `dev/sample-kotlin-native` mode `breadcrumbs`, the shape #78
+  measured (a loop per subject, batches calibrated to ~150 ms, an empty loop as the floor, medians),
+  linked `release` against the client published to Maven Local.
+- Measured on the Linux build box (Ubuntu 24.04 in WSL2, 20 cores), `linuxX64` release, 200 batches,
+  before and after interleaved over three pairs:
+
+  | | before | after |
+  |---|---|---|
+  | `addBreadcrumb("…")` | 70 710 – 75 817 ns | 1 153 – 1 281 ns |
+  | `addBreadcrumb("…", "ui", mapOf(…))` | 69 698 – 78 259 ns | 1 188 – 1 355 ns |
+
+  The before figure is about twice #78's (35 842 ns on a Xeon VM); nanoseconds belong to the machine.
+  What is left after the fix, about 1.2 µs, is the ring copy of up to 50 breadcrumbs, which this item
+  leaves alone.
+- #79 was already closed (by #80); #78 closes with this item's pull request.

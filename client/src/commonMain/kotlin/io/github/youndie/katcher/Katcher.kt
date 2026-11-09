@@ -42,6 +42,12 @@ public object Katcher {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val _breadcrumbs = atomic(emptyList<Breadcrumb>())
 
+    // Один раз на процесс, как `serverZone` на сервере (#80): Kotlin/Native ищет системный пояс
+    // заново на каждый `currentSystemDefault()`, и это было 88 % цены крошки (#78, B-05). Плата —
+    // процесс, переживший смену пояса устройства, ставит крошкам прежний; для порядка событий перед
+    // крашем, ради которого крошки и пишутся, этого достаточно.
+    private val zone: TimeZone = TimeZone.currentSystemDefault()
+
     // Хранилище и очередь появляются в start(): каталог известен только из конфигурации, а до неё
     // писать всё равно некуда — catch() без start() и раньше ничего не делал.
     private val fileSystem = atomic<KatcherFileSystem?>(null)
@@ -170,7 +176,7 @@ public object Katcher {
     ) {
         val newBreadcrumb =
             Breadcrumb(
-                timestamp = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+                timestamp = Clock.System.now().toLocalDateTime(zone),
                 type = type,
                 message = message,
                 data = data,
