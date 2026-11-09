@@ -16,6 +16,8 @@ Unlike traditional monitoring platforms, Katcher runs as a single self-contained
 with a built-in HTMX UI and an embedded SQLite database.
 No JVM required in production.
 
+What is planned next, with the evidence for each item: [backlog.md](backlog.md) ([docs/](docs/README.md)).
+
 ![Screenshot](/screenshot.png?raw=true "screenshot")
 
 ## Overview

@@ -4,6 +4,13 @@ Lightweight, privacy-friendly crash-reporting service written in Kotlin Multipla
 self-contained Kotlin/Native binary (Ktor native engine + SQLite via sqlx4k, HTMX/Tailwind UI, no JVM
 required in production). Client is a KMP library apps embed to capture and upload crash reports.
 
+## How to start a session
+
+Read [backlog.md](backlog.md) and the item you are taking in `docs/backlog/` — each one carries its
+evidence and its "done when". Long-running research lives in `docs/research/`. After editing an
+item, `make fix` regenerates the index and `make check` is the documentation gate (python, no build,
+fine to run on the Mac).
+
 ## Module layout
 
 - `core/` — shared KMP UI components (HTMX-style server-rendered) and domain interfaces (`AppRepository`,
