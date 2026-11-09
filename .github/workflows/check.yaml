@@ -1,0 +1,92 @@
+# Copy to .github/workflows/check.yaml in the project being documented, and templates/Makefile to
+# the Makefile at its root. The two are one mechanism; neither works without the other.
+#
+# Written for the default layout - `docs/` inside the repository being documented. For a separate
+# documentation repository, see the note on the anchors job.
+#
+# THE VERSION OF THE CHECKS IS WRITTEN HERE AND NOWHERE ELSE: the ref in the `uses:` lines below.
+# CI runs the checks at that ref because the runner resolves it; the Makefile reads the same line
+# and fetches the same ref for a local `make check`. Renovate's github-actions manager bumps it, so a
+# release of the checks arrives as one pull request that moves CI and every laptop together. Both
+# jobs name the same ref, and the Makefile refuses to guess when they do not.
+#
+# Do not replace the action with copied scripts to save a network fetch. That is how one portfolio
+# came to hold 18 copies of one script in three versions, eleven of them missing a guard that had
+# been fixed upstream for weeks.
+
+name: check
+
+# **No path filters.** A filter saves seconds and buys red default branches. Two changes that are
+# each harmless alone disagree once merged; a generated index diverges from its sources when
+# something outside the listed paths moves; and a document at the root of the tree is exactly the
+# one nobody remembers to add to the list, so the check that would have caught it never runs.
+# Sixty documents are checked in seconds. There is nothing here worth economising on.
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 6 * * 1"          # Monday morning, for the anchors job below
+  workflow_dispatch:
+
+jobs:
+  # The gate. The action runs `make check` - exactly the target a contributor runs, so that "green
+  # here, red there" cannot become the normal state of affairs - and around it the two checks that
+  # depend on the event: on a pull request, backlog item numbers against the base branch, BEFORE the
+  # gate; on a push to the default branch, `status: draft` as an error. Why each sits where it does,
+  # and when the first is only a backstop, is written next to the step in the action's action.yml.
+  #
+  # Checks of the project's own belong in the Makefile under `gate`, not as steps here: then a
+  # contributor runs them too. Steps that need a toolchain the gate should not (a JDK for a
+  # formatter) go after this one, or in a job of their own.
+  check:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: youndie/docs-bootstrap@v0.4.1
+
+  # Separate from the gate, and on a schedule rather than on a pull request, because an anchor rots
+  # when somebody refactors a **different** repository. A pull request here is the least likely
+  # moment for one to break, and running it there trains people to ignore a red build they did not
+  # cause. It also does not block: a path quoted *as obsolete* is indistinguishable from a live one
+  # by machine, so the report is read by a person.
+  #
+  # To make it block, set `ANCHORS_ARGS ?= --check` in the Makefile rather than here: `make check`
+  # in the job above then fails on a path that resolves to nothing, in the pull request that broke
+  # it, and this job keeps running the same report on the default branch. Do it once the stale list
+  # is at zero and every path outside this repository is an address (SPEC 4.1), which nothing
+  # elsewhere can move - see check.mk.
+  anchors:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # The code lives in this checkout, so its parent is a directory whose one subdirectory is
+      # this repository - which is exactly what REPOS (`..` by default) expects.
+      - uses: youndie/docs-bootstrap@v0.4.1
+        with:
+          target: report
+
+      # For a separate documentation repository, put shallow clones of the services next to the
+      # step above and point REPOS at them. History is not needed - only the file tree - and a
+      # repository that cannot be cloned is a warning rather than a failure, because its anchors are
+      # simply unchecked.
+      #
+      # `secrets.GITHUB_TOKEN` is scoped to the repository running the workflow. That is enough for
+      # public services; a private one needs a token that can read it, and with the default one it
+      # will take the warning branch every week without ever saying why.
+      #
+      #   - run: |
+      #       mkdir -p repos && cd repos
+      #       for r in service-one service-two; do
+      #         git clone --depth 1 --filter=blob:none --no-checkout \
+      #           "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository_owner }}/$r.git" \
+      #           || echo "::warning::$r is unreachable - its anchors were not checked"
+      #       done
+      #     env:
+      #       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   - uses: youndie/docs-bootstrap@v0.4.1
+      #     with:
+      #       target: report REPOS=repos
