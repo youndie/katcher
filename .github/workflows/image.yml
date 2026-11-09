@@ -10,7 +10,9 @@ name: Image
 # at `/` meets the `401` and reports success about a server it never entered. That distinction is
 # not hypothetical: it is what a `scratch` base image passed and what it failed (#55).
 #
-# Path-filtered because it costs about ten minutes, and a change to the client cannot affect it.
+# Path-filtered because it costs about ten minutes. The client is in the filter since B-03: the job
+# also links the native sample against the client as it publishes and requires its crashes on the
+# server, so a client change can fail it.
 
 # The two lists are the same list, written twice: GitHub's workflow parser does not resolve YAML
 # anchors, and one that silently expands to nothing would turn the filter into "never run".
@@ -22,6 +24,9 @@ on:
       - shared/**
       - dev/retrace/**
       - dev/image-smoke.sh
+      - client/**
+      - dev/sample-kotlin-native/**
+      - dev/native-client-smoke.sh
       - gradle/**
       - build.gradle.kts
       - settings.gradle.kts
@@ -36,6 +41,9 @@ on:
       - shared/**
       - dev/retrace/**
       - dev/image-smoke.sh
+      - client/**
+      - dev/sample-kotlin-native/**
+      - dev/native-client-smoke.sh
       - gradle/**
       - build.gradle.kts
       - settings.gradle.kts
@@ -164,6 +172,37 @@ jobs:
         run: |
           docker run --detach --name katcher-ci --publish 8080:8080 katcher:ci
           ./dev/image-smoke.sh http://localhost:8080
+
+      # A NATIVE CONSUMER'S CRASH ARRIVES (B-03). The step above posts with `curl`; nothing exercised
+      # the client's half — a linked binary sending from its own process — and native consumers went
+      # silent with nothing here able to say whether that was quiet or broken. The sample is linked
+      # against the client AS IT PUBLISHES: `publishToMavenLocal` of this commit, the sample resolving
+      # the coordinate, because a project dependency would hide a broken publication. Both in one
+      # container, so Maven Local needs no mount; the same compiler as the server, so `~/.konan`
+      # already holds it. A dynamically linked debug binary needs no `g++`.
+      #
+      # Linked twice: with CIO, and with no engine at all, which is the negative control — the client
+      # ships no engine, and such a binary must refuse at `start` rather than retry in silence.
+      - name: A native consumer's crashes arrive
+        run: |
+          docker run --rm \
+            --volume "$PWD":/app --workdir /app \
+            --volume "$HOME/.gradle":/home/gradle/.gradle \
+            --volume "$HOME/.konan":/root/.konan \
+            --env KOTLIN_NATIVE_RT \
+            gradle:9.8.0-jdk25-noble \
+            sh -c 'set -e
+                   flags="-Pkotlin.native.version=$KOTLIN_NATIVE_RT -PVERSION=0.0.0-ci --no-daemon --console=plain"
+                   gradle :shared:publishKotlinMultiplatformPublicationToMavenLocal :shared:publishLinuxX64PublicationToMavenLocal \
+                          :client:publishKotlinMultiplatformPublicationToMavenLocal :client:publishLinuxX64PublicationToMavenLocal $flags
+                   out=build/native-sample; mkdir -p $out
+                   kexe=dev/sample-kotlin-native/build/bin/native/debugExecutable/sample-kotlin-native.kexe
+                   gradle :dev:sample-kotlin-native:linkDebugExecutableNative -Pkatcher.sample.client=0.0.0-ci $flags
+                   cp $kexe $out/sample.kexe
+                   gradle :dev:sample-kotlin-native:linkDebugExecutableNative -Pkatcher.sample.client=0.0.0-ci -Pkatcher.sample.engine=none $flags
+                   cp $kexe $out/bare.kexe'
+          sudo chown -R "$(id -u):$(id -g)" "$HOME/.gradle" "$HOME/.konan" build dev/sample-kotlin-native/build
+          ./dev/native-client-smoke.sh http://localhost:8080 build/native-sample/sample.kexe build/native-sample/bare.kexe
 
       # The shutdown is the half of the lifecycle nobody watches, and on Kotlin/Native it is the
       # half that runs its steps in the opposite order from the JVM. A transcript with the stages in

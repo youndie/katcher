@@ -1,7 +1,7 @@
 ---
 id: B-03
 title: "A CI check sees a crash from a linked Kotlin/Native consumer arrive on the server, and the production silence is explained"
-status: open
+status: question
 priority: P1
 size: M
 stage: stage-1-delivery
@@ -72,3 +72,72 @@ none checked against production — **hypotheses**, in the order they are cheape
   `dev/image-smoke.sh`, `.github/workflows/image.yml`, `client/build.gradle.kts`,
   `client/src/commonMain/kotlin/io/github/youndie/katcher/Katcher.kt`,
   `client/src/nativeMain/kotlin/io/github/youndie/katcher/NativeKatcherFileSystem.kt`.
+
+## Findings
+
+2026-11-09.
+
+**The CI half is done.** The `Image` workflow's step "A native consumer's crashes arrive" publishes
+`:shared` and `:client` (the `kotlinMultiplatform` and `linuxX64` publications) to Maven Local in the
+builder container, links `dev/sample-kotlin-native` against the coordinate
+(`-Pkatcher.sample.client=0.0.0-ci`) twice — with `ktor-client-cio`, and with no engine
+(`-Pkatcher.sample.engine=none`) — and runs `dev/native-client-smoke.sh` against the `katcher:ci`
+container after `image-smoke.sh`. The script creates an app of its own, runs `catch` and `crash` (each
+with its own cache directory, `crash` with a 10 s grace), and requires both groups to render; then
+requires the engine-less binary to print `No Ktor HTTP client engine is linked` and store nothing.
+`client/**`, `dev/sample-kotlin-native/**` and the script joined both path lists. Rehearsed on the Linux
+build box against the native server: groups 2 and 3 arrived, the engine-less binary refused.
+
+**The no-engine run was not silent — it was worse.** With the client of `main` (`0.0.0-prefix` in the
+rehearsal) and no engine, on Kotlin/Native:
+
+- `start` succeeded and printed `Storage ready`; `catch` saved the report;
+- the first upload built the lazy `HttpClient`, and Ktor's engine lookup failed inside a file
+  initializer, so what reached `sendReport` was `FileFailedToInitializeException` — an `Error`, not an
+  `Exception`. `catch (e: Exception)` did not take it, the uploader coroutine died uncaught, and the
+  process **aborted** (`SIGABRT`, core dumped), leaving two reports on disk: the handled one and the
+  abort itself.
+
+So hypothesis 1, on native, is not a reporter that retries in silence: it is a server that dies at its
+first reported error. The fix: `start` builds the `HttpClient` at once, under `runCatching` (which takes
+an `Error` too), and on failure prints the root cause and returns without a config — the same contract
+as the storage check. `StartWithoutEngineTest` holds it on every client target (the client's own test
+classpath links no engine), and the CI run holds it on a linked binary built from the publication.
+
+**The production answer is not settled; it is the question below.** One native production consumer
+was read in its repository (build, image, chart), not in production:
+
+- hypothesis 1 is out for it: it links `ktor-client-curl` (CIO on native has no TLS, its build says);
+- hypothesis 2 is out for it: the image is `ubuntu:24.04` with no `USER` and no `WORKDIR`, the
+  deployment sets no `securityContext`, so the default `.katcher_cache` lands in `/` of a writable root
+  owned by the process's own user;
+- hypothesis 3 holds for it — `crashUploadGrace` and `cacheDir` are unset — but explains fatal crashes
+  only.
+
+What is left is either "quiet" (no handled error reached `Katcher.catch` since 29.09) or a delivery that
+fails where the code cannot be read: the consumer runs with `isDebug = false`, and that hides every
+`Transmission failed` and `Server rejected` line — a TLS failure, or a `401` for a key that is no longer
+alive, would retry on disk in silence. Nothing on the server separates the two: a refused post leaves no
+row, and the MCP listing names apps without their last report.
+
+Also found: a stale native compiler cache. On a machine that had linked the sample against the project
+`:client` before, linking it against the published coordinate reused
+`build/kotlin-native-ic-cache/.../io.github.youndie.katcher:client-per-file-cache` — the cache is keyed
+by the library's unique name, which the project and the publication share — and the binary carried the
+old client. A fresh runner does not have that directory; on a developer machine, delete it before
+comparing the two.
+
+## Question
+
+Which hypothesis explains the native production silence needs one observation from production, and
+production is the owner's:
+
+1. **A deliberate handled crash** from the native production consumer (any route or command that
+   reaches `Katcher.catch`), then look for its group on the stand. Arrives — the answer is "quiet", and
+   the item closes. Does not arrive — then:
+2. **The same consumer with `isDebug = true`** for one deploy: its log then names the failure
+   (`Transmission failed: …` or `Server rejected: 401`), which is the consumer-side fix to write into the
+   README's Kotlin/Native section.
+
+Separately, whatever the answer, a native server consumer wants `cacheDir` on a volume and a
+`crashUploadGrace` for its fatal crashes (README, "Shutting down"). Decides: the owner.
