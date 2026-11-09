@@ -173,6 +173,15 @@ class ProcessReportUseCase(
          */
         private val opaqueRegex = Regex("""[a-z0-9+/=]{16,}""")
 
+        /**
+         * A request target a server printed — `of /search?q=%zz` — path and query as one token:
+         * both are the caller's input, not the failure. [pathRegex] stops at `?`, [urlRegex] needs
+         * a dotted host and [opaqueRegex] reads a long path as an id, so before this every distinct
+         * malformed query was a group of its own (B-02). It needs a `?` followed by text, so a
+         * question mark that ends a sentence is left alone, and it runs before [opaqueRegex].
+         */
+        private val targetRegex = Regex("""(?:/[^\s?"'<>]*)?\?[^\s"'<>]+""")
+
         private val numberRegex = Regex("""\b\d+(\.\d+)?(e[-+]?\d+)?\b""")
 
         private val whitespaceRegex = Regex("""\s+""")
@@ -192,6 +201,7 @@ class ProcessReportUseCase(
                 .replace(ipRegex, "<IP>")
                 .replace(hexRegex, "<HEX>")
                 .replace(urlRegex, "<URL>")
+                .replace(targetRegex, "<TARGET>")
                 .replace(opaqueRegex) { match ->
                     if (match.value.any(Char::isDigit)) "<TOKEN>" else match.value
                 }.replace(pathRegex, "<PATH>")

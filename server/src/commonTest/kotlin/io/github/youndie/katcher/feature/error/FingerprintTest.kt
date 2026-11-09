@@ -142,4 +142,47 @@ class FingerprintTest {
             generateFingerprint("Read timed out after 2000 ms while calling the billing service"),
         )
     }
+
+    /** What a Ktor server throws when a client sends a query it cannot decode (B-02). */
+    private fun badQuery(target: String) =
+        """
+        |io.ktor.server.plugins.BadRequestException: Url decode failed for query parameters of $target
+        |	at io.ktor.server.request.PipelineRequestKt.encodeParameters(PipelineRequest.kt:132)
+        |	at io.ktor.server.cio.CIOApplicationRequest.getQueryParameters(CIOApplicationRequest.kt:29)
+        |	at io.ktor.server.engine.BaseApplicationCall.getParameters(BaseApplicationCall.kt:18)
+        |	at io.ktor.server.routing.RoutingPipelineCall.getParameters(RoutingPipelineCall.kt:56)
+        |	at io.ktor.server.routing.RoutingRoot.executeResult(RoutingRoot.kt:124)
+        """.trimMargin()
+
+    @Test
+    fun `the request path and query of a bad request do not split the group`() {
+        val fingerprints =
+            listOf(
+                "/search?q=%zz",
+                "/search?q=100%&page=2",
+                "/api/v1/items/42?filter=%E0%A4%A",
+                "/?utm_source=%GG",
+            ).map { generateFingerprint(badQuery(it)) }
+
+        assertEquals(1, fingerprints.toSet().size, "one malformed query, one group: $fingerprints")
+    }
+
+    @Test
+    fun `a different bad request stays a separate group`() {
+        val undecodableQuery = badQuery("/search?q=%zz")
+        val missingParameter =
+            undecodableQuery.replace(
+                "Url decode failed for query parameters of /search?q=%zz",
+                "Request parameter id is missing",
+            )
+
+        assertNotEquals(generateFingerprint(undecodableQuery), generateFingerprint(missingParameter))
+    }
+
+    @Test
+    fun `a question mark that ends a sentence is not a query`() {
+        fun asked(subject: String) = "java.lang.IllegalStateException: is the $subject configured?\n$driverFrames"
+
+        assertNotEquals(generateFingerprint(asked("pricing service")), generateFingerprint(asked("billing service")))
+    }
 }
