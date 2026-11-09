@@ -1,7 +1,7 @@
 ---
 id: B-01
 title: "Mask credentials in a report on the client and again at ingest, before anything is stored or shown"
-status: wip
+status: done
 priority: P1
 size: M
 stage: stage-2-hygiene
@@ -71,3 +71,36 @@ message, a JWT. Breadcrumbs (`message`, `data`) and context values travel the sa
   `server/src/commonMain/kotlin/io/github/youndie/katcher/mcp/CrashTrust.kt`,
   `server/src/commonMain/kotlin/io/github/youndie/katcher/db/Migrate.kt`,
   `client/src/commonTest/kotlin/io/github/youndie/katcher/InMemoryKatcherFileSystem.kt`.
+
+## Findings
+
+2026-11-09, done.
+
+- `CredentialMask` and `CreateReportParams.maskCredentials()` live in
+  `shared/src/commonMain/kotlin/io/github/youndie/katcher/feature/report/CredentialMask.kt`. The
+  client masks in `saveCrash` (`Katcher.kt`), which `Katcher.record` calls for every caught and fatal
+  crash; ingest masks at the top of `ProcessReportUseCase.process`, before symbolication, the
+  fingerprint and the title.
+- The parameter shape also covers a data class's `toString` (`Config(password=…, apiKey=…)`) — the
+  other common way a client library prints a credential — and stops at `,` `)` so the next field
+  survives. A parameter name counts as a credential by its last word (`refresh_token`,
+  `X-Amz-Signature`, `apiKey`), so `monkey` and `tokens_left` do not.
+- Migrations can now be code as well as SQL (`Migrate.kt`). V8 is `remaskStoredCredentials`
+  (`server/src/commonMain/kotlin/io/github/youndie/katcher/db/RemaskCredentials.kt`): reports and
+  groups are read in pages of 500 by id and only rows the mask changes are written.
+- **Beyond the letter of the AC, needed for its spirit:** URL userinfo moves the fingerprint
+  (`normalize` reads `//user` as a path, `//<redacted>` as a shorter one), so a group stored before
+  this would have been split by the next report of its own failure. V8 recomputes the fingerprint of
+  every group whose title it changed, from its latest (now masked) report; where another group of the
+  app already holds that fingerprint the old one is kept and nothing is merged. A bot-API URL does not
+  move it — `normalize` turns the whole URL into `<URL>` either way.
+- Running V8 on the production database happens on the next deploy of the server, which is the
+  owner's call; the secret already shown there is to be rotated by its owner regardless.
+
+Tests, each seen failing with its half of the implementation reverted:
+
+- `CredentialMaskTest` (`:shared`, JVM and linuxX64) — every shape, idempotence, a trace with no
+  credential unchanged.
+- `SaveCrashTest` (`:client`, JVM and linuxX64) — AC 2.
+- `CredentialMaskingTest` (`:server`, JVM and native, against SQLite) — AC 1, AC 3, AC 4, and the
+  re-masked group receiving the next report.
