@@ -50,6 +50,10 @@ public object Katcher {
     public val breadcrumbs: List<Breadcrumb>
         get() = _breadcrumbs.value
 
+    /** Whether the last [start] took: false before it, and after one that refused. */
+    internal val isStarted: Boolean
+        get() = fileSystem.value != null
+
     internal val json =
         Json {
             prettyPrint = true
@@ -57,7 +61,12 @@ public object Katcher {
             isLenient = true
         }
 
-    private val httpClient by lazy {
+    // Построен в start(), а не лениво при первой отправке: без движка Ktor конструктор бросает, и
+    // при ленивой сборке это случалось внутри sendReport — отчёт оставался на диске и повторялся
+    // вечно, а причину печатал только isDebug (B-03).
+    private val client = atomic<HttpClient?>(null)
+
+    private fun createHttpClient(): HttpClient =
         HttpClient {
             install(ContentNegotiation) {
                 json(json)
@@ -78,7 +87,6 @@ public object Katcher {
                 url { takeFrom(config.remoteHost) }
             }
         }
-    }
 
     public fun start(configure: KatcherConfig.() -> Unit) {
         val newConfig = KatcherConfig().apply(configure)
@@ -90,6 +98,22 @@ public object Katcher {
         // Каталог отчётов проверяется здесь, а не при первом краше. Проверка при краше попадает
         // в catch внутри `catch()`, печатает строчку и не сигналит выгрузку: снаружи это выглядит
         // как настроенный репортер, которому нечего отправлять.
+        // Движок — дело потребителя: клиент своего не тянет, чтобы не навязывать CIO тому, кто
+        // уже слинковал curl или Darwin. Не слинковал ни одного — отправлять нечем, и это должно
+        // быть сказано сейчас, одной строкой, а не никогда.
+        val http =
+            // runCatching, не try/catch(Exception): на Kotlin/Native отказ приходит как
+            // FileFailedToInitializeException — это Error, и до B-03 он пролетал мимо catch в
+            // sendReport и ронял процесс при первой отправке. Сверху у него безликое сообщение,
+            // причина — в самом низу цепочки.
+            client.value ?: runCatching { createHttpClient() }.getOrElse { failure ->
+                val reason = generateSequence(failure) { it.cause }.last().message
+                println(
+                    "$LOGO No Ktor HTTP client engine is linked ($reason). Add one — " +
+                        "ktor-client-cio, -curl, -darwin or -okhttp. Katcher is not started.",
+                )
+                return
+            }
         val storage = createFileSystem(newConfig.cacheDir)
         val prepared = runCatching { storage.prepare() }
         prepared.exceptionOrNull()?.let { failure ->
@@ -98,6 +122,7 @@ public object Katcher {
         }
 
         config = newConfig
+        client.value = http
         fileSystem.value = storage
         val queue = ReportUploader(storage, ::debugLog, ::sendReport)
         uploader.value = queue
@@ -208,7 +233,7 @@ public object Katcher {
     private suspend fun sendReport(params: CreateReportParams): Boolean =
         try {
             val response: HttpResponse =
-                httpClient.post("api/reports") {
+                (client.value ?: return false).post("api/reports") {
                     setBody(params)
                 }
             if (response.status.isSuccess()) {

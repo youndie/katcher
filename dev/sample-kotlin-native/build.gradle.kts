@@ -10,6 +10,26 @@ kotlin {
     explicitApi = null
 }
 
+// THE CLIENT AS IT PUBLISHES, WHEN ASKED. `-Pkatcher.sample.client=<version>` resolves the coordinate
+// from Maven Local instead of the project, which is what the `Image` workflow does after
+// `publishToMavenLocal` of the same commit (B-03): a project dependency would hide a broken
+// publication, and the publication is the half a consumer gets.
+val publishedClient: String? = providers.gradleProperty("katcher.sample.client").orNull
+
+// THE NEGATIVE CONTROL. `-Pkatcher.sample.engine=none` links no Ktor engine, the way a consumer that
+// forgot one does; the client ships none of its own. The workflow requires such a binary to refuse at
+// `start`, saying why, rather than to keep a report on disk and retry it in silence.
+val linkEngine: Boolean = providers.gradleProperty("katcher.sample.engine").orNull != "none"
+
+if (publishedClient != null) {
+    repositories {
+        mavenLocal {
+            content { includeGroup("io.github.youndie.katcher") }
+        }
+        mavenCentral()
+    }
+}
+
 kotlin {
     val hostOs = System.getProperty("os.name")
     val arch = System.getProperty("os.arch")
@@ -34,9 +54,13 @@ kotlin {
     sourceSets {
         named("nativeMain") {
             dependencies {
-                implementation(projects.client)
+                if (publishedClient == null) {
+                    implementation(projects.client)
+                } else {
+                    implementation("io.github.youndie.katcher:client:$publishedClient")
+                }
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(ktorLibs.client.cio)
+                if (linkEngine) implementation(ktorLibs.client.cio)
             }
         }
     }

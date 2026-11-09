@@ -316,7 +316,11 @@ The client publishes for JVM, Android, `linuxX64`, `linuxArm64`, `macosX64`, `ma
 
 The client brings no HTTP engine of its own: pick the one your platform has. `ktor-client-cio` works on JVM
 and on the Linux targets, `ktor-client-okhttp` on Android, `ktor-client-darwin` on iOS and macOS. Without an
-engine on the classpath `Katcher.start()` builds fine and then fails at the first upload.
+engine `Katcher.start { }` prints `No Ktor HTTP client engine is linked` and does not start. Before B-03 it
+started, and every report then stayed on disk and was retried for ever, with the reason printed only under
+`isDebug` — a Kotlin/Native server that links no client engine of its own was exactly such a host. The
+`Image` workflow links the native sample with and without an engine against the published client and
+requires both outcomes.
 
 Where the reports wait for their upload differs by platform, and it is always a directory the application
 can write to: `Context.cacheDir/katcher_cache` on Android, `$HOME/Library/Caches/katcher_cache` on iOS and
