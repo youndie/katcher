@@ -1,7 +1,7 @@
 ---
 id: B-02
 title: "One failure is one group: request data in the message no longer opens a group per variant"
-status: open
+status: wip
 priority: P2
 size: M
 stage: stage-2-hygiene
