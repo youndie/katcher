@@ -1,7 +1,7 @@
 ---
 id: B-04
 title: "A report carries the trace id of the request that raised it, and the crash links to that trace in tracy"
-status: wip
+status: done
 priority: P3
 size: M
 stage: stage-4-correlation
@@ -56,3 +56,31 @@ tracy little and needs changes in the other two repositories
   `server/src/commonMain/kotlin/io/github/youndie/katcher/mcp/CrashMetadata.kt`,
   `server/src/commonMain/kotlin/io/github/youndie/katcher/mcp/KatcherMcpServer.kt`,
   `README.md`.
+
+## Findings
+
+2026-11-09, done.
+
+- `TRACE_ID_KEY` (`"trace.id"`) and `isTraceId` live in `:shared`
+  (`shared/src/commonMain/kotlin/io/github/youndie/katcher/feature/report/TraceId.kt`): 32 lowercase
+  hex, the all-zero W3C "invalid" id refused. One definition for the consumer that writes the key and the
+  server that reads it.
+- The template is `ServerConfig.traceUrlTemplate`, from `KATCHER_TRACE_URL` on both targets. The module
+  stores it as an application attribute (`installTraceLinks`,
+  `core/src/commonMain/kotlin/io/github/youndie/katcher/feature/report/TraceLinks.kt`) rather than
+  threading it through every renderer: the context block is drawn from the report page and from the
+  expanded row of the group page, and both already have the call. A template that is not an `http(s)` URL
+  with `{traceId}` stops the start. Only a value of the W3C shape is put into a URL — the value is the
+  reporting application's.
+- `reportContextBlock` renders `trace.id` as a link (new tab, `noopener noreferrer`) when both hold, and
+  as text otherwise. `get_crash_metadata` carries `traceId` only when `isTraceId` holds; the payload does
+  not write the default, so the key is absent rather than `null` otherwise.
+- `TraceLinkTest` drives the whole module through Ktor's test engine with a crash ingested by the use
+  case: the report page with and without the template, and `get_crash_metadata` over `/mcp` with a valid
+  id and with one carrying markup. The link and the shape check were each removed once and the matching
+  tests went red. `TraceIdTest` in `:shared` holds the shape.
+- README: "From a Ktor server: the crash and its trace", the `StatusPages` handler with tracy's
+  `TracyTraceContext`.
+- Not done here: the chart does not expose `KATCHER_TRACE_URL` yet (the deployment's values live in the
+  infra repository); a deployment sets it as an extra env. The reverse link and metrik stay with the
+  other repositories' halves of M-90.
