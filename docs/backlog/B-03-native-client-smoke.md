@@ -1,7 +1,7 @@
 ---
 id: B-03
 title: "A CI check sees a crash from a linked Kotlin/Native consumer arrive on the server, and the production silence is explained"
-status: open
+status: wip
 priority: P1
 size: M
 stage: stage-1-delivery
