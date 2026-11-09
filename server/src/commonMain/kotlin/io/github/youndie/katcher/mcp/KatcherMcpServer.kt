@@ -7,6 +7,7 @@ import io.github.youndie.katcher.feature.report.ErrorGroupSort
 import io.github.youndie.katcher.feature.report.ErrorGroupSortOrder
 import io.github.youndie.katcher.feature.report.Report
 import io.github.youndie.katcher.feature.report.ReportRepository
+import io.github.youndie.katcher.feature.report.TRACE_ID_KEY
 import io.github.youndie.katcher.utils.human
 import io.modelcontextprotocol.kotlin.sdk.server.Server
 import io.modelcontextprotocol.kotlin.sdk.types.CallToolRequest
@@ -355,6 +356,7 @@ class KatcherMcpServer(
                 stacktrace = latest.stacktrace,
                 contextKeys = latest.context.orEmpty().keys,
                 breadcrumbCount = latest.breadcrumbs.orEmpty().size,
+                traceId = latest.context?.get(TRACE_ID_KEY),
             )
 
         val payload =
@@ -365,6 +367,7 @@ class KatcherMcpServer(
                 frameCount = metadata.frameCount,
                 breadcrumbCount = metadata.breadcrumbCount,
                 contextKeys = metadata.contextKeys,
+                traceId = metadata.traceId,
                 occurrences = group.occurrences,
                 firstSeen = group.firstSeen.human(),
                 lastSeen = group.lastSeen.human(),
@@ -635,6 +638,8 @@ private data class MetadataPayload(
     val release: String?,
     val environment: String?,
     val nextStep: String,
+    /** Left out when absent: the default is not written, so the key appears only with a real id. */
+    val traceId: String? = null,
 )
 
 @Serializable

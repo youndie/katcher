@@ -34,6 +34,12 @@ const val METRIK_SERVICE = "METRIK_SERVICE"
 /** Release, so metrik can draw deploy markers on the charts. Optional. */
 const val METRIK_RELEASE = "METRIK_RELEASE"
 
+/**
+ * Where a report's `trace.id` opens in the tracer, `{traceId}` standing for the id. Unset leaves the id
+ * as text; a value without the placeholder stops the start.
+ */
+const val KATCHER_TRACE_URL = "KATCHER_TRACE_URL"
+
 expect fun getServerConfig(): ServerConfig
 
 /**

@@ -18,6 +18,7 @@ actual fun getServerConfig(): ServerConfig =
         metrikKey = env(METRIK_KEY),
         metrikService = env(METRIK_SERVICE) ?: "katcher",
         metrikRelease = env(METRIK_RELEASE),
+        traceUrlTemplate = env(KATCHER_TRACE_URL),
     )
 
 private fun env(name: String): String? =

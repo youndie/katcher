@@ -1,8 +1,12 @@
 package io.github.youndie.katcher.feature.report.ui
 
 import io.github.youndie.katcher.feature.report.Report
+import io.github.youndie.katcher.feature.report.TRACE_ID_KEY
+import io.github.youndie.katcher.feature.report.traceHref
 import io.github.youndie.katcher.utils.human
+import io.ktor.server.application.ApplicationCall
 import kotlinx.html.FlowContent
+import kotlinx.html.a
 import kotlinx.html.div
 import kotlinx.html.span
 
@@ -13,6 +17,7 @@ import kotlinx.html.span
  * will paste half of it somewhere else, so all of it is monospace and none of it is
  * truncated — a context value cut at the edge is the one that mattered.
  */
+context(call: ApplicationCall)
 fun FlowContent.reportContextBlock(report: Report) {
     val context = report.context.orEmpty()
 
@@ -28,7 +33,18 @@ fun FlowContent.reportContextBlock(report: Report) {
                 context.entries.sortedBy { entry -> entry.key }.forEach { (key, value) ->
                     div(classes = "flex items-start gap-4 px-4 py-2 text-xs font-mono") {
                         span(classes = "w-40 flex-none text-muted-foreground break-all") { +key }
-                        span(classes = "flex-1 min-w-0 break-all") { +value }
+                        val trace = if (key == TRACE_ID_KEY) traceHref(value) else null
+                        if (trace == null) {
+                            span(classes = "flex-1 min-w-0 break-all") { +value }
+                        } else {
+                            // The one context value katcher knows the meaning of: the request that
+                            // raised the crash, one hop away in the tracer (B-04).
+                            a(href = trace, classes = "flex-1 min-w-0 break-all underline") {
+                                target = "_blank"
+                                rel = "noopener noreferrer"
+                                +value
+                            }
+                        }
                     }
                 }
             }

@@ -24,6 +24,7 @@ import io.github.youndie.katcher.feature.error.data.ErrorGroupViewedRepositoryIm
 import io.github.youndie.katcher.feature.error.launchReportQueueService
 import io.github.youndie.katcher.feature.report.ReportRepository
 import io.github.youndie.katcher.feature.report.data.ReportRepositoryImpl
+import io.github.youndie.katcher.feature.report.installTraceLinks
 import io.github.youndie.katcher.feature.symbolication.AndroidR8Symbolicator
 import io.github.youndie.katcher.feature.symbolication.MappingType
 import io.github.youndie.katcher.feature.symbolication.SymbolMapRepository
@@ -84,6 +85,7 @@ suspend fun Application.module(
 
     common()
     initDi(db, config)
+    installTraceLinks(config.traceUrlTemplate)
     initAuth()
     configureRouting()
     installMcp(config, KatcherMcpServer(dependencies.resolve(), dependencies.resolve(), dependencies.resolve()))
