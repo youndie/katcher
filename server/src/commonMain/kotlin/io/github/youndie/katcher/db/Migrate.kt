@@ -158,6 +158,9 @@ private val allMigrations: List<Migration> =
         // Credentials stored before ingest masked them (B-01). Masking new reports does not
         // unpublish the old ones; this makes the pages stop showing them, nothing more.
         { remaskStoredCredentials() },
+        // A request's path and query no longer reach the fingerprint (B-02); every stored group is
+        // brought to the fingerprint ingest now computes, and the groups that then coincide merge.
+        { refingerprintGroups() },
     )
 
 suspend fun ISQLite.migrateDb() {

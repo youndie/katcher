@@ -1,7 +1,7 @@
 ---
 id: B-02
 title: "One failure is one group: request data in the message no longer opens a group per variant"
-status: open
+status: question
 priority: P2
 size: M
 stage: stage-2-hygiene
@@ -61,3 +61,54 @@ is to read those groups' metadata and first-seen dates on the stand and say whic
   `server/src/commonTest/kotlin/io/github/youndie/katcher/feature/error/FingerprintTest.kt`,
   `core/src/commonMain/kotlin/io/github/youndie/katcher/feature/error/ErrorGroupRepository.kt`,
   `server/src/commonMain/kotlin/io/github/youndie/katcher/db/Migrate.kt`.
+
+## Findings
+
+2026-11-09.
+
+**The request-target half is done.** `normalize` now replaces a request target — an optional path
+and a `?` followed by text — with one `<TARGET>` token, after `urlRegex` and before `opaqueRegex`. The
+second ordering matters as much as the first: a path of sixteen or more letters, digits and slashes
+(`/api/v1/items/42`) was read by `opaqueRegex` as an id and became `<TOKEN>`, so even with the query
+handled, a long path still split the group. A `?` that ends a sentence (`configured?`) is followed by
+whitespace and is left alone.
+
+- `FingerprintTest`: four hand-written `BadRequestException` messages with different paths and queries
+  give one fingerprint; a different bad request stays apart; a sentence's question mark is not a query.
+  Every earlier case is green. The fixtures are written from the frame list `get_crash_metadata`
+  returned for Haul's group 224 (the frames, not the text).
+- **Migration V9**, `refingerprintGroups()` (`server/src/commonMain/kotlin/io/github/youndie/katcher/db/RefingerprintGroups.kt`):
+  every group re-keyed from its latest report; groups of one app that then share a fingerprint merge
+  into the oldest — reports moved, occurrences summed, first and last sightings widened, resolved only
+  if both were, a fix link and a regression kept from whichever had one, the viewed marks of both
+  dropped. `RefingerprintGroupsTest`: two legacy groups of one bad request end as one with all five
+  reports, an unrelated group keeps its own; a second run changes nothing; the next report of the
+  merged failure joins the merged group. Each was seen failing with its half reverted.
+- V9 runs on the next deploy of the server, like V8 (B-01) — the owner's call. On the stand it should
+  fold Haul's groups 224–227 into 224.
+
+**Deliberately not done: quoted literals after `of` / `for` / `with key:`.** The decision above names
+them, but the only evidence for them is the `IndexNotFound` split, whose cause is not known (below).
+Normalising `with key: { accountId: 1 }` would also merge a missing index on one key with a missing
+index on another — arguably two different fixes — and that should be decided on the evidence, not ahead
+of it.
+
+**The `IndexNotFound` split was not investigated.** Its groups belong to a private production
+application, and this loop does not open a private application's groups. Two of the item's hypotheses
+are now cheap to tell apart, without anyone reading titles:
+
+- *groups keyed by an older algorithm* (before `c90e628`, 2026-08-19): V9 re-keys every group from its
+  latest report, so after the next deploy these merge on their own;
+- *the index key or collection in the message*: these survive V9 as separate groups, each naming a
+  different key.
+
+## Question
+
+After V9 is deployed: do the seven `IndexNotFound` groups of that application fold into one?
+
+1. **Yes** — the cause was groups keyed before `c90e628`; write that here and close the item.
+2. **No, and they differ only by the index key or collection** — decide whether a missing index on a
+   different key is the same failure. If it is, a follow-up item normalises the quoted literal after
+   `with key:` (with a hand-written test); if not, they are different failures and the item closes as is.
+
+Decides: the owner, who can look at that application's groups.
