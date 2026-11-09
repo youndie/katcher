@@ -117,6 +117,16 @@ Migration V8 (`db/RemaskCredentials.kt`) re-masked what was stored before (B-01)
 fingerprint of each group whose title it changed. A secret that reached the store is still leaked and is
 rotated by its owner; the migration only stops the pages and the MCP listing showing it.
 
+## A fingerprint change is a migration
+
+A group is found by `(app_id, fingerprint)` and nothing else, so changing
+`ProcessReportUseCase.generateFingerprint` or `normalize` alone makes the next report of every stored
+group open a new one. Such a change ships with a migration step that calls `refingerprintGroups()`
+(`db/RefingerprintGroups.kt`, V9 since B-02): every group is re-keyed from its latest report, and groups
+of one app that then coincide merge into the oldest — reports moved, occurrences summed, resolved only if
+all were. `FingerprintTest`'s fixtures are written by hand; a trace copied from a live app names its
+internals, and this repository is public.
+
 ## Client crash-capture model (important, non-obvious)
 
 `Katcher.catch()` (`client/src/commonMain/kotlin/io/github/youndie/katcher/Katcher.kt`) is **not fully
