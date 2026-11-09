@@ -1,7 +1,7 @@
 ---
 id: B-04
 title: "A report carries the trace id of the request that raised it, and the crash links to that trace in tracy"
-status: open
+status: wip
 priority: P3
 size: M
 stage: stage-4-correlation
