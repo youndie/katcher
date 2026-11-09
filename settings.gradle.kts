@@ -45,6 +45,13 @@ dependencyResolutionManagement {
     // nothing else, so the stock distribution every other build uses keeps coming from Central.
     // `iconv-unicode` needs no entry: its group is already `io.github.youndie`.
     repositories {
+        // Only for `-Pkatcher.sample.client=<version>`: the native sample resolving the client as it
+        // publishes, from `publishToMavenLocal` of the same commit (B-03). Never for anything else.
+        if (providers.gradleProperty("katcher.sample.client").isPresent) {
+            mavenLocal {
+                content { includeGroup("io.github.youndie.katcher") }
+            }
+        }
         maven("https://reposilite.kotlin.website/snapshots") {
             name = "kotlin-native-rt"
             mavenContent {
