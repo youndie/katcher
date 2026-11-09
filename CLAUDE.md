@@ -102,6 +102,21 @@ test engine; `McpWireFormatTest` holds the answers to MCP's JSON on the raw body
 `Json` would drop `protocolVersion` and `ping`'s `result` — with a control on the bare SDK that must
 come out different.
 
+## A credential in a report is masked twice, by one function
+
+`CredentialMask` (`shared/.../feature/report/CredentialMask.kt`) replaces the secrets client libraries
+print into exception messages — a bot-API path segment, URL userinfo, query parameters named like
+credentials, `Authorization` values, JWTs — and keeps the shape around them (`…/bot<redacted>/getUpdates`).
+The client applies it in `saveCrash` before the report reaches the disk; ingest applies it again at the
+top of `ProcessReportUseCase.process`, because the ingest key ships inside applications and a report can
+come from a client that never masked. It lives in `:shared` so the two cannot disagree, and it is
+idempotent, which is what lets the server re-mask a masked report.
+
+Masking is by shape, never by entropy: stack traces are full of hashes and ids that are not secrets.
+Migration V8 (`db/RemaskCredentials.kt`) re-masked what was stored before (B-01) and recomputed the
+fingerprint of each group whose title it changed. A secret that reached the store is still leaked and is
+rotated by its owner; the migration only stops the pages and the MCP listing showing it.
+
 ## Client crash-capture model (important, non-obvious)
 
 `Katcher.catch()` (`client/src/commonMain/kotlin/io/github/youndie/katcher/Katcher.kt`) is **not fully

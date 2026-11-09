@@ -2,6 +2,7 @@ package io.github.youndie.katcher.feature.error
 
 import io.github.youndie.katcher.feature.report.CreateReportParams
 import io.github.youndie.katcher.feature.report.ReportRepository
+import io.github.youndie.katcher.feature.report.maskCredentials
 import io.github.youndie.katcher.feature.symbolication.SymbolicationService
 import org.kotlincrypto.hash.sha2.SHA256
 import kotlin.time.Clock
@@ -26,13 +27,18 @@ class ProcessReportUseCase(
         createReportParams: CreateReportParams,
         appId: Int,
     ) {
+        // Masked here as well as on the client: the ingest key ships inside applications, so a
+        // report can arrive from an old client, or from no client of ours at all. First, so the
+        // fingerprint, the title and the stored report are all computed from the masked text, and a
+        // report masked on the device groups with the same failure from a client that did not mask.
+        val masked = createReportParams.maskCredentials()
         val retraced =
-            createReportParams.copy(
+            masked.copy(
                 stacktrace =
                     symbolicationService.processCrash(
                         appId = appId,
-                        buildUuid = createReportParams.context?.get("build_uuid"),
-                        rawStacktrace = createReportParams.stacktrace,
+                        buildUuid = masked.context?.get("build_uuid"),
+                        rawStacktrace = masked.stacktrace,
                     ),
             )
 

@@ -2,6 +2,8 @@ package io.github.youndie.katcher
 
 import io.github.youndie.katcher.feature.report.Breadcrumb
 import io.github.youndie.katcher.feature.report.CreateReportParams
+import io.github.youndie.katcher.feature.report.CredentialMask
+import io.github.youndie.katcher.feature.report.maskCredentials
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.HttpTimeout
@@ -187,18 +189,7 @@ public object Katcher {
         if (!first) return
 
         try {
-            val params =
-                CreateReportParams(
-                    appKey = config.appKey,
-                    message = throwable.message.toString(),
-                    stacktrace = throwable.stackTraceToString(),
-                    release = config.release,
-                    environment = config.environment,
-                    context = context,
-                    breadcrumbs = breadcrumbs,
-                )
-
-            storage.saveReport(params)
+            storage.saveCrash(throwable, context, config, breadcrumbs)
 
             if (config.isDebug) println("$LOGO Report saved to disk. Signal sent.")
 
@@ -235,4 +226,28 @@ public object Katcher {
             if (config.isDebug) println("$LOGO Transmission failed: ${e.message}")
             false
         }
+}
+
+/**
+ * Writes [throwable] as a report, with [CredentialMask] applied first: before the disk, not before
+ * the upload, because a report waits on the device for as long as the next start takes, and a
+ * token in it is readable there all along.
+ */
+internal fun KatcherFileSystem.saveCrash(
+    throwable: Throwable,
+    context: Map<String, String>,
+    config: KatcherConfig,
+    breadcrumbs: List<Breadcrumb>,
+) {
+    saveReport(
+        CreateReportParams(
+            appKey = config.appKey,
+            message = throwable.message.toString(),
+            stacktrace = throwable.stackTraceToString(),
+            release = config.release,
+            environment = config.environment,
+            context = context,
+            breadcrumbs = breadcrumbs,
+        ).maskCredentials(),
+    )
 }
