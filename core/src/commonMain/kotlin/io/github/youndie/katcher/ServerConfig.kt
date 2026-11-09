@@ -22,4 +22,9 @@ class ServerConfig(
     val metrikKey: String? = null,
     val metrikService: String = "katcher",
     val metrikRelease: String? = null,
+    /**
+     * `KATCHER_TRACE_URL`: where a report's `trace.id` opens, with `{traceId}` in place of the id —
+     * `https://tracy.example/traces/{traceId}`. Null leaves the id as text (B-04).
+     */
+    val traceUrlTemplate: String? = null,
 )

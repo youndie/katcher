@@ -488,6 +488,28 @@ that katcher never received. The other two answers are `401` for an unknown or r
 `503` when the queue refuses the report; both mean "not stored", and both are worth retrying later
 rather than dropping.
 
+### From a Ktor server: the crash and its trace
+
+A crash on a Ktor service is one hop from the request that raised it. Pass that request's trace id as
+the `trace.id` context key (`TRACE_ID_KEY`, 32 lowercase hex — the W3C form) where you catch, inside
+the call's coroutine, where your tracer's context element is readable. With tracy's agent:
+
+```kotlin
+install(StatusPages) {
+    exception<Throwable> { call, cause ->
+        val traceId = currentCoroutineContext()[TracyTraceContext]?.traceId
+        Katcher.catch(cause, listOfNotNull(traceId?.let { TRACE_ID_KEY to it }).toMap())
+        call.respond(HttpStatusCode.InternalServerError)
+    }
+}
+```
+
+The client does not depend on any tracer; it is a context value like any other. The server shows it on
+the report and links it when `KATCHER_TRACE_URL` names where a trace opens, with `{traceId}` in place of
+the id (`https://tracy.example/traces/{traceId}`); unset, the id stays plain text. `get_crash_metadata`
+hands it to an agent as `traceId`, and only when it has the W3C shape. A fatal crash goes through the
+platform's uncaught-exception hook, outside any request, so it carries no trace id.
+
 ## Why??
 
 - No SaaS fees

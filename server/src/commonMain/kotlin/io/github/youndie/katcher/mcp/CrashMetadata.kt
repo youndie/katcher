@@ -1,6 +1,7 @@
 package io.github.youndie.katcher.mcp
 
 import io.github.youndie.katcher.feature.error.StackFrames
+import io.github.youndie.katcher.feature.report.isTraceId
 
 /**
  * A single stack frame reduced to constrained tokens.
@@ -24,6 +25,8 @@ data class CrashMetadata(
     val frameCount: Int,
     val breadcrumbCount: Int,
     val contextKeys: List<String>,
+    /** The report's `trace.id`, only when it has the W3C shape — a scalar an agent can hand to a tracer. */
+    val traceId: String? = null,
 )
 
 object CrashMetadataExtractor {
@@ -41,6 +44,7 @@ object CrashMetadataExtractor {
         stacktrace: String,
         contextKeys: Collection<String>,
         breadcrumbCount: Int,
+        traceId: String? = null,
     ): CrashMetadata {
         val lines = stacktrace.lines()
 
@@ -67,6 +71,9 @@ object CrashMetadataExtractor {
                     .filter { it.isNotEmpty() }
                     .sorted()
                     .take(MAX_CONTEXT_KEYS),
+            // Validated, not sanitised: an id that is not exactly an id is withheld rather than
+            // trimmed into one, the same rule every scalar on this screen follows.
+            traceId = traceId?.takeIf(::isTraceId),
         )
     }
 

@@ -40,15 +40,14 @@ must never move its file.
 
 <!-- BEGIN INDEX -->
 
-## Open (3)
+## Open (2)
 
 | Task | | Priority | Size | Blocked by |
 |---|---|---|---|---|
 | [B-03](docs/backlog/B-03-native-client-smoke.md) `[?]` | A CI check sees a crash from a linked Kotlin/Native consumer arrive on the server, and the production silence is explained | P1 | M | - |
 | [B-02](docs/backlog/B-02-one-failure-one-group.md) `[?]` | One failure is one group: request data in the message no longer opens a group per variant | P2 | M | - |
-| [B-04](docs/backlog/B-04-trace-id-in-report.md) `[ ]` | A report carries the trace id of the request that raised it, and the crash links to that trace in tracy | P3 | M | - |
 
-## Closed (2)
+## Closed (3)
 
 **A report is safe and counted once**
 
@@ -57,5 +56,9 @@ must never move its file.
 **The client is cheap**
 
 - [B-05](docs/backlog/B-05-breadcrumb-zone-once.md) `[x]` - addBreadcrumb resolves the time zone once per process, not once per call (#78)
+
+**A crash leads to its trace**
+
+- [B-04](docs/backlog/B-04-trace-id-in-report.md) `[x]` - A report carries the trace id of the request that raised it, and the crash links to that trace in tracy
 
 <!-- END INDEX -->
