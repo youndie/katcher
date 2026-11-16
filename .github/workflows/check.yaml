@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: youndie/docs-bootstrap@v0.4.1
+      - uses: youndie/docs-bootstrap@v0.4.2
 
   # Separate from the gate, and on a schedule rather than on a pull request, because an anchor rots
   # when somebody refactors a **different** repository. A pull request here is the least likely
@@ -65,7 +65,7 @@ jobs:
 
       # The code lives in this checkout, so its parent is a directory whose one subdirectory is
       # this repository - which is exactly what REPOS (`..` by default) expects.
-      - uses: youndie/docs-bootstrap@v0.4.1
+      - uses: youndie/docs-bootstrap@v0.4.2
         with:
           target: report
 
