@@ -61,7 +61,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("ktorLibs") {
-            from("io.ktor:ktor-version-catalog:3.6.0")
+            from("io.ktor:ktor-version-catalog:3.6.2")
         }
         create("kotlinCrypto") {
             from("org.kotlincrypto:version-catalog:0.8.0")
