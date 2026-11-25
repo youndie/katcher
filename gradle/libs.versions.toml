@@ -1,6 +1,6 @@
 [versions]
 # The shared build conventions. One number: every sborka plugin below takes its version from here.
-sborka = "0.5.0.135"
+sborka = "0.5.0.136"
 # The compiler comes with them: `wip`, the catalog a sborka release publishes, carries kotlin,
 # ksp and agp. The AGP version in particular was AHEAD of the shared catalog here (9.4.0 against
 # 9.3.2) — the catalog was raised to match rather than this repository moved back.
@@ -16,7 +16,7 @@ atomicfu = "0.33.0"
 # may resolve past the Ktor of the `ktorLibs` catalog in settings.gradle.kts. An arrow UP TO it is
 # normal — kore and the MCP SDK are built on an older Ktor, and the SDK's `ktor-server-websockets`
 # stays on its own 3.5.1 because nothing here declares it — an arrow past it is the trap.
-kore = "0.1.14"
+kore = "0.1.17"
 # youndie/kotlin-native-rt's `iconv` for the Unicode charsets, so the static server needs no gconv
 # (#86). linuxX64 only; `server/build.gradle.kts` adds it where it links statically.
 kotlinNativeRtIconv = "0.1.0"
